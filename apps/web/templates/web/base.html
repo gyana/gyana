@@ -31,10 +31,16 @@
   {% include "web/components/honeybadger.html" %}
   {% endif %} {% endcomment %}
 
-  <script src="{% static "js/turbo-bundle.js" %}"></script>
+  {% comment %} Enables iframe embedding with top navigation {% endcomment %}
+  {% if request.GET.iframe %}
+    <base target="_parent">
+  {% else %}
+    <script src="{% static "js/turbo-bundle.js" %}"></script>
+  {% endif %}
   <script src="{% static "js/stimulus-bundle.js" %}"></script>
   <script src="{% static "rest_framework/js/coreapi-0.1.1.js" %}"></script>
   <script src="{% url "api_schemajs" %}"></script>
+  
 
   {% if SEGMENT_ANALYTICS_JS_WRITE_KEY %}
   {% include "web/components/analytics.html" %}
