@@ -29,7 +29,7 @@
   </nav>
   
   <div class="bg-white flex flex-1 overflow-auto">
-    <nav class="sidebar-learn">
+    <nav class="sidebar-learn hidden sm:block">
       {% children_menu parent_page=learn_menu_page max_levels=3 template="learn/menus/menu.html" sub_menu_template="learn/menus/menu.html" apply_active_classes=True %}
     </nav>
 

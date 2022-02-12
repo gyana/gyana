@@ -12,19 +12,63 @@ quotes:
   - the best tool for analyzing data without code
   - My dream No Code Analytics
   - you've got an amazing product
+# get_started:
+#   - heading: Self service
+#     summary: Gyana is designed for builders. Read our guides, watch videos and learn from the community.
+#     external_url: help
+#     cta: Visit the help center
+#     icon: external-link
+#   - heading: Video onboarding
+#     summary: We'll discuss your use case, demo the product and help you get started building your reports.
+#     external_url: onboarding
+#     cta: Schedule a video call
+#     icon: video-camera
+#   - heading: Custom solution
+#     summary: Work with our in-house data architects to build your solution, or migrate from another provider.
+#     external_url: talk_to_us
+#     cta: Talk to us
+#     icon: chat-alt-2
 get_started:
-  - heading: Self service
+  - heading: Join the community
     summary: Gyana is designed for builders. Read our guides, watch videos and learn from the community.
     external_url: help
     cta: Visit the help center
     icon: external-link
-  - heading: Video onboarding
+  - heading: Get support
+    summary: Gyana is designed for builders. Read our guides, watch videos and learn from the community.
+    external_url: help
+    cta: Visit the help center
+    icon: external-link
+  - heading: Get a demo
     summary: We'll discuss your use case, demo the product and help you get started building your reports.
     external_url: onboarding
     cta: Schedule a video call
     icon: video-camera
-  - heading: Custom solution
+  - heading: We'll build your report
     summary: Work with our in-house data architects to build your solution, or migrate from another provider.
     external_url: talk_to_us
     cta: Talk to us
     icon: chat-alt-2
+support:
+  - heading: Sign up
+    description: Build reports for free
+    icon: login
+    note: It only takes a minute
+  - heading: Attend Gyana University
+    description: Getting started to in-depth references
+    icon: academic-cap
+  - heading: Join the community
+    description: Learn from other Gyanees and speak directly to our team
+    icon: hashtag
+  - heading: Get support
+    description: Chat with us in app
+    icon: chat-alt-2
+  - heading: Get a demo
+    description: Book a free demo to walk through your use case
+    icon: video-camera
+  - heading: Talk to us
+    description: We'll build your report for you
+    icon: chevron-double-right
+  - heading: Celebrate
+    description: Enjoy your new skill
+    icon: cake
