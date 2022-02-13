@@ -1,0 +1,13 @@
+basic:
+  - id: upload
+    name: Upload CSV
+    image: upload.svg
+  - id: sheet
+    name: Google Sheet
+    image: sheet.svg
+  - id: customapi
+    name: API
+    image: customapi.svg
+  - id: webhook
+    name: Webhook
+    image: fivetran/webhooks.svg
