@@ -51,18 +51,18 @@ get_started:
     icon: chat-alt-2
 support:
   - heading: Sign up
-    description: Build reports for free
+    description: Get started for free
     icon: login
     note: It only takes a minute
   - heading: Attend Gyana University
-    description: Getting started to in-depth references
+    description: Go through the fundamentals
     icon: academic-cap
     note: Videos, walkthroughs and guides
     cta:
       message: Visit Gyana University
       external_url: university
   - heading: Join the community
-    description: Collaborate with and learn from other Gyanees
+    description: Learn from other Gyanees
     icon: hashtag
     note: Speak directly with the team
   - heading: Live support
@@ -70,11 +70,11 @@ support:
     icon: chat-alt-2
     note: We'll get to the bottom of it
   - heading: Get a demo
-    description: 30 minute video call to discuss your use case
+    description: Discuss your use case with us
     icon: video-camera
     note: It's free
   - heading: Follow our development
-    description: We release every week
+    description: We release changes every week
     icon: clipboard-list
     note: Upvote your top features and we'll build them
     cta:
