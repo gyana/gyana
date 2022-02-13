@@ -65,15 +65,17 @@ support:
     description: Collaborate with and learn from other Gyanees
     icon: hashtag
     note: Speak directly with the team
-  - heading: Get support
+  - heading: Live support
     description: Chat with us in app
     icon: chat-alt-2
   - heading: Get a demo
-    description: Book a free demo to walk through your use case
+    description: 30 minute video call to discuss your use case
     icon: video-camera
+    note: It's free
   - heading: Follow our development
     description: We release every week
     icon: clipboard-list
+    note: Upvote your top features and we'll build them
     cta:
       message: Visit feedback portal
       external_url: feedback
