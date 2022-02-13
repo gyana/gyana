@@ -50,9 +50,24 @@
               <div class="overflow-hidden -mt-5 mb-5 lg:my-0 lg:absolute lg:top-16 lg:right-0 lg:w-1/2" style="height: 75vh;">
                 <div class="card card--none w-full h-full relative">
                   {% if step == 0 %}
-                    <iframe width="100%" height="100%" loading="lazy" sandbox="allow-scripts allow-top-navigation allow-forms allow-same-origin" src="{% url 'account_login' %}?iframe=true"></iframe>
+                    {% comment %} Signup page: link clicks and form submit will happen at parent level {% endcomment %}
+                    <iframe width="100%" height="100%" loading="lazy" sandbox="allow-top-navigation allow-forms" src="{% url 'account_signup' %}?iframe=true"></iframe>
                   {% elif step == 1 %}
+                    {% comment %} Gyana University {% endcomment %}
                     <iframe width="100%" height="100%" src="/learn"></iframe>
+                  {% elif step == 2 %}
+                    {% comment %} <iframe width="100%" height="100%" src="{% url 'web:intercom-demo' %}"></iframe> {% endcomment %}
+                  {% elif step == 3 %}
+                    {% comment %} Intercom widget {% endcomment %}
+                    <iframe width="100%" height="100%" src="{% url 'web:intercom-demo' %}"></iframe>
+                  {% elif step == 4 %}
+                    <!-- Calendly inline widget begin -->
+                    <div class="calendly-inline-widget" data-url="https://calendly.com/lorraine-chabeda/30min?hide_gdpr_banner=1" style="min-width:320px;height:100%;"></div>
+                    <script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js" async></script>
+                    <!-- Calendly inline widget end -->
+                  {% elif step == 5 %}
+                    {% comment %} Typeform embed {% endcomment %}
+                    <div data-tf-widget="v2XTy0j3" data-tf-iframe-props="title=Gyana Waitlist" data-tf-medium="snippet" style="width:100%;height:100%;"></div><script src="//embed.typeform.com/next/embed.js"></script>
                   {% endif %}
                 </div>
               </div>
@@ -64,3 +79,4 @@
     </nav>
   </div>
 </div>
+

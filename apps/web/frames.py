@@ -71,3 +71,8 @@ class SupportDemo(TurboFrameTemplateView):
         context = super().get_context_data(**kwargs)
         context["content"] = get_content("home.yaml")
         return context
+
+
+class IntercomDemo(TurboFrameTemplateView):
+    template_name = "web/demo/intercom.html"
+    turbo_frame_dom_id = "web:intercom-demo"
