@@ -5,9 +5,11 @@
     <div class="sm:flex sm:flex-col sm:align-center">
       <h2 class="text-3xl font-extrabold track-tight text-gray-900">
         We're here to help
-      </h1>
-      <p class="mt-4 max-w-3xl text-base text-gray-800">
+      </h2>
+      <p class="mt-4 max-w-lg text-base text-gray-800">
         We'll support you on every step of your journey to Gyana mastery.
+        <strong>Looking to get started fast?</strong>
+        <a href="{% external_url 'talk_to_us' %}" class="underline hover:text-gray-900">Get our team to build your report.</a>
       </p>
     </div>
     <nav aria-label="Progress" class="mt-8 lg:grid lg:grid-cols-2">
@@ -23,7 +25,7 @@
               {% endif %}
               <a href="{% url 'web:support-demo' %}?step={{ forloop.counter0 }}" class="relative flex items-start group">
                 <span class="h-9 flex items-center">
-                  <span class="relative z-10 w-8 h-8 flex items-center justify-center rounded-full {% if forloop.counter0 < step %}bg-indigo-600 group-hover:bg-indigo-800{% elif forloop.counter0 == step %}bg-white border-2 border-indigo-600{% else %}bg-white border-2 border-gray-300 group-hover:border-gray-400{% endif %}">
+                  <span class="relative w-8 h-8 flex items-center justify-center rounded-full {% if forloop.counter0 < step %}bg-indigo-600 group-hover:bg-indigo-800{% elif forloop.counter0 == step %}bg-white border-2 border-indigo-600{% else %}bg-white border-2 border-gray-300 group-hover:border-gray-400{% endif %}">
                     {% if forloop.counter0 < step %}
                       {% heroicon 'check' class="h-5 w-5 text-white" style="solid" %}
                     {% elif forloop.counter0 == step %}
@@ -40,23 +42,23 @@
               </a>
               {% if step == forloop.counter0 %}
                 {% if item.note %}
-                  <p class="absolute top-2 left-80 mt-4 text-xl lg:text-2xl text-caveat text-indigo-600">
+                  <p class="absolute top-4 left-32 mt-4 text-xl lg:text-2xl text-caveat text-indigo-600">
                     {{ item.note }}
                   </p>
                 {% endif %}
               {% endif %}
             </li>
             {% if step == forloop.counter0 %}
-              <div class="overflow-hidden -mt-5 mb-5 lg:my-0 lg:absolute lg:top-16 lg:right-0 lg:w-1/2" style="height: 75vh;">
-                <div class="card card--none w-full h-full relative">
+              <div class="-mt-5 mb-5 lg:my-0 lg:absolute lg:top-16 lg:right-0 lg:w-1/2 relative" style="height: 70vh; z-index: 5;">
+                <div class="card card--none w-full h-full ">
                   {% if step == 0 %}
                     {% comment %} Signup page: link clicks and form submit will happen at parent level {% endcomment %}
                     <iframe width="100%" height="100%" loading="lazy" sandbox="allow-top-navigation allow-forms" src="{% url 'account_signup' %}?iframe=true"></iframe>
                   {% elif step == 1 %}
                     {% comment %} Gyana University {% endcomment %}
-                    <iframe width="100%" height="100%" src="/learn"></iframe>
+                    <iframe width="100%" height="100%" src="{% external_url 'university' %}"></iframe>
                   {% elif step == 2 %}
-                    {% comment %} <iframe width="100%" height="100%" src="{% url 'web:intercom-demo' %}"></iframe> {% endcomment %}
+                    {% include 'web/site/home/community.html' %}
                   {% elif step == 3 %}
                     {% comment %} Intercom widget {% endcomment %}
                     <iframe width="100%" height="100%" src="{% url 'web:intercom-demo' %}"></iframe>
@@ -66,8 +68,14 @@
                     <script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js" async></script>
                     <!-- Calendly inline widget end -->
                   {% elif step == 5 %}
-                    {% comment %} Typeform embed {% endcomment %}
-                    <div data-tf-widget="v2XTy0j3" data-tf-iframe-props="title=Gyana Waitlist" data-tf-medium="snippet" style="width:100%;height:100%;"></div><script src="//embed.typeform.com/next/embed.js"></script>
+                    {% comment %} HelloNext changelog {% endcomment %}
+                    <iframe style='border:0px; height:100%; width:100%;' src='https://feedback.gyana.com/embed/c?no_header=true'></iframe>
+                  {% endif %}
+                  {% if item.cta %}
+                    <a href="{% external_url item.cta.external_url %}" class="text-sm absolute bottom-0 inset-x-0 bg-gray-50 text-right flex items-center justify-end text-gray-600 gap-1 p-2 border-gray border-t">
+                      {{ item.cta.message }}
+                      {% heroicon 'external-link' class="w-5 h-5" style="solid" %}
+                    </a>
                   {% endif %}
                 </div>
               </div>

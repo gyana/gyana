@@ -58,18 +58,22 @@ support:
     description: Getting started to in-depth references
     icon: academic-cap
     note: Videos, walkthroughs and guides
+    cta:
+      message: Visit Gyana University
+      external_url: university
   - heading: Join the community
-    description: Learn from other Gyanees and speak directly to our team
+    description: Collaborate with and learn from other Gyanees
     icon: hashtag
+    note: Speak directly with the team
   - heading: Get support
     description: Chat with us in app
     icon: chat-alt-2
   - heading: Get a demo
     description: Book a free demo to walk through your use case
     icon: video-camera
-  - heading: Talk to us
-    description: We'll build your report for you
-    icon: chevron-double-right
-  - heading: Celebrate
-    description: Enjoy your new skill
-    icon: cake
+  - heading: Follow our development
+    description: We release every week
+    icon: clipboard-list
+    cta:
+      message: Visit feedback portal
+      external_url: feedback

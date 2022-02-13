@@ -1,0 +1,32 @@
+{% load heroicons site_tags static %}
+
+<div class="bg-gray-50 h-full flex flex-col">
+  <div class="flex-1 flex flex-col lg:flex-row gap-4 lg:gap-8 items-left lg:items-center border-b border-gray p-6 lg:p-10">
+    <img class="w-20 h-20 lg:w-36 lg:h-36" src="{% static 'images/site/home/facebook.svg' %}" alt="Facebook logo">
+    <div>
+      <h2 class="lg:text-2xl font-extrabold track-tight text-gray-900">
+        Gyana - The Data Analytics Enthusiasts #DAE
+      </h2>
+      <p class="text-sm text-gray-500">750+ members</p>
+      <p class="text-sm text-gray-900">Announcements, questions and support</p>
+      <a href="{% external_url 'facebook_group' %}" class="mt-2 button">
+        <span class="mr-2">Join</span>
+        {% heroicon 'external-link' class="w-5 h-5" style="solid" %}
+      </a>
+    </div>
+  </div>
+  <div class="flex-1 flex flex-col lg:flex-row gap-4 lg:gap-8 items-left lg:items-center p-6 lg:p-10">
+    <img class="w-20 h-20 lg:w-36 lg:h-36" src="{% static 'images/site/home/slack.png' %}" alt="Slack logo">
+    <div>
+      <h2 class="lg:text-2xl font-extrabold track-tight text-gray-900">
+        Gyana Community Slack
+      </h2>
+      <p class="text-sm text-gray-500">250+ members</p>
+      <p class="text-sm text-gray-900">Chat with the team</p>
+      <a href="{% external_url 'slack_community' %}" class="mt-2 button">
+        <span class="mr-2">Join</span>
+        {% heroicon 'external-link' class="w-5 h-5" style="solid" %}
+      </a>
+    </div>
+  </div>
+</div>
