@@ -68,6 +68,7 @@ support:
   - heading: Live support
     description: Chat with us in app
     icon: chat-alt-2
+    note: We'll get to the bottom of it
   - heading: Get a demo
     description: 30 minute video call to discuss your use case
     icon: video-camera
