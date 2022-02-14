@@ -26,6 +26,11 @@ urlpatterns = sitmap_urlpatterns + [
     path(
         "demo/integrations", frames.IntegrationsDemo.as_view(), name="integrations-demo"
     ),
+    path(
+        "demo/search-integrations",
+        frames.SearchIntegrationsDemo.as_view(),
+        name="search-integrations-demo",
+    ),
     path("demo/workflows", frames.WorkflowsDemo.as_view(), name="workflows-demo"),
     path("demo/dashboards", frames.DashboardsDemo.as_view(), name="dashboards-demo"),
     path("demo/support", frames.SupportDemo.as_view(), name="support-demo"),

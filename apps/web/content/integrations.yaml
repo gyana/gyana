@@ -1,4 +1,4 @@
-basic:
+custom:
   - name: Upload CSV
     image: upload.svg
   - name: Google Sheet
@@ -7,64 +7,59 @@ basic:
     image: customapi.svg
   - name: Webhook
     image: fivetran/webhooks.svg
-categories:
-  - name: Ads
+apps:
+  - name: Paid
     connectors:
     - facebook_ads
     - adwords
     - linkedin_ads
     - snapchat_ads
-    # extra:
-    # - pinterest_ads
-    # - tiktok_ads
-    # - apple_search_ads
-    # - bingads
-  - name: Analytics
-    connectors:
-    - google_analytics
-    - segment
-    - amplitude
-    - mixpanel
-    # extra:
-    # - snowplow
-    # - heap
+    - pinterest_ads
+    - tiktok_ads
+    - apple_search_ads
+    - bingads
   - name: Organic
     connectors:
     - google_search_console
     - facebook_pages
     - linkedin_company_pages
     - instagram_business
-    # extra:
-    # - twitter
-    # - youtube_analytics
+    - twitter
+    - youtube_analytics
+  - name: Analytics
+    connectors:
+    - google_analytics
+    - segment
+    - amplitude
+    - mixpanel
+    - snowplow
+    - heap
   - name: Commerce
     connectors:
     - shopify
     # todo
-  - name: Databases
-    connectors:
-    - mysql
-    - postgres
-    - sql_server
-    - mongo
-    # extra:
-    # - aurora
-    # - maria
-    # - dynamodb
   - name: Automation
     connectors:
     - hubspot
     - klaviyo
     - mailchimp
     - taboola
-    # extra:
-    # - pardot
-    # - outbrain
-    # - adroll
-    # - branch
-    # - sendgrid
-    # - twilio
-    # - mandrill
+    - pardot
+    - outbrain
+    - adroll
+    - branch
+    - sendgrid
+    - twilio
+    - mandrill
+  - name: Databases
+    connectors:
+    - mysql
+    - postgres
+    - sql_server
+    - mongo
+    - aurora
+    - maria
+    - dynamodb
   - name: CRM
     connectors:
     - pipedrive
@@ -77,8 +72,7 @@ categories:
     - square
     - braintree
     - recurly
-    # extra:
-    # - recharge
+    - recharge
   - name: Accounting
     connectors:
     - xero
@@ -90,10 +84,9 @@ categories:
     - freshdesk
     - zendesk
     - helpscout
-    # extra:
-    # - zendesk_chat
-    # - front
-    # - kustomer
+    - zendesk_chat
+    - front
+    - kustomer
   - name: Tasks
     connectors:
     - asana
