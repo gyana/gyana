@@ -8,29 +8,7 @@
       {% endwith %}
     {% endif %}
 
-    {% for hidden in form.hidden_fields %}
-      {{ hidden }}
-    {% endfor %}
-
-    {% for field in form.visible_fields %}
-    <label
-      {% if field.name == 'DELETE' %}style="display: none;" {% endif %}
-      {% if field.widget_type == 'checkbox' %}class="input__toggle"{% endif %}
-    >
-      {% if field.help_text %}
-      <p class="input__help-text">
-        {{ field.help_text }}
-        {% if not field.field.required and field.name != 'ascending'%} - optional{% endif %}
-      </p>
-      {% endif %}
-
-      {% if not form.is_live %}
-      {{ field.errors.as_ul }}
-      {% endif %}
-
-      {{ field }}
-    </label>
-    {% endfor %}
+    {{ form }}
 
     {% if not formset.hide_delete_button %}
       <button
