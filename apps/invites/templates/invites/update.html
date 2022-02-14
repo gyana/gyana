@@ -6,7 +6,7 @@
 <form method="post" action="{% url 'team_invites:update' team.id object.id %}" class="form">
   {% csrf_token %}
 
-  {% include "django/forms/default_form.html" %}
+  {{ form }}
 
   <button type="submit" class="button">Save changes</button>
 </form>

@@ -5,7 +5,7 @@
   <form method="post" action="{% url 'team_invites:create' team.id %}" class="form pad" data-turbo="false">
     {% csrf_token %}
 
-    {% include "django/forms/default_form.html" %}
+    {{ form }}
 
     <button type="submit" class="button button--success w-full">Invite</button>
   </form>

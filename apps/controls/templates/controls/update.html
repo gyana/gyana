@@ -15,7 +15,7 @@
   </span>
 
   {% csrf_token %}
-  {% include "django/forms/default_form.html" %}
+  {{ form }}
 
   <button type="submit" class="button button--success button--sm mt-3 w-full"
     name="submit" value="submit"

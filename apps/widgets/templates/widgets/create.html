@@ -10,7 +10,7 @@
 <form method="post" action="{% url 'dashboard_widgets:create' project.id dashboard.id %}" class="form">
   {% csrf_token %}
 
-  {% include "django/forms/default_form.html" %}
+  {{ form }}
 
   <button type="submit" class="button button--filled button--success">Create</button>
 </form>

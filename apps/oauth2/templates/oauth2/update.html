@@ -28,7 +28,7 @@
     <form method="post" class="mt-7" data-turbo="false">
       {% csrf_token %}
 
-      {% include "django/forms/default_form.html" %}
+      {{ form }}
 
       <button type="submit" class="button button--filled button--success w-full">Authorize</button>
     </form>

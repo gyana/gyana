@@ -9,7 +9,7 @@
     <form id='team-subscription-form' method="post" data-controller="live-update">
       {% csrf_token %}
 
-      {% include "django/forms/default_form.html" %}
+      {{ form }}
 
       <p>
         Total due: <strong>{{ new_price }} {{ team.active_subscription.currency }}</strong>, billing monthly

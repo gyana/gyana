@@ -12,7 +12,7 @@
 <form class="mb-auto" method="post">
   {% csrf_token %}
 
-  {% include "django/forms/default_form.html" %}
+  {{ form }}
 
   <div class="flex flex-col w-full gap-2">
     <button type="submit" class="button button--primary button--filled w-full">

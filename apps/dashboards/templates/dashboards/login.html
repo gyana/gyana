@@ -13,7 +13,7 @@
   >
     {% csrf_token %}
 
-    {% include "django/forms/default_form.html" %}
+    {{ form }}
 
     <button data-turbo='false' class='button button-primary w-full mt-4' type='submit'>Submit</button>
   </form>

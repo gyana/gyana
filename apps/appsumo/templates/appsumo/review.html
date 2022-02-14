@@ -5,7 +5,7 @@
   <form method="post" action="{% url 'team_appsumo:review' team.id %}" class="w-full">
     {% csrf_token %}
 
-    {% include "django/forms/default_form.html" %}
+    {{ form }}
 
     <div class="flex gap-3 w-full">
       <a href="{% url 'teams:account' team.id %}" class="button button--tertiary flex-1">
