@@ -20,7 +20,7 @@
     {% comment %} Prevent unselect of current user {% endcomment %}
     {% if user.is_current_user %}style="pointer-events:none;"{% endif %}
   >
-    <img class="h-12 w-12 mr-4" src="{{ user.avatar_url }}">
+    <img class="h-8 w-8 mr-4" src="{{ user.avatar_url }}">
     <div class='flex flex-col'>
       <span>
         {% if user.first_name or user.last_name %}

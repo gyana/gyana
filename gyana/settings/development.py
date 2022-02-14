@@ -9,7 +9,9 @@ INTERNAL_IPS = {"127.0.0.1"}
 AUTH_PASSWORD_VALIDATORS = []
 
 # Enable cache busting locally.
-STATICFILES_STORAGE = "django.contrib.staticfiles.storage.ManifestStaticFilesStorage"
+# TODO: Disabling because it breaks the collection of the fusionchart files.
+# For this to work we will need to copy the sourcemaps as well.
+# STATICFILES_STORAGE = "django.contrib.staticfiles.storage.ManifestStaticFilesStorage"
 
 # URLs to reset and seed the database for testing. Although Cypress supports
 # running CLI commands, the overhead of starting up the python interpreter for

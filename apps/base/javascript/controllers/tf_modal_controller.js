@@ -43,6 +43,11 @@ export default class extends Controller {
   onParamTargetConnected(target) {
     const params = new URLSearchParams(window.location.search)
 
+    // We don't want to re-open the modal if a modal is already open.
+    if (this.modalTarget.getAttribute("hidden") == null) {
+      return
+    }
+
     if (params.get('modal_item')) {
       // This is a little hacky, it simulates a click because we need the
       // data attributes with the turbo-frame src/id.
@@ -83,7 +88,7 @@ export default class extends Controller {
 
   async submit(e) {
     for (const el of this.formTarget.querySelectorAll('button[type=submit]')) el.disabled = true
-    e.target.innerHTML = '<i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>'
+    // e.target.innerHTML = '<i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>'
 
     e.preventDefault()
     const data = new FormData(this.formTarget)
@@ -155,13 +160,13 @@ export default class extends Controller {
 
   // Trigger save and preview without clicking save and preview button
   preview() {
+    console.group("Preview")
     this.changed = false
 
-    setTimeout(() => {
-      this.formTarget.requestSubmit(
-        this.formTarget.querySelector("button[value*='Save & Preview']")
-      )
-    }, 0)
+    this.formTarget.requestSubmit(
+      this.formTarget.querySelector("button[value*='Save & Preview']")
+    )
+    console.groupEnd()
   }
 
   save() {

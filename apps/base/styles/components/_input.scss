@@ -273,7 +273,7 @@ label.checkbox {
     border-color: var(--c-black-10);
     background-color: var(--c-gray-50);
     color: var(--c-blue);
-    
+
     &::before {
       content: '\f14a';
     }
@@ -315,7 +315,7 @@ label.checkbox {
   visibility: hidden;
 
   // Inspired by https://css-tricks.com/the-checkbox-hack/
-  &:checked ~ label.checkbox__enabled {
+  &:checked + label.checkbox__enabled {
     border: 1px solid var(--c-blue);
 
     &::before {
@@ -324,7 +324,7 @@ label.checkbox {
     }
   }
 
-  &:checked ~ label.checkbox__disabled {
+  &:checked + label.checkbox__disabled {
     border: 1px solid var(--c-gray);
 
     &::before {
@@ -333,7 +333,7 @@ label.checkbox {
     }
   }
 
-  &:checked ~ label.checkbox__active {
+  &:checked + label.checkbox__active {
     border: 1px solid var(--c-green);
     cursor: default;
 
