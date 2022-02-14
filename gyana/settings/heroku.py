@@ -64,4 +64,6 @@ CACHES = {
     },
 }
 
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+# After django 4.0 update ManifestStaticFilesStorage would fail
+# Collecting the sourcemaps for fusioncharts
+STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
