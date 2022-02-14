@@ -1,12 +1,24 @@
 custom:
-  - name: Upload CSV
+  - name: Excel / CSV
+    description: |
+      Most sources have an Excel/CSV export.
+      Our robust CSV importer is a great for one-off or infrequent jobs.
     image: upload.svg
   - name: Google Sheet
+    description:
+      Many web sources have live exports to Google Sheet. Our scheduled Google Sheet
+      importer can automatically sync into Gyana.
     image: sheet.svg
-  - name: Custom API
-    image: customapi.svg
   - name: Webhook
     image: fivetran/webhooks.svg
+    description: |
+      If your source has webhooks, you can deliver all the events into Gyana.
+  - name: Custom API
+    image: customapi.svg
+    description: |
+      Does your service have an API?
+      You can query it and turn it into a table, with flexible configuration including OAuth2.
+
 apps:
   - name: Paid
     connectors:
