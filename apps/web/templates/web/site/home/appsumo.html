@@ -1,0 +1,33 @@
+{% load heroicons %}
+  
+  <div class="mt-6 hidden sm:block">
+  <div class="inline-flex items-center gap-2">
+    <div class="flex-shrink-0 flex">
+      {% for idx in '0123'|make_list %}
+        <div class="h-6 w-6 relative">
+          <div class="absolute">
+            {% heroicon 'star' class="h-6 w-6 stroke-current text-yellow-600" style="solid" %}
+          </div>
+          <div class="absolute">
+            {% heroicon 'star' class="h-6 w-6 text-yellow-400" style="solid" %}
+          </div>
+        </div>
+      {% endfor %}
+      <div class="h-6 w-6 relative">
+        <div class="absolute">
+          {% heroicon 'star' class="h-6 w-6 stroke-current text-yellow-600" style="solid" %}
+        </div>
+        <div class="absolute">
+          {% heroicon 'star' class="h-6 w-6 text-white" style="solid" %}
+        </div>
+        <div class="h-8 w-4 object-contain overflow-hidden absolute">
+          {% heroicon 'star' class="h-6 w-6 text-yellow-400" style="solid" %}
+        </div>
+      </div>
+    </div>
+    <div class="min-w-0 flex-1 py-1 text-sm text-gray-600 sm:py-3">
+      Rated <span class="font-bold text-gray-900">4.7</span> on <a class="hover:text-gray-900 hover:underline" href="https://appsumo.com/products/gyana/">AppSumo</a>
+      <span class="text-gray-400">|</span> <span class="font-bold text-gray-900">101</span> reviews
+    </div>
+  </div>
+</div>
