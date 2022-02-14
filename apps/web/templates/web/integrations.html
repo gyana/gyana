@@ -114,7 +114,10 @@
             <img class="w-20 h-20" src="{% static 'images/integrations/'|add:item.image %}" alt="">
             <div class="flex flex-col gap-2">
               <h3 class="text-lg font-medium text-gray-900">{{ item.name }}</h3>
-              <div class="text-sm text-gray-600">{{ item.description }}</div>
+              <div class="text-sm text-gray-600">
+                <strong>{{ item.question }}</strong>
+                {{ item.description }}
+              </div>
             </div>
           </div>
         </div>
