@@ -30,7 +30,10 @@
     {{ bound_field }}
   </div>
   {% elif bound_field.widget_type == "checkbox" %}
-  <label class="flex flex-row items-center gap-4 w-full">
+  <label  
+    class="flex flex-row items-center gap-4 w-full"
+    {% if bound_field.name == 'DELETE' %}style="display: none;" {% endif %}
+  >
     {{ bound_field }}
     
     <span>
@@ -87,7 +90,10 @@
       {{ bound_field.label }}
 
       {% if bound_field.help_text %}
-      <p class="input__help-text">{{ bound_field.help_text }}</p>
+      <p class="input__help-text">
+        {{ bound_field.help_text }}
+        {% if not field.field.required and field.name != 'ascending'%} - optional{% endif %}
+      </p>
       {% endif %}
     </label>
 
