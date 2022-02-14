@@ -71,61 +71,75 @@
 </div>
 
 <div class="bg-gray-20 border-b border-gray">
-  <div class="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:py-32 lg:px-8 flex flex-col">
-    {% comment %} <p class="text-2xl lg:text-3xl text-caveat text-indigo-600 mb-2">1 minute</p> {% endcomment %}
+  <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8 flex flex-col">
     <div>
       <h2 class="text-3xl font-extrabold tracking-tight text-gray-900">
-        Connect your business
+        Connect to your apps
       </h2>
       <p class="mt-4 text-lg text-gray-600 max-w-3xl">
-        Import data from the applications you use to run your business.
+        Import data from the applications you use to run your business. Setup
+        your source and starting syncing your data in minutes.
       </p>
     </div>
     <turbo-frame id="web:search-integrations-demo">
       {% include 'web/demo/search_integrations.html' %}
     </turbo-frame>
+    <p class="mt-8 text-lg text-gray-600 max-w-3xl flex items-center gap-1">
+      <span>
+        Can't find your integration?
+        <strong>Don't panic!</strong>
+        You have other options to get your data into Gyana
+      </span>
+      {% heroicon 'arrow-down' class="h-5 w-5" style="solid" %}
+    </p>
   </div>
 </div>
 
-{% comment %} {% for item in content.basic %}
-    <div class="flex flex-col items-center gap-4 p-4">
-      <img class="w-24 h-24" src="{% static 'images/integrations/'|add:item.image %}" alt="">
-      <div class="text-sm text-gray-600">{{ item.name }}</div>
-    </div>
-{% endfor %} {% endcomment %}
-
 <div class="bg-white border-b border-gray">
+  <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:py-16 lg:px-8 flex flex-col">
+    <div>
+      <h2 class="text-3xl font-extrabold tracking-tight text-gray-900">
+        Build an integration
+        <span class="text-2xl lg:text-3xl text-caveat text-indigo-600">without writing code</span>
+      </h2>
+      <p class="mt-4 text-lg text-gray-600 max-w-3xl">
+        You'll be surprised what you can achieve in 5 minutes with our no-code tools.
+        <strong>And no, you don't have to pay for Zapier.</strong>
+      </p>
+    </div>
+    <div class="mt-6 grid grid-cols-1 lg:grid-cols-4 gap-4">
+      {% for item in content.custom %}
+        <div class="card card--none">
+          <div class="flex flex-col items-center gap-4 p-4">
+            <img class="w-24 h-24" src="{% static 'images/integrations/'|add:item.image %}" alt="">
+            <div class="text-sm text-gray-600">{{ item.name }}</div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<div class="bg-gray-20 border-b border-gray">
   <div class="max-w-7xl mx-auto  py-12 px-4 sm:px-6 lg:py-16 lg:px-8">
-    <p class="text-2xl lg:text-3xl text-caveat text-indigo-600 mb-2">Yes, we can do it</p>
+    <p class="text-2xl lg:text-3xl text-caveat text-indigo-600 mb-2">
+      We'll build it for you
+    </p>
     <h2 class="text-3xl font-extrabold tracking-tight text-gray-900">
-      Native connectors
+      Integrate any new source in 2 weeks
     </h2>
     <p class="mt-4 text-lg text-gray-600 max-w-3xl">
-      Connect to most popular online sources out of the box, including apps, databases, webhooks and APIs.
-      <strong>Need something custom?</strong> We can integrate any new source in 2 weeks.
+      We're experts on data integration. Whether you have a custom SaaS app, internal API or cloud service,
+      we'll setup a robust integration into Gyana.
     </p>
-
-    <ul
-      role="list"
-      class="mt-6 grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-4 md:gap-x-6 lg:max-w-5xl lg:gap-x-8 lg:gap-y-12 xl:grid-cols-6"
-    >
-      {% for service in services.values %}
-        <li>
-          <div class="space-y-4">
-            <img
-              class="mx-auto h-20 w-20 lg:w-24 lg:h-24"
-              src="{% static 'images/integrations/fivetran/'|add:service.icon_path %}"
-              alt="{{ service.name }}"
-            />
-            <div class="space-y-2">
-              <div class="text-xs font-medium lg:text-sm">
-                <h3>{{ service.name }}</h3>
-              </div>
-            </div>
-          </div>
-        </li>
-      {% endfor %}
-    </ul>
+    <div class="mt-6 flex gap-4">
+      <div class="flex flex-col gap-2 text-lg items-center">
+        <a href="{% external_url 'talk_to_us' %}" class="button w-44">
+          Talk to us
+        </a>
+        <p class="text-xs lg:text-sm text-gray-600">We'll setup your integration</p>
+      </div>
+    </div>
   </div>
 </div>
 {% endblock %}

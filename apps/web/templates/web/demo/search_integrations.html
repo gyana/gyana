@@ -16,45 +16,51 @@
     </a>
   {% endif %}
 </div>
-<div class="mt-4 flex-1 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-8">
-  {% if request.GET.query %}
-    {% for connector in services_query %}
-      <div class="card card--none">
-        <div class="flex flex-col h-full">
-          <img class="w-full p-4" src="{% static 'images/integrations/fivetran/'|add:connector.icon_path %}" alt="">
-          <div class="mt-auto bg-gray text-gray-600 border border-gray w-full text-center">{{ connector.name }}</div>
-        </div>
-      </div>        
-    {% endfor %}
-  {% elif request.GET.category %}
-    {% for category in content.apps %}
-      {% if request.GET.category == category.name %}
-        {% for id in category.connectors %}
-          {% with connector=services|get_item:id %}
-            <div class="card card--none">
-              <div class="flex flex-col h-full">
-                <img class="w-full p-4" src="{% static 'images/integrations/fivetran/'|add:connector.icon_path %}" alt="">
-                <div class="mt-auto bg-gray text-gray-600 border border-gray w-full text-center">{{ connector.name }}</div>
-              </div>
-            </div>
-          {% endwith %}
-        {% endfor %}   
-      {% endif %}    
-    {% endfor %}
-  {% else %}
-    {% for category in content.apps %}
-      <a href="{% url 'web:search-integrations-demo' %}?category={{ category.name }}" class="card card--none">
-        <div class="flex flex-col h-full">
-          <div class="grid grid-cols-2 gap-4 p-4">
-            {% for id in category.connectors|slice:":4" %}
-              {% with connector=services|get_item:id %}
-                <img class="w-full h-full" src="{% static 'images/integrations/fivetran/'|add:connector.icon_path %}" alt="">
-              {% endwith %}
-            {% endfor %}
+{% if request.GET.query %}
+  <p class="mt-8 text-2xl lg:text-3xl text-caveat text-indigo-600 flex items-center gap-2">
+    No results found
+  </p>
+{% else %}
+  <div class="mt-4 flex-1 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-8">
+    {% if request.GET.query %}
+      {% for connector in services_query %}
+        <div class="card card--none">
+          <div class="flex flex-col h-full">
+            <img class="w-full p-4" src="{% static 'images/integrations/fivetran/'|add:connector.icon_path %}" alt="">
+            <div class="mt-auto bg-gray text-gray-600 border border-gray w-full text-center">{{ connector.name }}</div>
           </div>
-          <div class="mt-auto bg-gray text-gray-600 border border-gray w-full text-center">{{ category.name }}</div>
-        </div>
-      </a>
-    {% endfor %}
-  {% endif %}
-</div>
+        </div>        
+      {% endfor %}
+    {% elif request.GET.category %}
+      {% for category in content.apps %}
+        {% if request.GET.category == category.name %}
+          {% for id in category.connectors %}
+            {% with connector=services|get_item:id %}
+              <div class="card card--none">
+                <div class="flex flex-col h-full">
+                  <img class="w-full p-4" src="{% static 'images/integrations/fivetran/'|add:connector.icon_path %}" alt="">
+                  <div class="mt-auto bg-gray text-gray-600 border border-gray w-full text-center">{{ connector.name }}</div>
+                </div>
+              </div>
+            {% endwith %}
+          {% endfor %}   
+        {% endif %}    
+      {% endfor %}
+    {% else %}
+      {% for category in content.apps %}
+        <a href="{% url 'web:search-integrations-demo' %}?category={{ category.name }}" class="card card--none">
+          <div class="flex flex-col h-full">
+            <div class="grid grid-cols-2 gap-4 p-4">
+              {% for id in category.connectors|slice:":4" %}
+                {% with connector=services|get_item:id %}
+                  <img class="w-full h-full" src="{% static 'images/integrations/fivetran/'|add:connector.icon_path %}" alt="">
+                {% endwith %}
+              {% endfor %}
+            </div>
+            <div class="mt-auto bg-gray text-gray-600 border border-gray w-full text-center">{{ category.name }}</div>
+          </div>
+        </a>
+      {% endfor %}
+    {% endif %}
+  </div>
+{% endif %}
