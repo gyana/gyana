@@ -122,15 +122,3 @@
     max-width: 160;
   }
 }
-
-.fade-down:after {
-  content: "";
-  position: absolute;
-  left: 0px;
-  bottom: 0px;
-  width: 100%;
-  height: 12%;
-  pointer-events: none;
-  background: linear-gradient(0deg, white 2.52%, rgba(255, 255, 255, 0) 100%);
-  z-index: 1;
-}
