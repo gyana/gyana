@@ -1,13 +1,112 @@
 basic:
-  - id: upload
-    name: Upload CSV
+  - name: Upload CSV
     image: upload.svg
-  - id: sheet
-    name: Google Sheet
+  - name: Google Sheet
     image: sheet.svg
-  - id: customapi
-    name: API
+  - name: Custom API
     image: customapi.svg
-  - id: webhook
-    name: Webhook
+  - name: Webhook
     image: fivetran/webhooks.svg
+categories:
+  - name: Ads
+    connectors:
+    - facebook_ads
+    - adwords
+    - linkedin_ads
+    - snapchat_ads
+    # extra:
+    # - pinterest_ads
+    # - tiktok_ads
+    # - apple_search_ads
+    # - bingads
+  - name: Analytics
+    connectors:
+    - google_analytics
+    - segment
+    - amplitude
+    - mixpanel
+    # extra:
+    # - snowplow
+    # - heap
+  - name: Organic
+    connectors:
+    - google_search_console
+    - facebook_pages
+    - linkedin_company_pages
+    - instagram_business
+    # extra:
+    # - twitter
+    # - youtube_analytics
+  - name: Commerce
+    connectors:
+    - shopify
+    # todo
+  - name: Databases
+    connectors:
+    - mysql
+    - postgres
+    - sql_server
+    - mongo
+    # extra:
+    # - aurora
+    # - maria
+    # - dynamodb
+  - name: Automation
+    connectors:
+    - hubspot
+    - klaviyo
+    - mailchimp
+    - taboola
+    # extra:
+    # - pardot
+    # - outbrain
+    # - adroll
+    # - branch
+    # - sendgrid
+    # - twilio
+    # - mandrill
+  - name: CRM
+    connectors:
+    - pipedrive
+    - salesforce
+    - zendesk_sunshine
+    - hubspot
+  - name: Revenue
+    connectors:
+    - stripe
+    - square
+    - braintree
+    - recurly
+    # extra:
+    # - recharge
+  - name: Accounting
+    connectors:
+    - xero
+    - quickbooks
+    - sage_intacct
+  - name: Support
+    connectors:
+    - intercom
+    - freshdesk
+    - zendesk
+    - helpscout
+    # extra:
+    # - zendesk_chat
+    # - front
+    # - kustomer
+  - name: Tasks
+    connectors:
+    - asana
+    - github
+    - height
+    - jira
+  - name: Feedback
+    connectors:
+    - typeform
+    - survey_monkey
+    - uservoice
+    - delighted
+  # - name: ATS
+  #   connectors:
+  #   - greenhouse
+  #   - lever

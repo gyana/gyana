@@ -28,7 +28,7 @@
       Yes, we integrate with that.
     </h2>
     <p class="mt-4 text-lg text-gray-600 max-w-3xl">
-      Connect to most popular online sources out of the box, including apps, databases, webhooks and APIs.
+      Gyana has integrations for most popular online sources. After a one-time setup, we'll sync your raw data, daily.
       <strong>Need something custom?</strong> We can integrate any new source in 2 weeks.
     </p>
   </div>
@@ -56,7 +56,7 @@
 </div>
 
 <div class="bg-gray-20 border-b border-gray">
-  <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8 flex">
+  <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8 flex flex-col lg:flex-row">
     {% comment %} <p class="text-2xl lg:text-3xl text-caveat text-indigo-600 mb-2">1 minute</p> {% endcomment %}
     <div>
       <h2 class="text-3xl font-extrabold tracking-tight text-gray-900">
@@ -66,37 +66,35 @@
         Integrate your first source in less than a minute.
       </p>
     </div>
-    <div class="flex-1 mt-6 grid grid-cols-4 gap-8">
+    <div class="flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 divide-x border-gray">
       {% for item in content.basic %}
-          {% comment %} <div class="card card--none">
-            <div class="flex flex-col p-4 items-center">
-              <img class="w-24 h-24" src="{% static 'images/integrations/'|add:item.image %}" alt="">
-              <div>{{ item.name }}</div>
-            </div>
-          </div> {% endcomment %}
-
           <div class="flex flex-col items-center gap-4 p-4">
             <img class="w-24 h-24" src="{% static 'images/integrations/'|add:item.image %}" alt="">
-            <div>{{ item.name }}</div>
+            <div class="text-sm text-gray-600">{{ item.name }}</div>
+          </div>
+      {% endfor %}
+      {% for item in content.categories %}
+          <div class="flex flex-col items-center gap-4 p-4">
+            <div class="grid grid-cols-2 gap-4">
+              {% for id in item.connectors %}
+                {% with connector=services|get_item:id %}
+                  <img class="w-full h-full" src="{% static 'images/integrations/fivetran/'|add:connector.icon_path %}" alt="">
+                {% endwith %}
+              {% endfor %}
+              {% comment %} <div class="grid grid-cols-2 gap-2"> {% endcomment %}
+                {% for id in item.extra %}
+                {% if forloop.first %}
+                  {% with connector=services|get_item:id %}
+                    <img class="w-full h-full" src="{% static 'images/integrations/fivetran/'|add:connector.icon_path %}" alt="">
+                  {% endwith %}
+                  {% endif %}
+                {% endfor %}
+              {% comment %} </div> {% endcomment %}
+            </div>
+            <div class="text-sm text-gray-600">{{ item.name }}</div>
           </div>
       {% endfor %}
     </div>
-
-
-    {% comment %} <div class="mt-6 flex gap-4">
-      <div class="flex flex-col gap-2 text-lg items-center">
-        <a href="{% external_url 'waitlist' %}" class="button button--secondary w-36">
-          Sign up
-        </a>
-        <p class="text-xs lg:text-sm text-gray-600">Build reports for free</p>
-      </div>
-      <div class="flex flex-col gap-2 text-lg items-center">
-        <a href="{% external_url 'talk_to_us' %}" class="button w-36">
-          Talk to us
-        </a>
-        <p class="text-xs lg:text-sm text-gray-600">We'll build your report</p>
-      </div>
-    </div> {% endcomment %}
   </div>
 </div>
 
@@ -110,25 +108,10 @@
       Connect to most popular online sources out of the box, including apps, databases, webhooks and APIs.
       <strong>Need something custom?</strong> We can integrate any new source in 2 weeks.
     </p>
-  </div>
-</div>
 
-<div class="bg-white max-w-7xl mx-auto py-12 px-4 text-center sm:px-6 lg:px-8 lg:py-24">
-  <div class="space-y-8 sm:space-y-12">
-    <div class="space-y-5 sm:mx-auto sm:max-w-xl sm:space-y-4 lg:max-w-5xl">
-      <h2 class="text-3xl font-extrabold tracking-tight sm:text-4xl">
-        Integrations
-      </h2>
-      <p class="text-xl text-gray-500">
-        Along with our core integrations for <strong>CSV</strong> and
-        <strong>Google Sheets</strong>, Gyana has 80+ out-of-the-box
-        connectors with online business apps, marketing tools, databases
-        and custom APIs. <strong>What will you build?</strong>
-      </p>
-    </div>
     <ul
       role="list"
-      class="mx-auto grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-4 md:gap-x-6 lg:max-w-5xl lg:gap-x-8 lg:gap-y-12 xl:grid-cols-6"
+      class="mt-6 grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-4 md:gap-x-6 lg:max-w-5xl lg:gap-x-8 lg:gap-y-12 xl:grid-cols-6"
     >
       {% for service in services.values %}
         <li>
