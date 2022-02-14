@@ -92,7 +92,7 @@
         {% if bound_field.help_text %}
         <p class="input__help-text">
           {{ bound_field.help_text }}
-          {% if not bound_field.required %} - optional{% endif %}
+          {% if not bound_field.field.required %} - optional{% endif %}
         </p>
         {% endif %}
       </label>
