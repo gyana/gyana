@@ -28,7 +28,12 @@ apps:
 - name: Commerce
   connectors:
   - shopify
-  # todo
+  - magento_mysql
+  - woocommerce_via_mysql
+  - prestashop_via_mysql
+  - spree_commerce_via_mysql
+  - oscommerce_mysql
+  - loaded_commerce_via_mysql
 - name: Automation
   connectors:
   - hubspot

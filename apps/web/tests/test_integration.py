@@ -1,5 +1,6 @@
 import pytest
 import wagtail_factories
+from pytest_django.asserts import assertContains, assertNotContains
 from wagtail.core.models import Locale, Site
 
 from apps.base.tests.asserts import assertLink, assertOK
@@ -83,10 +84,16 @@ def test_integrations_page(client):
     # integration search
     r = client.get("/demo/search-integrations")
     assertOK(r)
+    
     r = client.get("/demo/search-integrations?query=google")
     assertOK(r)
-    r = client.get("/demo/search-integrations?category=Paid")
+    assertContains(r, "Google Ads")
+    assertNotContains(r, "Facebook Pages")
+    
+    r = client.get("/demo/search-integrations?category=Organic")
     assertOK(r)
+    assertContains(r, "Facebook Pages")
+    assertNotContains(r, "Google Ads")
 
 
 def test_sitemap(client):
