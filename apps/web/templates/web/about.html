@@ -18,7 +18,7 @@
     </h1> {% endcomment %}
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-      <div class="mt-6 text-gray-600 mx-auto flex flex-col gap-y-4">
+      <div class="mt-6 text-gray-600 mx-auto flex flex-col gap-y-4 row-start-2 lg:row-start-1">
         <h2 class="text-3xl font-extrabold text-gray-900">
           We built Gyana to save you time
         </h2>
@@ -28,11 +28,10 @@
           team. It's frustrating and stops real work happening.
         </p>
         <p class="text-lg text-gray-600">
-          <strong>That's why we built Gyana.</strong> Gyana is designed for building
+          <strong>That's why we built Gyana.</strong> Gyana is designed for making
           custom<sup class="text-indigo-600 text-caveat text-xl">1</sup> reports,
           for any<sup class="text-indigo-600 text-caveat text-xl">2</sup> data source,
           without writing code.
-          {% comment %} Gyana is the first tool designed for building <strong>custom reports with any data source</strong>. {% endcomment %}
         </p>
         <p class="text-lg text-gray-600">
           You get the flexibility of code, with the usability of traditional reporting.
@@ -43,7 +42,7 @@
           <sup class="ml-4">2</sup> yes, we really mean any
         </p>
       </div>
-      <div class="mt-auto mb-auto card card--sm">
+      <div class="mt-auto mb-auto card card--sm row-start-1">
         {% include 'web/site/about/venn.html' %}
       </div>
     </div>
@@ -76,43 +75,37 @@
   </div>
 </div>
 
-<div class="bg-white border-b border-gray">
-  <div>
-    <div class="max-w-7xl mx-auto text-left py-16 px-4 sm:py-20 sm:px-6 lg:px-8">
-      <p class="text-2xl lg:text-3xl text-caveat text-indigo-600">
-        Company
+<div class="relative bg-white border-b border-gray">
+  <div class="relative max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
+    <div class="md:mr-auto md:w-1/2 md:pr-10 flex flex-col gap-y-4">
+      <h1 class="text-2xl lg:text-3xl text-caveat text-indigo-600">
+        Our team
+      </h1>
+      <h2 class="text-gray-900 text-3xl font-extrabold">We’ve built hundreds of reports</h2>
+      <p class="text-lg text-gray-600">
+        Gyana was founded by graduate students at the University of Oxford.
+        Engineers turned enterpreneurs, co-founders
+        <strong>David Kell
+          <a class="hover:text-indigo-600" href="{% external_url 'david_twitter' %}" target="_blank"><i class="fab fa-twitter"></i></a>
+          <a class="hover:text-indigo-600" href="{% external_url 'david_linkedin' %}" target="_blank"><i class="fab fa-linkedin"></i></a>
+        </strong>
+        and
+        <strong>Joyeeta Das
+          <a class="hover:text-indigo-600" href="{% external_url 'joyeeta_twitter' %}" target="_blank"><i class="fab fa-twitter"></i></a>
+          <a class="hover:text-indigo-600" href="{% external_url 'joyeeta_linkedin' %}" target="_blank"><i class="fab fa-linkedin"></i></a>
+        </strong>
+        had a vision to build a product that made it easier for non-technical people to work with data.
       </p>
-      <h2 class="mt-4 text-3xl font-extrabold text-gray-900">
-        We've built hundreds of reports
-      </h2>
-      <p class="mt-4 text-lg text-gray-600 max-w-3xl">
-        <span class="block lg:inline">
-          Gyana automates the boring parts of building and maintaining reports.
-        </span>
-        <span class="block lg:inline mt-4">
-          You'll have more time to learn from stakeholders, and discover those key insights that make you rethink everything.
-        </span>
+      <p class="text-lg text-gray-600">
+        <strong>We understand what it takes to make a great report.</strong>
+        Our reports have driven investment decisions, expansion planning and marketing strategy
+        for the most demanding global enterprises.
       </p>
-      <div class="mt-12 grid grid-cols-1 gap-y-12 gap-x-6 sm:grid-cols-3">
-        <p>
-          <span class="block text-4xl font-bold text-gray-900">10x</span>
-          <span class="mt-1 block text-base text-gray-600"><span class="font-medium text-gray-900">Faster</span> to build and iterate</span>
-          <span class="mt-2 block text-xl text-indigo-600 text-caveat">How do I change this data source?</span>
-        </p>
-
-        <p>
-          <span class="block text-4xl font-bold text-gray-900">Zero</span>
-          <span class="mt-1 block text-base text-gray-600"><span class="font-medium text-gray-900">Time</span> spent in maintenance</span>
-          <span class="mt-2 block text-xl text-indigo-600 text-caveat">Why is this chart broken (again)?</span>
-        </p>
-
-        <p>
-          <span class="block text-4xl font-bold text-gray-900">100%</span>
-          <span class="mt-1 block text-base text-gray-600"><span class="font-medium text-gray-900">Explicit</span> flow of data from source to chart</span>
-          <span class="mt-2 block text-xl text-indigo-600 text-caveat">(1 year later) How did we build that?</span>
-        </p>
-      </div>
     </div>
+  </div>
+  <div class="relative h-56 bg-indigo-600 sm:h-72 md:absolute md:right-0 md:top-0 md:h-full md:w-1/2">
+    <img class="filter grayscale w-full h-full object-cover" src="{% static 'images/site/about/cofounders.jpeg' %}" alt="">
+    <div class="absolute bg-indigo-600 opacity-25 w-full h-full top-0"></div>
   </div>
 </div>
 

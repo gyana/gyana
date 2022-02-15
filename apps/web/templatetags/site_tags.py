@@ -18,6 +18,11 @@ EXTERNAL_URLS = {
     "instagram": "https://www.instagram.com/gyaanaa",
     "linkedin": "https://www.linkedin.com/company/gyana",
     "youtube": "https://www.youtube.com/gyana",
+    # founders
+    "david_linkedin": "https://www.linkedin.com/in/davidkll/",
+    "david_twitter": "https://twitter.com/davidkell_",
+    "joyeeta_linkedin": "https://www.linkedin.com/in/joyeeta-das-9124471a/",
+    "joyeeta_twitter": "https://twitter.com/thisisjoyeeta",
 }
 
 register = template.Library()
