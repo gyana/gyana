@@ -9,7 +9,7 @@
     {% endwith %}
   {% endif %}
 
-  {{ form }}
+  {% include "django/forms/default_form.html" %}
 
   {% if not formset.hide_delete_button %}
     <button
