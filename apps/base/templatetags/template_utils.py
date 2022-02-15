@@ -76,8 +76,3 @@ def list_item(lst, i):
         return lst[i]
     except:
         return None
-
-
-@register.filter
-def classname(instance):
-    return type(instance).__name__

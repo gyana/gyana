@@ -142,7 +142,11 @@ class BigQueryColumn(Column):
             return get_template("columns/empty_cell.html").render()
         if isinstance(value, (float, int)) and self.currency:
             return get_template("columns/currency_cell.html").render(
-                {"value": value, "currency": CURRENCY_SYMBOLS_MAP[self.currency]}
+                {
+                    "value": value,
+                    "currency": CURRENCY_SYMBOLS_MAP[self.currency],
+                    "rounding": self.rounding,
+                }
             )
         if isinstance(value, float):
             return get_template("columns/float_cell.html").render(

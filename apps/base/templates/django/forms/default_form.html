@@ -6,7 +6,7 @@
 <div class="input-group">
 {% for bound_field in form.visible_fields %}
 {% comment %} Ignore these fields because they are going to be rendered in an extendable manner further down {% endcomment %}
-  {% if form|classname in "ColumnForm, AggregationColumnForm" and bound_field.label in 'Currency, Rounding, Name, Formatting is hidden'%}
+  {% if form.formatting_is_hidden and bound_field.label in 'Currency, Rounding, Name, Formatting is hidden'%}
   {% elif bound_field.widget_type == "palettecolors" %}
     <label>
       <span>
@@ -97,7 +97,7 @@
   {% endif %}
   {% endfor %}
 
-  {% if form|classname in "ColumnForm AggregationColumnForm" %}
+  {% if form.formatting_is_hidden %}
     <div class='formatting' data-controller='column-format'>
       <button 
         type='button'
