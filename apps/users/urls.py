@@ -1,8 +1,10 @@
-from allauth.account.views import LoginView
 from django.contrib.auth.decorators import login_required
 from django.urls import include, path
 from django.views.defaults import page_not_found
 from django.views.generic.base import RedirectView
+from turbo_allauth.views import account
+
+from apps.base.clickjacking import xframe_options_sameorigin_allowlist
 
 from . import frames, views
 
@@ -28,5 +30,10 @@ accounts_urlpatterns = [
     ),
     # Redirecting old signin link to account_login
     path("signin/", RedirectView.as_view(pattern_name="account_login")),
+    path(
+        "signup/",
+        xframe_options_sameorigin_allowlist(account.signup),
+        name="account_signup",
+    ),
     path("", include("turbo_allauth.urls")),
 ]
