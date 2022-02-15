@@ -12,4 +12,19 @@
   &:hover {
     text-decoration: underline;
   }
+
+  &--foldable {
+    &::before {
+      color: var(--c-blue);
+      content: '\f107';
+      font-family: 'Font Awesome 5 Pro';
+      margin-right: 0.2rem;
+    }
+  }
+
+  &--unfolded {
+    &::before {
+      content: '\f106';
+    }
+  }
 }

@@ -55,6 +55,15 @@ class ColumnForm(BaseLiveSchemaForm):
 
 
 class ColumnFormWithFormatting(ColumnForm):
+    formatting_is_hidden = forms.BooleanField(initial=True, required=False)
+    formatting_is_hidden.widget.attrs.update(
+        {
+            "data-column-format-target": "hiddenInput",
+            "class": "hidden",
+            # "formnovalidate": True,
+        }
+    )
+
     class Meta:
         model = Column
         fields = ("column", "rounding", "name", "currency")
@@ -62,8 +71,9 @@ class ColumnFormWithFormatting(ColumnForm):
 
     def get_live_fields(self):
         fields = super().get_live_fields()
+
         if self.column_type:
-            fields += ["name"]
+            fields += ["name", "formatting_is_hidden"]
 
         if isinstance(self.column_type, (Floating, Integer)):
             fields += ["rounding", "currency"]

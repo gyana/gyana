@@ -4,9 +4,10 @@
 {% endif %}
 
 <div class="input-group">
+  
 {% for bound_field in form.visible_fields %}
 {% comment %} Ignore these fields because they are going to be rendered in an extendable manner further down {% endcomment %}
-  {% if form|classname == "ColumnForm" and bound_field.label in 'Currency, Rounding, Name'%}
+  {% if form|classname == "ColumnForm" and bound_field.label in 'Currency, Rounding, Name, Formatting is hidden'%}
   {% elif bound_field.widget_type == "palettecolors" %}
     <label>
       <span>
@@ -98,13 +99,19 @@
   {% endfor %}
 
   {% if form|classname == "ColumnForm" %}
-    <div data-controller='column-format'>
+    <div class='formatting' data-controller='column-format'>
       <button 
         type='button'
-        class='small link'
+        class="small link link--foldable {% if not form.formatting_is_hidden.value %}link--unfolded {% endif %} ml-auto"
         data-action='column-format#handle'
+        data-column-format-target='button'
       >Formatting</button>
-      <div data-column-format-target='inputs'>
+
+      {{form.formatting_is_hidden}}
+
+      <div data-column-format-target='inputs' 
+        class="{% if form.formatting_is_hidden.value %}hidden{% endif %}"
+      >
         {% for field in form.visible_fields  %}
           {% if field.label in 'Currency, Rounding, Name'%}
             {% include 'django/forms/field.html'%}
