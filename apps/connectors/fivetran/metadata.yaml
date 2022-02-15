@@ -13,8 +13,19 @@ adobe_analytics_data_feed:
   icon_url: https://fivetran.com/integrations/adobe_analytics_data_feed/resources/adobe-analytics-data-feed-symbol.svg
   id: adobe_analytics_data_feed
   link_to_docs: https://fivetran.com/docs/applications/adobe-analytics-data-feed
+  link_to_erd: https://fivetran.com/docs/applications/adobe-analytics-data-feed#schemainformation
   name: Adobe Analytics Data Feed
   type: Marketing
+adp_workforce_now:
+  description: ADP Workforce Now is a all-in-one platform for payroll and HR software,
+    providing expert support and analytics for data-driven insights
+  icon_path: adp_workforce_now.svg
+  icon_url: https://fivetran.com/integrations/adp_workforce_now/resources/adp_logo.svg
+  id: adp_workforce_now
+  link_to_docs: https://fivetran.com/docs/applications/adp-workforce-now
+  link_to_erd: https://fivetran.com/docs/applications/adp-workforce-now#schemainformation
+  name: ADP Workforce Now
+  type: HumanResources
 adroll:
   description: AdRoll is prospecting and retargeting platform
   icon_path: adroll.svg
@@ -29,7 +40,8 @@ adwords:
   icon_path: adwords.png
   icon_url: https://fivetran.com/integrations/adwords/resources/google_ads.png
   id: adwords
-  link_to_docs: https://fivetran.com/docs/applications/google-adwords
+  link_to_docs: https://fivetran.com/docs/applications/google-ads
+  link_to_erd: https://fivetran.com/docs/applications/google-ads#schemainformation
   name: Google Ads
   type: Marketing
 airtable:
@@ -39,8 +51,18 @@ airtable:
   icon_url: https://fivetran.com/integrations/airtable/resources/logo.svg
   id: airtable
   link_to_docs: https://fivetran.com/docs/applications/airtable
+  link_to_erd: https://fivetran.com/docs/applications/airtable#schemainformation
   name: Airtable
   type: Productivity
+amazon_ads:
+  description: The key selling platform for online retail customers
+  icon_path: amazon_ads.svg
+  icon_url: https://fivetran.com/integrations/amazon_ads/resources/amazon-ads-logo.svg
+  id: amazon_ads
+  link_to_docs: https://fivetran.com/docs/applications/amazon-ads
+  link_to_erd: https://fivetran.com/docs/applications/amazon-ads#schemainformation
+  name: Amazon Ads
+  type: Marketing
 amplitude:
   description: Amplitude is the comprehensive product analytics software for web and
     mobile
@@ -52,8 +74,7 @@ amplitude:
   name: Amplitude
   type: Events
 anaplan:
-  description: Cloud platform for financial and operational planning and modeling
-    of business processes.
+  description: Anaplan is a cloud-based platform for business planning and modeling.
   icon_path: anaplan.svg
   icon_url: https://fivetran.com/integrations/anaplan/resources/anaplan.svg
   id: anaplan
@@ -62,16 +83,18 @@ anaplan:
   name: Anaplan
   type: Finance
 apache_kafka:
-  description: Apache Kafka is an open source distributed streaming platform
+  description: Apache Kafka is an open-source distributed streaming platform for building
+    real-time data pipelines and stream processing applications.
   icon_path: apache_kafka.svg
   icon_url: https://fivetran.com/integrations/kafka/resources/apache_kafka.svg
   id: apache_kafka
   link_to_docs: https://fivetran.com/docs/events/kafka/apache-kafka
+  link_to_erd: https://fivetran.com/docs/events/kafka/apache-kafka#schemainformation
   name: Apache Kafka
   type: Events
 apple_search_ads:
   description: Apple Search Ads helps people discover your app on the App Store for
-    iPhone and iPad
+    iPhone and iPad.
   icon_path: apple_search_ads.svg
   icon_url: https://fivetran.com/integrations/apple_search_ads/resources/apple_search_ads.svg
   id: apple_search_ads
@@ -80,8 +103,7 @@ apple_search_ads:
   name: Apple Search Ads
   type: Marketing
 appsflyer:
-  description: AppsFlyer is mobile attribution & marketing analytics platform, helping
-    app marketers around the world make better decisions.
+  description: AppsFlyer is a mobile app tracking and attribution analytics platform.
   icon_path: appsflyer.svg
   icon_url: https://fivetran.com/integrations/appsflyer/resources/appsflyer.svg
   id: appsflyer
@@ -90,7 +112,8 @@ appsflyer:
   name: AppsFlyer
   type: Marketing
 asana:
-  description: Teamwork without email
+  description: Asana is a project management tool that helps teams track their tasks
+    and projects.
   icon_path: asana.svg
   icon_url: https://fivetran.com/integrations/asana/resources/asana.svg
   id: asana
@@ -99,34 +122,42 @@ asana:
   name: Asana
   type: Productivity
 aurora:
-  description: Amazon Aurora is a high-performance MySQL-compatible database system
-    used to keep in-house custom data
+  description: Amazon Aurora MySQL is a relational database typically used to keep
+    in-house custom data.
   icon_path: aurora.png
   icon_url: https://fivetran.com/integrations/mysql/resources/logos/aurora.png
   id: aurora
   link_to_docs: https://fivetran.com/docs/databases/mysql/aurora-setup-guide
+  link_to_erd: https://fivetran.com/docs/databases/mysql/aurora-setup-guide#schemainformation
   name: Aurora MySQL
   type: Database
 aurora_postgres:
   description: Aurora Postgres is a hosted version of the popular Postgres database
-    on the Amazon Aurora platform
+    on the Amazon Aurora platform.
   icon_path: aurora_postgres.png
   icon_url: https://fivetran.com/integrations/postgres/resources/aurora.png
   id: aurora_postgres
-  link_to_docs: https://fivetran.com/docs/databases/postgresql
-  name: Aurora Postgres
+  link_to_docs: https://fivetran.com/docs/databases/postgresql/aurora-configuration
+  link_to_erd: https://fivetran.com/docs/databases/postgresql/aurora-configuration#schemainformation
+  name: Aurora PostgreSQL
   type: Database
 aws_cloudtrail:
-  description: Load cloudtrail files stored in S3
+  description: AWS CloudTrail is a service that enables governance, compliance, operational
+    auditing, and risk auditing of your AWS account. With AWS CloudTrail, you can
+    log, continuously monitor, and retain account activity related to actions across
+    your AWS infrastructure.
   icon_path: aws_cloudtrail.svg
   icon_url: https://fivetran.com/integrations/aws_cloudtrail/resources/aws_cloudtrail.svg
   id: aws_cloudtrail
-  link_to_docs: https://fivetran.com/docs/applications/aws_cloudtrail
+  link_to_docs: https://fivetran.com/docs/applications/aws-cloudtrail
+  link_to_erd: https://fivetran.com/docs/applications/aws-cloudtrail#schemainformation
   name: AWS CloudTrail
   type: File
 aws_inventory:
-  description: AWS Inventory provides you with an overview of your AWS assets, including
-    instances, security groups etc.
+  description: AWS Inventory is a comprehensive service that provides you with an
+    Amazon Web Services (AWS) resource inventory, configuration history, and configuration
+    change notifications. With AWS Inventory, you can fetch and view the details of
+    the services of your AWS account.
   icon_path: aws_inventory.svg
   icon_url: https://fivetran.com/integrations/aws_inventory/resources/aws_inventory.svg
   id: aws_inventory
@@ -135,73 +166,110 @@ aws_inventory:
   name: AWS Inventory
   type: API
 aws_lambda:
-  description: Run your code using AWS Lambda connector
+  description: AWS Lambda is a serverless computing platform that runs code in response
+    to events and automatically manages the compute resources required by that code.
   icon_path: aws_lambda.png
   icon_url: https://fivetran.com/integrations/functions/aws_lambda/resources/logo.png
   id: aws_lambda
   link_to_docs: https://fivetran.com/docs/functions/aws-lambda
+  link_to_erd: https://fivetran.com/docs/functions/aws-lambda#schemainformation
   name: AWS Lambda
   type: Function
+aws_msk:
+  description: AWS Managed Streaming for Kafka is a managed distributed streaming
+    platform.
+  icon_path: aws_msk.svg
+  icon_url: https://fivetran.com/integrations/kafka/resources/aws_msk.svg
+  id: aws_msk
+  link_to_docs: https://fivetran.com/docs/events/kafka/aws-msk
+  link_to_erd: https://fivetran.com/docs/events/kafka/aws-msk#schemainformation
+  name: AWS MSK
+  type: Events
 azure_blob_storage:
-  description: Load files stored in Azure Blob Storage
+  description: Fivetran supports syncing files from Azure Blob Storage to your destination.
   icon_path: azure_blob_storage.svg
   icon_url: https://fivetran.com/integrations/azure_blob_storage/resources/azure_blob_storage.svg
   id: azure_blob_storage
   link_to_docs: https://fivetran.com/docs/files/azure-blob-storage
+  link_to_erd: https://fivetran.com/docs/files/azure-blob-storage#schemainformation
   name: Azure Blob Storage
   type: File
+azure_event_hub:
+  description: Azure Event Hubs is a managed distributed streaming platform.
+  icon_path: azure_event_hub.svg
+  icon_url: https://fivetran.com/integrations/kafka/resources/event_hub.svg
+  id: azure_event_hub
+  link_to_docs: https://fivetran.com/docs/events/kafka/azure-event-hubs
+  link_to_erd: https://fivetran.com/docs/events/kafka/azure-event-hubs#schemainformation
+  name: Azure Event Hubs
+  type: Events
 azure_function:
-  description: Run your code using Azure Function connector
+  description: Azure Functions is a serverless computing platform that runs code in
+    response to events and automatically manages the compute resources required by
+    that code.
   icon_path: azure_function.svg
   icon_url: https://fivetran.com/integrations/functions/azure_function/resources/logo.svg
   id: azure_function
   link_to_docs: https://fivetran.com/docs/functions/azure-functions
-  name: Azure Function
+  link_to_erd: https://fivetran.com/docs/functions/azure-functions#schemainformation
+  name: Azure Functions
   type: Function
 azure_postgres:
-  description: Azure SQL Database is a managed relational cloud database service
+  description: Azure PostgreSQL is a managed relational cloud database service.
   icon_path: azure_postgres.png
   icon_url: https://fivetran.com/integrations/postgres/resources/azure.png
   id: azure_postgres
   link_to_docs: https://fivetran.com/docs/databases/postgresql/azure-setup-guide
-  name: Azure PostgreSQL Database
+  link_to_erd: https://fivetran.com/docs/databases/postgresql/azure-setup-guide#schemainformation
+  name: Azure PostgreSQL
   type: Database
 azure_sql_db:
-  description: Azure SQL Database is a managed relational cloud database service
+  description: Azure SQL Database is a managed relational cloud database service.
   icon_path: azure_sql_db.png
   icon_url: https://fivetran.com/integrations/sql_server/resources/azure.png
   id: azure_sql_db
   link_to_docs: https://fivetran.com/docs/databases/sql-server/azure-setup-guide
+  link_to_erd: https://fivetran.com/docs/databases/sql-server/azure-setup-guide#schemainformation
   name: Azure SQL Database
   type: Database
 azure_sql_managed_db:
-  description: Azure SQL Managed Instance is a managed relational cloud database service
+  description: Azure SQL Managed Instance is a managed relational cloud database service.
   icon_path: azure_sql_managed_db.png
   icon_url: https://fivetran.com/integrations/sql_server/resources/azure.png
   id: azure_sql_managed_db
   link_to_docs: https://fivetran.com/docs/databases/sql-server/azure-managed-setup-guide
+  link_to_erd: https://fivetran.com/docs/databases/sql-server/azure-managed-setup-guide#schemainformation
   name: Azure SQL Managed Instance
   type: Database
 bingads:
-  description: Microsoft Advertising displays an advertisement on Bing search results
+  description: Microsoft Advertising (formerly known as Bing Ads) is a service that
+    provides pay-per-click advertising for both the Bing and Yahoo search engines.
+    To get an overview of Microsoft Advertising, see its entity hierarchy and limits
+    documentation.
   icon_path: bingads.svg
   icon_url: https://fivetran.com/integrations/bingads/resources/bingads.svg
   id: bingads
-  link_to_docs: https://fivetran.com/docs/applications/bing-ads
-  link_to_erd: https://fivetran.com/docs/applications/bing-ads#schemainformation
+  link_to_docs: https://fivetran.com/docs/applications/microsoft-advertising
+  link_to_erd: https://fivetran.com/docs/applications/microsoft-advertising#schemainformation
   name: Microsoft Advertising
   type: Marketing
 box:
-  description: Load files stored in Box
+  description: Box is a cloud-based file storage service. Fivetran supports syncing
+    files from your Box account to your destination. You can sync multiple files as
+    unique tables to your destination.
   icon_path: box.svg
   icon_url: https://fivetran.com/integrations/box/resources/box-icon.svg
   id: box
   link_to_docs: https://fivetran.com/docs/files/box
+  link_to_erd: https://fivetran.com/docs/files/box#schemainformation
   name: Box
   type: File
 braintree:
-  description: Braintree is a payment solution for selling to customers on web, mobile,
-    and native app using credit and debit cards, PayPal, etc. payment methods.
+  description: Braintree helps businesses of all sizes, from small to large enterprise,
+    accept, process, and split payments to help maximize business opportunities and
+    revenue growth. Companies around the world benefit from the technology and support
+    of Braintree coupled with the scale, backing, and confidence of partnering with
+    a PayPal service.
   icon_path: braintree.svg
   icon_url: https://fivetran.com/integrations/braintree/resources/braintree.svg
   id: braintree
@@ -210,8 +278,11 @@ braintree:
   name: Braintree
   type: Finance
 braintree_sandbox:
-  description: Braintree is a payment solution for selling to customers on web, mobile,
-    and native app using credit and debit cards, PayPal, etc. payment methods.
+  description: Braintree helps businesses of all sizes, from small to large enterprise,
+    accept, process, and split payments to help maximize business opportunities and
+    revenue growth. Companies around the world benefit from the technology and support
+    of Braintree coupled with the scale, backing, and confidence of partnering with
+    a PayPal service.
   icon_path: braintree_sandbox.svg
   icon_url: https://fivetran.com/integrations/braintree/resources/braintree.svg
   id: braintree_sandbox
@@ -220,16 +291,17 @@ braintree_sandbox:
   name: Braintree Sandbox
   type: Finance
 branch:
-  description: Branch tracks event on your app
+  description: Branch is a mobile measurement and deep linking platform that unifies
+    user measurement across different devices, platforms, and channels.
   icon_path: branch.svg
   icon_url: https://fivetran.com/integrations/branch/resources/branch.svg
   id: branch
   link_to_docs: https://fivetran.com/docs/applications/branch
+  link_to_erd: https://fivetran.com/docs/applications/branch#schemainformation
   name: Branch
   type: Marketing
 braze:
-  description: "Braze is a mobile marketing application that provides mobile marketing\
-    \ automation \nthat businesses use to manage their mobile applications."
+  description: Braze is a platform for cross-channel marketing automation.
   icon_path: braze.png
   icon_url: https://fivetran.com/integrations/braze/resources/braze.png
   id: braze
@@ -243,11 +315,12 @@ cloudfront:
   icon_url: https://fivetran.com/integrations/cloudfront/resources/cloudfront.svg
   id: cloudfront
   link_to_docs: https://fivetran.com/docs/files/amazon-cloudfront
-  name: Cloudfront
+  link_to_erd: https://fivetran.com/docs/applications/amazon-cloudfront#schemainformation
+  name: Amazon CloudFront
   type: File
 concur:
-  description: SAP Concur is the leading accounting software for companies of any
-    size
+  description: SAP Concur provides an integrated online business travel and expense
+    management software solution that automates your travel expenses.
   icon_path: concur.svg
   icon_url: https://fivetran.com/integrations/sap_concur/resources/sap_concur_logo.svg
   id: concur
@@ -256,11 +329,12 @@ concur:
   name: SAP Concur
   type: Finance
 confluent_cloud:
-  description: Confluent Cloud is a managed distributed streaming platform
+  description: Confluent Cloud is a managed distributed streaming platform.
   icon_path: confluent_cloud.svg
   icon_url: https://fivetran.com/integrations/kafka/resources/confluent_cloud.svg
   id: confluent_cloud
   link_to_docs: https://fivetran.com/docs/events/kafka/confluent-cloud
+  link_to_erd: https://fivetran.com/docs/events/kafka/confluent-cloud#schemainformation
   name: Confluent Cloud
   type: Events
 coupa:
@@ -293,57 +367,73 @@ delighted:
   type: Support
 double_click_campaign_manager:
   description: Google Campaign Manager 360 simplifies advertising campaign management,
-    from media planning to reporting.
+    from media planning to reporting. With all your digital marketing efforts on one
+    powerful platform, you can work smarter, act quicker, and get better results.
   icon_path: double_click_campaign_manager.svg
   icon_url: https://fivetran.com/integrations/double_click_campaign_manager/resources/campaign_manager.svg
   id: double_click_campaign_manager
   link_to_docs: https://fivetran.com/docs/applications/google-campaign-manager-360
+  link_to_erd: https://fivetran.com/docs/applications/google-campaign-manager-360#schemainformation
   name: Google Campaign Manager 360
   type: Marketing
 double_click_publishers:
-  description: Google Ad Manager is a hosted ad serving platform
+  description: Google Ad Manager is a hosted ad serving platform to streamline ad
+    management, whether you deliver ads to websites, mobile web pages, mobile apps,
+    games, or a combination. It offers an integrated platform to manage all direct
+    and programmatic sales, and to streamline all ad sales across your web and app
+    inventory.
   icon_path: double_click_publishers.png
   icon_url: https://fivetran.com/integrations/google_ad_manager/resources/google_ad_manager.png
   id: double_click_publishers
-  link_to_docs: https://fivetran.com/docs/applications/double-click-publishers
+  link_to_docs: https://fivetran.com/docs/applications/google-ad-manager
+  link_to_erd: https://fivetran.com/docs/applications/google-ad-manager#schemainformation
   name: Google Ad Manager
   type: Marketing
 dropbox:
-  description: Load files from a Dropbox account
+  description: Dropbox is a cloud storage provider. Fivetran supports syncing files
+    from your Dropbox account to your destination. You can sync multiple files as
+    unique tables to your destination.
   icon_path: dropbox.svg
   icon_url: https://fivetran.com/integrations/dropbox/resources/dropbox.svg
   id: dropbox
   link_to_docs: https://fivetran.com/docs/files/dropbox
+  link_to_erd: https://fivetran.com/docs/files/dropbox#schemainformation
   name: Dropbox
   type: File
 dynamics_365:
-  description: Dynamics 365 provides seamless solution for CRM and ERP
+  description: Microsoft Dynamics 365 is a cloud-based ERP and CRM enterprise system
+    built by Microsoft for maximum flexibility and extensibility.
   icon_path: dynamics_365.svg
   icon_url: https://fivetran.com/integrations/dynamics365/resources/logo.svg
   id: dynamics_365
   link_to_docs: https://fivetran.com/docs/applications/dynamics365
   link_to_erd: https://fivetran.com/docs/applications/dynamics365#schemainformation
-  name: Dynamics 365
+  name: Microsoft Dynamics 365
   type: Sales
 dynamics_365_fo:
-  description: An Enterprise Resource Planning system for medium to large businesses
+  description: Microsoft Dynamics 365 for Finance and Operations is an enterprise-level
+    ERP solution that can be deployed in the cloud or on-premises.
   icon_path: dynamics_365_fo.svg
   icon_url: https://fivetran.com/integrations/dynamics365/resources/logo.svg
   id: dynamics_365_fo
   link_to_docs: https://fivetran.com/docs/applications/microsoft-dynamics365-fo/setup-guide
-  name: Dynamics 365 Finance and Operations
+  link_to_erd: https://fivetran.com/docs/applications/microsoft-dynamics365-fo#schemainformation
+  name: Microsoft Dynamics 365 F/O
   type: Database
 dynamodb:
-  description: DynamoDB integration
+  description: Amazon DynamoDB is a fully-managed, proprietary NoSQL database service
+    that is offered as part of Amazon Web Services (AWS).
   icon_path: dynamodb.svg
   icon_url: https://fivetran.com/integrations/dynamodb/resources/dynamodb.svg
   id: dynamodb
   link_to_docs: https://fivetran.com/docs/databases/dynamodb
+  link_to_erd: https://fivetran.com/docs/databases/dynamodb#schemainformation
   name: DynamoDB
   type: Database
 eloqua:
-  description: Marketing Automation platform for managing sales and marketing leads
-    across an enterprise
+  description: Oracle Eloqua equips marketers with best-in-class lead and campaign
+    management tools that help marketers engage the right audience at the right time
+    in the buyer's journey while providing real-time reporting and insights.
   icon_path: eloqua.svg
   icon_url: https://fivetran.com/integrations/eloqua/resources/eloqua.svg
   id: eloqua
@@ -352,24 +442,30 @@ eloqua:
   name: Eloqua
   type: Marketing
 email:
-  description: Sync email attachments to your data warehouse
+  description: Email CSV and JSON files to your destination with the Email Connector.
+    The Email Connector extracts one or more attachments from the email, parses the
+    attachment data and uploads them into your warehouse. Emails are deleted once
+    attachments are extracted from it. This is designed for schedule email reports.
   icon_path: email.svg
   icon_url: https://fivetran.com/integrations/email/resources/email.svg
   id: email
   link_to_docs: https://fivetran.com/docs/files/email
+  link_to_erd: https://fivetran.com/docs/files/email#schemainformation
   name: Email
   type: File
 facebook:
-  description: Facebook Ad Insights is an API that provides data and metrics on Facebook
-    Ads.
+  description: Facebook Ad Insights gives you information about the performance of
+    your Facebook ads.
   icon_path: facebook.svg
   icon_url: https://fivetran.com/integrations/facebook/resources/facebook.svg
   id: facebook
   link_to_docs: https://fivetran.com/docs/applications/facebook-ads-insights
+  link_to_erd: https://fivetran.com/docs/applications/facebook-ads-insights#schemainformation
   name: Facebook Ad Insights
   type: Marketing
 facebook_ad_account:
-  description: Facebook Ad Account provides attribute data on Facebook Ad Accounts
+  description: Facebook Ad Account provides a history of the settings of your Facebook
+    Ad Accounts, Campaigns, Ad Sets, Ads, and Ad Creatives.
   icon_path: facebook_ad_account.svg
   icon_url: https://fivetran.com/integrations/facebook/resources/facebook.svg
   id: facebook_ad_account
@@ -378,15 +474,19 @@ facebook_ad_account:
   name: Facebook Ad Account
   type: Marketing
 facebook_ads:
-  description: Facebook Ads provides attribute data on Facebook Ads Accounts and Reports
+  description: Facebook Ads provides a history of the settings of your Ad Account,
+    Campaigns, Ad Sets, Ads, and Ad Creatives. Facebook Ads also fetches Ad Insights
+    data.
   icon_path: facebook_ads.svg
   icon_url: https://fivetran.com/integrations/facebook/resources/facebook.svg
   id: facebook_ads
-  link_to_docs: https://fivetran.com/docs/applications/facebook-ads-insights
+  link_to_docs: https://fivetran.comdocs/applications/facebook-ads
+  link_to_erd: https://fivetran.comdocs/applications/facebook-ads#schemainformation
   name: Facebook Ads
   type: Marketing
 facebook_pages:
-  description: Sync data from your Facebook Pages.
+  description: Sync your Facebook pages and posts, as well as insights about them,
+    with the Facebook Pages connector.
   icon_path: facebook_pages.svg
   icon_url: https://fivetran.com/integrations/facebook/resources/facebook.svg
   id: facebook_pages
@@ -395,16 +495,19 @@ facebook_pages:
   name: Facebook Pages
   type: Marketing
 financial_force:
-  description: FinancialForce is a cloud ERP solution for salesforce
+  description: FinancialForce is an ERP and service automation tool built on Salesforce.
   icon_path: financial_force.svg
   icon_url: https://fivetran.com/integrations/salesforce/resources/financial_force.svg
   id: financial_force
   link_to_docs: https://fivetran.com/docs/applications/financial-force
+  link_to_erd: https://fivetran.com/docs/applications/financial-force#schemainformation
   name: FinancialForce
   type: API
 fivetran_log:
-  description: Fivetran log connector provides logs and metadata information to the
-    users about their existing connectors.
+  description: Fivetran generates structured log events from connectors, dashboard
+    user actions, and Fivetran API calls. The Fivetran Log Connector delivers your
+    logs and account metadata to a schema in your destination. This metadata includes
+    granular Fivetran consumption information.
   icon_path: fivetran_log.svg
   icon_url: https://fivetran.com/integrations/fivetran_log/resources/fivetran.svg
   id: fivetran_log
@@ -414,7 +517,8 @@ fivetran_log:
   type: Free
 freshdesk:
   description: Freshdesk is a SaaS customer support software and help desk ticketing
-    system.
+    system. The solution also includes features like Knowledge Base, Community Platform,
+    Live Chat, Phone Support, etc.
   icon_path: freshdesk.svg
   icon_url: https://fivetran.com/integrations/freshdesk/resources/freshdesk.svg
   id: freshdesk
@@ -423,7 +527,10 @@ freshdesk:
   name: Freshdesk
   type: Support
 front:
-  description: Front provides cloud based service for multi-channel inbox
+  description: Front simplifies how your team manages email lists and customer communications.
+    It provides services to centralize all your communication in one place and optimize
+    how your team handles every message with powerful automations. It also connects
+    your inbox with all the apps you rely on.
   icon_path: front.svg
   icon_url: https://fivetran.com/integrations/front/resources/front.svg
   id: front
@@ -432,23 +539,27 @@ front:
   name: Front
   type: Support
 ftp:
-  description: Load files stored in an FTP server
+  description: Fivetran supports syncing files from an FTP server to your destination.
   icon_path: ftp.svg
   icon_url: https://fivetran.com/integrations/ftp/resources/ftp.svg
   id: ftp
   link_to_docs: https://fivetran.com/docs/files/ftp
+  link_to_erd: https://fivetran.com/docs/files/ftp#schemainformation
   name: FTP
   type: File
 gcs:
-  description: Load files stored in GCS
+  description: Google Cloud Storage is Google's cloud storage system.
   icon_path: gcs.svg
   icon_url: https://fivetran.com/integrations/gcs/resources/gcs.svg
   id: gcs
   link_to_docs: https://fivetran.com/docs/files/google-cloud-storage
+  link_to_erd: https://fivetran.com/docs/files/google-cloud-storage#schemainformation
   name: Google Cloud Storage
   type: File
 github:
-  description: GitHub hosts Git source code repositories
+  description: GitHub is a platform for developers to build personal projects, support
+    their businesses, and work together on open source technologies. Fivetran helps
+    you export data about commits, users, pull-requests, and other GitHub data.
   icon_path: github.svg
   icon_url: https://fivetran.com/integrations/github/resources/github.svg
   id: github
@@ -456,27 +567,22 @@ github:
   link_to_erd: https://fivetran.com/docs/applications/github#schemainformation
   name: GitHub
   type: Engineering
-google_ads_account:
-  description: Google Ads Account syncs account management data for Google search
-    ads.
-  icon_path: google_ads_account.png
-  icon_url: https://fivetran.com/integrations/adwords/resources/google_ads.png
-  id: google_ads_account
-  link_to_docs: https://fivetran.com/docs/applications/google-ads-account
-  link_to_erd: https://fivetran.com/docs/applications/google-ads-account#schemainformation
-  name: Google Ads Account
-  type: Marketing
 google_analytics:
-  description: Google Analytics provides metrics on how people use your website
+  description: Google Analytics lets you analyze data about customer engagement with
+    your website or application.
   icon_path: google_analytics.svg
   icon_url: https://fivetran.com/integrations/google_analytics/resources/google_analytics.svg
   id: google_analytics
   link_to_docs: https://fivetran.com/docs/applications/google-analytics
+  link_to_erd: https://fivetran.com/docs/applications/google-analytics#schemainformation
   name: Google Analytics
   type: Marketing
 google_analytics_360:
   description: Google Analytics 360 provides the tools and support that enterprise
-    teams need to get actionable insights from their data.
+    teams need to get actionable insights from their data. You can export session
+    and hit data from a Google Analytics 360 account to BigQuery. When you export
+    data to BigQuery, you own that data, and you can use BigQuery ACLs to manage permissions
+    on projects and datasets.
   icon_path: google_analytics_360.svg
   icon_url: https://fivetran.com/integrations/google_analytics_360/resources/google-analytics-360.svg
   id: google_analytics_360
@@ -485,100 +591,126 @@ google_analytics_360:
   name: Google Analytics 360
   type: Marketing
 google_analytics_mcf:
-  description: Google Analytics MCF shows user interactions with various traffic sources
-    over multiple sessions prior to converting.
+  description: Google Analytics Multi-Channel Funnels (MCF) Reports lets you get conversion
+    path data that shows user interactions with various traffic sources over multiple
+    sessions prior to converting, and to analyze how multiple marketing channels influence
+    conversions.
   icon_path: google_analytics_mcf.svg
   icon_url: https://fivetran.com/integrations/google_analytics/resources/google_analytics_mcf.svg
   id: google_analytics_mcf
   link_to_docs: https://fivetran.com/docs/applications/google-analytics-mcf
+  link_to_erd: https://fivetran.com/docs/applications/google-analytics-mcf#schemainformation
   name: Google Analytics (MCF)
   type: Marketing
 google_cloud_function:
-  description: Run your code using Google Cloud Function connector
+  description: Google Cloud Functions is a serverless computing platform that runs
+    code in response to events and automatically manages the compute resources required
+    by that code.
   icon_path: google_cloud_function.svg
   icon_url: https://fivetran.com/integrations/functions/google_cloud_function/resources/logo.svg
   id: google_cloud_function
   link_to_docs: https://fivetran.com/docs/functions/google-cloud-functions
-  name: Google Cloud Function
+  link_to_erd: https://fivetran.com/docs/functions/google-cloud-functions#schemainformation
+  name: Google Cloud Functions
   type: Function
 google_cloud_mysql:
-  description: Cloud SQL is a fully-managed database on Google Cloud Platform
+  description: Google Cloud MySQL is a fully-managed MySQL database on Google Cloud
+    Platform.
   icon_path: google_cloud_mysql.png
   icon_url: https://fivetran.com/integrations/mysql/resources/logos/cloudsql.png
   id: google_cloud_mysql
   link_to_docs: https://fivetran.com/docs/databases/mysql/google-cloud-mysql-setup-guide
+  link_to_erd: https://fivetran.com/docs/databases/mysql/google-cloud-mysql-setup-guide#schemainformation
   name: Google Cloud MySQL
   type: Database
 google_cloud_postgresql:
   description: Google Cloud SQL Postgres is a hosted version of the popular Postgres
-    database on the Google Cloud platform
+    database on the Google Cloud platform.
   icon_path: google_cloud_postgresql.png
   icon_url: https://fivetran.com/integrations/postgres/resources/cloudsql.png
   id: google_cloud_postgresql
   link_to_docs: https://fivetran.com/docs/databases/postgresql/gcs-setup-guide
+  link_to_erd: https://fivetran.com/docs/databases/postgresql/gcs-setup-guide#schemainformation
   name: Google Cloud PostgreSQL
   type: Database
 google_cloud_sqlserver:
-  description: Fully managed SQL Server databases in the cloud
+  description: Google Cloud SQL is a fully managed SQL Server databases in Google
+    Cloud.
   icon_path: google_cloud_sqlserver.png
   icon_url: https://fivetran.com/integrations/sql_server/resources/cloudsql.png
   id: google_cloud_sqlserver
   link_to_docs: https://fivetran.com/docs/databases/sql-server/gcs-setup-guide
+  link_to_erd: https://fivetran.com/docs/databases/sql-server/gcs-setup-guide#schemainformation
   name: Google Cloud SQL - SQL Server
   type: Database
 google_display_and_video_360:
-  description: Display & Video 360 is a tool that helps creative, data, and media
-    teams work together to execute end-to-end campaigns.
+  description: Google Display & Video 360 is an integrated solution for end-to-end
+    advertising campaigns.
   icon_path: google_display_and_video_360.svg
   icon_url: https://fivetran.com/integrations/google_display_and_video_360/resources/google-display-and-video-360.svg
   id: google_display_and_video_360
   link_to_docs: https://fivetran.com/docs/applications/google-display-and-video-360
+  link_to_erd: https://fivetran.com/docs/applications/google-display-and-video-360#schemainformation
   name: Google Display & Video 360
   type: Marketing
 google_drive:
-  description: Lets you get all the files in a magic folder converted to tables.
+  description: Google Drive is a file storage and synchronization service. Fivetran
+    supports syncing files from your Google Drive to your destination. You can sync
+    multiple files as unique tables to your destination.
   icon_path: google_drive.svg
   icon_url: https://fivetran.com/integrations/gdrive/resources/google-drive-icon.svg
   id: google_drive
   link_to_docs: https://fivetran.com/docs/files/google-drive
+  link_to_erd: https://fivetran.com/docs/files/google-drive#schemainformation
   name: Google Drive
   type: File
 google_play:
-  description: Load Android app analytics from the Google Play store
+  description: The Google Play connector will sync monthly reports about individual
+    Android apps to help you track and understand your app's performance. The mid-month
+    reports are updated daily. The full set of reports are described in the Google
+    Play documentation.
   icon_path: google_play.svg
   icon_url: https://fivetran.com/integrations/google_play/resources/google_play.svg
   id: google_play
   link_to_docs: https://fivetran.com/docs/applications/google-play
+  link_to_erd: https://fivetran.com/docs/applications/google-play#schemainformation
   name: Google Play
   type: Marketing
 google_search_console:
-  description: Google Search Console allows you to check indexing status and optimize
-    visibility of your websites
+  description: Google Search Console helps you monitor and maintain your site's presence
+    in Google Search results.
   icon_path: google_search_console.svg
   icon_url: https://fivetran.com/integrations/google_search_console/resources/google-search-console-logo.svg
   id: google_search_console
   link_to_docs: https://fivetran.com/docs/applications/google-search-console
+  link_to_erd: https://fivetran.com/docs/applications/google-search-console#schemainformation
   name: Google Search Console
   type: Marketing
 google_sheets:
-  description: Google Sheets are web-based shared spreadsheets
+  description: Google Sheets is a Web-based application that allows users to create,
+    update and modify spreadsheets and share the data live online.
   icon_path: google_sheets.svg
   icon_url: https://fivetran.com/integrations/gsheets/resources/gsheets.svg
   id: google_sheets
   link_to_docs: https://fivetran.com/docs/files/google-sheets
+  link_to_erd: https://fivetran.com/docs/files/google-sheets#schemainformation
   name: Google Sheets
   type: File
 greenhouse:
-  description: Greenhouse is an applicant tracking system and recruiting software.
+  description: Greenhouse is an applicant tracking system and recruiting software
+    designed to optimize your entire recruiting process. Find better candidates, conduct
+    more focused interviews, and make data-driven hiring decisions.
   icon_path: greenhouse.svg
   icon_url: https://fivetran.com/integrations/greenhouse/resources/greenhouse.svg
   id: greenhouse
   link_to_docs: https://fivetran.com/docs/applications/greenhouse
   link_to_erd: https://fivetran.com/docs/applications/greenhouse#schemainformation
   name: Greenhouse
-  type: Human Resources
+  type: HumanResources
 heap:
-  description: Heap is an automation tool for user analytics.
+  description: 'Heap automatically captures every web, mobile, and cloud interaction:
+    clicks, submits, transactions, emails, and more. Retroactively analyze your data
+    without writing code.'
   icon_path: heap.svg
   icon_url: https://fivetran.com/integrations/heap/resources/heap.svg
   id: heap
@@ -607,24 +739,27 @@ helpscout:
   name: Help Scout
   type: Support
 heroku_kafka:
-  description: Heroku Kafka is a managed distributed streaming platform
+  description: Heroku Kafka is a managed distributed streaming platform.
   icon_path: heroku_kafka.svg
   icon_url: https://fivetran.com/integrations/kafka/resources/heroku_kafka.svg
   id: heroku_kafka
   link_to_docs: https://fivetran.com/docs/events/kafka/heroku-kafka
+  link_to_erd: https://fivetran.com/docs/events/kafka/heroku-kafka#schemainformation
   name: Heroku Kafka
   type: Events
 heroku_postgres:
   description: Heroku Postgres is a hosted version of the popular Postgres database
-    on the Heroku platform
+    on the Heroku platform.
   icon_path: heroku_postgres.png
   icon_url: https://fivetran.com/integrations/postgres/resources/heroku.png
   id: heroku_postgres
-  link_to_docs: https://fivetran.com/docs/databases/postgresql
+  link_to_docs: https://fivetran.com/docs/databases/postgresql/heroku-setup-guide
+  link_to_erd: https://fivetran.com/docs/databases/postgresql/heroku-setup-guide#schemainformation
   name: Heroku Postgres
   type: Database
 hubspot:
-  description: Hubspot is a marketing and sales platform
+  description: HubSpot is an inbound marketing and sales software that helps companies
+    attract visitors, convert leads, and close customers.
   icon_path: hubspot.svg
   icon_url: https://fivetran.com/integrations/hubspot/resources/hubspot.svg
   id: hubspot
@@ -633,8 +768,8 @@ hubspot:
   name: Hubspot
   type: Marketing
 instagram_business:
-  description: Instagram Business provides Insights and Metadata of Instagram Business
-    Accounts Linked with Facebook Pages
+  description: Instagram Business provides metadata and insights for IG User (Instagram
+    Business Account) and IG Media (Instagram Photo, Video, Story, or Album) objects.
   icon_path: instagram_business.png
   icon_url: https://fivetran.com/integrations/instagram/resources/instagram.png
   id: instagram_business
@@ -643,8 +778,11 @@ instagram_business:
   name: Instagram Business
   type: Marketing
 intercom:
-  description: Intercom provides customer messaging apps for sales, marketing, and
-    support.
+  description: 'Intercom brings messaging products for sales, marketing & customer
+    service to one platform, helping businesses avoid the stiff, spammy status quo
+    and have real conversations that build real connections. Designed to feel like
+    the messaging apps you use every day, Intercom lets you talk to consumers almost
+    anywhere: inside your app, on your website, across social media and via email.'
   icon_path: intercom.svg
   icon_url: https://fivetran.com/integrations/intercom/resources/intercom.svg
   id: intercom
@@ -653,7 +791,9 @@ intercom:
   name: Intercom
   type: Support
 iterable:
-  description: Email, Push, SMS & InApp Analytics for Iterable
+  description: Iterable is a growth marketing and customer engagement platform. It
+    enables brands to create, execute and optimize campaigns across email, push, SMS,
+    in-app and more with unparalleled data flexibility.
   icon_path: iterable.svg
   icon_url: https://fivetran.com/integrations/iterable/resources/iterable.svg
   id: iterable
@@ -662,8 +802,9 @@ iterable:
   name: Iterable
   type: Marketing
 itunes_connect:
-  description: Payments and Financial Reports, Sales and Trends, App Analytics and
-    Reviews for Apple App Store Apps.
+  description: Apple App Store (formerly known as iTunes Connect) is a suite of web-based
+    tools created for developers to submit and manage their apps for sale in the App
+    Store or the Mac App Store.
   icon_path: itunes_connect.png
   icon_url: https://fivetran.com/integrations/itunes_connect/resources/itunes_connect_logo.png
   id: itunes_connect
@@ -672,7 +813,7 @@ itunes_connect:
   name: Apple App Store
   type: Marketing
 jira:
-  description: Issue tracker
+  description: Jira is a bug tracking, issue tracking and project management software.
   icon_path: jira.svg
   icon_url: https://fivetran.com/integrations/jira/resources/jira.svg
   id: jira
@@ -681,16 +822,22 @@ jira:
   name: Jira
   type: Engineering
 kinesis:
-  description: Load files stored in S3
+  description: Kinesis Firehose is a tool for capturing, manipulating, and loading
+    data as it streams from a source to an AWS destination. Upon arrival at an S3
+    bucket, data from a Firehose delivery stream will appear without newline delimiters
+    in extensionless files. Fivetran supports syncing from an Amazon S3 bucket to
+    your destination json files that originate from a Kinesis Firehose delivery stream.
   icon_path: kinesis.svg
   icon_url: https://fivetran.com/integrations/kinesis/resources/kinesis.svg
   id: kinesis
-  link_to_docs: https://fivetran.com/docs/files/aws-kinesis/
+  link_to_docs: https://fivetran.com/docs/files/aws-kinesis
+  link_to_erd: https://fivetran.com/docs/files/aws-kinesis#schemainformation
   name: Kinesis
   type: File
 klaviyo:
-  description: Klaviyo is an online platform to send email, Facebook and Instagram
-    marketing campaigns
+  description: Klaviyo is an email platform powered by data built for commerce and
+    web businesses. Klaviyo makes it easy for ecommerce marketers to target, personalize,
+    measure and optimize email and Facebook campaigns.
   icon_path: klaviyo.svg
   icon_url: https://fivetran.com/integrations/klaviyo/resources/klaviyo.svg
   id: klaviyo
@@ -699,9 +846,9 @@ klaviyo:
   name: Klaviyo
   type: Marketing
 kustomer:
-  description: A software platform for customer experience, service, and support,
-    integrated with a number of sources to give support staff a complete picture of
-    a customer when they contact the company.
+  description: Kustomer is a software platform for customer experience, service, and
+    support integrated with a number of sources to give support staff a complete picture
+    of a customer when they contact the company.
   icon_path: kustomer.svg
   icon_url: https://fivetran.com/integrations/kustomer/resources/kustomer.svg
   id: kustomer
@@ -710,17 +857,18 @@ kustomer:
   name: Kustomer
   type: Support
 lever:
-  description: Lever is a recruiting software that helps companies tackle problems
-    in recruitment process
+  description: Lever is a Modern Recruiting Software that streamlines the hiring process
+    and simplifies the Applicant Tracking System.
   icon_path: lever.svg
   icon_url: https://fivetran.com/integrations/lever/resources/lever.svg
   id: lever
   link_to_docs: https://fivetran.com/docs/applications/lever
   link_to_erd: https://fivetran.com/docs/applications/lever#schemainformation
   name: Lever
-  type: Human Resources
+  type: HumanResources
 light_speed_retail:
-  description: Lightspeed Retail is a point of sale solution for retail businesses
+  description: Lightspeed Retail is a cloud-based point of sale (POS) solution that
+    is suitable for retailers.
   icon_path: light_speed_retail.svg
   icon_url: https://fivetran.com/integrations/lightspeed_retail/resources/lightspeed.svg
   id: light_speed_retail
@@ -729,42 +877,53 @@ light_speed_retail:
   name: Lightspeed Retail
   type: Finance
 linkedin_ads:
-  description: LinkedIn Ad Analytics is an API that provides data and metrics on LinkedIn
-    Ads.
+  description: LinkedIn Ad Analytics offer you information about the performance of
+    your LinkedIn Ads.
   icon_path: linkedin_ads.svg
   icon_url: https://fivetran.com/integrations/linkedin/resources/linkedin_ads.svg
   id: linkedin_ads
   link_to_docs: https://fivetran.com/docs/applications/linkedin-ads
+  link_to_erd: https://fivetran.com/docs/applications/linkedin-ads#schemainformation
   name: LinkedIn Ad Analytics
   type: Marketing
 linkedin_company_pages:
-  description: Company Pages Statistics, Reactions and Social Metadata.
+  description: LinkedIn Company Pages offer you information about the company pages
+    statistics, reactions and social metadata by your LinkedIn organizations.
   icon_path: linkedin_company_pages.svg
   icon_url: https://fivetran.com/integrations/linkedin/resources/linkedin_company_pages.svg
   id: linkedin_company_pages
   link_to_docs: https://fivetran.com/docs/applications/linkedin-company-pages
+  link_to_erd: https://fivetran.com/docs/applications/linkedin-company-pages#schemainformation
   name: LinkedIn Company Pages
   type: Marketing
 magento_mysql:
-  description: Magento MySQL integrates with Magento by connecting directly to its
-    MySQL backing database
+  description: Magento is an ecommerce platform which provides online merchants with
+    a flexible shopping cart system, and customization of their online store. It offers
+    marketing, search engine optimization, and catalog-management tools. Magento's
+    underlying technology is built on the MySQL database.
   icon_path: magento_mysql.png
   icon_url: https://fivetran.com/integrations/mysql/resources/logos/magento.png
   id: magento_mysql
   link_to_docs: https://fivetran.com/docs/applications/magento
+  link_to_erd: https://fivetran.com/docs/applications/magento#schemainformation
   name: Magento MySQL
   type: Database
 magento_mysql_rds:
-  description: Magento MySQL RDS integrates with Magento by connecting directly to
-    its MySQL backing database on Amazon RDS
+  description: Magento is an ecommerce platform which provides online merchants with
+    a flexible shopping cart system, and customization of their online store. It offers
+    marketing, search engine optimization, and catalog-management tools. Magento's
+    underlying technology is built on the MySQL RDS database.
   icon_path: magento_mysql_rds.png
   icon_url: https://fivetran.com/integrations/mysql/resources/logos/magento.png
   id: magento_mysql_rds
   link_to_docs: https://fivetran.com/docs/applications/magento
+  link_to_erd: https://fivetran.com/docs/applications/magento#schemainformation
   name: Magento MySQL RDS
   type: Database
 mailchimp:
-  description: Mailchimp is a world leading email newsletter service
+  description: Mailchimp is an email marketing platform to send emails and automated
+    messages, create targeted campaigns, facilitate reporting and analytics, and sell
+    online.
   icon_path: mailchimp.svg
   icon_url: https://fivetran.com/integrations/mailchimp/resources/mailchimp.svg
   id: mailchimp
@@ -773,41 +932,48 @@ mailchimp:
   name: Mailchimp
   type: Marketing
 mandrill:
-  description: Mandrill is an email delivery API
+  description: Mandrill is a transactional email API for Mailchimp users.
   icon_path: mandrill.svg
   icon_url: https://fivetran.com/integrations/mandrill/resources/mandrill.svg
   id: mandrill
-  link_to_docs: https://fivetran.comdocs/applications/mandrill
+  link_to_docs: https://fivetran.com/docs/applications/mandrill
+  link_to_erd: https://fivetran.com/docs/applications/mandrill#schemainformation
   name: Mandrill
   type: Marketing
 maria:
-  description: MariaDB is a fork of the popular MySQL database
+  description: MariaDB is an open source fork of the popular MySQL relational database.
+    Its development is led by some of the original developers of MySQL.
   icon_path: maria.png
   icon_url: https://fivetran.com/integrations/mysql/resources/logos/maria.png
   id: maria
   link_to_docs: https://fivetran.com/docs/databases/mariadb/setup-guide
+  link_to_erd: https://fivetran.com/docs/databases/mariadb/setup-guide#schemainformation
   name: MariaDB
   type: Database
 maria_azure:
   description: Azure MariaDB is a hosted version of the popular Maria database on
-    the Azure platform
+    the Azure platform.
   icon_path: maria_azure.png
   icon_url: https://fivetran.com/integrations/mysql/resources/logos/maria_azure.png
   id: maria_azure
   link_to_docs: https://fivetran.com/docs/databases/mariadb/azure-setup-guide
+  link_to_erd: https://fivetran.com/docs/databases/mariadb/azure-setup-guide#schemainformation
   name: Azure MariaDB
   type: Database
 maria_rds:
-  description: MariaDB RDS is a fork of the popular MySQL database on Amazon RDS
+  description: MariaDB RDS is a fork of the popular MySQL database on Amazon RDS.
   icon_path: maria_rds.png
   icon_url: https://fivetran.com/integrations/mysql/resources/logos/maria.png
   id: maria_rds
   link_to_docs: https://fivetran.com/docs/databases/mariadb/rds-setup-guide
+  link_to_erd: https://fivetran.com/docs/databases/mariadb/rds-setup-guide#schemainformation
   name: MariaDB RDS
   type: Database
 marin:
   description: Marin Software is an online advertising platform to measure, manage,
-    and optimize ad spending across the web and mobile devices.
+    and optimize ad spending across the web and mobile devices. Marin provides a Data
+    Passback service which exports reporting data to an SFTP server. Fivetran syncs
+    files from Marin's Data Passback SFTP server to your destination.
   icon_path: marin.png
   icon_url: https://fivetran.com/integrations/marin/resources/logo.png
   id: marin
@@ -816,7 +982,8 @@ marin:
   name: Marin Software
   type: Marketing
 marketo:
-  description: Marketo is a personalizable marketing automation tool
+  description: Marketo develops marketing automation software that provides inbound
+    marketing, social marketing, CRM, and other related services.
   icon_path: marketo.svg
   icon_url: https://fivetran.com/integrations/marketo/resources/marketo.svg
   id: marketo
@@ -825,8 +992,9 @@ marketo:
   name: Marketo
   type: Marketing
 mavenlink:
-  description: Mavenlink unites project management, time tracking, resource planning
-    and more into one place.
+  description: Mavenlink is an online project management software. Besides project
+    management, it has time tracking, resource planning, collaboration, finance etc.
+    functions.
   icon_path: mavenlink.svg
   icon_url: https://fivetran.com/integrations/mavenlink/resources/mavenlink.svg
   id: mavenlink
@@ -835,7 +1003,9 @@ mavenlink:
   name: Mavenlink
   type: Productivity
 mixpanel:
-  description: Mixpanel allows you to track people and events in your mobile apps
+  description: Mixpanel is a business analytics service that tracks user interactions
+    with web and mobile applications. The data collected is used to build custom reports
+    and measure user engagement and retention.
   icon_path: mixpanel.svg
   icon_url: https://fivetran.com/integrations/mixpanel/resources/mixpanel.svg
   id: mixpanel
@@ -844,58 +1014,84 @@ mixpanel:
   name: Mixpanel
   type: Events
 mongo:
-  description: MongoDB is a schema-less database
+  description: MongoDB is a NoSQL database characterized by a lack of fixed columns
+    and fixed tables. Instead, it has collections (which are similar to tables) and
+    dynamic schemas. MongoDB is a document-oriented database that uses JSON documents.
   icon_path: mongo.svg
   icon_url: https://fivetran.com/integrations/mongo/resources/mongo.svg
   id: mongo
   link_to_docs: https://fivetran.com/docs/databases/mongodb
+  link_to_erd: https://fivetran.com/docs/databases/mongodb#schemainformation
   name: MongoDB
   type: Database
 mongo_sharded:
-  description: MongoDB is a schema-less database
+  description: MongoDB is a NoSQL database characterized by a lack of fixed columns
+    and fixed tables. Instead, it has collections (which are similar to tables) and
+    dynamic schemas. MongoDB is a document-oriented database that uses JSON documents.
   icon_path: mongo_sharded.svg
   icon_url: https://fivetran.com/integrations/mongo/resources/mongo.svg
   id: mongo_sharded
-  link_to_docs: https://fivetran.com/docs/databases/mongodb
+  link_to_docs: https://fivetran.com/docs/databases/mongodb/sharded-setup-guide
+  link_to_erd: https://fivetran.com/docs/databases/mongodb/sharded-setup-guide#schemainformation
   name: MongoDB Sharded
   type: Database
 mysql:
-  description: MySQL is a database system widely used to keep in-house custom data
+  description: MySQL is an open source relational database typically used to keep
+    in-house custom data. Fivetran's integration platform replicates data from your
+    MySQL source database and loads it into your destination.
   icon_path: mysql.png
   icon_url: https://fivetran.com/integrations/mysql/resources/logos/mysql.png
   id: mysql
   link_to_docs: https://fivetran.com/docs/databases/mysql/setup-guide
+  link_to_erd: https://fivetran.com/docs/databases/mysql/setup-guide#schemainformation
   name: MySQL
   type: Database
 mysql_azure:
   description: Microsoft Azure MySQL is a high-performance MySQL-compatible database
-    system used to keep in-house custom data
+    system used to keep in-house custom data.
   icon_path: mysql_azure.png
   icon_url: https://fivetran.com/integrations/mysql/resources/logos/azure.png
   id: mysql_azure
   link_to_docs: https://fivetran.com/docs/databases/mysql/azure-setup-guide
+  link_to_erd: https://fivetran.com/docs/databases/mysql/azure-setup-guide#schemainformation
   name: Azure MySQL
   type: Database
 mysql_rds:
   description: MySQL RDS is a hosted version of the popular MySQL database on the
-    Amazon RDS platform
+    Amazon RDS platform.
   icon_path: mysql_rds.png
   icon_url: https://fivetran.com/integrations/mysql/resources/logos/mysql.png
   id: mysql_rds
   link_to_docs: https://fivetran.com/docs/databases/mysql/rds-setup-guide
+  link_to_erd: https://fivetran.com/docs/databases/mysql/rds-setup-guide#schemainformation
   name: MySQL RDS
   type: Database
 netsuite_suiteanalytics:
-  description: NetSuite SuiteAnalytics provides embedded real-time insights for your
-    custom applications
+  description: "NetSuite provides SuiteAnalytics as a paid option, giving businesses\
+    \ the power of built-in real-time dashboards, reporting and analysis\u2014integrated\
+    \ right into the ERP, CRM or ecommerce application that you use every day."
   icon_path: netsuite_suiteanalytics.svg
   icon_url: https://fivetran.com/integrations/netsuite/resources/netsuite.svg
   id: netsuite_suiteanalytics
   link_to_docs: https://fivetran.com/docs/applications/netsuite-suiteanalytics
+  link_to_erd: https://fivetran.com/docs/applications/netsuite-suiteanalytics#schemainformation
   name: NetSuite SuiteAnalytics
   type: Finance
+one_drive:
+  description: OneDrive is a cloud-based file storage service provided by Microsoft.
+    Fivetran supports syncing files from your OneDrive account to your destination.
+    You can sync multiple files as unique tables to your destination.
+  icon_path: one_drive.svg
+  icon_url: https://fivetran.com/integrations/azure_consumer_file/resources/one_drive.svg
+  id: one_drive
+  link_to_docs: https://fivetran.com/docs/files/one-drive
+  link_to_erd: https://fivetran.com/docs/files/one-drive#schemainformation
+  name: OneDrive
+  type: File
 optimizely:
-  description: Optimizely delivers customer experience optimization software.
+  description: Optimizely is an experimentation platform, enabling businesses to deliver
+    continuous experimentation and personalization across websites, mobile apps, and
+    connected devices.
   icon_path: optimizely.svg
   icon_url: https://fivetran.com/integrations/optimizely/resources/optimizely.svg
   id: optimizely
@@ -904,60 +1100,71 @@ optimizely:
   name: Optimizely
   type: Events
 oracle:
-  description: Oracle Database is a database system widely used to keep in-house custom
-    data
+  description: Oracle is an object-relational database management system created by
+    the Oracle Corporation. Fivetran's integration platform replicates data from your
+    Oracle source database and loads it into your destination.
   icon_path: oracle.svg
   icon_url: https://fivetran.com/integrations/oracle/resources/oracle.svg
   id: oracle
-  link_to_docs: https://fivetran.com/docs/databases/oracle
+  link_to_docs: https://fivetran.com/docs/databases/oracle/setup-guide
+  link_to_erd: https://fivetran.com/docs/databases/oracle/setup-guide#schemainformation
   name: Oracle
   type: Database
 oracle_ebs:
-  description: Oracle E-Business Suite is an enterprise resource planning system developed
-    by Oracle
+  description: Oracle E-Business Suite (EBS) is a set of business applications for
+    managing and automating processes across your organization. Oracle EBS is built
+    on the Oracle database. Instead of pulling data from its API, we pull directly
+    from the source database. Our Oracle E-Business Suite connector shares the limitations
+    of our Oracle database connector.
   icon_path: oracle_ebs.svg
   icon_url: https://fivetran.com/integrations/oracle/resources/oracle.svg
   id: oracle_ebs
-  link_to_docs: https://fivetran.com/docs/databases/oracle
+  link_to_docs: https://fivetran.com/docs/applications/oracle-ebs
+  link_to_erd: https://fivetran.com/docs/applications/oracle-ebs#schemainformation
   name: Oracle EBS
   type: Database
 oracle_rac:
   description: Oracle Real Application Cluster is a database system widely used to
-    keep in-house custom data
+    keep in-house custom data.
   icon_path: oracle_rac.svg
   icon_url: https://fivetran.com/integrations/oracle/resources/oracle.svg
   id: oracle_rac
-  link_to_docs: https://fivetran.com/docs/databases/oracle
+  link_to_docs: https://fivetran.com/docs/databases/oracle/rac-setup-guide
+  link_to_erd: https://fivetran.com/docs/databases/oracle/rac-setup-guide#schemainformation
   name: Oracle RAC
   type: Database
 oracle_rds:
   description: Oracle Database RDS is a hosted version of the popular Oracle database
-    on the Amazon RDS platform
+    on the Amazon RDS platform.
   icon_path: oracle_rds.svg
   icon_url: https://fivetran.com/integrations/oracle/resources/oracle.svg
   id: oracle_rds
-  link_to_docs: https://fivetran.com/docs/databases/oracle
+  link_to_docs: https://fivetran.com/docs/databases/oracle/rds-setup-guide
+  link_to_erd: https://fivetran.com/docs/databases/oracle/rds-setup-guide#schemainformation
   name: Oracle RDS
   type: Database
 outbrain:
-  description: Outbrain is a platform that draws data-driven connections between interests
-    and actions.
+  description: Outbrain is a native advertising platform using targeted advertising
+    to recommend articles, slideshows, blog posts, photos or videos to a reader.
   icon_path: outbrain.png
   icon_url: https://fivetran.com/integrations/outbrain/resources/outbrain_logo.png
   id: outbrain
-  link_to_docs: ''
+  link_to_docs: https://fivetran.com/docs/applications/outreach
+  link_to_erd: https://fivetran.com/docs/applications/outreach#schemainformation
   name: Outbrain
   type: Marketing
 outreach:
-  description: Outreach is a sales engagement platform and automation service
+  description: Outreach is a sales engagement platform and automation service.
   icon_path: outreach.svg
   icon_url: https://fivetran.com/integrations/outreach/resources/outreach.svg
   id: outreach
-  link_to_docs: ''
+  link_to_docs: https://fivetran.com/docs/applications/outreach
+  link_to_erd: https://fivetran.com/docs/applications/outreach#schemainformation
   name: Outreach
   type: Sales
 pardot:
-  description: Pardot is a CRM tool
+  description: Pardot is a SaaS-based marketing automation application from Salesforce,
+    enabling marketers to create, deploy and manage online promotion campaigns.
   icon_path: pardot.svg
   icon_url: https://fivetran.com/integrations/pardot/resources/pardot.svg
   id: pardot
@@ -976,7 +1183,9 @@ pendo:
   name: Pendo
   type: Events
 pinterest_ads:
-  description: Pinterest is an online pin board for collecting and sharing multimedia
+  description: Pinterest is an online pin board for collecting and sharing multimedia.
+    Pinterest Ads help businesses increase brand's visibility and drive conversions.
+    Ads can be targeted based on user's demographics, search terms, and interests.
   icon_path: pinterest_ads.svg
   icon_url: https://fivetran.com/integrations/pinterest/resources/pinterest-ads.svg
   id: pinterest_ads
@@ -985,7 +1194,7 @@ pinterest_ads:
   name: Pinterest Ads
   type: Marketing
 pipedrive:
-  description: CRM platform made for salespeople
+  description: Pipedrive is a sales CRM and pipeline management platform.
   icon_path: pipedrive.svg
   icon_url: https://fivetran.com/integrations/pipedrive/resources/pipedrive.svg
   id: pipedrive
@@ -994,22 +1203,36 @@ pipedrive:
   name: Pipedrive
   type: Sales
 postgres:
-  description: Postgres is a database system widely used to keep in-house custom data
+  description: PostgreSQL is an open source database typically used to keep in-house
+    custom data. Fivetran's integration platform replicates data from your PostgreSQL
+    source database and loads it into your destination.
   icon_path: postgres.svg
   icon_url: https://fivetran.com/integrations/postgres/resources/postgres.svg
   id: postgres
-  link_to_docs: https://fivetran.com/docs/databases/postgresql
-  name: Postgres
+  link_to_docs: https://fivetran.com/docs/databases/postgresql/setup-guide
+  link_to_erd: https://fivetran.com/docs/databases/postgresql/setup-guide#schemainformation
+  name: PostgreSQL
   type: Database
 postgres_rds:
   description: Postgres RDS is a hosted version of the popular Postgres database on
-    the Amazon RDS platform
+    the Amazon RDS platform.
   icon_path: postgres_rds.svg
   icon_url: https://fivetran.com/integrations/postgres/resources/postgres.svg
   id: postgres_rds
   link_to_docs: https://fivetran.com/docs/databases/postgresql
-  name: Postgres RDS
+  link_to_erd: https://fivetran.com/docs/databases/postgresql#schemainformation
+  name: PostgreSQL RDS
   type: Database
+qualtrics:
+  description: Qualtrics is an online survey tool that allows you to build and distribute
+    surveys, and analyze responses.
+  icon_path: qualtrics.svg
+  icon_url: https://fivetran.com/integrations/qualtrics/resources/qualtrics.svg
+  id: qualtrics
+  link_to_docs: https://fivetran.com/docs/applications/qualtrics
+  link_to_erd: https://fivetran.com/docs/applications/qualtrics#schemainformation
+  name: Qualtrics
+  type: Support
 quickbooks:
   description: QuickBooks integration
   icon_path: quickbooks.svg
@@ -1021,7 +1244,7 @@ quickbooks:
   type: Finance
 recharge:
   description: ReCharge provides a recurring billing and subscriptions solution for
-    ecommerce
+    ecommerce.
   icon_path: recharge.svg
   icon_url: https://fivetran.com/integrations/recharge/resources/recharge.svg
   id: recharge
@@ -1030,7 +1253,7 @@ recharge:
   name: ReCharge
   type: Finance
 recurly:
-  description: Recurly offers subscription management services.
+  description: Recurly provides recurring billing management as an outsourced service.
   icon_path: recurly.svg
   icon_url: https://fivetran.com/integrations/recurly/resources/recurly.svg
   id: recurly
@@ -1039,16 +1262,20 @@ recurly:
   name: Recurly
   type: Finance
 s3:
-  description: Load files stored in S3
+  description: Amazon Simple Storage Service (Amazon S3), provides scalable cloud
+    storage services. Fivetran supports syncing files from your S3 bucket to your
+    destination.
   icon_path: s3.svg
   icon_url: https://fivetran.com/integrations/s3/resources/s3.svg
   id: s3
   link_to_docs: https://fivetran.com/docs/files/aws-s3
-  name: S3
+  link_to_erd: https://fivetran.com/docs/files/aws-s3#schemainformation
+  name: Amazon S3
   type: File
 sage_intacct:
-  description: Sage Intacct is the leading accounting software for companies of any
-    size
+  description: Sage Intacct is a provider of cloud-based accounting software which
+    can provide real-time financial and operational insights, as well as the ability
+    to automate critical processes.
   icon_path: sage_intacct.svg
   icon_url: https://fivetran.com/integrations/sage_intacct/resources/sage_intacct_logo.svg
   id: sage_intacct
@@ -1057,8 +1284,11 @@ sage_intacct:
   name: Sage Intacct
   type: Finance
 sailthru:
-  description: Sailthru provides interface for scheduling and sending campaign and
-    transaction emails.
+  description: Sailthru provides services for email management. Sailthru services
+    include scheduling and sending campaigns and transactional emails to each user's
+    interest. Campaigns are email messages scheduled for group of users based on a
+    specific template. It can contain news update or promotional messages. Transactional
+    emails are sent to a particular user in response to a specific action.
   icon_path: sailthru.svg
   icon_url: https://fivetran.com/integrations/sailthru/resources/sailthru.svg
   id: sailthru
@@ -1067,11 +1297,12 @@ sailthru:
   name: Sailthru
   type: Marketing
 salesforce:
-  description: Salesforce is a customer relationship manager (CRM) application
+  description: Salesforce is a cloud-based CRM platform.
   icon_path: salesforce.svg
   icon_url: https://fivetran.com/integrations/salesforce/resources/salesforce.svg
   id: salesforce
   link_to_docs: https://fivetran.com/docs/applications/salesforce
+  link_to_erd: https://fivetran.com/docs/applications/salesforce#schemainformation
   name: Salesforce
   type: Sales
 salesforce_marketing_cloud:
@@ -1085,41 +1316,50 @@ salesforce_marketing_cloud:
   name: Salesforce Marketing Cloud
   type: Marketing
 salesforce_sandbox:
-  description: Salesforce is a customer relationship manager (CRM) application
+  description: Salesforce is a cloud-based CRM platform.
   icon_path: salesforce_sandbox.png
   icon_url: https://fivetran.com/integrations/salesforce/resources/salesforce_sandbox.png
   id: salesforce_sandbox
   link_to_docs: https://fivetran.com/docs/applications/salesforce
+  link_to_erd: https://fivetran.com/docs/applications/salesforce#schemainformation
   name: Salesforce sandbox
   type: Sales
 sap_hana:
-  description: SAP HANA is an in-memory, column-oriented, relational database management
-    system
+  description: SAP HANA is an in-memory relational database and application platform
+    that provides high-performance analytics and real-time data processing.
   icon_path: sap_hana.jpeg
   icon_url: https://fivetran.com/integrations/sap_s4hana/resources/sap-hana.jpeg
   id: sap_hana
-  link_to_docs: ''
+  link_to_docs: https://fivetran.com/docs/databases/sap-hana
+  link_to_erd: https://fivetran.com/docs/databases/sap-hana#schemainformation
   name: SAP HANA
   type: Database
 sap_s4hana:
-  description: Enterprise Resource Planning system running on the HANA database
+  description: "SAP S/4 is an enterprise resource planning system that is built for\
+    \ businesses of all sizes \u2013 small, midsize, and large. SAP S/4 has modules\
+    \ specific to industries \u2013 from manufacturing to retail. The software supports\
+    \ and integrates almost every functional area of a business process from procurement\
+    \ of goods and services, sale and distribution, finance, accounting, human resource,\
+    \ manufacturing, production planning to logistics and warehouse management."
   icon_path: sap_s4hana.svg
   icon_url: https://fivetran.com/integrations/sap_s4hana/resources/sap-s4hana.svg
   id: sap_s4hana
-  link_to_docs: ''
-  name: SAP S/4HANA
+  link_to_docs: https://fivetran.com/docs/applications/sap-s4
+  link_to_erd: https://fivetran.com/docs/applications/sap-s4#schemainformation
+  name: SAP S/4
   type: Finance
 segment:
-  description: Segment tracks events on your web site or app
+  description: Segment is an event tracking library.
   icon_path: segment.svg
   icon_url: https://fivetran.com/integrations/segment/resources/segment.svg
   id: segment
   link_to_docs: https://fivetran.com/docs/events/segment
+  link_to_erd: https://fivetran.com/docs/events/segment#schemainformation
   name: Segment
   type: Events
 sendgrid:
   description: SendGrid is a customer communication platform for transactional and
-    marketing emails
+    marketing emails.
   icon_path: sendgrid.svg
   icon_url: https://fivetran.com/integrations/sendgrid/resources/sendgrid.svg
   id: sendgrid
@@ -1128,24 +1368,28 @@ sendgrid:
   name: SendGrid
   type: Marketing
 servicenow:
-  description: ServiceNow provides IT Management and other services
+  description: ServiceNow is a cloud platform that provides service management software
+    as a service.
   icon_path: servicenow.svg
   icon_url: https://fivetran.com/integrations/service_now/resources/logo.svg
   id: servicenow
-  link_to_docs: ''
+  link_to_docs: https://fivetran.com/docs/applications/servicenow
+  link_to_erd: https://fivetran.com/docs/applications/servicenow#schemainformation
   name: ServiceNow
   type: Productivity
 sftp:
-  description: Load files stored in an SFTP server
+  description: Fivetran supports syncing files from your SSH server to your destination
+    using SFTP.
   icon_path: sftp.svg
   icon_url: https://fivetran.com/integrations/sftp/resources/sftp.svg
   id: sftp
   link_to_docs: https://fivetran.com/docs/files/sftp
+  link_to_erd: https://fivetran.com/docs/files/sftp#schemainformation
   name: SFTP
   type: File
 shopify:
-  description: Complete e-commerce solution that allows you to set up an online store
-    to sell your goods
+  description: Shopify is an ecommerce platform that has everything you need to sell
+    online, on social media, or in person.
   icon_path: shopify.svg
   icon_url: https://fivetran.com/integrations/shopify/resources/shopify.svg
   id: shopify
@@ -1154,24 +1398,32 @@ shopify:
   name: Shopify
   type: Sales
 snapchat_ads:
-  description: Snapchat is a multimedia messaging app
+  description: Snapchat Ads provides a platform to create, manage and measure your
+    campaigns. You can find more information on Snapchat documentation. Snapchat Ads
+    connector provides a history of the settings and detailed reports of your Snapchat
+    Ad Accounts, Campaigns, Ad Squads, and Media Creatives.
   icon_path: snapchat_ads.png
   icon_url: https://fivetran.com/integrations/snapchat_ads/resources/snapchat.png
   id: snapchat_ads
-  link_to_docs: ''
+  link_to_docs: https://fivetran.com/docs/applications/snapchat-ads
+  link_to_erd: https://fivetran.com/docs/applications/snapchat-ads#schemainformation
   name: Snapchat Ads
   type: Marketing
 snowplow:
-  description: Snowplow is an open-source JavaScript, iOS and Android event tracker
+  description: Snowplow Analytics is an event tracking platform that allows you to
+    track events across all channels and action the data in real-time. Snowplow uses
+    trackers to track your information in whichever language your project is built.
   icon_path: snowplow.svg
   icon_url: https://fivetran.com/integrations/snowplow/resources/snowplow.svg
   id: snowplow
   link_to_docs: https://fivetran.com/docs/events/snowplow
+  link_to_erd: https://fivetran.com/docs/events/snowplow#schemainformation
   name: Snowplow
   type: Events
 splunk:
-  description: Software platform to search, analyze and visualize the machine-generated
-    data gathered from the websites, applications, sensors, devices etc
+  description: Splunk is a software platform that searches, analyzes and visualizes
+    the machine-generated data gathered from websites, applications, sensors, and
+    devices.
   icon_path: splunk.svg
   icon_url: https://fivetran.com/integrations/splunk/resources/splunk.svg
   id: splunk
@@ -1180,21 +1432,24 @@ splunk:
   name: Splunk
   type: Engineering
 sql_server:
-  description: Microsoft SQL Server is a database system widely used to keep in-house
-    custom data
+  description: SQL Server is Microsoft's SQL database. Fivetran's integration service
+    replicates data from your SQL Server source database and loads it into your destination
+    at regular intervals.
   icon_path: sql_server.svg
   icon_url: https://fivetran.com/integrations/sql_server/resources/sql_server.svg
   id: sql_server
-  link_to_docs: https://fivetran.com/docs/databases/sql-server
+  link_to_docs: https://fivetran.com/docs/databases/sql-server/setup-guide
+  link_to_erd: https://fivetran.com/docs/databases/sql-server/setup-guide#schemainformation
   name: SQL Server
   type: Database
 sql_server_rds:
-  description: Microsoft SQL Server RDS is a hosted version of the popular Microsoft
-    SQL Server database on the Amazon RDS platform
+  description: SQL Server RDS is a hosted version of the popular Microsoft SQL Server
+    database on the Amazon RDS platform.
   icon_path: sql_server_rds.svg
   icon_url: https://fivetran.com/integrations/sql_server/resources/sql_server.svg
   id: sql_server_rds
   link_to_docs: https://fivetran.com/docs/databases/sql-server/rds-setup-guide
+  link_to_erd: https://fivetran.com/docs/databases/sql-server/rds-setup-guide#schemainformation
   name: SQL Server RDS
   type: Database
 square:
@@ -1218,8 +1473,7 @@ stripe:
   name: Stripe
   type: Finance
 stripe_test:
-  description: Stripe is a credit card payment system that helps you track recurring
-    charges
+  description: Stripe is an online payment processing platform.
   icon_path: stripe_test.svg
   icon_url: https://fivetran.com/integrations/stripe/resources/stripe.svg
   id: stripe_test
@@ -1228,8 +1482,8 @@ stripe_test:
   name: Stripe test mode
   type: Finance
 survey_monkey:
-  description: SurveyMonkey provides online survey tool to capture the voices and
-    opinions of the people.
+  description: SurveyMonkey is an online survey development tool to create and run
+    surveys.
   icon_path: survey_monkey.svg
   icon_url: https://fivetran.com/integrations/survey_monkey/resources/survey_monkey.svg
   id: survey_monkey
@@ -1239,7 +1493,8 @@ survey_monkey:
   type: Support
 taboola:
   description: Taboola develops and markets a service for online content publishers
-    and advertisers that recommends digital content to website users
+    and advertisers that recommends digital content to website users. You can find
+    more information on Taboola documentation.
   icon_path: taboola.svg
   icon_url: https://fivetran.com/integrations/taboola/resources/taboola.svg
   id: taboola
@@ -1248,7 +1503,8 @@ taboola:
   name: Taboola
   type: Marketing
 tiktok_ads:
-  description: Tiktok Ads provides attribute data on Tiktok Ads Accounts and Reports
+  description: TikTok is a video-sharing social networking platform. TikTok Ads gives
+    you information about the performance of your ads.
   icon_path: tiktok_ads.svg
   icon_url: https://fivetran.com/integrations/tiktok_ads/resources/tiktok-logo.svg
   id: tiktok_ads
@@ -1257,8 +1513,8 @@ tiktok_ads:
   name: Tiktok Ads
   type: Marketing
 twilio:
-  description: Twilio is a CPaaS that allows to programmatically make and receive
-    phone calls, send and receive text messages.
+  description: Twilio is a cloud communications platform that allows users to programmatically
+    make and receive phone calls, send and receive text messages.
   icon_path: twilio.svg
   icon_url: https://fivetran.com/integrations/twilio/resources/twilio.svg
   id: twilio
@@ -1267,34 +1523,39 @@ twilio:
   name: Twilio
   type: Engineering
 twitter:
-  description: Twitter provides reporting data for Organic Tweets
+  description: Twitter is a microblogging and social networking service. Fivetran's
+    Twitter Organic connector provides a history of the settings and a detailed report
+    of your organic tweet data.
   icon_path: twitter.svg
   icon_url: https://fivetran.com/integrations/twitter/resources/twitter_ads.svg
   id: twitter
   link_to_docs: https://fivetran.com/docs/applications/twitter
   link_to_erd: https://fivetran.com/docs/applications/twitter#schemainformation
-  name: Twitter
+  name: Twitter Organic
   type: Marketing
 twitter_ads:
-  description: Twitter Ads provides attribute data on Twitter Ads Accounts and Reports
+  description: Twitter Ads provides a history of the settings and detailed reports
+    of your Twitter Ad Accounts, Campaigns, Line Items, Tweets, and Media Creatives.
   icon_path: twitter_ads.svg
   icon_url: https://fivetran.com/integrations/twitter/resources/twitter_ads.svg
   id: twitter_ads
   link_to_docs: https://fivetran.com/docs/applications/twitter-ads
+  link_to_erd: https://fivetran.com/docs/applications/twitter-ads#schemainformation
   name: Twitter Ads
   type: Marketing
 typeform:
-  description: Typeform is a SaaS company that specializes in online form building
-    and online surveys
+  description: Typeform is an online survey management solution.
   icon_path: typeform.svg
   icon_url: https://fivetran.com/integrations/typeform/resources/typeform.svg
   id: typeform
-  link_to_docs: https://fivetran.comdocs/applications/typeform
-  link_to_erd: https://fivetran.comdocs/applications/typeform#schemainformation
+  link_to_docs: https://fivetran.com/docs/applications/typeform
+  link_to_erd: https://fivetran.com/docs/applications/typeform#schemainformation
   name: Typeform
   type: Support
 uservoice:
-  description: UserVoice is a customer feedback processing system
+  description: UserVoice is product feedback management software that enables businesses
+    gather and analyze customer feedback and prioritize feature requests to drive
+    strategic product decisions.
   icon_path: uservoice.svg
   icon_url: https://fivetran.com/integrations/uservoice/resources/uservoice.svg
   id: uservoice
@@ -1303,25 +1564,29 @@ uservoice:
   name: UserVoice
   type: Support
 webhooks:
-  description: Fivetran can accept POST requests from any webhook and import it into
-    your data warehouse
+  description: A webhook is a user-defined HTTP callback triggered by an event on
+    your website or in your application. A webhook allows you to send real-time HTTP
+    notifications from one application to another whenever an event you specify occurs.
+    A webhook URL receives JSON objects as HTTP POST requests.
   icon_path: webhooks.svg
   icon_url: https://fivetran.com/integrations/webhooks/resources/webhooks.svg
   id: webhooks
   link_to_docs: https://fivetran.com/docs/events/webhooks
+  link_to_erd: https://fivetran.com/docs/events/webhooks#schemainformation
   name: Webhooks
   type: Events
 workday:
-  description: Workday is a cloud ERP system for finance, HR, and planning
+  description: Workday is a cloud ERP system for finance, HR, and planning.
   icon_path: workday.png
   icon_url: https://fivetran.com/integrations/workday/resources/workday.png
   id: workday
   link_to_docs: https://fivetran.com/docs/applications/workday
   link_to_erd: https://fivetran.com/docs/applications/workday#schemainformation
   name: Workday
-  type: Human Resources
+  type: HumanResources
 xero:
-  description: Online accounting
+  description: Xero provides cloud accounting services and includes a cashbook, automated
+    daily bank feeds, invoicing, debtors, creditors, sales tax and reporting.
   icon_path: xero.svg
   icon_url: https://fivetran.com/integrations/xero/resources/xero.svg
   id: xero
@@ -1330,25 +1595,28 @@ xero:
   name: Xero
   type: Finance
 yahoo_gemini:
-  description: "Verizon Media is Verizon\u2019s platform for native advertising and\
-    \ mobile search ads"
+  description: Verizon Media (formerly known as Yahoo Gemini) offers you information
+    about the performance of your Verizon Media Ads. You can find more information
+    about it on Verizon Media's documentation page.
   icon_path: yahoo_gemini.png
   icon_url: https://fivetran.com/integrations/yahoo_gemini/resources/verizon.png
   id: yahoo_gemini
   link_to_docs: https://fivetran.com/docs/applications/verizon
+  link_to_erd: https://fivetran.com/docs/applications/verizon#schemainformation
   name: Verizon Media
   type: Marketing
 youtube_analytics:
-  description: YouTube Analytics enables users to understand how their videos are
-    performing on YouTube
+  description: YouTube Analytics Bulk Reports contain a comprehensive set of YouTube
+    Analytics data for a channel or content owner.
   icon_path: youtube_analytics.svg
   icon_url: https://fivetran.com/integrations/youtube_analytics/resources/youtube_analytics.svg
   id: youtube_analytics
   link_to_docs: https://fivetran.com/docs/applications/youtube-analytics
+  link_to_erd: https://fivetran.com/docs/applications/youtube-analytics#schemainformation
   name: YouTube Analytics
   type: Marketing
 zendesk:
-  description: Zendesk is a web-based help desk support tool
+  description: Zendesk Support is a cloud-based customer support platform.
   icon_path: zendesk.svg
   icon_url: https://fivetran.com/integrations/zendesk/resources/zendesk.svg
   id: zendesk
@@ -1357,7 +1625,8 @@ zendesk:
   name: Zendesk Support
   type: Support
 zendesk_chat:
-  description: Zendesk Chat is a support chat tool
+  description: ZZendesk Chat creates customer engagement for online businesses with
+    its live chat software.
   icon_path: zendesk_chat.svg
   icon_url: https://fivetran.com/integrations/zendesk_chat/resources/zendesk_chat.svg
   id: zendesk_chat
@@ -1366,7 +1635,9 @@ zendesk_chat:
   name: Zendesk Chat
   type: Support
 zendesk_sunshine:
-  description: Zendesk Sunshine is a open and flexible CRM platform.
+  description: Zendesk Sunshine is an open and flexible CRM platform. It lets you
+    seamlessly connect and understand all your customer data. It is fast, powerful
+    and gives you the freedom to build whatever you want.
   icon_path: zendesk_sunshine.svg
   icon_url: https://fivetran.com/integrations/zendesk_sunshine/resources/logo-zendesk.svg
   id: zendesk_sunshine
@@ -1375,8 +1646,8 @@ zendesk_sunshine:
   name: Zendesk Sunshine
   type: Support
 zoho_crm:
-  description: Zoho CRM is an online Sales CRM software that manages your sales, marketing
-    and support in one CRM platform
+  description: Zoho CRM is an online CRM platform that manages your sales, marketing,
+    and customer support activities.
   icon_path: zoho_crm.svg
   icon_url: https://fivetran.com/integrations/zoho_crm/resources/zoho.svg
   id: zoho_crm
@@ -1385,8 +1656,8 @@ zoho_crm:
   name: Zoho CRM
   type: Support
 zuora:
-  description: Zuora allows businesses to quote, order, bill, recognize revenue, report,
-    and automate the entire customer lifecycle from a single platform.
+  description: Zuora is a SaaS application designed to automate billing, commerce
+    and finance operations. It helps companies build and run subscription businesses.
   icon_path: zuora.svg
   icon_url: https://fivetran.com/integrations/zuora/resources/zuora.svg
   id: zuora
@@ -1395,8 +1666,8 @@ zuora:
   name: Zuora
   type: Finance
 zuora_sandbox:
-  description: Zuora allows businesses to quote, order, bill, recognize revenue, report,
-    and automate the entire customer lifecycle from a single platform.
+  description: Zuora is a SaaS application designed to automate billing, commerce
+    and finance operations. It helps companies build and run subscription businesses.
   icon_path: zuora_sandbox.svg
   icon_url: https://fivetran.com/integrations/zuora/resources/zuora.svg
   id: zuora_sandbox

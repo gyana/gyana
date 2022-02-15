@@ -1,5 +1,6 @@
 import re
 
+from django.utils.decorators import method_decorator
 from wagtail.admin.edit_handlers import MultiFieldPanel, StreamFieldPanel
 from wagtail.core import blocks
 from wagtail.core.fields import StreamField
@@ -7,6 +8,7 @@ from wagtail.core.models import Page
 from wagtail.images.blocks import ImageChooserBlock
 from wagtail.search import index
 
+from apps.base.clickjacking import xframe_options_sameorigin_allowlist
 from apps.base.templatetags.help_utils import get_loom_embed_url
 from apps.base.templatetags.wagtailcustom_tags import heading_re
 
@@ -41,6 +43,7 @@ class ImageBlock(blocks.StructBlock):
         icon = "image"
 
 
+@method_decorator(xframe_options_sameorigin_allowlist, name="serve")
 class LearnPage(Page):
     search_fields = Page.search_fields + [index.SearchField("body")]
 

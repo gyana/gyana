@@ -97,18 +97,7 @@ class OperationColumnForm(BaseLiveSchemaForm):
             "float_value",
             "string_value",
         )
-        help_texts = {
-            "column": "Column",
-            "string_function": "Operation",
-            "integer_function": "Operation",
-            "date_function": "Operation",
-            "time_function": "Operation",
-            "datetime_function": "Operation",
-            "boolean_function": "Operation",
-            "integer_value": "Value",
-            "float_value": "Value",
-            "string_value": "Value",
-        }
+
         widgets = {
             "string_value": forms.Textarea(attrs={"rows": 1}),
         }
@@ -150,19 +139,7 @@ class AddColumnForm(BaseLiveSchemaForm):
             "string_value",
             "label",
         )
-        help_texts = {
-            "column": "Column",
-            "string_function": "Operation",
-            "integer_function": "Operation",
-            "date_function": "Operation",
-            "time_function": "Operation",
-            "boolean_function": "Operation",
-            "datetime_function": "Operation",
-            "integer_value": "Value",
-            "float_value": "Value",
-            "string_value": "Value",
-            "label": "New Column Name",
-        }
+
         widgets = {
             "string_value": forms.Textarea(attrs={"rows": 1}),
         }

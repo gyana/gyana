@@ -1,3 +1,19 @@
+logos:
+  - ey
+  - bcg
+  - nasa
+  - barclays
+  - mckinsey
+  - pret
+  - vodafone
+  - knightfrank
+  - pwc
+  - airbnb
+  - wework
+  - colliers
+  - tbs
+  - grantthornton
+  - nuveen
 testimonial:
   quote: Gyana as a <b>data manipulation tool is super powerful</b>. We are currently using industry leading tools like Supermetrics and Google Data Studio, but are always faced with <b>fixing breaks whenever we make changes</b> to our reporting workflow. Gyana gives us the flexibility to add new connectors, new channels and <b>pull reports all in one place</b>.
   avatar: images/site/home/jack-paxton.png
@@ -11,19 +27,35 @@ quotes:
   - well thought out from the bottom up
   - the best tool for analyzing data without code
   - My dream No Code Analytics
-get_started:
-  - heading: Self service
-    summary: Gyana is designed for builders. Read our guides, watch videos and learn from the community.
-    external_url: help
-    cta: Visit the help center
-    icon: external-link
-  - heading: Video onboarding
-    summary: We'll discuss your use case, demo the product and help you get started building your reports.
-    external_url: onboarding
-    cta: Schedule a video call
-    icon: video-camera
-  - heading: Custom solution
-    summary: Work with our in-house data architects to build your solution, or migrate from another provider.
-    external_url: talk_to_us
-    cta: Talk to us
+  - you've got an amazing product
+support:
+  - heading: Sign up
+    description: Get started for free
+    icon: login
+    note: It only takes a minute
+  - heading: Attend Gyana University
+    description: Go through the fundamentals
+    icon: academic-cap
+    note: Videos, walkthroughs and guides
+    cta:
+      message: Visit Gyana University
+      external_url: university
+  - heading: Join the community
+    description: Learn from other Gyanees
+    icon: hashtag
+    note: Speak directly with the team
+  - heading: Live support
+    description: Chat with us in app
     icon: chat-alt-2
+    note: We'll get to the bottom of it
+  - heading: Get a demo
+    description: Discuss your use case with us
+    icon: video-camera
+    note: It's free
+  - heading: Follow our development
+    description: We release changes every week
+    icon: clipboard-list
+    note: Upvote your top features and we'll build them
+    cta:
+      message: Visit feedback portal
+      external_url: feedback

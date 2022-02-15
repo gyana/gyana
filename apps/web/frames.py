@@ -2,10 +2,22 @@ import random
 from dataclasses import asdict
 
 from apps.base.frames import TurboFrameTemplateView
-from apps.columns.transformer import FUNCTIONS
-from apps.connectors.fivetran.config import get_services_obj
+from apps.connectors.fivetran.config import get_services_obj, get_services_query
 from apps.nodes.config import NODE_CONFIG
+from apps.web.content import get_content
 from apps.widgets.models import WIDGET_KIND_TO_WEB
+
+
+def get_services_grouped(group_n):
+    services = [asdict(s) for s in get_services_obj().values()]
+    random.shuffle(services)
+    length = len(services)
+    n = int(length / group_n)
+    services_grouped = [
+        {"services": services[i : i + n], "animation": random.randint(15, 35)}
+        for i in range(0, group_n * n, n)
+    ]
+    return services_grouped
 
 
 class HelpModal(TurboFrameTemplateView):
@@ -22,20 +34,9 @@ class IntegrationsDemo(TurboFrameTemplateView):
     template_name = "web/demo/integrations.html"
     turbo_frame_dom_id = "web:integrations-demo"
 
-    def _get_services_grouped(self):
-        services = [asdict(s) for s in get_services_obj().values()]
-        random.shuffle(services)
-        length = len(services)
-        n = int(length / 6)
-        services_grouped = [
-            {"services": services[i : i + n], "animation": random.randint(15, 35)}
-            for i in range(0, length, n)
-        ]
-        return services_grouped
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["services"] = self._get_services_grouped()
+        context["services_grouped"] = get_services_grouped(6)
         return context
 
 
@@ -59,4 +60,33 @@ class DashboardsDemo(TurboFrameTemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["widget_config"] = WIDGET_KIND_TO_WEB
+        return context
+
+
+class SupportDemo(TurboFrameTemplateView):
+    template_name = "web/site/home/support.html"
+    turbo_frame_dom_id = "web:support-demo"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["content"] = get_content("home.yaml")
+        return context
+
+
+class IntercomDemo(TurboFrameTemplateView):
+    template_name = "web/demo/intercom.html"
+    turbo_frame_dom_id = "web:intercom-demo"
+
+
+class SearchIntegrationsDemo(TurboFrameTemplateView):
+    template_name = "web/demo/search_integrations.html"
+    turbo_frame_dom_id = "web:search-integrations-demo"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["services"] = get_services_obj()
+        context["services_query"] = get_services_query(
+            category=None, search=self.request.GET.get("query") or None
+        )
+        context["content"] = get_content("integrations.yaml")
         return context

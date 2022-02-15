@@ -1,5 +1,6 @@
 import pytest
 import wagtail_factories
+from pytest_django.asserts import assertContains, assertNotContains
 from wagtail.core.models import Locale, Site
 
 from apps.base.tests.asserts import assertLink, assertOK
@@ -13,9 +14,6 @@ def test_site_pages(client):
     assertOK(r)
 
     r = client.get("/pricing")
-    assertOK(r)
-
-    r = client.get("/integrations")
     assertOK(r)
 
     r = client.get("/about")
@@ -33,6 +31,10 @@ def test_site_pages(client):
     assertOK(r)
     r = client.get("/demo/dashboards")
     assertOK(r)
+    r = client.get("/demo/support")
+    assertOK(r)
+    r = client.get("/demo/intercom")
+    assertOK(r)
 
 
 def test_site_links(client):
@@ -47,7 +49,7 @@ def test_site_links(client):
     assertLink(r, "https://intercom.help/gyana", "Help Center", total=3)
     assertLink(r, "https://feedback.gyana.com", "Feedback", total=3)
 
-    assertLink(r, "/integrations", "View our native integrations")
+    assertLink(r, "/integrations", "Learn about integrations")
 
     # footer links
     assertLink(r, "/about", "About", total=2)
@@ -70,6 +72,28 @@ def test_site_links(client):
 
     r = client.get("/pricing")
     assertLink(r, "/", "Go to app", total=2)
+
+
+def test_integrations_page(client):
+
+    r = client.get("/integrations")
+    assertOK(r)
+
+    assertLink(r, "https://gyana-data.typeform.com/to/pgpMNnAq", "Talk to us", total=4)
+
+    # integration search
+    r = client.get("/demo/search-integrations")
+    assertOK(r)
+    
+    r = client.get("/demo/search-integrations?query=google")
+    assertOK(r)
+    assertContains(r, "Google Ads")
+    assertNotContains(r, "Facebook Pages")
+    
+    r = client.get("/demo/search-integrations?category=Organic")
+    assertOK(r)
+    assertContains(r, "Facebook Pages")
+    assertNotContains(r, "Google Ads")
 
 
 def test_sitemap(client):

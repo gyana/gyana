@@ -1,7 +1,7 @@
 {% load static %}
 
 <style>
-  {% for group in services %}
+  {% for group in services_grouped %}
     .integrations-{{ forloop.counter0 }} {
       animation: {{ group.animation }}s linear 0s infinite normal none running slide;
     }
@@ -15,5 +15,5 @@
 
 <integration-demo></integration-demo>
 
-{{ services|json_script:"services" }}
+{{ services_grouped|json_script:"services_grouped" }}
 <script src="{% static "js/web-integration-demo-bundle.js" %}"></script>

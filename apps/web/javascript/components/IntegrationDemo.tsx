@@ -1,8 +1,8 @@
 import React from 'react'
 import { useDemoStore } from '../store'
 
-const SERVICES = JSON.parse(
-  (document.getElementById('services') as HTMLScriptElement).textContent as string
+const SERVICES_GROUPED = JSON.parse(
+  (document.getElementById('services_grouped') as HTMLScriptElement).textContent as string
 )
 
 const IntegrationDemo = () => {
@@ -13,7 +13,7 @@ const IntegrationDemo = () => {
     <>
       <div className='fade-left'></div>
       <div className='flex flex-col gap-4 overflow-hidden mt-2'>
-        {SERVICES.map((group, idx) => (
+        {SERVICES_GROUPED.map((group, idx) => (
           <div key={idx} className={`flex gap-2 integrations-${idx}`}>
             {group.services
               .filter((service) => !integrationIds.includes(service.id))

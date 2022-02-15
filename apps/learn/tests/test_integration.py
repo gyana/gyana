@@ -49,20 +49,20 @@ def test_learn(client, user, learn_page_factory):
     assertLink(r, "/", "Website")
     assertContains(r, "Welcome to Gyana University")
 
-    # sidebar navigation
-    assertLink(r, "/learn/getting-started/", "Getting started")
-    assertLink(r, "/learn/guides/", "Guides")
+    # sidebar navigation (2x links due to mobile menu)
+    assertLink(r, "/learn/getting-started/", "Getting started", total=2)
+    assertLink(r, "/learn/guides/", "Guides", total=2)
     assertNotContains(r, "Integrations")
 
     # check for child rendering behaviour
     r = client.get("/learn/guides/")
-    assertLink(r, "/learn/guides/integrations/", "Integrations")
+    assertLink(r, "/learn/guides/integrations/", "Integrations", total=2)
 
     r = client.get("/learn/guides/integrations/")
 
     # parent is rendered in sidebar
     # todo: breadcrumbs
-    assertLink(r, "/learn/guides/", "Guides")
+    assertLink(r, "/learn/guides/", "Guides", total=2)
     # content
     assertContains(r, "Integrations")
     assertContains(r, "Gyana has many integrations")

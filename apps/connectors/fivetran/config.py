@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from enum import Enum
 from functools import lru_cache
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 import yaml
 
@@ -35,6 +35,7 @@ class Service:
     static_config: Dict[str, Any] = field(default_factory=dict)
     internal: bool = False
     sunset: bool = False
+    alias: Optional[str] = None
 
     # fivetran metadata
     id: str = ""
@@ -71,7 +72,7 @@ class Service:
 def get_services_obj():
     services = yaml.load(open(SERVICES, "r"))
     metadata = yaml.load(open(METADATA, "r"))
-    return {k: Service(**v, **metadata[k]) for k, v in services.items()}
+    return {k: Service(**{**metadata.get(k, {}), **v}) for k, v in services.items()}
 
 
 @lru_cache

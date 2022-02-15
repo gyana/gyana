@@ -10,6 +10,7 @@ from apps.columns.transformer import FUNCTIONS
 from apps.connectors.fivetran.config import get_services_obj
 from apps.nodes.config import NODE_CONFIG
 from apps.teams.models import Team
+from apps.web.frames import get_services_grouped
 from apps.widgets.models import WIDGET_KIND_TO_WEB
 
 from .cache import cache_site
@@ -72,6 +73,8 @@ class Integrations(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["services"] = get_services_obj()
+        context["services_grouped"] = get_services_grouped(4)
+        context["content"] = get_content("integrations.yaml")
         return context
 
 

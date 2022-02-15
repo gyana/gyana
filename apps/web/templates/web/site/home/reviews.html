@@ -1,16 +1,18 @@
 {% load heroicons %}
 
-<div class="hidden sm:flex text-center justify-center flex-wrap mx-auto max-w-md sm:max-w-3xl lg:max-w-7xl py-8 opacity-50">
-  {% for quote in content.quotes %}
-    <div class="p-4 flex flex-col items-center">
-      <div class="flex">
-        {% for idx in '01234'|make_list %}
-            {% heroicon 'star' class="h-4 w-4 text-yellow-400" style="solid" %}
-        {% endfor %}
+<div>
+  <div class="flex text-center justify-center flex-wrap mx-auto max-w-md sm:max-w-3xl lg:max-w-7xl py-8 opacity-50">
+    {% for quote in content.quotes %}
+      <div class="{% if forloop.counter0 > 3%}hidden lg:{% endif %}flex p-2 lg:p-4 flex-col items-center">
+        <div class="flex">
+          {% for idx in '01234'|make_list %}
+              {% heroicon 'star' class="h-4 w-4 text-yellow-400" style="solid" %}
+          {% endfor %}
+        </div>
+        <blockquote class="lg:block max-w-md text-xs lg:text-base">
+          <i>&ldquo;{{ quote }}&rdquo;</i>
+        </blockquote>
       </div>
-      <blockquote class="max-w-md">
-        <i>&ldquo;{{ quote }}&rdquo;</i>
-      </blockquote>
-    </div>
-  {% endfor %}
+    {% endfor %}
+  </div>
 </div>
