@@ -124,7 +124,10 @@ export default class extends Controller {
   }
 
   change(event) {
-    if (event.hasTarget('name') && event.target.getAttribute('name').toLowerCase() != 'search') {
+    if (
+      event.target.hasAttribute('name') &&
+      event.target.getAttribute('name').toLowerCase() != 'search'
+    ) {
       this.changed = true
     }
   }

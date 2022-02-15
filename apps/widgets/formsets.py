@@ -3,7 +3,7 @@ from django import forms
 from apps.base.formsets import RequiredInlineFormset
 from apps.columns.forms import (
     AggregationColumnForm,
-    BaseLiveSchemaForm,
+    AggregationFormWithFormatting,
     ColumnFormWithFormatting,
 )
 from apps.columns.models import AggregationColumn, Column
@@ -34,18 +34,10 @@ ColumnFormset = forms.inlineformset_factory(
 )
 
 
-class AggregationSettingColumnForm(AggregationColumnForm):
-    def get_live_fields(self):
-        fields = super().get_live_fields()
-        if self.column_type:
-            fields += ["name", "rounding", "currency"]
-        return fields
-
-
 AggregationColumnFormset = forms.inlineformset_factory(
     Widget,
     AggregationColumn,
-    form=AggregationSettingColumnForm,
+    form=AggregationFormWithFormatting,
     can_delete=True,
     extra=0,
     formset=RequiredInlineFormset,
@@ -66,7 +58,7 @@ def create_min_formset(min_num):
     return forms.inlineformset_factory(
         Widget,
         AggregationColumn,
-        form=AggregationSettingColumnForm,
+        form=AggregationColumnForm,
         can_delete=True,
         min_num=min_num,
         extra=0,
@@ -77,7 +69,7 @@ def create_min_formset(min_num):
 SingleMetricFormset = forms.inlineformset_factory(
     Widget,
     AggregationColumn,
-    form=AggregationSettingColumnForm,
+    form=AggregationColumnForm,
     can_delete=True,
     extra=0,
     min_num=1,
@@ -88,7 +80,7 @@ SingleMetricFormset = forms.inlineformset_factory(
 OptionalMetricFormset = forms.inlineformset_factory(
     Widget,
     AggregationColumn,
-    form=AggregationSettingColumnForm,
+    form=AggregationColumnForm,
     can_delete=True,
     extra=0,
     max_num=1,
@@ -99,7 +91,7 @@ OptionalMetricFormset = forms.inlineformset_factory(
 XYMetricFormset = forms.inlineformset_factory(
     Widget,
     AggregationColumn,
-    form=AggregationSettingColumnForm,
+    form=AggregationColumnForm,
     # If can_delete is set to true marked as deleted rows are shown again
     can_delete=True,
     extra=0,
@@ -111,7 +103,7 @@ XYMetricFormset = forms.inlineformset_factory(
 XYZMetricFormset = forms.inlineformset_factory(
     Widget,
     AggregationColumn,
-    form=AggregationSettingColumnForm,
+    form=AggregationColumnForm,
     # If can_delete is set to true marked as deleted rows are shown again
     can_delete=True,
     extra=0,

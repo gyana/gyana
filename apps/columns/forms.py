@@ -60,14 +60,17 @@ class ColumnFormWithFormatting(ColumnForm):
         {
             "data-column-format-target": "hiddenInput",
             "class": "hidden",
-            # "formnovalidate": True,
         }
     )
 
     class Meta:
         model = Column
         fields = ("column", "rounding", "name", "currency")
-        widgets = {"currency": Datalist(attrs={"data-live-update-ignore": ""})}
+        widgets = {
+            "currency": Datalist(attrs={"data-live-update-ignore": ""}),
+            "name": forms.TextInput(attrs={"data-live-update-ignore": ""}),
+            "rounding": forms.NumberInput(attrs={"data-live-update-ignore": ""}),
+        }
 
     def get_live_fields(self):
         fields = super().get_live_fields()
@@ -82,13 +85,12 @@ class ColumnFormWithFormatting(ColumnForm):
 
 class AggregationColumnForm(BaseLiveSchemaForm):
     class Meta:
-        fields = ("column", "function", "rounding", "name", "currency")
+        fields = ("column", "function")
         help_texts = {
             "column": "Select the column to aggregate over",
             "function": "Select the aggregation function",
         }
         model = AggregationColumn
-        widgets = {"currency": Datalist(attrs={"data-live-update-ignore": ""})}
 
     def get_live_fields(self):
         fields = ["column"]
@@ -107,6 +109,39 @@ class AggregationColumnForm(BaseLiveSchemaForm):
                 (choice.value, choice.name)
                 for choice in AGGREGATION_TYPE_MAP[self.column_type.name]
             ]
+
+
+class AggregationFormWithFormatting(AggregationColumnForm):
+    formatting_is_hidden = forms.BooleanField(initial=True, required=False)
+    formatting_is_hidden.widget.attrs.update(
+        {
+            "data-column-format-target": "hiddenInput",
+            "class": "hidden",
+        }
+    )
+
+    class Meta:
+        fields = ("column", "function", "rounding", "name", "currency")
+        help_texts = {
+            "column": "Select the column to aggregate over",
+            "function": "Select the aggregation function",
+        }
+        model = AggregationColumn
+        widgets = {
+            "currency": Datalist(attrs={"data-live-update-ignore": ""}),
+            "name": forms.TextInput(attrs={"data-live-update-ignore": ""}),
+            "rounding": forms.NumberInput(attrs={"data-live-update-ignore": ""}),
+        }
+
+    def get_live_fields(self):
+        fields = super().get_live_fields()
+
+        if self.column_type:
+            fields += ["name", "formatting_is_hidden"]
+
+        if isinstance(self.column_type, (Floating, Integer)):
+            fields += ["rounding", "currency"]
+        return fields
 
 
 class OperationColumnForm(BaseLiveSchemaForm):
