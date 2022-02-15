@@ -15,6 +15,7 @@ from apps.columns.models import (
     JoinColumn,
     WindowColumn,
 )
+from apps.widgets.models import Widget
 
 from .bigquery import AllOperations, DatePeriod
 from .widgets import CodeMirror
@@ -137,7 +138,11 @@ class AggregationFormWithFormatting(AggregationColumnForm):
         fields = super().get_live_fields()
 
         if self.column_type:
-            fields += ["name", "formatting_is_hidden"]
+            if not (
+                self.instance.widget and self.instance.widget.kind == Widget.Kind.METRIC
+            ):
+                fields += ["name"]
+            fields += ["formatting_is_hidden"]
 
         if isinstance(self.column_type, (Floating, Integer)):
             fields += ["rounding", "currency"]

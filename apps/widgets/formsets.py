@@ -69,7 +69,7 @@ def create_min_formset(min_num):
 SingleMetricFormset = forms.inlineformset_factory(
     Widget,
     AggregationColumn,
-    form=AggregationColumnForm,
+    form=AggregationFormWithFormatting,
     can_delete=True,
     extra=0,
     min_num=1,

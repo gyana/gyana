@@ -23,6 +23,7 @@ from apps.base.frames import (
     TurboFrameUpdateView,
 )
 from apps.base.templates import template_exists
+from apps.columns.currency_symbols import CURRENCY_SYMBOLS_MAP
 from apps.controls.bigquery import DATETIME_FILTERS
 from apps.dashboards.mixins import DashboardMixin
 from apps.tables.bigquery import get_query_from_table
@@ -62,7 +63,10 @@ def add_output_context(context, widget, request, control):
                 context["period"] = DATETIME_FILTERS[used_control.date_range][
                     "previous_label"
                 ]
-
+        column = widget.aggregations.first()
+        context["column"] = column
+        if column.currency:
+            context["currency"] = CURRENCY_SYMBOLS_MAP[column.currency]
         context["metric"] = metric
     else:
         chart, chart_id = chart_to_output(widget, control)

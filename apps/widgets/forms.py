@@ -376,7 +376,6 @@ class WidgetStyleForm(forms.ModelForm):
             "background_color",
             "show_tooltips",
             "font_size",
-            "rounding_decimal",
         ]
 
     def __init__(self, *args, **kwargs):
@@ -391,11 +390,7 @@ class WidgetStyleForm(forms.ModelForm):
                 }
             )
         else:
-            self.fields = {
-                key: field
-                for key, field in self.base_fields.items()
-                if key != "rounding_decimal"
-            }
+            self.fields = dict(self.base_fields.items())
 
     # If widget has no value set for a setting, default to dashboard settings.
     def get_initial_for_field(self, field, field_name):

@@ -30,9 +30,6 @@ class WidgetStyle(models.Model):
     font_size = models.IntegerField(null=True)
     font_color = models.CharField(null=True, max_length=7)
 
-    # Metric rounding
-    rounding_decimal = models.IntegerField(default=2)
-
 
 class Widget(WidgetStyle, BaseModel):
     class Category(models.TextChoices):
