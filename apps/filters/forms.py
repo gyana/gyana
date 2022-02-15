@@ -1,8 +1,8 @@
 from django import forms
 from django.forms.widgets import Input, TextInput
 
-from apps.base.forms import BaseLiveSchemaForm
 from apps.base.core.utils import create_column_choices
+from apps.base.forms import BaseLiveSchemaForm
 from apps.base.widgets import DatetimeInput
 from apps.filters.models import NO_VALUE, PREDICATE_MAP, Filter
 
@@ -23,7 +23,7 @@ IBIS_TO_TYPE = {
 
 
 class FilterForm(BaseLiveSchemaForm):
-    column = forms.ChoiceField(choices=[], help_text="Column")
+    column = forms.ChoiceField(choices=[])
 
     # We have to add the media here because otherwise the form fields
     # Are added dynamically, and a script wouldn't be added if a widget
@@ -50,22 +50,6 @@ class FilterForm(BaseLiveSchemaForm):
             "float_values",
             "bool_value",
         )
-        help_texts = {
-            "string_predicate": "Condition",
-            "numeric_predicate": "Condition",
-            "time_predicate": "Condition",
-            "datetime_predicate": "Condition",
-            "time_value": "Value",
-            "date_value": "Value",
-            "datetime_value": "Value",
-            "string_value": "Value",
-            "integer_value": "Value",
-            "string_values": "Value",
-            "integer_values": "Value",
-            "float_value": "Value",
-            "float_values": "Value",
-            "bool_value": "Value",
-        }
 
         widgets = {
             "string_value": TextInput(),
