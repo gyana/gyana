@@ -4,6 +4,7 @@ from django import forms
 from django.conf import settings
 from django.utils.html import mark_safe
 from django.utils.safestring import mark_safe
+from django.utils.translation import ugettext_lazy as _
 
 from apps.base.analytics import (
     SIGNED_UP_EVENT,
