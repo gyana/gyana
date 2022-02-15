@@ -5,7 +5,9 @@
 
 <div class="input-group">
 {% for bound_field in form.visible_fields %}
-  {% if bound_field.widget_type == "palettecolors" %}
+{% comment %} Ignore these fields because they are going to be rendered in an extendable manner further down {% endcomment %}
+  {% if form|classname == "ColumnForm" and bound_field.label in 'Currency, Rounding, Name'%}
+  {% elif bound_field.widget_type == "palettecolors" %}
     <label>
       <span>
         {{ bound_field.label }}
@@ -84,27 +86,34 @@
         {{ bound_field }}
       </div>
     </div>
+    
   {% else %}
-    <div class="label {{ bound_field.field.widget.attrs.class }}">
-      <label for="{{ bound_field.id_for_label }}">
-        {{ bound_field.label }}
-
-        {% if bound_field.help_text %}
-        <p class="input__help-text">
-          {{ bound_field.help_text }}
-          {% if not bound_field.field.required %} - optional{% endif %}
-        </p>
-        {% endif %}
-      </label>
-
-      {{ bound_field }}
-    </div>
+    {% include 'django/forms/field.html' with field=bound_field%}
   {% endif %}
+
 
   {% if not form.is_live %}
   {{ bound_field.errors }}
   {% endif %}
   {% endfor %}
+
+  {% if form|classname == "ColumnForm" %}
+    <div data-controller='column-format'>
+      <button 
+        type='button'
+        class='small link'
+        data-action='column-format#handle'
+      >Formatting</button>
+      <div data-column-format-target='inputs'>
+        {% for field in form.visible_fields  %}
+          {% if field.label in 'Currency, Rounding, Name'%}
+            {% include 'django/forms/field.html'%}
+          {% endif %}
+        {% endfor %}
+      </div>
+    </div>
+  {% endif %}
+
 </div>
 
 {% for label, formset in formsets.items %}

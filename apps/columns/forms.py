@@ -1,5 +1,5 @@
 from django import forms
-from ibis.expr.datatypes import Date, Floating, Timestamp
+from ibis.expr.datatypes import Date, Floating, Integer, Timestamp
 
 from apps.base.core.aggregations import AGGREGATION_TYPE_MAP
 from apps.base.core.utils import create_column_choices
@@ -52,6 +52,22 @@ class ColumnForm(BaseLiveSchemaForm):
                 for choice in self.fields["part"].choices
                 if choice[0] != DatePeriod.DATE.value
             ]
+
+
+class ColumnFormWithFormatting(ColumnForm):
+    class Meta:
+        model = Column
+        fields = ("column", "rounding", "name", "currency")
+        widgets = {"currency": Datalist(attrs={"data-live-update-ignore": ""})}
+
+    def get_live_fields(self):
+        fields = super().get_live_fields()
+        if self.column_type:
+            fields += ["name"]
+
+        if isinstance(self.column_type, (Floating, Integer)):
+            fields += ["rounding", "currency"]
+        return fields
 
 
 class AggregationColumnForm(BaseLiveSchemaForm):

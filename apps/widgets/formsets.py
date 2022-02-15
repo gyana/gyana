@@ -1,9 +1,11 @@
 from django import forms
-from ibis.expr.datatypes import Floating, Integer
 
 from apps.base.formsets import RequiredInlineFormset
-from apps.base.widgets import Datalist
-from apps.columns.forms import AggregationColumnForm, BaseLiveSchemaForm
+from apps.columns.forms import (
+    AggregationColumnForm,
+    BaseLiveSchemaForm,
+    ColumnFormWithFormatting,
+)
 from apps.columns.models import AggregationColumn, Column
 from apps.controls.forms import ControlForm
 from apps.controls.models import Control
@@ -22,26 +24,10 @@ FilterFormset = forms.inlineformset_factory(
 )
 
 
-class ColumnForm(BaseLiveSchemaForm):
-    class Meta:
-        model = Column
-        fields = ("column", "rounding", "name", "currency")
-        widgets = {"currency": Datalist(attrs={"data-live-update-ignore": ""})}
-
-    def get_live_fields(self):
-        fields = ["column"]
-        if self.column_type:
-            fields += ["name"]
-
-        if isinstance(self.column_type, (Floating, Integer)):
-            fields += ["rounding", "currency"]
-        return fields
-
-
 ColumnFormset = forms.inlineformset_factory(
     Widget,
     Column,
-    form=ColumnForm,
+    form=ColumnFormWithFormatting,
     extra=0,
     can_delete=True,
     formset=RequiredInlineFormset,
