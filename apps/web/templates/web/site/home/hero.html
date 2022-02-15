@@ -1,13 +1,51 @@
-{% load static heroicons site_tags %}
+{% load static heroicons site_tags random_utils %}
 
-<div class="py-8 lg:relative lg:py-32 overflow-hidden">
+<style>
+
+  {% for i in '0123456789'|make_list %}
+    .animate-logo-{{ i }} {
+      animation: float {% random_int 6 12 %}s ease-in-out {% random_int -3 3 %}s infinite;
+    }
+  {% endfor %}
+
+  {% for i in '0123456789'|make_list %}
+    .animate-number-{{ i }} {
+      animation: float {% random_int 6 12 %}s ease-in-out {% random_int -3 3 %}s infinite;
+    }
+  {% endfor %}
+
+  {% comment %} {% for i in '0123456789'|make_list %}
+    .animate-chart-{{ i }} {
+      animation: float {% random_int 6 12 %}s ease-in-out {% random_int -3 3 %}s infinite;
+    }
+  {% endfor %} {% endcomment %}
+
+  .animate-report {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% {
+      transform: translatey(0);
+    }
+    50% {
+      transform: translatey(5px);
+    }
+  }
+</style>
+
+<div class="py-8 lg:relative lg:py-32 xl:py-36 overflow-hidden bg-gray-20">
   <div class="mx-auto max-w-md px-4 sm:max-w-3xl sm:px-6 lg:px-8 lg:max-w-7xl lg:grid lg:grid-cols-2 lg:gap-24">
-    <div>
+    <div class="relative">
+      <p class="absolute right-0 -bottom-20 lg:bottom-0 text-indigo-600 text-xl lg:text-3xl text-right text-caveat">
+        <span class="block">* yes, we really<span>
+        <span class="block">mean <a class="link underline" href="{% url 'web:integrations' %}">any!</a></span>
+      </p>
       <a
         href="/blog/gyana-2021-wrapped"
         class="space-x-4 hidden sm:inline-flex"
       >
-        <span class="rounded bg-indigo-50 px-2.5 py-1 text-xs font-semibold text-indigo-600 tracking-wide uppercase">
+        <span class="rounded bg-indigo-100 px-2.5 py-1 text-xs font-semibold text-indigo-600 tracking-wide uppercase">
           What's new
         </span>
         <span class="inline-flex items-center text-sm font-normal text-indigo-600 space-x-1">
@@ -16,8 +54,9 @@
         </span>
       </a>
       <div class="text-center sm:text-left my-6 sm:max-w-xl">
-        <h1 class="text-5xl font-bold text-gray-900 sm:text-6xl">
-          Build custom reports <i class="text-indigo-600">10x faster</i>
+        <h1 class="text-4xl font-bold text-gray-900 sm:text-5xl lg:text-6xl">
+          <div>Custom reports</div>
+          <div>for any<span class="text-indigo-600 -ml-2 mr-1 text-caveat">*</span> source</div>
         </h1>
         <p class="mt-4 sm:text-lg text-gray-600">
           Stop wrestling with manual exports, #N/A nightmares and stale data.
@@ -26,57 +65,26 @@
       </div>
 
       <div class="my-4 flex justify-center gap-4 sm:justify-start">
-        <a href="{% external_url 'waitlist' %}" class="button button--secondary">
-          Sign up
-        </a>
-
-        <a href="{% external_url 'talk_to_us' %}" class="button">
-          Talk to us
-        </a>
-      </div>
-
-      <div class="mt-6 hidden sm:block">
-        <div class="inline-flex items-center gap-2">
-          <div class="flex-shrink-0 flex">
-            {% for idx in '0123'|make_list %}
-              <div class="h-6 w-6 relative">
-                <div class="absolute">
-                  {% heroicon 'star' class="h-6 w-6 stroke-current text-yellow-600" style="solid" %}
-                </div>
-                <div class="absolute">
-                  {% heroicon 'star' class="h-6 w-6 text-yellow-400" style="solid" %}
-                </div>
-              </div>
-            {% endfor %}
-            <div class="h-6 w-6 relative">
-              <div class="absolute">
-                {% heroicon 'star' class="h-6 w-6 stroke-current text-yellow-600" style="solid" %}
-              </div>
-              <div class="absolute">
-                {% heroicon 'star' class="h-6 w-6 text-white" style="solid" %}
-              </div>
-              <div class="h-8 w-4 object-contain overflow-hidden absolute">
-                {% heroicon 'star' class="h-6 w-6 text-yellow-400" style="solid" %}
-              </div>
-            </div>
-          </div>
-          <div class="min-w-0 flex-1 py-1 text-sm text-gray-600 sm:py-3">
-            Rated <span class="font-bold text-gray-900">4.7</span> on <a class="hover:text-gray-900 hover:underline" href="https://appsumo.com/products/gyana/">AppSumo</a>
-            <span class="text-gray-400">|</span> <span class="font-bold text-gray-900">101</span> reviews
-          </div>
+        <div class="flex flex-col gap-2 text-lg items-center">
+          <a href="{% external_url 'waitlist' %}" class="button button--secondary w-36">
+            Sign up
+          </a>
+          <p class="text-xs lg:text-sm text-gray-600">Build reports for free</p>
+        </div>
+        <div class="flex flex-col gap-2 text-lg items-center">
+          <a href="{% external_url 'talk_to_us' %}" class="button w-36">
+            Talk to us
+          </a>
+          <p class="text-xs lg:text-sm text-gray-600">We'll build your report</p>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="sm:mx-auto sm:max-w-3xl ">
-    <div class="sm:relative lg:absolute lg:inset-y-0 lg:right-16 lg:w-1/2">
-      <div class="relative my-4 sm:mx-auto sm:max-w-3xl sm:px-0 lg:-mx-8 lg:py-8 lg:max-w-none lg:h-full">
-        <img
-          class="w-full lg:h-full lg:w-auto lg:max-w-none"
-          src="{% static 'images/site/home/landing.jpg' %}"
-          alt="App screenshot"
-        />
+  <div class="sm:mx-auto sm:max-w-3xl">
+    <div class="sm:relative lg:absolute lg:inset-y-0 lg:right-16 lg:w-1/2" style="z-index: 2;">
+      <div class="relative my-4 sm:mx-auto sm:max-w-2xl sm:px-0 lg:-mx-8 lg:py-8 lg:h-full xl:max-w-3xl" >
+        {% include 'web/site/home/landing.svg' %}
       </div>
    </div>
   </div>

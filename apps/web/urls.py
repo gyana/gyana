@@ -2,6 +2,8 @@ from django.conf import settings
 from django.urls import path
 from django.views.generic import TemplateView
 
+from apps.base.clickjacking import xframe_options_sameorigin_allowlist
+
 from . import frames, views
 from .cache import cache_site
 
@@ -26,8 +28,19 @@ urlpatterns = sitmap_urlpatterns + [
     path(
         "demo/integrations", frames.IntegrationsDemo.as_view(), name="integrations-demo"
     ),
+    path(
+        "demo/search-integrations",
+        frames.SearchIntegrationsDemo.as_view(),
+        name="search-integrations-demo",
+    ),
     path("demo/workflows", frames.WorkflowsDemo.as_view(), name="workflows-demo"),
     path("demo/dashboards", frames.DashboardsDemo.as_view(), name="dashboards-demo"),
+    path("demo/support", frames.SupportDemo.as_view(), name="support-demo"),
+    path(
+        "demo/intercom",
+        xframe_options_sameorigin_allowlist(frames.IntercomDemo.as_view()),
+        name="intercom-demo",
+    ),
     path("help", frames.HelpModal.as_view(), name="help"),
     path("changelog", frames.ChangelogModal.as_view(), name="changelog"),
 ]

@@ -111,3 +111,14 @@
 .text-poppins {
   font-family: "Poppins";
 }
+
+.text-caveat {
+  font-family: 'Caveat';
+}
+
+.logo {
+  max-width: 128px;
+  @media (min-width: 768px) {
+    max-width: 160;
+  }
+}

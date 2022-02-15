@@ -73,48 +73,60 @@
         {% link_video 'connector' %}
       </h2>
       <div class="card mb-4">
-        <div class="flex flex-col text-center mb-7">
-          <img class="h-20 mb-2" src="{% static 'images/integrations/fivetran/'|add:service.icon_path %}"
-              alt="{{ service.name }}" />
-          {% comment %} <p>Create a new connector to</p> {% endcomment %}
-          <h1 class="mb-2">{{ service.name }}</h1>
+        <div class="flex flex-col items-start gap-4">
+          <img class="h-40 object-contain mb-2" src="{% static 'images/integrations/fivetran/'|add:service.icon_path %}" alt="{{ service.name }}" />
+          <h1>{{ service.name }}</h1>
           <p class="max-w-xl">{{ service.description }}</p>
         </div>
       </div>
 
-      <p>
-        You'll now be redirected to <strong>Fivetran</strong> to
-        setup your integration. Learn more about our <a class="link" href="{% article_url 'integrations' 'connector' %}">partnership with Fivetran</a>.
-      </p>
+      {% if service.alias == 'mysql' %}
+        <p class="mb-4">
+          {{ service.name }} is built on the MySQL database.
+          Instead of pulling data from its API, we pull directly from the source database, saving time and effort.
+          Continue to view our MySQL connectors.
+        </p>
+        
+        <div>
+          <a href="{% url 'project_integrations_connectors:create' project.id %}?search=mysql" class="button button--success">
+            Continue
+          </a>
+        </div>
+      {% else %}
+        <p>
+          You'll now be redirected to <strong>Fivetran</strong> to
+          setup your integration. Learn more about our <a class="link" href="{% article_url 'integrations' 'connector' %}">partnership with Fivetran</a>.
+        </p>
 
-      <p class="mb-4">
-        They'll ask you to authorise <strong>{{ service.name }}</strong> and configure your connection settings.
-        Fivetran will run checks to validate and re-direct to us if successful.
-        Any issues, take a look at our <a class="link" href="{% article_url 'integrations' 'error' %}">troubleshooting guide<a/>.
-      </p>
+        <p class="mb-4">
+          They'll ask you to authorise <strong>{{ service.name }}</strong> and configure your connection settings.
+          Fivetran will run checks to validate and re-direct to us if successful.
+          Any issues, take a look at our <a class="link" href="{% article_url 'integrations' 'error' %}">troubleshooting guide<a/>.
+        </p>
 
-      <p class="alert mb-4">
-        You can revoke our access to your data at any time.
-      </p>
+        <p class="alert mb-4">
+          You can revoke our access to your data at any time.
+        </p>
 
-      <p>
-        The intial import will take from a few minutes to an hour. You'll get an email
-        when it's ready to review, or you can keep an eye on the <a class="link" href="{% url 'project_integrations:list' project.id %}">integrations</a> page.
-      </p>
+        <p>
+          The intial import will take from a few minutes to an hour. You'll get an email
+          when it's ready to review, or you can keep an eye on the <a class="link" href="{% url 'project_integrations:list' project.id %}">integrations</a> page.
+        </p>
 
-      <p class="alert mb-6">
-        After the initial import, new data will sync into Gyana automatically.
-      </p>
-      
-      <form id="create-form" method="post" action="{{ request.get_full_path }}" class="form max-w-xl" data-turbo="false">
-        {% csrf_token %}
+        <p class="alert mb-6">
+          After the initial import, new data will sync into Gyana automatically.
+        </p>
+        
+        <form id="create-form" method="post" action="{{ request.get_full_path }}" class="form max-w-xl" data-turbo="false">
+          {% csrf_token %}
 
-        {% include "django/forms/default_form.html" %}
+          {% include "django/forms/default_form.html" %}
 
-        <button type="submit" class="button button--success">
-          Continue
-        </button>
-      </form>
+          <button type="submit" class="button button--success">
+            Continue
+          </button>
+        </form>
+      {% endif %}
     </div>
   </div>
   {% endwith %}

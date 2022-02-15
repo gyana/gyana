@@ -1,10 +1,7 @@
 {% load static heroicons %}
 
-<div
-  id="features"
-  class="relative bg-white pt-16 pb-32 overflow-hidden"
->
-  <div id="integrations" class="relative">
+<div class="bg-white pt-16 pb-32 overflow-hidden">
+  <div>
     <div class="lg:mx-auto lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-2 lg:grid-flow-col-dense lg:gap-24">
       <div class="px-4 max-w-xl mx-auto sm:px-6 lg:py-16 lg:max-w-none lg:mx-0 lg:px-0">
         <div>
@@ -15,18 +12,20 @@
               </span>
             </span>
           </div>
-          <div class="mt-6">
+          <div class="mt-6 flex flex-col gap-y-4">
             <h2 class="text-3xl font-extrabold tracking-tight text-gray-900">
               Connect your sources
             </h2>
-            <p class="my-4 text-lg text-gray-600">
-              Connect to most popular online sources, including apps, databases, webhooks and APIs.
-              After a one-time setup, our enterprise-grade connectors will sync your raw data, daily.
-              No more manual exports.
+            <p class="text-lg text-gray-600">
+              Connect to most popular online sources out of the box, including apps, databases, webhooks and APIs.
+              <strong>Need something custom?</strong> We can integrate any new source in 2 weeks.
+            </p>
+            <p class="text-sm text-gray-600">
+              <b>100+</b> native integrations • <b>1B+</b> rows imported • <b>2 weeks</b> for new sources
             </p>
             <div class="flex flex-col lg:flex-row gap-4">
               <a href="{% url 'web:integrations' %}" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
-                <span class="mr-2">View our native integrations</span>
+                <span class="mr-2">Learn about integrations</span>
                 {% heroicon 'external-link' class="w-5 h-5" style="solid" %}
               </a>
               <div class="inline-flex items-center text-sm leading-4 font-medium text-gray-700">
@@ -35,6 +34,9 @@
                 <span class="ml-2 hidden lg:block">{% heroicon 'arrow-right' class="w-5 h-5" style="solid" %}</span>
               </div>
             </div>
+            <p class="text-indigo-600 text-xl lg:text-2xl text-right text-caveat">
+              No more downloading CSVs every week
+            </p>
           </div>
         </div>
       </div>
@@ -45,7 +47,7 @@
       </div>
     </div>
   </div>
-  <div id="workflows" class="mt-24">
+  <div class="mt-24">
     <div class="lg:mx-auto lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-2 lg:grid-flow-col-dense lg:gap-24">
       <div class="px-4 max-w-xl mx-auto sm:px-6 lg:py-16 lg:max-w-none lg:mx-0 lg:px-0 lg:col-start-2">
         <div>
@@ -82,6 +84,9 @@
               <span class="mr-2 hidden lg:block">{% heroicon 'arrow-left' class="w-5 h-5" style="solid" %}</span>
               <span>Explore our workflow nodes</span>
             </div>
+            <p class="text-indigo-600 text-xl lg:text-2xl text-right text-caveat">
+              Say goodbye to #N/A, #REF and friends
+            </p>
           </div>
         </div>
       </div>
@@ -92,9 +97,9 @@
       </div>
     </div>
   </div>
-  <div id="dashboards" class="mt-24">
+  <div class="mt-24">
     <div class="lg:mx-auto lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-2 lg:grid-flow-col-dense lg:gap-24">
-      <div class="px-4 max-w-xl mx-auto sm:px-6 lg:py-16 lg:max-w-none lg:mx-0 lg:px-0">
+      <div class="relative px-4 max-w-xl mx-auto sm:px-6 lg:py-16 lg:max-w-none lg:mx-0 lg:px-0">
         <div>
           <div>
             <span class="flex-shrink-0">
@@ -127,6 +132,9 @@
               <span>Customize your report</span>
               <span class="ml-2 hidden lg:block">{% heroicon 'arrow-right' class="w-5 h-5" style="solid" %}</span>
             </div>
+            <p class="text-indigo-600 text-xl lg:text-2xl text-right text-caveat">
+              Give your browser tabs a holiday
+            </p>  
           </div>
         </div>
       </div>
@@ -143,10 +151,15 @@
   window.__demo_store__ = {
     integrations: [
       {
+        id: 'facebook_ads',
         name: 'Facebook Ads',
         icon_path: 'facebook_ads.svg',
       },
-      { name: 'Google Ads', icon_path: 'google_ads_account.png' },
+      {
+        id: 'google_ads_account',
+        name: 'Google Ads',
+        icon_path: 'google_ads_account.png'
+      },
     ],
     node: null
   }

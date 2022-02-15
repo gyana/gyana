@@ -2,3 +2,19 @@
 @import "page-contents";
 @import "page-navigation";
 @import "sidebar";
+
+// Equivalent to tailwind-md
+
+.mobile {
+  display: block;
+  @media (min-width: 768px) {
+    display: none;
+  }
+}
+
+.desktop {
+  display: none;
+  @media (min-width: 768px) {
+    display: block;
+  }
+}

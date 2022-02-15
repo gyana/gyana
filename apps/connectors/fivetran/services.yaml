@@ -180,10 +180,18 @@ klaviyo: {}
 kustomer: {}
 lever: {}
 linkedin_ads: {}
+loaded_commerce_via_mysql:
+  id: loaded_commerce_via_mysql
+  alias: mysql
+  name: Loaded Commerce
+  icon_path: loaded_commerce_via_mysql.png
+  type: Commerce
 magento_mysql:
   service_type: database
+  type: Commerce
 magento_mysql_rds:
   service_type: database
+  type: Commerce
 mailchimp: {}
 mandrill: {}
 maria:
@@ -201,6 +209,12 @@ mysql_azure:
   service_type: database
 mysql_rds:
   service_type: database
+oscommerce_mysql:
+  id: oscommerce_mysql
+  alias: mysql
+  name: OsCommerce
+  icon_path: oscommerce_mysql.svg
+  type: Commerce
 outbrain: {}
 pardot: {}
 pinterest_ads: {}
@@ -209,6 +223,12 @@ postgres:
   service_type: database
 postgres_rds:
   service_type: database
+prestashop_via_mysql:
+  id: prestashop_via_mysql
+  alias: mysql
+  name: PrestaShop
+  icon_path: prestashop_via_mysql.svg
+  type: Commerce
 quickbooks: {}
 recharge: {}
 recurly: {}
@@ -217,10 +237,17 @@ salesforce: {}
 segment:
   service_type: event_tracking
 sendgrid: {}
-shopify: {}
+shopify:
+  type: Commerce
 snapchat_ads: {}
 snowplow:
   service_type: event_tracking
+spree_commerce_via_mysql:
+  id: spree_commerce_via_mysql
+  alias: mysql
+  name: Spree Commerce
+  icon_path: spree_commerce_via_mysql.png
+  type: Commerce
 sql_server:
   service_type: database
 sql_server_rds:
@@ -237,6 +264,12 @@ webhooks:
   service_type: webhooks
   static_config:
     table: webhooks_table
+woocommerce_via_mysql:
+  id: woocommerce_via_mysql
+  alias: mysql
+  name: WooCommerce
+  icon_path: woocommerce_via_mysql.svg
+  type: Commerce
 uservoice: {}
 xero: {}
 youtube_analytics:
