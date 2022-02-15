@@ -44,14 +44,14 @@
         {% endif %}
       </span>
     </label>
-  {% elif bound_field.subwidgets|length == 1 %}
+  {% elif bound_field.subwidgets|length == 1 and bound_field.widget_type != "codemirror" %}
     <div
       {% if bound_field.field.initial %}
       data-controller="reset-default"
       data-reset-default-initial-value="{{ bound_field.field.initial }}"
       {% endif %}
       class="label {{ bound_field.field.widget.attrs.class }}"
-    >
+    > 
       <label for="{{ bound_field.id_for_label}}">
         <span class="block">
           {{ bound_field.label }}
