@@ -8,6 +8,8 @@ from apps.base.tests.mocks import mock_bq_client_with_schema
 from apps.columns.forms import (
     AddColumnForm,
     AggregationColumnForm,
+    AggregationFormWithFormatting,
+    ColumnFormWithFormatting,
     ConvertColumnForm,
     FormulaColumnForm,
     JoinColumnForm,
@@ -18,6 +20,35 @@ from apps.nodes.models import Node
 
 pytestmark = pytest.mark.django_db
 from apps.columns.models import EditColumn
+
+
+def test_column_form_with_formatting(column_factory, node_factory):
+    column = column_factory(node=node_factory())
+    form = ColumnFormWithFormatting(instance=column, schema=TABLE.schema())
+
+    assert set(form.fields.keys()) == {"hidden_live", "column"}
+    assertFormChoicesLength(form, "column", 9)
+
+    data = QueryDict(mutable=True)
+    data["column"] = "id"
+    form = ColumnFormWithFormatting(instance=column, schema=TABLE.schema(), data=data)
+    assert set(form.fields.keys()) == {
+        "hidden_live",
+        "column",
+        "currency",
+        "name",
+        "rounding",
+        "formatting_is_hidden",
+    }
+
+    data["column"] = "athlete"
+    form = ColumnFormWithFormatting(instance=column, schema=TABLE.schema(), data=data)
+    assert set(form.fields.keys()) == {
+        "hidden_live",
+        "column",
+        "name",
+        "formatting_is_hidden",
+    }
 
 
 def test_aggregation_form(aggregation_column_factory, node_factory):
@@ -33,6 +64,41 @@ def test_aggregation_form(aggregation_column_factory, node_factory):
     assert set(form.fields.keys()) == {"hidden_live", "column", "function"}
     assert {choice[0] for choice in form.fields["function"].choices} == {
         choice.value for choice in AggregationFunctions
+    }
+
+
+def test_aggregation_form_with_formatting(aggregation_column_factory, node_factory):
+    column = aggregation_column_factory(node=node_factory())
+    form = AggregationFormWithFormatting(instance=column, schema=TABLE.schema())
+
+    assert set(form.fields.keys()) == {"hidden_live", "column"}
+    assertFormChoicesLength(form, "column", 9)
+
+    data = QueryDict(mutable=True)
+    data["column"] = "id"
+    form = AggregationFormWithFormatting(
+        instance=column, schema=TABLE.schema(), data=data
+    )
+    assert set(form.fields.keys()) == {
+        "hidden_live",
+        "column",
+        "function",
+        "currency",
+        "name",
+        "rounding",
+        "formatting_is_hidden",
+    }
+
+    data["column"] = "athlete"
+    form = AggregationFormWithFormatting(
+        instance=column, schema=TABLE.schema(), data=data
+    )
+    assert set(form.fields.keys()) == {
+        "hidden_live",
+        "column",
+        "function",
+        "name",
+        "formatting_is_hidden",
     }
 
 

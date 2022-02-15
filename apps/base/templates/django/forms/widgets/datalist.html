@@ -2,7 +2,7 @@
 {{ widget.label }}
 
 <input
-  type='text'
+  type="{{ widget.type }}"
   list="{{ widget.name }}"
   name="{{ widget.name }}"
   {% if widget.value != None %}
