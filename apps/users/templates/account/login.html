@@ -14,7 +14,7 @@
   <form class="mb-4" method="post">
     {% csrf_token %}
 
-    {{ form }}
+    {% include "django/forms/default_form.html" %}
 
     <div class="flex flex-col w-full gap-2">
       <button type="submit" class="button button--primary button--filled w-full">

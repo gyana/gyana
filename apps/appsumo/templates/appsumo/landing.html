@@ -5,7 +5,7 @@
   <form method="post" class="my-8">
     {% csrf_token %}
 
-    {{form }}
+    {% include "django/forms/default_form.html" %}
 
     <button type="submit" class="button button--filled w-full">
       Continue

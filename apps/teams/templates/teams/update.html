@@ -9,7 +9,7 @@
       <form class="mb-8" method="post" enctype="multipart/form-data">
         {% csrf_token %}
 
-        {{ form }}
+        {% include "django/forms/default_form.html" %}
 
         <button type="submit" class="button button--success w-full">Save</button>
       </form>

@@ -11,7 +11,7 @@
       >
         {% csrf_token %}
 
-        {{ form }}
+        {% include "django/forms/default_form.html" %}
 
         <button type="submit" class="button button--success">
           Save changes

@@ -109,7 +109,7 @@
       <form id="create-form" method="post" action="{{ request.get_full_path }}" class="form max-w-xl" data-turbo="false">
         {% csrf_token %}
 
-        {{ form }}
+        {% include "django/forms/default_form.html" %}
 
         <button type="submit" class="button button--success">
           Continue

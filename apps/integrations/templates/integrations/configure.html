@@ -38,7 +38,7 @@
 
         {% csrf_token %}
 
-        {{ form }}
+        {% include "django/forms/default_form.html" %}
 
         {% flag 'alpha' %}
           {% if object.kind == 'connector' and object.connector.service == 'facebook_ads' and object.connector.setup_mode == 'advanced' %}
