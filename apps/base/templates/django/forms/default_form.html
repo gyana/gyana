@@ -41,7 +41,7 @@
       {% endif %}
     </span>
   </label>
-  {% elif bound_field.subwidgets|length == 1 %}
+  {% else %}
   <div
     {% if bound_field.field.initial %}
     data-controller="reset-default"
@@ -80,18 +80,6 @@
 
       {{ bound_field }}
     </div>
-  </div>
-  {% else %}
-  <div class="label {{ bound_field.field.widget.attrs.class }}">
-    <label for="{{ bound_field.id_for_label }}">
-      {{ bound_field.label }}
-
-      {% if bound_field.help_text %}
-      <p class="input__help-text">{{ bound_field.help_text }}</p>
-      {% endif %}
-    </label>
-
-    {{ bound_field }}
   </div>
   {% endif %}
 

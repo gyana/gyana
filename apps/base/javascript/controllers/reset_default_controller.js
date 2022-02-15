@@ -20,7 +20,7 @@ export default class extends Controller {
   initialize() {
     this.boundHandleClick = this.handleClick.bind(this)
     this.boundHandleChange = this.handleChange.bind(this)
-    this.inputElement = this.element.querySelector('input')
+    this.inputElement = this.element.querySelector('input') || this.element.querySelector('select')
   }
 
   connect() {
@@ -38,7 +38,7 @@ export default class extends Controller {
   }
 
   reset() {
-    this.element.querySelector('input').value = this.initialValue
+    this.inputElement.value = this.initialValue
   }
 
   handleClick(event) {
