@@ -41,6 +41,11 @@ def test_connector_create(client, logged_in_user, bigquery, fivetran, project):
     assertOK(r)
     assertLink(r, f"{CONNECTORS}/new?service=google_analytics", "Google Analytics")
 
+    # connector alias logic (e.g. mysql)
+    r = client.get(f"{CONNECTORS}/new?service=woocommerce_via_mysql")
+    assertOK(r)
+    assertLink(r, f"{CONNECTORS}/new?search=mysql", "Continue")
+
     # create
     r = client.get(f"{CONNECTORS}/new?service=google_analytics")
     assertOK(r)
