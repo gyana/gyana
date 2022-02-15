@@ -481,5 +481,3 @@ WAGTAILSEARCH_BACKENDS = {
         "BACKEND": "wagtail.search.backends.database",
     }
 }
-
-X_FRAME_OPTIONS = "SAMEORIGIN"
