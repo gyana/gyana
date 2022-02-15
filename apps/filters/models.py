@@ -63,38 +63,50 @@ class Filter(SaveParentModel):
         "nodes.Node", on_delete=models.CASCADE, related_name="filters", null=True
     )
 
-    column = models.CharField(max_length=300, help_text="Column")
+    column = models.CharField(max_length=300)
     type = models.CharField(max_length=8, choices=Type.choices)
 
     numeric_predicate = models.CharField(
-        max_length=16, choices=NumericPredicate.choices, null=True
+        max_length=16,
+        choices=NumericPredicate.choices,
+        null=True,
+        verbose_name="Condition",
     )
 
-    float_value = models.FloatField(null=True)
-    float_values = ArrayField(models.FloatField(), null=True)
-    integer_value = models.BigIntegerField(null=True)
-    integer_values = ArrayField(models.BigIntegerField(), null=True)
+    float_value = models.FloatField(null=True, verbose_name="Value")
+    float_values = ArrayField(models.FloatField(), null=True, verbose_name="Value")
+    integer_value = models.BigIntegerField(null=True, verbose_name="Value")
+    integer_values = ArrayField(
+        models.BigIntegerField(), null=True, verbose_name="Value"
+    )
 
     time_predicate = models.CharField(
-        max_length=16, choices=TimePredicate.choices, null=True
+        max_length=16,
+        choices=TimePredicate.choices,
+        null=True,
+        verbose_name="Condition",
     )
     datetime_predicate = models.CharField(
         max_length=20,
         choices=TimePredicate.choices + DateRange.choices,
         null=True,
+        verbose_name="Condition",
     )
 
-    time_value = models.TimeField(null=True)
-    date_value = models.DateField(null=True)
-    datetime_value = models.DateTimeField(null=True)
+    time_value = models.TimeField(null=True, verbose_name="Value")
+    date_value = models.DateField(null=True, verbose_name="Value")
+    datetime_value = models.DateTimeField(null=True, verbose_name="Value")
 
     string_predicate = models.CharField(
-        max_length=16, choices=StringPredicate.choices, null=True
+        max_length=16,
+        choices=StringPredicate.choices,
+        null=True,
+        verbose_name="Condition",
     )
-    string_value = models.TextField(null=True)
-    string_values = ArrayField(models.TextField(), null=True)
+    string_value = models.TextField(null=True, verbose_name="Value")
+    string_values = ArrayField(models.TextField(), null=True, verbose_name="Value")
 
-    bool_value = models.BooleanField(default=True)
+    bool_value = models.BooleanField(default=True, verbose_name="Value")
 
     def __str__(self):
         return self.column

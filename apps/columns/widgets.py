@@ -10,5 +10,5 @@ class CodeMirror(Textarea):
 
     def get_context(self, name: str, value, attrs):
         context = super().get_context(name, value, attrs)
-        context["columns"] = [name for name in self.schema]
+        context["columns"] = list(self.schema)
         return context

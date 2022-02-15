@@ -1,9 +1,9 @@
 .page-contents {
-  padding: 1.6rem;
   border-left: 1px solid var(--c-gray);
   height: min-content;
+  padding: 0.2rem 1.6rem;
   position: sticky;
-  top: 0;
+  top: 1.6rem;
 
   a {
     &:hover {

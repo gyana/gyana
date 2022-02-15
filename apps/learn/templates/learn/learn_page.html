@@ -35,17 +35,24 @@
   <nav class="page-navigation">
     {% with page.get_prev_siblings.live.first as previous_page %}
       {% if previous_page %}
-        <a href="{% pageurl previous_page %}" class="page-navigation__button">
-          <span>Previous</span>
+      <a href="{% pageurl previous_page %}" class="page-navigation__button">
+        <i class="fas fa-fw fa-chevron-left fa-lg"></i>
+        
+        <div>
+          <span class="small">Previous</span>
           <span class="bold">{{ previous_page.title }}</span>
-        </a>
+        </div>
+      </a>
       {% endif %}
     {% endwith %}
     {% with page.get_next_siblings.live.first as next_page %}
       {% if next_page %}
         <a href="{% pageurl next_page %}" class="page-navigation__button">
-          <span>Next</span>
-          <span class="bold">{{ next_page.title }}</span>
+          <div>
+            <span class="small">Next</span>
+            <span class="bold">{{ next_page.title }}</span>
+          </div>
+          <i class="fas fa-fw fa-chevron-right fa-lg"></i>
         </a>
       {% endif %}
     {% endwith %}

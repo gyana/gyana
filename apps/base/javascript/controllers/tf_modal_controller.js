@@ -44,7 +44,7 @@ export default class extends Controller {
     const params = new URLSearchParams(window.location.search)
 
     // We don't want to re-open the modal if a modal is already open.
-    if (this.modalTarget.getAttribute("hidden") == null) {
+    if (this.modalTarget.getAttribute('hidden') == null) {
       return
     }
 
@@ -124,7 +124,7 @@ export default class extends Controller {
   }
 
   change(event) {
-    if (event.target.getAttribute('name').toLowerCase() != 'search') {
+    if (event.hasTarget('name') && event.target.getAttribute('name').toLowerCase() != 'search') {
       this.changed = true
     }
   }
@@ -160,13 +160,9 @@ export default class extends Controller {
 
   // Trigger save and preview without clicking save and preview button
   preview() {
-    console.group("Preview")
     this.changed = false
 
-    this.formTarget.requestSubmit(
-      this.formTarget.querySelector("button[value*='Save & Preview']")
-    )
-    console.groupEnd()
+    this.formTarget.requestSubmit(this.formTarget.querySelector("button[value*='Save & Preview']"))
   }
 
   save() {

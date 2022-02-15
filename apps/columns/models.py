@@ -34,6 +34,7 @@ class AbstractOperationColumn(SaveParentModel):
             for key, value in {**CommonOperations, **StringOperations}.items()
         ),
         null=True,
+        verbose_name="Operation",
     )
     integer_function = models.CharField(
         max_length=20,
@@ -42,6 +43,7 @@ class AbstractOperationColumn(SaveParentModel):
             for key, value in {**CommonOperations, **NumericOperations}.items()
         ),
         null=True,
+        verbose_name="Operation",
     )
     date_function = models.CharField(
         max_length=20,
@@ -50,6 +52,7 @@ class AbstractOperationColumn(SaveParentModel):
             for key, value in {**CommonOperations, **DateOperations}.items()
         ),
         null=True,
+        verbose_name="Operation",
     )
     time_function = models.CharField(
         max_length=20,
@@ -58,6 +61,7 @@ class AbstractOperationColumn(SaveParentModel):
             for key, value in {**CommonOperations, **TimeOperations}.items()
         ),
         null=True,
+        verbose_name="Operation",
     )
     datetime_function = models.CharField(
         max_length=20,
@@ -71,17 +75,19 @@ class AbstractOperationColumn(SaveParentModel):
             }.items()
         ),
         null=True,
+        verbose_name="Operation",
     )
 
     boolean_function = models.CharField(
         max_length=20,
         choices=((key, value.label) for key, value in {**CommonOperations}.items()),
         null=True,
+        verbose_name="Operation",
     )
 
-    integer_value = models.BigIntegerField(null=True)
-    float_value = models.FloatField(null=True)
-    string_value = models.TextField(null=True)
+    integer_value = models.BigIntegerField(null=True, verbose_name="Value")
+    float_value = models.FloatField(null=True, verbose_name="Value")
+    string_value = models.TextField(null=True, verbose_name="Value")
 
     @property
     def function(self):
@@ -168,7 +174,6 @@ class SortColumn(SaveParentModel):
     ascending = models.BooleanField(default=True, help_text="Ascending Sort")
     column = models.CharField(
         max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
-        help_text="Column",
     )
 
 
@@ -183,6 +188,7 @@ class AddColumn(AbstractOperationColumn):
     label = models.CharField(
         max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
         validators=[bigquery_column_regex],
+        verbose_name="New column name",
     )
 
 
@@ -191,12 +197,12 @@ class RenameColumn(SaveParentModel):
         Node, on_delete=models.CASCADE, related_name="rename_columns"
     )
     column = models.CharField(
-        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH, help_text="Old column name"
+        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH, verbose_name="Old column name"
     )
     new_name = models.CharField(
         max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
         validators=[bigquery_column_regex],
-        help_text="New column name",
+        verbose_name="New column name",
     )
 
 

@@ -6,93 +6,99 @@
 <div class="input-group">
 {% for bound_field in form.visible_fields %}
   {% if bound_field.widget_type == "palettecolors" %}
-  <label>
-    <span>
-      {{ bound_field.label }}
-
-      {% if bound_field.help_text %}
-      <p class="input__help-text">{{ bound_field.help_text }}</p>
-      {% endif %}
-    </span>
-  </label>
-
-  <div class="palette-colors">{{ bound_field }}</div>
-  {% elif bound_field.widget_type == "connectorschemamultiselect" %}
-  <div class="w-full {{ bound_field.field.widget.attrs.class }}">
     <label>
-      {{ bound_field.label }}
-
-      {% if bound_field.help_text %}
-      <p class="input__help-text">{{ bound_field.help_text }}</p>
-      {% endif %}
-    </label>
-
-    {{ bound_field }}
-  </div>
-  {% elif bound_field.widget_type == "checkbox" %}
-  <label class="flex flex-row items-center gap-4 w-full">
-    {{ bound_field }}
-    
-    <span>
-      {{ bound_field.label }}
-
-      {% if bound_field.help_text %}
-      <p class="input__help-text">{{ bound_field.help_text }}</p>
-      {% endif %}
-    </span>
-  </label>
-  {% elif bound_field.subwidgets|length == 1 %}
-  <div
-    {% if bound_field.field.initial %}
-    data-controller="reset-default"
-    data-reset-default-initial-value="{{ bound_field.field.initial }}"
-    {% endif %}
-    class="label {{ bound_field.field.widget.attrs.class }}"
-  >
-    <label for="{{ bound_field.id_for_label}}">
-      <span class="block">
+      <span>
         {{ bound_field.label }}
 
-        {% if not bound_field.field.required and not optional == False %}
-        <span class="text-black-50">- optional</span>
-        {% endif %}
-
-        <a
-          class="small link float-right"
-          data-reset-default-target="control"
-          hidden
-        >
-          Reset to default
-        </a>
-        
         {% if bound_field.help_text %}
         <p class="input__help-text">{{ bound_field.help_text }}</p>
         {% endif %}
       </span>
     </label>
 
-    <div class="flex flex-row-reverse mt-auto">
-      {% if bound_field.field.widget.attrs.unit_suffix %}
-      <div class="label__unit">
-        <p>{{ bound_field.field.widget.attrs.unit_suffix }}</p>
-      </div>
-      {% endif %}
+    <div class="palette-colors">{{ bound_field }}</div>
+  {% elif bound_field.widget_type == "connectorschemamultiselect" %}
+    <div class="w-full {{ bound_field.field.widget.attrs.class }}">
+      <label>
+        {{ bound_field.label }}
+
+        {% if bound_field.help_text %}
+        <p class="input__help-text">{{ bound_field.help_text }}</p>
+        {% endif %}
+      </label>
 
       {{ bound_field }}
     </div>
-  </div>
-  {% else %}
-  <div class="label {{ bound_field.field.widget.attrs.class }}">
-    <label for="{{ bound_field.id_for_label }}">
-      {{ bound_field.label }}
+  {% elif bound_field.widget_type == "checkbox" %}
+    <label  
+      class="flex flex-row items-center gap-4 w-full"
+      {% if bound_field.name == 'DELETE' %}style="display: none;" {% endif %}
+    >
+      {{ bound_field }}
+      
+      <span>
+        {{ bound_field.label }}
 
-      {% if bound_field.help_text %}
-      <p class="input__help-text">{{ bound_field.help_text }}</p>
-      {% endif %}
+        {% if bound_field.help_text %}
+        <p class="input__help-text">{{ bound_field.help_text }}</p>
+        {% endif %}
+      </span>
     </label>
+  {% elif bound_field.subwidgets|length == 1 and bound_field.widget_type != "codemirror" %}
+    <div
+      {% if bound_field.field.initial %}
+      data-controller="reset-default"
+      data-reset-default-initial-value="{{ bound_field.field.initial }}"
+      {% endif %}
+      class="label {{ bound_field.field.widget.attrs.class }}"
+    > 
+      <label for="{{ bound_field.id_for_label}}">
+        <span class="block">
+          {{ bound_field.label }}
 
-    {{ bound_field }}
-  </div>
+          {% if not bound_field.field.required and not optional == False %}
+          <span class="text-black-50">- optional</span>
+          {% endif %}
+
+          <a
+            class="small link float-right"
+            data-reset-default-target="control"
+            hidden
+          >
+            Reset to default
+          </a>
+          
+          {% if bound_field.help_text %}
+          <p class="input__help-text">{{ bound_field.help_text }}</p>
+          {% endif %}
+        </span>
+      </label>
+
+      <div class="flex flex-row-reverse mt-auto">
+        {% if bound_field.field.widget.attrs.unit_suffix %}
+        <div class="label__unit">
+          <p>{{ bound_field.field.widget.attrs.unit_suffix }}</p>
+        </div>
+        {% endif %}
+
+        {{ bound_field }}
+      </div>
+    </div>
+  {% else %}
+    <div class="label {{ bound_field.field.widget.attrs.class }}">
+      <label for="{{ bound_field.id_for_label }}">
+        {{ bound_field.label }}
+
+        {% if bound_field.help_text %}
+        <p class="input__help-text">
+          {{ bound_field.help_text }}
+          {% if not bound_field.field.required %} - optional{% endif %}
+        </p>
+        {% endif %}
+      </label>
+
+      {{ bound_field }}
+    </div>
   {% endif %}
 
   {% if not form.is_live %}
