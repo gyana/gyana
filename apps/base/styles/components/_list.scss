@@ -22,13 +22,22 @@
       cursor: pointer;
 
       &:hover {
-        background-color: var(--c-gray);
+        background-color: var(--c-gray-20);
       }
     }
 
     &.disabled {
       color: var(--c-black-20);
-      background-color: var(--c-gray-50);
+    }
+
+    &[data-controller*=popover]::after {
+      color: var(--c-black-50);
+      content: '\f054';
+      display: inline;
+      font-family: "Font Awesome 5 Pro";
+      font-size: 1.2rem;
+      font-weight: normal;
+      margin-left: auto;
     }
   }
 }

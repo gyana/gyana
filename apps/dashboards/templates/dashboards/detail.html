@@ -82,40 +82,52 @@
         Delete
       </a>
 
-      <form
-        method="POST"
-        action="{% url "project_dashboards:page-create" project.id object.id %}"
-        class="form--no-layout"
+      <a
+        class="list__item list__item--interactive w-full"
+        data-controller="popover"
+        data-trigger="mouseenter focus"
+        data-placement="right-start"
+        data-theme="popover-menu"
       >
-        {% csrf_token %}
+        Page
+        
+        <div data-popover-target="body">
+          <form
+            method="POST"
+            action="{% url "project_dashboards:page-create" project.id object.id %}"
+            class="form--no-layout"
+          >
+            {% csrf_token %}
 
-        <button
-          type="submit"
-          class="list__item list__item--interactive w-full"
-          id="dashboards-add-page-{{ object.id }}"
-          data-loading-false
-        >
-          Add new page
-        </button>
-      </form>
+            <button
+              type="submit"
+              class="list__item list__item--interactive w-full"
+              id="dashboards-add-page-{{ object.id }}"
+              data-loading-false
+            >
+              New page
+            </button>
+          </form>
 
-      <form
-        method="POST"
-        action="{% url "project_dashboards:page-delete" project.id object.id page.id%}"
-        class="form--no-layout"
-      >
-        {% csrf_token %}
+          <form
+            method="POST"
+            action="{% url "project_dashboards:page-delete" project.id object.id page.id%}"
+            class="form--no-layout"
+          >
+            {% csrf_token %}
 
-        <button
-          type="submit"
-          {% if page_count == 1 %}disabled{% endif %}
-          class="list__item list__item--interactive w-full {% if page_count == 1 %}disabled{% endif %}"
-          id="dashboards-delete-page-{{ object.id }}"
-          data-loading-false
-        >
-          Delete current page
-        </button>
-      </form>
+            <button
+              type="submit"
+              {% if page_count == 1 %}disabled{% endif %}
+              class="list__item list__item--interactive w-full {% if page_count == 1 %}disabled{% endif %}"
+              id="dashboards-delete-page-{{ object.id }}"
+              data-loading-false
+            >
+              Delete current page
+            </button>
+          </form>
+        </div>
+      </a>
     </template>
   </div>
 
