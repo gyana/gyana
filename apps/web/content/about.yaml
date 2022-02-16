@@ -32,3 +32,25 @@ angels:
     role: Co-founder, Kontor
   - name: Serge Chiaramonte
     role: Angel Investor
+press:
+  - url: /blog/the-next-chapter-of-gyana/
+    heading: Gyana launches 2.0 version
+    # description: London-based Gyana raises $3.9M for a no-code approach to data science.
+    date: Feb 27, 2020
+  - url: https://techcrunch.com/2020/02/27/london-based-gyana-raises-3-9m-for-a-no-code-approach-to-data-science/
+    heading: Gyana raises $3.9M for a no-code approach to data science
+    # description: London-based Gyana raises $3.9M for a no-code approach to data science.
+    date: Feb 27, 2020
+  - url: https://www.msduk.org.uk/ethnic-minority-led-businesses-make-74bn-annual-contribution-to-uk-economy/
+    heading: Our research in ethnic minority led businesses, in partnership with MSDUK
+    # description: Ethnic-minority-led business make 74Bn annual contribution to UK economy. Report by MSDUK, in partnership with Gyana.
+    date: Feb 02, 2021
+  - url: https://placetech.net/news/gyana-pair-exit-pleasantly-early-to-focus-on-new-platform/
+    heading: Gyana sells custom reporting platform for human mobility data to Fetch Capital Partners
+    # description: The big data and AI startup based in London has sold its “human mobility data” platform NEERA to Fetch Capital Partners for an undisclosed sum.
+    date: 24 Jun, 2020
+  - url: https://placetech.net/news/gyana-pair-exit-pleasantly-early-to-focus-on-new-platform/
+    heading: Gyana wins investment award and best startup at EG Tech Awards
+    date: 07 Oct, 2019
+  - url: https://www.forbes.com/sites/alisoncoleman/2019/01/18/the-tech-entrepreneur-who-is-unleashing-the-power-of-human-location-data/?sh=aa9208f6fa46
+    heading: The Tech Entrepreneur Who Is Unleashing The Power Of Human Location Data

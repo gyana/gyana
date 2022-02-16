@@ -1,0 +1,67 @@
+{% load heroicons %}
+
+<div class="bg-white border-b border-gray">
+  <div class="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
+    <div>
+      {% comment %} <h2 class="text-3xl tracking-tight font-extrabold text-gray-900 sm:text-4xl">
+        News
+      </h2> {% endcomment %}
+      <p class="text-2xl lg:text-3xl text-caveat text-indigo-600">
+        News
+      </p>
+      {% comment %} <p class="mt-3 text-xl text-gray-500 sm:mt-4">Nullam risus blandit ac aliquam justo ipsum. Quam mauris volutpat massa dictumst amet. Sapien tortor lacus arcu.</p> {% endcomment %}
+    </div>
+    <div class="grid gap-4 pt-6 lg:grid-cols-3">
+      {% for item in content.press %}
+        <div class=" bg-gray-50 p-4 rounded-xl">
+          {% comment %} <div>
+            <a href="{{ item.url }}" class="inline-block">
+              <span class="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-indigo-100 text-indigo-800"> report </span>
+            </a>
+          </div> {% endcomment %}
+          <a href="{{ item.url }}" class="block">
+            <p class="text-base text-gray-900">
+              {{ item.heading }}
+              <i class="fa fa-chevron-circle-right ml-1"></i>
+            </p>
+            
+            {% comment %} <span>{% heroicon 'chevron-right' class="w-5 h-5" %}</span> {% endcomment %}
+            {% comment %} <p class="mt-3 text-base text-gray-600">{{ item.description }}</p> {% endcomment %}
+          </a>
+          {% comment %} <div class="mt-3 flex items-center">
+            <div class="flex space-x-1 text-sm text-gray-400">
+            <time datetime="2020-03-16"> {{ item.date }} </time>
+            </div>
+          </div> {% endcomment %}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<div class="bg-white pt-16 pb-20 px-4 sm:px-6 lg:pt-24 lg:pb-28 lg:px-8">
+  <div class="relative max-w-lg mx-auto divide-y-2 divide-gray-200 lg:max-w-7xl">
+    <div>
+      <h2 class="text-3xl tracking-tight font-extrabold text-gray-900 sm:text-4xl">Press</h2>
+      <div class="mt-3 sm:mt-4 lg:grid lg:grid-cols-2 lg:gap-5 lg:items-center">
+        <p class="text-xl text-gray-500">Get weekly articles in your inbox on how to grow your business.</p>
+      </div>
+    </div>
+    <div class="mt-6 pt-10 grid gap-16 lg:grid-cols-2 lg:gap-x-5 lg:gap-y-12">
+      {% for item in content.press %}
+      <div>
+        <p class="text-sm text-gray-500">
+          <time datetime="2020-03-16">{{ item.date }}</time>
+        </p>
+        <a href="{{ item.url }}" class="mt-2 block">
+          <p class="text-xl font-semibold text-gray-900">{{ item.heading }}</p>
+          <p class="mt-3 text-base text-gray-500">{{ item.description }}</p>
+        </a>
+        <div class="mt-3">
+          <a href="{{ item.url }}" class="text-base font-semibold text-indigo-600 hover:text-indigo-500"> Read full story </a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
