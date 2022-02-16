@@ -9,7 +9,10 @@
     {% if metric is None %}
       <p>No data found</p>
     {% else %}
-      {% if currency %}{{currency}}{% endif %}{{ metric|floatformat:column.rounding|intcomma }}
+      {% if currency %}
+        {{ currency }}
+      {% endif %}
+      {{ metric|floatformat:column.rounding|intcomma }}
     {% endif %}
   </h2>
 
