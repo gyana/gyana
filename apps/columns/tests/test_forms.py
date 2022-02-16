@@ -38,7 +38,7 @@ def test_column_form_with_formatting(column_factory, node_factory):
         "currency",
         "name",
         "rounding",
-        "formatting_is_hidden",
+        "formatting_unfolded",
     }
 
     data["column"] = "athlete"
@@ -47,7 +47,7 @@ def test_column_form_with_formatting(column_factory, node_factory):
         "hidden_live",
         "column",
         "name",
-        "formatting_is_hidden",
+        "formatting_unfolded",
     }
 
 
@@ -86,7 +86,7 @@ def test_aggregation_form_with_formatting(aggregation_column_factory, node_facto
         "currency",
         "name",
         "rounding",
-        "formatting_is_hidden",
+        "formatting_unfolded",
     }
 
     data["column"] = "athlete"
@@ -98,7 +98,7 @@ def test_aggregation_form_with_formatting(aggregation_column_factory, node_facto
         "column",
         "function",
         "name",
-        "formatting_is_hidden",
+        "formatting_unfolded",
     }
 
 
