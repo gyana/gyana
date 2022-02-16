@@ -15,8 +15,8 @@
     {% if team.icon %}
     <img src="{{ team.icon.url }}" />
     {% else %}
-    <span class="team_logo">
-      {{ team.name|slice:1 }}
+    <span class="team_logo" style="background: {{ team.color }}">
+      {{ team.name|slice:1|capfirst }}
     </span>
     {% endif %}
 

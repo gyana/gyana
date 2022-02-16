@@ -10,7 +10,14 @@
     data-tooltip-placement="right"
     data-show-on-collapse="true"
   >
-    {% if project.team.icon %}<img src="{{ project.team.icon.url }}" />{% else %}<span class="team_logo">{{ project.team.name|slice:1 }}</span>{% endif %}
+    {% if project.team.icon %}
+    <img src="{{ project.team.icon.url }}" />
+    {% else %}
+    <span class="team_logo" style="background: {{ project.team.color }}">
+      {{ project.team.name|slice:1|capfirst }}
+    </span>
+    {% endif %}
+
     <strong class="h3">
       {{ project.team.name }}
     </strong>

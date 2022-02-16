@@ -16,6 +16,7 @@ from apps.base.models import BaseModel
 from . import roles
 from .config import PLANS
 from .flag import Flag
+from .utils import getRandomColor
 
 WARNING_BUFFER = 0.2
 
@@ -34,6 +35,7 @@ class Team(DirtyFieldsMixin, BaseModel, SafeDeleteModel):
         null=True,
         blank=True,
     )
+    color = models.CharField(default=getRandomColor, max_length=7)
     name = models.CharField(max_length=100)
 
     members = models.ManyToManyField(
