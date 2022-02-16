@@ -288,9 +288,10 @@ def get_window_query(node, query):
             query, window.column, window.function, []
         ).name(window.label)
 
-        if window.group_by or window.order_by:
-            w = ibis.window(group_by=window.group_by, order_by=window.order_by)
-            aggregation = aggregation.over(w)
+        w = ibis.window(
+            group_by=window.group_by or None, order_by=window.order_by or None
+        )
+        aggregation = aggregation.over(w)
         aggregations.append(aggregation)
     query = query.mutate(aggregations)
     return query
