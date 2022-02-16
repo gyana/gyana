@@ -32,27 +32,15 @@ class TeamSignupForm(SignupForm):
         self.fields["email"].help_text = "e.g. maryjackson@nasa.gov"
         self.fields["password1"].help_text = "Must have at least 6 characters"
 
-    def clean(self):
-        cleaned_data = super().clean()
-        email = cleaned_data["email"].lower()
-
-        self._waitlist_approved = ApprovedWaitlistEmail.check_approved(email)
-        self._invited = Invite.check_email_invited(email)
-
-        if not self._waitlist_approved and not self._invited:
-            raise forms.ValidationError(
-                mark_safe(
-                    'Gyana is currently invite only. <a href="https://www.gyana.com" class="link">Join our waitlist.</a>'
-                )
-            )
-
     def save(self, request):
         user = super().save(request)
         # prefer to assign as an invite than a waitlist
-        if self._invited:
+        if Invite.check_email_invited(user.email):
             identify_user(user, signup_source="invite")
-        elif self._waitlist_approved:
+        elif ApprovedWaitlistEmail.check_approved(user.email):
             identify_user(user, signup_source="waitlist")
+        else:
+            identify_user(user, signup_source="website")
 
         analytics.track(user.id, SIGNED_UP_EVENT)
 

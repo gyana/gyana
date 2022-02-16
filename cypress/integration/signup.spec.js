@@ -8,9 +8,8 @@ const newTeamId = getModelStartId('teams.team')
 
 describe('signup', () => {
   it('signup from waitlist', () => {
-    // waitlist approved user
     cy.visit('/signup')
-    cy.get('input[name=email]').type('waitlist@gyana.com')
+    cy.get('input[name=email]').type('new@gyana.com')
     cy.get('input[name=password1]').type('seewhatmatters')
     cy.get('button[type=submit]').click()
 

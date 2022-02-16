@@ -1,0 +1,24 @@
+{% load static heroicons %}
+
+<div class="bg-white border-b border-gray">
+  <div class="max-w-7xl mx-auto px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
+    <h2 class="text-2xl lg:text-3xl text-caveat text-indigo-600">
+      Press
+    </h2>
+    <div class="grid gap-4 pt-6 lg:grid-cols-3">
+      {% for item in content.press %}
+        <a href="{{ item.url }}" class="bg-gray-20 border border-gray p-4 rounded-xl">
+          <p class="text-gray-900">
+            {% if item.logo %}
+              <img class="h-8 mb-1 p-1 rounded inline-block bg-white border border-gray"
+                src="{% static 'images/site/press/'|add:item.logo %}"
+                {% if item.logo == 'ft.png' %}style="background-color: #f3d9c3;"{% endif %}/>
+            {% endif %}
+            {{ item.heading }}
+            <i class="fa fa-chevron-circle-right ml-1"></i>
+          </p>
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+</div>

@@ -3,16 +3,21 @@
 {% load wagtailimages_tags %}
 
 {% block body.content %}
-<div class="relative py-8 bg-white overflow-hidden">
-  <div class="relative px-4 sm:px-6 lg:px-8">
-    <div class="text-lg max-w-2xl mx-auto space-y-2 sm:space-y-4 lg:space-y-8">
+<div class="bg-gray-20 border-b border-gray">
+  <div class="max-w-7xl mx-auto lg:px-8">
+    <div class="text-lg max-w-prose mx-auto space-y-2 sm:space-y-4 lg:space-y-8">
       {% image page.feed_image width-800 %}
-      <h1>
-        <span class="block text-4xl leading-8 font-extrabold text-gray-900 sm:text-5xl">
-          {{ page.title }}
-        </span>
+    </div>
+  </div>
+</div>
+
+<div class="bg-white border-b border-gray">
+  <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:py-8 lg:px-8">
+    <div class="text-lg max-w-prose mx-auto">
+      <h1 class="text-3xl font-extrabold text-gray-900">
+        {{ page.title }}
       </h1>
-      <div class="flex items-center space-x-3">
+      <div class="mt-6 flex items-center gap-4">
         <div class="flex-shrink-0">
           {% image page.author.avatar width-56 class="rounded-md" %}
         </div>
@@ -21,7 +26,7 @@
             <p class="text font-normal text-gray-900">
               {{ page.author.name }}
             </p>
-            <p class="text-base text-gray-500 truncate">
+            <p class="text-base text-gray-600 truncate">
               {{ page.date }}
               • {{ page.readtime }}
             </p>
@@ -29,7 +34,12 @@
         </div>
       </div>
     </div>
-    <div class="mt-6 prose prose-blue text-gray-700 mx-auto">
+  </div>
+</div>
+
+<div class="bg-gray-20 border-b border-gray">
+  <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:py-8 lg:px-8">
+    <div class="prose prose-lg prose-blue text-gray-700 mx-auto">
       {{ page.body|richtext }}
     </div>
   </div>

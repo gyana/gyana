@@ -366,6 +366,7 @@ class WidgetStyleForm(forms.ModelForm):
     palette_colors = PaletteColorsField(required=False)
     background_color = forms.CharField(
         required=False,
+        initial="#ffffff",
         widget=forms.TextInput(attrs={"type": "color"}),
     )
 
@@ -381,12 +382,15 @@ class WidgetStyleForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        if self.instance.kind == Widget.Kind.METRIC:
+        if (
+            self.instance.kind == Widget.Kind.METRIC
+            or self.instance.kind == Widget.Kind.TABLE
+        ):
             self.fields = copy.deepcopy(
                 {
                     key: field
                     for key, field in self.base_fields.items()
-                    if key not in ["palette_color", "font_size", "show_tooltips"]
+                    if key not in ["palette_colors", "font_size", "show_tooltips"]
                 }
             )
         else:

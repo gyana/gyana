@@ -32,22 +32,14 @@ def test_login(client):
     assertRedirects(r, "/teams/new")
 
 
-def test_sign_up_with_waitlist_approval(client):
+def test_sign_up(client):
 
     r = client.get("/signup/")
     assertOK(r)
     assertFormRenders(r, ["email", "password1"])
 
     r = client.post(
-        "/signup/", data={"email": "waitlist@gyana.com", "password1": "seewhatmatters"}
-    )
-    ERROR = 'Gyana is currently invite only. <a href="https://www.gyana.com" class="link">Join our waitlist.</a>'
-    assertFormError(r, "form", None, ERROR)
-
-    ApprovedWaitlistEmail.objects.create(email="waitlist@gyana.com")
-
-    r = client.post(
-        "/signup/", data={"email": "waitlist@gyana.com", "password1": "seewhatmatters"}
+        "/signup/", data={"email": "new@gyana.com", "password1": "seewhatmatters"}
     )
     assertRedirects(r, "/", status_code=303, target_status_code=302)
 

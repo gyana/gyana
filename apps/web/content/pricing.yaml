@@ -1,6 +1,6 @@
 tiers:
   - name: Free
-    href: https://gyana-data.typeform.com/to/v2XTy0j3
+    href: /signup
     priceMonthly: 0
     rows: <strong>50k</strong> rows of data
     description: 'Get started, free forever'
@@ -11,7 +11,7 @@ tiers:
       - All our integrations
       - Live chat support
   - name: Pro
-    href: https://gyana-data.typeform.com/to/v2XTy0j3
+    href: /signup
     priceMonthly: 30
     rows: <strong>1 million</strong> rows of data
     description: For small teams and freelancers
@@ -21,9 +21,9 @@ tiers:
       - Unbranded dashboards
       - Project permissions
       - Scheduled flows
-    extraRows: 30
+    # extraRows: 30
   - name: Business
-    href: https://gyana-data.typeform.com/to/v2XTy0j3
+    href: /signup
     priceMonthly: 150
     rows: <strong>10 million</strong> rows of data
     description: For growing teams and agencies
@@ -32,7 +32,7 @@ tiers:
       - White-label
       - Custom domains
       - External collaborators <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-normal bg-gray-100 text-gray-800">Soon</span>
-    extraRows: 15
+    # extraRows: 15
   - name: Enterprise
     href: mailto:joyeeta.das@gyana.com
     priceMonthly: -1

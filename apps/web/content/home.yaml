@@ -33,13 +33,16 @@ support:
     description: Get started for free
     icon: login
     note: It only takes a minute
-  - heading: Attend Gyana University
+  - heading: Visit help center # Attend Gyana University
     description: Go through the fundamentals
     icon: academic-cap
     note: Videos, walkthroughs and guides
     cta:
-      message: Visit Gyana University
-      external_url: university
+      message: Visit help center
+      external_url: help
+    # cta:
+    #   message: Visit Gyana University
+    #   external_url: university
   - heading: Join the community
     description: Learn from other Gyanees
     icon: hashtag

@@ -18,7 +18,12 @@
     Disable your adblocker to enable our Intercom chat.
   </p>
   <script>
-    Intercom('show');
+    {% if request.GET.demo == 'chat' %}
+      Intercom('show');
+    {% elif request.GET.demo == 'help' %}
+      Intercom('showArticle', '5547945');
+    {% endif %}
+    
   </script>
 </body>
 </html>

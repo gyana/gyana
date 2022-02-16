@@ -63,7 +63,7 @@ def test_site_links(client):
     assertLink(r, "/terms-of-use", "Terms")
 
     # app links
-    assertLink(r, "https://gyana-data.typeform.com/to/v2XTy0j3", "Sign up", total=4)
+    assertLink(r, "/signup/", "Sign up", total=4)
     assertLink(r, "https://gyana-data.typeform.com/to/pgpMNnAq", "Talk to us", total=4)
     assertLink(r, "/login/", "Sign in", total=2)
 
