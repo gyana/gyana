@@ -57,12 +57,12 @@
                     <iframe width="100%" height="100%" loading="lazy" sandbox="allow-same-origin allow-top-navigation allow-forms" src="{% url 'account_signup' %}?iframe=true"></iframe>
                   {% elif step == 1 %}
                     {% comment %} Gyana University {% endcomment %}
-                    <iframe width="100%" height="100%" src="{% external_url 'university' %}"></iframe>
+                    <iframe width="100%" height="100%" src="{% url 'web:intercom-demo' %}?demo=chat"></iframe>
                   {% elif step == 2 %}
                     {% include 'web/site/home/community.html' %}
                   {% elif step == 3 %}
                     {% comment %} Intercom widget {% endcomment %}
-                    <iframe width="100%" height="100%" src="{% url 'web:intercom-demo' %}"></iframe>
+                    <iframe width="100%" height="100%" src="{% url 'web:intercom-demo' %}?demo=help"></iframe>
                   {% elif step == 4 %}
                     <!-- Calendly inline widget begin -->
                     <div class="calendly-inline-widget" data-url="https://calendly.com/lorraine-chabeda/30min?hide_gdpr_banner=1" style="min-width:320px;height:100%;"></div>
