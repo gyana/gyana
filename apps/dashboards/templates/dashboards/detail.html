@@ -53,7 +53,7 @@
     data-placement="bottom-start"
     data-theme="popover-menu"
   >
-    <button class="button button--sm button--tertiary">
+    <button data-popover-target="trigger" class="button button--sm button--tertiary">
       More <i class="fas fa-chevron-down"></i>
     </button>
 
@@ -89,7 +89,9 @@
         data-placement="right-start"
         data-theme="popover-menu"
       >
-        Page
+        <span class="w-full" data-popover-target="trigger">
+          Page
+        </span>
         
         <div data-popover-target="body">
           <form
