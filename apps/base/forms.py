@@ -94,7 +94,7 @@ class LiveUpdateForm(BaseModelForm):
             # self.initial is empty.
             field_data_name = f"{self.prefix}-{field}" if self.prefix else field
             if (
-                field not in self.data
+                field_data_name not in self.data
                 and (initial := (self.initial.get(field) or self.fields[field].initial))
                 is not None
             ):
@@ -102,6 +102,9 @@ class LiveUpdateForm(BaseModelForm):
                 # e.g. for an ArrayField, each item should be a separate value (rather than one value as a list)
                 if isinstance(initial, list):
                     data.setlist(field_data_name, initial)
+                # If the default is e.g. list
+                elif isinstance(initial, type):
+                    data.setlist(field_data_name, initial())
                 else:
                     data[field_data_name] = initial
             # HTML forms usually just omit unchecked checkboxes

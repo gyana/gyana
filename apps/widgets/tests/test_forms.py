@@ -6,6 +6,7 @@ from apps.base.tests.mocks import mock_bq_client_with_schema
 from apps.widgets.forms import FORMS
 from apps.widgets.formsets import (
     AggregationColumnFormset,
+    AggregationWithFormattingFormset,
     ColumnFormset,
     CombinationChartFormset,
     FilterFormset,
@@ -41,7 +42,7 @@ def setup(
     [
         pytest.param(
             Widget.Kind.TABLE,
-            {FilterFormset, ColumnFormset, AggregationColumnFormset},
+            {FilterFormset, ColumnFormset, AggregationWithFormattingFormset},
             id="table",
         ),
         pytest.param(Widget.Kind.FUNNEL, {FilterFormset, Min2Formset}, id="funnel"),
