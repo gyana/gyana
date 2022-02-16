@@ -39,6 +39,8 @@ class TeamSignupForm(SignupForm):
             identify_user(user, signup_source="invite")
         elif ApprovedWaitlistEmail.check_approved(user.email):
             identify_user(user, signup_source="waitlist")
+        else:
+            identify_user(user, signup_source="website")
 
         analytics.track(user.id, SIGNED_UP_EVENT)
 
