@@ -3,6 +3,8 @@
 {% load render_table from django_tables2 %}
 {% load waffle_tags %}
 
+{% block app-class %}overflow-hidden{% endblock app-class %}
+
 {% block app %}
 {% if show_zero_state %}
 <div class="table__empty">

@@ -26,9 +26,8 @@ const GCSFileUpload_: React.FC<IProps> = ({ name }) => {
 
   useEffect(() => {
     if (fileRef.current && inputFileRef.current && inputNameRef.current) {
-      window.addEventListener('beforeunload', handleBeforeUnload)
-
       fileRef.current.addEventListener('change', async (event) => {
+        window.addEventListener('beforeunload', handleBeforeUnload)
         setStage('progress')
 
         const file = event.target.files[0]
