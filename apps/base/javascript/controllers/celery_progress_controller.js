@@ -25,9 +25,18 @@ export default class extends Controller {
       onSuccess: this.onSuccess.bind(this),
       onError: this.onError.bind(this),
     })
+    this.initialURL = window.location.href
   }
 
   async onSuccess() {
+    /**
+     * If the user has navigated away from the page the task started on, we
+     * don't want to forcibly navigate them away.
+     */
+    if (this.initialURL != window.location.href) {
+      return
+    }
+
     const successTemplate = this.element.querySelector("#success-template")
     if (successTemplate !== null) {
       const successNode = successTemplate.content.cloneNode(true)
