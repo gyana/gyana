@@ -75,7 +75,8 @@ def to_chart(df: pd.DataFrame, widget: Widget) -> FusionCharts:
             or widget.page.dashboard.widget_background_color
             or "#ffffff",
             "bgAlpha": "100"
-            if widget.background_color or widget.page.dashboard.widget_background_color
+            if widget.background_color
+            or widget.page.dashboard.widget_background_color != "#ffffff"
             else "0",
             "showToolTip": widget.show_tooltips
             if widget.show_tooltips is not None

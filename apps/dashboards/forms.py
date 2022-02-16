@@ -113,6 +113,7 @@ class DashboardForm(forms.ModelForm):
     )
     widget_background_color = forms.CharField(
         required=False,
+        initial="#ffffff",
         widget=forms.TextInput(attrs={"type": "color"}),
     )
     widget_border_color = forms.CharField(

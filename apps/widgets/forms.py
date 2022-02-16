@@ -366,6 +366,7 @@ class WidgetStyleForm(forms.ModelForm):
     palette_colors = PaletteColorsField(required=False)
     background_color = forms.CharField(
         required=False,
+        initial="#ffffff",
         widget=forms.TextInput(attrs={"type": "color"}),
     )
 

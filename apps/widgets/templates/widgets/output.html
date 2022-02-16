@@ -3,7 +3,12 @@
 {% endif %}
 <div 
   id="widgets-output-{{ widget.id }}-stream"
-  style="display: flex; flex: 1 1 0%; min-height: 0;overflow: auto; height: auto;"
+  style="
+    display: flex; flex: 1 1 0%; min-height: 0;overflow: auto; height: auto;
+    {% if widget.is_valid and widget.computed_background_color %}
+    background: {{ widget.computed_background_color }};
+    {% endif %}
+  "
 >
   {% if widget.is_valid and not error_template %}
     {% if widget.kind == "table" %}

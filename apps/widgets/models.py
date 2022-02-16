@@ -30,6 +30,16 @@ class WidgetStyle(models.Model):
     font_size = models.IntegerField(null=True)
     font_color = models.CharField(null=True, max_length=7)
 
+    @property
+    def computed_background_color(self):
+        if self.background_color:
+            return self.background_color
+
+        if self.page.dashboard.widget_background_color != "#ffffff":
+            return self.page.dashboard.widget_background_color
+
+        return None
+
 
 class Widget(WidgetStyle, BaseModel):
     class Category(models.TextChoices):
