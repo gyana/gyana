@@ -139,7 +139,8 @@ class AggregationFormWithFormatting(AggregationColumnForm):
 
         if self.column_type:
             if not (
-                self.instance.widget and self.instance.widget.kind == Widget.Kind.METRIC
+                isinstance(self.parent_instance, Widget)
+                and self.parent_instance.kind == Widget.Kind.METRIC
             ):
                 fields += ["name"]
             fields += ["formatting_unfolded"]

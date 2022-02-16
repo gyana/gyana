@@ -111,9 +111,7 @@ class ColumnSettings(models.Model):
         blank=True,
         help_text="Set column header name",
     )
-    rounding = models.IntegerField(
-        default=2, blank=True, help_text="Decimal point to round to"
-    )
+    rounding = models.IntegerField(default=2, help_text="Decimal point to round to")
     currency = models.CharField(
         max_length=32,
         choices=CurrencySymbols.choices,
