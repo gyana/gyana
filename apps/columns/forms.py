@@ -56,7 +56,7 @@ class ColumnForm(BaseLiveSchemaForm):
 
 
 class ColumnFormWithFormatting(ColumnForm):
-    formatting_unfolded = forms.BooleanField(initial=True, required=False)
+    formatting_unfolded = forms.BooleanField(initial=False, required=False)
     formatting_unfolded.widget.attrs.update(
         {
             "data-column-format-target": "hiddenInput",
@@ -66,7 +66,7 @@ class ColumnFormWithFormatting(ColumnForm):
 
     class Meta:
         model = Column
-        fields = ("column", "rounding", "name", "currency")
+        fields = ("column", "rounding", "part", "name", "currency")
         widgets = {
             "currency": Datalist(attrs={"data-live-update-ignore": ""}),
             "name": forms.TextInput(attrs={"data-live-update-ignore": ""}),
@@ -113,7 +113,7 @@ class AggregationColumnForm(BaseLiveSchemaForm):
 
 
 class AggregationFormWithFormatting(AggregationColumnForm):
-    formatting_unfolded = forms.BooleanField(initial=True, required=False)
+    formatting_unfolded = forms.BooleanField(initial=False, required=False)
     formatting_unfolded.widget.attrs.update(
         {
             "data-column-format-target": "hiddenInput",

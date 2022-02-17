@@ -6,8 +6,6 @@ from django.http.response import HttpResponse
 from django.views.generic.edit import CreateView, UpdateView
 from turbo_response.mixins import TurboFormMixin
 
-from .forms import LiveUpdateForm
-
 
 class TurboCreateView(TurboFormMixin, CreateView):
     ...
