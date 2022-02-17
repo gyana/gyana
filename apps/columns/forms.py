@@ -56,8 +56,8 @@ class ColumnForm(BaseLiveSchemaForm):
 
 
 class ColumnFormWithFormatting(ColumnForm):
-    formatting_is_hidden = forms.BooleanField(initial=True, required=False)
-    formatting_is_hidden.widget.attrs.update(
+    formatting_unfolded = forms.BooleanField(initial=True, required=False)
+    formatting_unfolded.widget.attrs.update(
         {
             "data-column-format-target": "hiddenInput",
             "class": "hidden",
@@ -77,7 +77,7 @@ class ColumnFormWithFormatting(ColumnForm):
         fields = super().get_live_fields()
 
         if self.column_type:
-            fields += ["name", "formatting_is_hidden"]
+            fields += ["name", "formatting_unfolded"]
 
         if isinstance(self.column_type, (Floating, Integer)):
             fields += ["rounding", "currency"]
@@ -113,8 +113,8 @@ class AggregationColumnForm(BaseLiveSchemaForm):
 
 
 class AggregationFormWithFormatting(AggregationColumnForm):
-    formatting_is_hidden = forms.BooleanField(initial=True, required=False)
-    formatting_is_hidden.widget.attrs.update(
+    formatting_unfolded = forms.BooleanField(initial=True, required=False)
+    formatting_unfolded.widget.attrs.update(
         {
             "data-column-format-target": "hiddenInput",
             "class": "hidden",
@@ -139,10 +139,11 @@ class AggregationFormWithFormatting(AggregationColumnForm):
 
         if self.column_type:
             if not (
-                self.instance.widget and self.instance.widget.kind == Widget.Kind.METRIC
+                isinstance(self.parent_instance, Widget)
+                and self.parent_instance.kind == Widget.Kind.METRIC
             ):
                 fields += ["name"]
-            fields += ["formatting_is_hidden"]
+            fields += ["formatting_unfolded"]
 
         if isinstance(self.column_type, (Floating, Integer)):
             fields += ["rounding", "currency"]

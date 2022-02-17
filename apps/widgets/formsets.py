@@ -37,6 +37,15 @@ ColumnFormset = forms.inlineformset_factory(
 AggregationColumnFormset = forms.inlineformset_factory(
     Widget,
     AggregationColumn,
+    form=AggregationColumnForm,
+    can_delete=True,
+    extra=0,
+    formset=RequiredInlineFormset,
+)
+
+AggregationWithFormattingFormset = forms.inlineformset_factory(
+    Widget,
+    AggregationColumn,
     form=AggregationFormWithFormatting,
     can_delete=True,
     extra=0,
@@ -153,5 +162,5 @@ FORMSETS = {
     Widget.Kind.FUNNEL: [Min2Formset],
     Widget.Kind.METRIC: [SingleMetricFormset],
     Widget.Kind.COMBO: [CombinationChartFormset],
-    Widget.Kind.TABLE: [ColumnFormset, AggregationColumnFormset],
+    Widget.Kind.TABLE: [ColumnFormset, AggregationWithFormattingFormset],
 }

@@ -6,7 +6,7 @@
 <div class="input-group">
 {% for bound_field in form.visible_fields %}
 {% comment %} Ignore these fields because they are going to be rendered in an extendable manner further down {% endcomment %}
-  {% if form.formatting_is_hidden and bound_field.label in 'Currency, Rounding, Name, Formatting is hidden'%}
+  {% if form.formatting_unfolded and bound_field.label in 'Currency, Rounding, Name, Formatting unfolded'%}
   {% elif bound_field.widget_type == "palettecolors" %}
     <label>
       <span>
@@ -97,19 +97,19 @@
   {% endif %}
   {% endfor %}
 
-  {% if form.formatting_is_hidden %}
+  {% if form.formatting_unfolded %}
     <div class='formatting' data-controller='column-format'>
       <button 
         type='button'
-        class="small link link--foldable {% if not form.formatting_is_hidden.value %}link--unfolded {% endif %} ml-auto"
+        class="small link link--foldable {% if form.formatting_unfolded.value %}link--unfolded {% endif %} ml-auto"
         data-action='column-format#handle'
         data-column-format-target='button'
       >Formatting</button>
 
-      {{form.formatting_is_hidden}}
+      {{form.formatting_unfolded}}
 
       <div data-column-format-target='inputs' 
-        class="{% if form.formatting_is_hidden.value %}hidden{% endif %}"
+        class="{% if not form.formatting_unfolded.value %}hidden{% endif %}"
       >
         {% for field in form.visible_fields  %}
           {% if field.label in 'Currency, Rounding, Name'%}

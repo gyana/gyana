@@ -92,22 +92,30 @@ class LiveUpdateForm(BaseModelForm):
             # self.initial is a dict holding the model data that
             # For the additional formset rows that added as placeholders
             # self.initial is empty.
-            if field not in self.data and self.initial.get(field) is not None:
-                initial = self.initial[field]
+            field_data_name = f"{self.prefix}-{field}" if self.prefix else field
+            if (
+                field_data_name not in self.data
+                and (initial := (self.initial.get(field) or self.fields[field].initial))
+                is not None
+            ):
+
                 # e.g. for an ArrayField, each item should be a separate value (rather than one value as a list)
                 if isinstance(initial, list):
-                    data.setlist(field, initial)
+                    data.setlist(field_data_name, initial)
+                # If the default is e.g. list
+                elif callable(initial):
+                    data.setlist(field_data_name, initial())
                 else:
-                    data[field] = initial
+                    data[field_data_name] = initial
             # HTML forms usually just omit unchecked checkboxes
             # For us this is undistinguishable from the field not having been shown before
             # In the LiveFormController we manually add these fields to the form data
             # Just to remove them here again
             elif (
                 isinstance(self.fields[field], forms.BooleanField)
-                and self.data.get(field) == "false"
+                and self.data.get(field_data_name) == "false"
             ):
-                data.pop(field)
+                data.pop(field_data_name)
 
         self.data = data
 
