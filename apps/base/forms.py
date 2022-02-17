@@ -103,7 +103,7 @@ class LiveUpdateForm(BaseModelForm):
                 if isinstance(initial, list):
                     data.setlist(field_data_name, initial)
                 # If the default is e.g. list
-                elif isinstance(initial, type):
+                elif callable(initial):
                     data.setlist(field_data_name, initial())
                 else:
                     data[field_data_name] = initial
