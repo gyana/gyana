@@ -261,7 +261,7 @@ def today():
 
     Returns
     -------
-    today : Deta scalar
+    today : Date scalar
     """
     return Today().to_expr()
 

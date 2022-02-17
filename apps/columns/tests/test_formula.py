@@ -378,6 +378,11 @@ PARAMS = [
         id="date datetime_diff",
     ),
     pytest.param(
+        "subtract_days(birthday, 30)",
+        QUERY.format("DATE_SUB(`birthday`, INTERVAL 30 DAY)"),
+        id="date subtract_days",
+    ),
+    pytest.param(
         "day_of_week(birthday)",
         QUERY.format("EXTRACT(DAYOFWEEK FROM `birthday`)", id="dat_of_week"),
     ),
