@@ -1,3 +1,5 @@
+import logging
+
 from django.conf import settings
 from django.views.generic import DetailView, ListView
 from django.views.generic.base import TemplateView
@@ -7,8 +9,7 @@ from turbo_response.mixins import (
     TurboFrameTemplateResponseMixin as BaseTurboFrameTemplateResponseMixin,
 )
 
-from apps.base.views import TurboCreateView, TurboUpdateView
-from apps.base.views import FormsetUpdateView
+from apps.base.views import FormsetUpdateView, TurboCreateView, TurboUpdateView
 
 
 class TurboFrame500Mixin:
@@ -19,6 +20,7 @@ class TurboFrame500Mixin:
             return super().dispatch(request, *args, **kwargs)
         except Exception as exc:
             honeybadger.notify(exc)
+            logging.error(exc, exc_info=exc)
             return (
                 self.get_turbo_frame()
                 .template("components/frame_error.html", {})

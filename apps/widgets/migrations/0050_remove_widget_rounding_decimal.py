@@ -5,23 +5,19 @@ from django.db import migrations
 
 def forward(apps, schema_editor):
     AggregationColumn = apps.get_model("columns", "AggregationColumn")
-    Widget = apps.get_model("widgets", "Widget")
-    columns = []
-    for widget in Widget.objects.filter(kind="metric").all():
-        if column := widget.aggregations.first():
-            column.rounding = widget.rounding_decimal
-            columns.append(columns)
+    columns = AggregationColumn.objects.filter(widget__kind="metric").all()
+    for column in columns:
+        column.rounding = column.widget.rounding_decimal
 
     AggregationColumn.objects.bulk_update(columns, ["rounding"])
 
 
-def forward(apps, schema_editor):
+def backward(apps, schema_editor):
     Widget = apps.get_model("widgets", "Widget")
-    widgets = []
-    for widget in Widget.objects.filter(kind="metric").all():
+    widgets = Widget.objects.filter(kind="metric").all()
+    for widget in widgets:
         if column := widget.aggregations.first():
             widget.rounding_decimal = column.rounding
-            widgets.append(widget)
 
     Widget.objects.bulk_update(widgets, ["rounding_decimal"])
 
@@ -34,6 +30,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.RunPython(forward, reverse_code=backward),
         migrations.RemoveField(
             model_name="widget",
             name="rounding_decimal",
