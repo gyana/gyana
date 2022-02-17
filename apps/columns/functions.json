@@ -724,6 +724,18 @@
     "description": "Substract subtrahend from minuend"
   },
   {
+    "id": "subtract_days",
+    "intercom_id": "h_dfa7d8c4e1",
+    "name": "subtract_days",
+    "categories": ["time & date"],
+    "arguments": [
+      { "name": "date", "description": "a date scalar or column" },
+      { "name": "days", "description": "an integer scalar or column of days to subtract" }
+    ],
+    "keywords": ["minus"],
+    "description": "Substract days from date"
+  },
+  {
     "id": "substitute",
     "intercom_id": "h_07e6681d0f",
     "name": "substitute",
