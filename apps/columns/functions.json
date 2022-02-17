@@ -439,6 +439,18 @@
     "description": "Multiply x and y"
   },
   {
+    "id": "mod",
+    "intercom_id": "h_037594cc59",
+    "name": "modulo",
+    "categories": ["math"],
+    "arguments": [
+      { "name": "x", "description": "an integer scalar or column" },
+      { "name": "y", "description": "an integer scalar or column" }
+    ],
+    "keywords": ["modulo"],
+    "description": "Compute the modulo of x and y"
+  },
+  {
     "id": "notnull",
     "intercom_id": "h_8505fc49ac",
     "name": "notnull",
@@ -446,6 +458,15 @@
     "arguments": [{ "name": "value", "description": "a scalar or column" }],
     "keywords": [],
     "description": "Check whether value is null"
+  },
+  {
+    "id": "now",
+    "intercom_id": "h_d0ec29d7d1",
+    "name": "now",
+    "categories": ["time & date"],
+    "arguments": [],
+    "keywords": [],
+    "description": "Compute the current datetime"
   },
   {
     "id": "or",
@@ -739,6 +760,15 @@
     ],
     "keywords": [],
     "description": "Create a datetime from an integer as the number of unit since from January 1st, 1970 UTC (unix time)"
+  },
+  {
+    "id": "today",
+    "intercom_id": "h_ddaa026eeb",
+    "name": "today",
+    "categories": ["time & date"],
+    "arguments": [],
+    "keywords": [],
+    "description": "Compute today's date"
   },
   {
     "id": "timestamp_diff",

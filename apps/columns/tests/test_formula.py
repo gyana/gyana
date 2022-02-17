@@ -261,6 +261,11 @@ PARAMS = [
         id="multiply int and float column",
     ),
     pytest.param(
+        "medals % 3",
+        QUERY.format("MOD(`medals`, 3)"),
+        id="modulo integer column and integer scalar",
+    ),
+    pytest.param(
         "round(stars, 2)",
         QUERY.format("round(`stars`, 2)"),
         id="round",
@@ -309,6 +314,8 @@ PARAMS = [
         ),
         id="time",
     ),
+    pytest.param("today()", "SELECT CURRENT_DATE() AS `tmp`", id="today"),
+    pytest.param("now()", "SELECT CURRENT_TIMESTAMP() AS `tmp`", id="now"),
     # Test datetime operations
     create_extract_unary_param("year"),
     create_datetime_unary_param("extract_time", "TIME"),
@@ -467,6 +474,8 @@ def extract_function(param):
         return "divide"
     if "*" in value:
         return "product"
+    if "%" in value:
+        return "modulo"
 
 
 def test_all_functions_test():

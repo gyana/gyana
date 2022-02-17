@@ -4,6 +4,8 @@ import ibis
 import ibis.expr.datatypes as dt
 from lark import Transformer, v_args
 
+from apps.base.core.ibis.compiler import today
+
 from .types import TYPES
 
 with open("apps/columns/functions.json", "r") as file:
@@ -90,6 +92,8 @@ ODD_FUNCTIONS = {
     "create_time": create_time,
 }
 
+NO_CALLER = {"today": today, "now": ibis.now}
+
 
 @v_args(inline=True)
 class TreeToIbis(Transformer):
@@ -112,12 +116,15 @@ class TreeToIbis(Transformer):
         return self.query[token.value]
 
     def function(self, token, *args):
+        function_name = token.value.lower()
+        function = next(filter(lambda f: f["name"] == function_name, FUNCTIONS))
         args = list(args)
+        if not args:
+            return NO_CALLER[function_name]()
         caller = args.pop(0)
         if isinstance(caller, (int, str, float)):
             caller = ibis.literal(caller)
-        function_name = token.value.lower()
-        function = next(filter(lambda f: f["name"] == function_name, FUNCTIONS))
+
         if odd_func := ODD_FUNCTIONS.get(function["id"]):
             return odd_func(caller, args)
         func = getattr(caller, function["id"])
@@ -182,9 +189,11 @@ class TreeToIbis(Transformer):
 
     @staticmethod
     def number(token):
-        if "." in token.value:
-            return float(token.value)
-        return int(token.value)
+        return float(token.value) if "." in token.value else int(token.value)
+
+    @staticmethod
+    def modulo(left, right):
+        return left % right
 
     # -----------------------------------------------------------------------
     # Logical

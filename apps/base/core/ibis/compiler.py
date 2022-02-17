@@ -1,8 +1,8 @@
 import ibis.expr.datatypes as dt
 import ibis.expr.rules as rlz
-from ibis.expr.api import value_counts
 from ibis.expr.operations import (
     Arg,
+    Constant,
     DateDiff,
     Reduction,
     TimeDiff,
@@ -248,3 +248,24 @@ StringValue.parse_datetime = parse_datetime
 def _parse_datetime(t, expr):
     value, format_ = expr.op().args
     return f"PARSE_TIMESTAMP({t.translate(format_)}, {t.translate(value)})"
+
+
+class Today(Constant):
+    def output_type(self):
+        return dt.date.scalar_type()
+
+
+def today():
+    """
+    Compute today's date
+
+    Returns
+    -------
+    today : Deta scalar
+    """
+    return Today().to_expr()
+
+
+@compiles(Today)
+def _today(t, expr):
+    return "CURRENT_DATE()"
