@@ -93,7 +93,7 @@ def _add_timestamp_diff_with_unit(value_class, bq_func, data_type):
         left = Arg(data_type)
         right = Arg(data_type)
         unit = Arg(rlz.string)
-        output_type = rlz.shape_like("left", dt.float64)
+        output_type = rlz.shape_like("left", dt.int64)
 
     def difference(left, right, unit):
         return Difference(left, right, unit).to_expr()
@@ -269,3 +269,26 @@ def today():
 @compiles(Today)
 def _today(t, expr):
     return "CURRENT_DATE()"
+
+
+# Unfortunately, ibis INTERVAL doesnt except variables
+class SubtractDays(ValueOp):
+    date = Arg(rlz.date)
+    days = Arg(rlz.integer)
+    output_type = rlz.shape_like("args", dt.date)
+
+
+def subtract_days(date, days):
+    return SubtractDays(date, days).to_expr()
+
+
+DateValue.subtract_days = subtract_days
+
+
+@compiles(SubtractDays)
+def _subtract_days(translator, expr):
+    date, days = expr.op().args
+    t_date = translator.translate(date)
+    t_days = translator.translate(days)
+
+    return f"DATE_SUB({t_date}, INTERVAL {t_days} DAY)"
