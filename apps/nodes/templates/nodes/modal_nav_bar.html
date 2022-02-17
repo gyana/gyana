@@ -1,6 +1,6 @@
 {% load help_utils %}
 
-{% with parents=object.parents.all %}
+{% with parents=object.parents_ordered.all %}
 
 <nav class="tabbar">
   {% if node.kind == "formula" %}
