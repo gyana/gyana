@@ -6,9 +6,6 @@
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="turbo-cache-control" content="no-cache" />
-  {% comment %} TODO: Remove to enable turbo drive everywhere {% endcomment %}
-  <meta name="turbo-visit-control" content="reload">
 
   {% block meta %}
     <title>Gyana | Custom reports for any source</title>
@@ -46,7 +43,7 @@
   {% include "web/components/intercom-visitors.html" %}
 </head>
 
-<body>
+<body data-turbo="false">
   {% block body %}
 
   {% block body.header %}
