@@ -162,9 +162,9 @@ export default class extends Controller {
   }
 
   // Trigger save and preview without clicking save and preview button
-  preview() {
+  preview(e) {
+    e.preventDefault()
     this.changed = false
-
     this.formTarget.requestSubmit(this.formTarget.querySelector("button[value*='Save & Preview']"))
   }
 
