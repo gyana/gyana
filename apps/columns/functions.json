@@ -439,6 +439,18 @@
     "description": "Multiply x and y"
   },
   {
+    "id": "mod",
+    "intercom_id": "h_037594cc59",
+    "name": "modulo",
+    "categories": ["math"],
+    "arguments": [
+      { "name": "x", "description": "an integer scalar or column" },
+      { "name": "y", "description": "an integer scalar or column" }
+    ],
+    "keywords": ["modulo"],
+    "description": "Compute the modulo of x and y"
+  },
+  {
     "id": "notnull",
     "intercom_id": "h_8505fc49ac",
     "name": "notnull",

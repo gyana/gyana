@@ -51,9 +51,10 @@
 
   &__pill {
     border: 1px solid var(--c-gray);
-    padding: 0.6rem;
+    padding: 0.6rem 0.8rem 0.6rem 0.8rem;
     text-transform: capitalize;
     flex: 1 1 0%;
+    color: var(--c-black-50);
 
     & + & {
       border-left: none;
@@ -65,7 +66,9 @@
   }
 
   &__selected {
-    background-color: var(--c-gray);
+    border-bottom: 2px solid var(--c-blue);
+    font-weight: 500;
+    color: var(--c-black);
   }
 }
 

@@ -474,6 +474,8 @@ def extract_function(param):
         return "divide"
     if "*" in value:
         return "product"
+    if "%" in value:
+        return "modulo"
 
 
 def test_all_functions_test():
