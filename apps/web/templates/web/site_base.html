@@ -6,9 +6,6 @@
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="turbo-cache-control" content="no-cache" />
-  {% comment %} TODO: Remove to enable turbo drive everywhere {% endcomment %}
-  <meta name="turbo-visit-control" content="reload">
 
   {% block meta %}
     <title>Gyana | Custom reports for any source</title>
@@ -31,13 +28,14 @@
 
   <link rel="stylesheet" href="{% static "css/fontawesome.css" %}" />
   <link rel="stylesheet" href="{% static "css/tailwind.css" %}" />
-  {% comment %} TODO: Decide whether to use app stylesheet to develop independently {% endcomment %}
   <link rel="stylesheet" href="{% static "css/website.css" %}" />
   <link rel="stylesheet" href="{% static "css/website-components.css" %}" />
 
-  {% comment %} TODO: Decide whether to keep use Turbo for website {% endcomment %}
   <script src="{% static "js/turbo-bundle.js" %}"></script>
   <script src="{% static "js/stimulus-bundle.js" %}"></script>
+  <script>
+    Turbo.session.drive = false
+  </script>
 
   {% if WEBSITE_GTM_ID %}
   {% include "web/components/gtm_head.html" %}

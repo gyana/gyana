@@ -99,14 +99,13 @@
           Go to app
         </a>
         {% else %}
-        <a href="{% url 'account_login' %}" class="button button--transparent" data-turbo="false">
+        <a href="{% url 'account_login' %}" class="button button--transparent">
           Sign in
         </a>
         <a 
           id="CTA_header"
           class="button button--secondary"
           href="{% url 'account_signup' %}"
-          data-turbo="false"
         >
           Sign up
         </a>

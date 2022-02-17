@@ -12,7 +12,7 @@
   {% include "web/site/home/benefits.html" %}
   {% include "web/site/home/scale.html" %}
   {% include "web/site/home/testimonial.html" with testimonial=content.testimonial %}
-  <turbo-frame id="web:support-demo">
+  <turbo-frame id="web:support-demo" data-turbo="true">
     {% include "web/site/home/support.html" %}
   </turbo-frame>
   {% include "web/site/home/cta.html" %}
