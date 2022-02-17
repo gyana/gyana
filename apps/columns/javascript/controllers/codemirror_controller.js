@@ -73,7 +73,7 @@ CodeMirror.defineSimpleMode('gyanaformula', {
     { regex: /TRUE|FALSE/, token: 'atom' },
     { regex: columnRegex, token: 'variable' },
     { regex: /[0-9]+/i, token: 'number' },
-    { regex: /[-+\/*=<>!]+/, token: 'operator' },
+    { regex: /[-+\/*=<>!%]+/, token: 'operator' },
   ],
 })
 

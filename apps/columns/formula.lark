@@ -24,6 +24,7 @@
 ?product   : num_atom
            | product "*" num_atom                      -> multiply
            | product "/" num_atom                      -> divide
+           | product "%" num_atom                      -> modulo
 
 ?num_atom  : NUMBER                                    -> number
            | "-" num_atom                              -> negate

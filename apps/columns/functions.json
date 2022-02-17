@@ -448,6 +448,15 @@
     "description": "Check whether value is null"
   },
   {
+    "id": "now",
+    "intercom_id": "h_d0ec29d7d1",
+    "name": "now",
+    "categories": ["time & date"],
+    "arguments": [],
+    "keywords": [],
+    "description": "Compute the current datetime"
+  },
+  {
     "id": "or",
     "name": "or",
     "categories": ["generic"],
@@ -739,6 +748,15 @@
     ],
     "keywords": [],
     "description": "Create a datetime from an integer as the number of unit since from January 1st, 1970 UTC (unix time)"
+  },
+  {
+    "id": "today",
+    "intercom_id": "h_ddaa026eeb",
+    "name": "today",
+    "categories": ["time & date"],
+    "arguments": [],
+    "keywords": [],
+    "description": "Compute today's date"
   },
   {
     "id": "timestamp_diff",
