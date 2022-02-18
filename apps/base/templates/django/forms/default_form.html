@@ -20,7 +20,27 @@
 
     <div class="palette-colors">{{ bound_field }}</div>
   {% elif bound_field.widget_type == "connectorschemamultiselect" %}
-    <div class="w-full {{ bound_field.field.widget.attrs.class }}">
+    <div
+      data-controller="multi-select"
+      class="w-full {{ bound_field.field.widget.attrs.class }}"
+    > 
+      <div class="flex items-center gap-2 flex-row float-right">
+        <p class="text-black-50 small">Select:</p>
+        <a
+          class="link small"
+          data-action="click->multi-select#checkAllInputs"
+        >
+          All
+        </a>
+        <p>|</p>
+        <a
+          class="link small"
+          data-action="click->multi-select#uncheckAllInputs"
+        >
+          None
+        </a>
+      </div>
+
       <label>
         {{ bound_field.label }}
 
