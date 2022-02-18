@@ -51,10 +51,25 @@
 
       {{ bound_field }}
     </div>
+  {% elif bound_field.widget_type == "radioselect" %}
+    <div class="{{ bound_field.field.widget.attrs.class }}">
+      <label class="block mb-2">
+        {{ bound_field.label }}
+    
+        {% if bound_field.help_text %}
+        <p class="input__help-text">
+          {{ bound_field.help_text }}
+          {% if not bound_field.field.required %} - optional{% endif %}
+        </p>
+        {% endif %}
+      </label>
+    
+      {{ bound_field }}
+    </div>
   {% elif bound_field.widget_type == "checkbox" %}
     <label  
       class="flex flex-row items-center gap-4 w-full"
-      {% if bound_field.name == 'DELETE' %}style="display: none;" {% endif %}
+      {% if bound_field.name == 'DELETE' %}style="display: none;"{% endif %}
     >
       {{ bound_field }}
       

@@ -11,11 +11,15 @@ from .models import CustomUser
 class UserNameForm(forms.ModelForm):
     first_name = forms.CharField(required=True)
     last_name = forms.CharField(required=True)
-    marketing_allowed = forms.BooleanField(
-        label="Opt-in to marketing",
+    marketing_allowed = forms.TypedChoiceField(
+        coerce=lambda x: x == 'True',
+        choices=( (True, 'Yes'), (False, 'No')),
+        label="Opt-in to email communications",
         help_text="There is a lot you can do with Gyana, opt-in so we can send you occasional tips. (You can always opt-out)",
-        required=False,
+        widget=forms.RadioSelect,
+        required=True,
     )
+
 
     class Meta:
         model = CustomUser
@@ -81,6 +85,13 @@ class UserLoginForm(LoginForm):
 class CustomUserChangeForm(UserChangeForm):
     email = forms.EmailField(required=True, label="Email Address")
     password = forms.CharField(widget=forms.HiddenInput(), required=False)
+    marketing_allowed = forms.TypedChoiceField(
+        coerce=lambda x: x == 'True',
+        choices=( (True, 'Yes'), (False, 'No')),
+        label="Opt-in to email communications",
+        help_text="Allow us to email you with content relevant to the app",
+        widget=forms.RadioSelect
+    )
 
     class Meta:
         model = CustomUser
@@ -93,10 +104,8 @@ class CustomUserChangeForm(UserChangeForm):
         labels = {
             "first_name": "First Name",
             "last_name": "Last Name",
-            "marketing_allowed": "Opt-in to email communications",
         }
         help_texts = {
             "email": "Changing this will not change the email you use to login",
             "first_name": "We use this name to help personalize content and support",
-            "marketing_allowed": "Allow us to email you with content relevant to the app",
         }

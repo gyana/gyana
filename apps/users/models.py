@@ -69,7 +69,7 @@ class CustomUser(AbstractUser):
     company_size = models.CharField(
         max_length=16, null=True, choices=CompanySize.choices
     )
-    marketing_allowed = models.BooleanField(default=False)
+    marketing_allowed = models.BooleanField(null=True)
 
     def __str__(self):
         return self.email
