@@ -16,11 +16,8 @@
           data-controller="live-update"
           enctype='multipart/form-data'
           data-action="
-          change->tf-modal#change 
           formset:remove->live-update#updateForm 
-          formset:add->live-update#updateForm 
-          formset:remove->tf-modal#change 
-          formset:add->tf-modal#change
+          formset:add->live-update#updateForm
         "
         {% endif %}
         {% flag 'alpha' %}
