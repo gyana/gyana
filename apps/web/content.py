@@ -7,7 +7,7 @@ CONTENT_ROOT = "apps/web/content"
 
 
 def get_content(path):
-    return yaml.load(open(f"{CONTENT_ROOT}/{path}", "r"))
+    return yaml.safe_load(open(f"{CONTENT_ROOT}/{path}", "r"))
 
 
 if not settings.DEBUG:
