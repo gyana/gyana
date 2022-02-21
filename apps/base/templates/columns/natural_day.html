@@ -2,10 +2,9 @@
 {% load humanize %}
 
 {% firstof team.timezone project.team.timezone "GMT" as team_timezone %}
-
 <span data-controller="tooltip">
   {{ datetime|naturalday }}
   {% timezone team_timezone %}
-  <span data-tooltip-target="body">{{ datetime }}</span>
+    <span data-tooltip-target="body">{{ datetime }}</span>
   {% endtimezone %}
 </span>
