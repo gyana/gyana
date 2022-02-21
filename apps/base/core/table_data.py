@@ -150,6 +150,7 @@ class BigQueryColumn(Column):
                 }
             )
         if isinstance(value, float):
+            value = value * 100 if self.is_percentage else value
             return get_template("columns/float_cell.html").render(
                 {
                     "value": value,
