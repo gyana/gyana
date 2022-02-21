@@ -8,6 +8,7 @@
     "skellock.just",
     "dbaeumer.vscode-eslint",
     "batisteo.vscode-django",
-    "bradlc.vscode-tailwindcss"
+    "bradlc.vscode-tailwindcss",
+    "monosans.djlint"
   ]
 }
