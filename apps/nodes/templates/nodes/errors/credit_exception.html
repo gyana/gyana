@@ -1,25 +1,24 @@
-
 <p class="mt-12">
-  Computing this node will spend 
-    <span data-controller='tooltip' class='cursor-help'>
-      <strong>{{node.uses_credits}}</strong>
-      <span data-tooltip-target="body">
-        You will only spend credits on unique values that haven't been analysed before.
-      </span>
+  Computing this node will spend
+  <span data-controller='tooltip' class='cursor-help'>
+    <strong>{{ node.uses_credits }}</strong>
+    <span data-tooltip-target="body">
+      You will only spend credits on unique values that haven't been analysed before.
     </span>
-  credits. 
-  <form class='items-center' method='POST', action="{% url 'nodes:credit-confirmation' node.id %}">
+  </span>
+  credits.
+  <form class='items-center'
+        method='POST'
+        action="{% url 'nodes:credit-confirmation' node.id %}">
     {% csrf_token %}
-
     <p class='flex flex-row'>
       <label class="input__help-text" for='always_use_credits'>Always use credits for this node</label>
-      <input class='ml-2' id='always_use_credits' 
-        name='always_use_credits' type='checkbox'
-        {% if node.always_use_credits %}checked{% endif%}
-       />
+      <input class='ml-2'
+             id='always_use_credits'
+             name='always_use_credits'
+             type='checkbox'
+             {% if node.always_use_credits %}checked{% endif %}/>
     </p>
-
     <button type='submit' class="button">Confirm</button>
-    
   </form>
 </p>

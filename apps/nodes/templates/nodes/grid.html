@@ -1,13 +1,9 @@
 {% load render_table from django_tables2 %}
 
 {% include 'nodes/modal_nav_bar.html' %}
-
 {% if not preview_node.is_valid %}
-
   {% include 'nodes/_zero_state.html' %}
-
 {% elif preview_node.error %}
-
   <div class='node__visual'>
     {% if error_template %}
       {% include error_template %}
@@ -15,9 +11,6 @@
       {% include 'nodes/errors/default.html' %}
     {% endif %}
   </div>
-
 {% else %}
-
   {% render_table table %}
-
 {% endif %}

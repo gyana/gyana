@@ -1,32 +1,26 @@
 <p class='m-auto'>
-  There is an error in the parent node 
-  <strong> 
+  There is an error in the parent node
+  <strong>
     {% if object.name %}
-      {{object.name}}
+      {{ object.name }}
     {% else %}
-      {{object.display_name}}
+      {{ object.display_name }}
     {% endif %}
   </strong>.
-
-  <button
-    class='link'
-    data-modal-src="/nodes/{{object.id}}"
-    data-modal-id="workflow-modal"
-    data-modal-classes='tf-modal--full'
-    data-action='click->tf-modal#open'
-    data-modal-item="{{ object.id }}"
-  >
+  <button class='link'
+          data-modal-src="/nodes/{{ object.id }}"
+          data-modal-id="workflow-modal"
+          data-modal-classes='tf-modal--full'
+          data-action='click->tf-modal#open'
+          data-modal-item="{{ object.id }}">
     Reconfigure
   </button>
-
   it and try opening this node again.
 </p>
 <div class="absolute top-0 right-0">
-  <button
-    class="tf-modal__close tf-modal__close--inline ml-auto"
-    data-action="click->tf-modal#forceClose"
-    data-loading-false
-  >
+  <button class="tf-modal__close tf-modal__close--inline ml-auto"
+          data-action="click->tf-modal#forceClose"
+          data-loading-false>
     <i class="fal fa-times fa-lg"></i>
   </button>
 </div>
