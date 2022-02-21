@@ -1,21 +1,15 @@
 {% extends "dashboards/public.html" %}
 
-{% block head %}
-<title>Password protected page</title>
-{% endblock %}
-
+{% block head %}<title>Password protected page</title>{% endblock %}
 {% block body %}
-<div class="flex flex-col m-auto justify-center items-center">
-  <h2 class="mb-7">Password protected page</h2>
-  <form
-    class="w-full form--no-layout"
-    method='post'
-  >
-    {% csrf_token %}
-
-    {% include "django/forms/default_form.html" %}
-
-    <button data-turbo='false' class='button button-primary w-full mt-4' type='submit'>Submit</button>
-  </form>
-</div>
+  <div class="flex flex-col m-auto justify-center items-center">
+    <h2 class="mb-7">Password protected page</h2>
+    <form class="w-full form--no-layout" method='post'>
+      {% csrf_token %}
+      {% include "django/forms/default_form.html" %}
+      <button data-turbo='false'
+              class='button button-primary w-full mt-4'
+              type='submit'>Submit</button>
+    </form>
+  </div>
 {% endblock %}
