@@ -16,12 +16,7 @@ from apps.base.analytics import (
 )
 from apps.base.core.table_data import RequestConfig, get_table
 from apps.base.core.utils import error_name_to_snake
-from apps.base.frames import (
-    TurboFrameDetailView,
-    TurboFrameFormsetUpdateView,
-    TurboFrameListView,
-    TurboFrameUpdateView,
-)
+from apps.base.frames import TurboFrameDetailView, TurboFrameUpdateView
 from apps.base.templates import template_exists
 from apps.columns.currency_symbols import CURRENCY_SYMBOLS_MAP
 from apps.controls.bigquery import DATETIME_FILTERS
@@ -87,7 +82,7 @@ class WidgetName(TurboFrameUpdateView):
         )
 
 
-class WidgetUpdate(DashboardMixin, TurboFrameFormsetUpdateView):
+class WidgetUpdate(DashboardMixin, TurboFrameUpdateView):
     model = Widget
     turbo_frame_dom_id = "widget-modal"
 

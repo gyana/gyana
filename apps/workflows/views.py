@@ -60,7 +60,7 @@ class WorkflowCreate(ProjectMixin, TurboCreateView):
             "project_workflows:detail", args=(self.project.id, self.object.id)
         )
 
-    def form_valid(self, form: forms.Form) -> HttpResponse:
+    def form_valid(self, form):
         r = super().form_valid(form)
         analytics.track(
             self.request.user.id,
@@ -81,7 +81,7 @@ class WorkflowCreateFromIntegration(ProjectMixin, TurboCreateView):
             "project_workflows:detail", args=(self.project.id, self.object.id)
         )
 
-    def form_valid(self, form: forms.Form) -> HttpResponse:
+    def form_valid(self, form):
         r = super().form_valid(form)
         analytics.track(
             self.request.user.id,
@@ -143,7 +143,7 @@ class WorkflowDuplicate(TurboUpdateView):
     fields = []
     extra_context = {"object_name": "workflow"}
 
-    def form_valid(self, form: forms.Form) -> HttpResponse:
+    def form_valid(self, form):
         r = super().form_valid(form)
         analytics.track(
             self.request.user.id,

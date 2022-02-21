@@ -19,7 +19,7 @@ class OAuth2CreateForm(BaseModelForm):
         instance.project = self._project
 
 
-class OAuth2UpdateForm(forms.ModelForm):
+class OAuth2UpdateForm(BaseModelForm):
     class Meta:
         model = OAuth2
         fields = [

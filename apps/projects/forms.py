@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.utils.html import mark_safe
 
 from apps.base.forms import BaseModelForm
-from apps.base.forms import LiveUpdateForm
+from apps.base.forms import LiveModelForm
 
 from .models import Project
 from .widgets import MemberSelect
@@ -31,7 +31,7 @@ class MemberSelectMixin:
             )
 
 
-class ProjectCreateForm(MemberSelectMixin, LiveUpdateForm):
+class ProjectCreateForm(MemberSelectMixin, LiveModelForm):
     class Meta:
         model = Project
         fields = ["name", "description", "access", "members"]
@@ -68,7 +68,7 @@ class ProjectCreateForm(MemberSelectMixin, LiveUpdateForm):
         instance.team = self._team
 
 
-class ProjectUpdateForm(MemberSelectMixin, LiveUpdateForm):
+class ProjectUpdateForm(MemberSelectMixin, LiveModelForm):
     class Meta:
         model = Project
         fields = [

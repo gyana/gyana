@@ -1,6 +1,4 @@
-from django import forms
 from django.forms.widgets import HiddenInput
-from django.utils.html import mark_safe
 
 from apps.base.account import is_scheduled_paid_only
 from apps.base.forms import BaseModelForm
@@ -8,14 +6,14 @@ from apps.base.forms import BaseModelForm
 from .models import Workflow
 
 
-class WorkflowFormCreate(forms.ModelForm):
+class WorkflowFormCreate(BaseModelForm):
     class Meta:
         model = Workflow
         fields = ["project"]
         widgets = {"project": HiddenInput()}
 
 
-class WorkflowForm(forms.ModelForm):
+class WorkflowForm(BaseModelForm):
     class Meta:
         model = Workflow
         fields = ["name"]

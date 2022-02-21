@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.utils.html import mark_safe
 
 from apps.base.account import is_scheduled_paid_only
-from apps.base.forms import BaseModelForm, LiveFormsetMixin, LiveUpdateForm
+from apps.base.forms import BaseModelForm, LiveFormsetMixin, LiveModelForm
 from apps.base.formsets import RequiredInlineFormset
 from apps.base.widgets import DatalistInput
 
@@ -87,7 +87,7 @@ HttpHeaderFormset = forms.inlineformset_factory(
 )
 
 
-class FormDataEntryForm(LiveUpdateForm):
+class FormDataEntryForm(LiveModelForm):
     class Meta:
         model = FormDataEntry
         fields = ["format", "key", "text", "file"]
@@ -109,7 +109,7 @@ FormDataEntryFormset = forms.inlineformset_factory(
 )
 
 
-class FormURLEncodedEntryForm(LiveUpdateForm):
+class FormURLEncodedEntryForm(LiveModelForm):
     class Meta:
         model = FormURLEncodedEntry
         fields = ["key", "value"]
@@ -163,7 +163,7 @@ class CustomApiCreateForm(BaseModelForm):
         instance.integration.project.update_schedule()
 
 
-class CustomApiUpdateForm(LiveFormsetMixin, LiveUpdateForm):
+class CustomApiUpdateForm(LiveFormsetMixin, LiveModelForm):
     class Meta:
         model = CustomApi
         fields = [

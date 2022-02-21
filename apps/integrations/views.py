@@ -5,13 +5,13 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils import timezone
 from django.views.generic import DetailView
-from django.views.generic.edit import DeleteView, UpdateView
+from django.views.generic.edit import DeleteView
 from django_filters.views import FilterView
 from django_tables2.views import SingleTableMixin
 from waffle import flag_is_active
 
 from apps.base.analytics import INTEGRATION_SYNC_STARTED_EVENT
-from apps.base.views import FormsetUpdateView, TurboUpdateView
+from apps.base.views import TurboUpdateView
 from apps.connectors.forms import FacebookAdsConnectorUpdateForm
 from apps.integrations.filters import IntegrationFilter
 from apps.integrations.tasks import run_integration
@@ -53,7 +53,7 @@ class IntegrationList(ProjectMixin, SingleTableMixin, FilterView):
 # Tabs
 
 
-class IntegrationDetail(ProjectMixin, UpdateView):
+class IntegrationDetail(ProjectMixin, TurboUpdateView):
     template_name = "integrations/detail.html"
     model = Integration
     fields = ["name"]
@@ -127,7 +127,7 @@ class IntegrationDelete(ProjectMixin, DeleteView):
 # Setup
 
 
-class IntegrationConfigure(ProjectMixin, FormsetUpdateView):
+class IntegrationConfigure(ProjectMixin, TurboUpdateView):
     template_name = "integrations/configure.html"
     model = Integration
 

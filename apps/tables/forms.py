@@ -1,9 +1,11 @@
 from django import forms
 
+from apps.base.forms import BaseModelForm
+
 from .models import Table
 
 
-class TableForm(forms.ModelForm):
+class TableForm(BaseModelForm):
     class Meta:
         model = Table
         fields = []

@@ -6,6 +6,13 @@ from django.utils.datastructures import MultiValueDict
 
 from apps.base.core.utils import create_column_choices
 
+
+def get_formsets(self):
+    return {}
+
+
+forms.BaseForm.get_formsets = get_formsets
+
 # temporary overrides for formset labels
 FORMSET_LABELS = {
     "columns": "Group columns",
@@ -74,87 +81,92 @@ class BaseModelForm(forms.ModelForm):
         return instance
 
 
-class LiveUpdateForm(BaseModelForm):
+class LiveModelForm(BaseModelForm):
 
     hidden_live = forms.CharField(widget=forms.HiddenInput(), required=True)
-
-    def _update_data_with_initial(self):
-        """Updates the form's data missing fields with the initial values.
-
-        Because LiveForms don't hold data for fields that haven't been displayed,
-        we need to manually add these values."""
-        # When submitting we don't need to do anything
-        if not self.is_live:
-            return
-        # self.data hold data from request.POST and can be a MultiValueDict or a QueryDict
-        data = MultiValueDict({**self.data})
-        for field in self.get_live_fields():
-            # self.initial is a dict holding the model data that
-            # For the additional formset rows that added as placeholders
-            # self.initial is empty.
-            field_data_name = f"{self.prefix}-{field}" if self.prefix else field
-            if (
-                field_data_name not in self.data
-                and (initial := (self.initial.get(field) or self.fields[field].initial))
-                is not None
-            ):
-
-                # e.g. for an ArrayField, each item should be a separate value (rather than one value as a list)
-                if isinstance(initial, list):
-                    data.setlist(field_data_name, initial)
-                # If the default is e.g. list
-                elif callable(initial):
-                    data.setlist(field_data_name, initial())
-                else:
-                    data[field_data_name] = initial
-            # HTML forms usually just omit unchecked checkboxes
-            # For us this is undistinguishable from the field not having been shown before
-            # In the LiveFormController we manually add these fields to the form data
-            # Just to remove them here again
-            elif (
-                isinstance(self.fields[field], forms.BooleanField)
-                and self.data.get(field_data_name) == "false"
-            ):
-                data.pop(field_data_name)
-
-        self.data = data
 
     def __init__(self, *args, **kwargs):
 
         self.parent_instance = kwargs.pop("parent_instance", None)
-
         super().__init__(*args, **kwargs)
-
-        self.prefix = kwargs.pop("prefix", None)
+        self.prefix = kwargs.get("prefix", None)
 
         # the rendered fields are determined by the values of the other fields
-        live_fields = self.get_live_fields()
-        self._update_data_with_initial()
-        # - when the Stimulus controller makes a POST request, it will always be invalid
-        # and re-render the same form with the updated values
-        # - when the form is valid and the user clicks a submit button, the live field is
-        # not rendered and it behaves like a normal form
+        # implementation designed to be overriden by subclass
+        fields = self.get_live_fields()
+
         if self.is_live:
-            live_fields += ["hidden_live"]
-        self.fields = {k: v for k, v in self.fields.items() if k in live_fields}
+            self.data.update(self._get_live_data(fields))
+            # - when the Stimulus controller makes a POST request, it will always be invalid
+            # and re-render the same form with the updated values
+            # - when the form is valid and the user clicks a submit button, the live field is
+            # not rendered and it behaves like a normal form
+            fields += ["hidden_live"]
+
+        self.fields = {k: v for k, v in self.fields.items() if k in fields}
+
+    def _get_field_data_key(self, field):
+        # formset data is prefixed
+        return f"{self.prefix}-{field}" if self.prefix else field
+
+    def _get_live_data(self, fields):
+        """Updates the form's data missing fields with the initial values.
+
+        Because LiveForms don't hold data for fields that haven't been displayed,
+        we need to manually add these values."""
+
+        data = MultiValueDict()
+
+        for field in fields:
+            key = self._get_field_data_key(field)
+            value = self.get_live_field(field)
+
+            # For HTML checkboxes, we need to distinguish two possibilities:
+            # - the value of the checkbox is false (unchecked)
+            # - the field was not displayed
+            # Under the default HTML form implementation, these are indistinguishable.
+            # Solution: we manually add the unchecked checkbox with "false" value
+
+            if isinstance(self.fields[field], forms.BooleanField) and value == "false":
+                continue
+
+            # e.g. for an ArrayField, each item should be a separate value (rather than one value as a list)
+            if isinstance(value, list):
+                data.setlist(key, value)
+            else:
+                data[key] = value
+
+        return data
 
     @property
     def is_live(self):
         # the "submit" value is populated when the user clicks the button
         return "submit" not in self.data
 
-    def get_live_field(self, name):
-        # potentially called before self._update_data_with_initial
-        # formset data is prefixed
-        key_ = f"{self.prefix}-{name}" if self.prefix else name
+    def get_live_field(self, field):
+        """Return the current value of a field in a live form."""
+
+        key = self._get_field_data_key(field)
 
         # data populated by POST request in update
-        # as a fallback we are using the database value
+        if key in self.data:
+            return self.data[key]
 
-        return self.data.get(key_) or getattr(self.instance, name)
+        # fallback 1: initial value for form
+        if field in self.initial:
+            return self.initial[field]
+
+        # fallback 2: default value for model field
+        # used for formset placeholder rows where self.initial is empty
+        initial = self.fields[field].initial
+        return initial() if callable(initial) else initial
 
     def get_live_fields(self):
-        # by default the behaviour is a normal form
+        """Return list of rendered fields derived from current form state.
+
+        Designed to be overwritten by live form implementation. Default behaviour
+        is a normal form (i.e. all fields)."""
+
         return [f for f in self.fields.keys() if f != "hidden_live"]
 
     @property
@@ -162,11 +174,11 @@ class LiveUpdateForm(BaseModelForm):
         return self.data.get(f"{self.prefix}-DELETE") == "on"
 
 
-class BaseLiveSchemaForm(SchemaFormMixin, LiveUpdateForm):
+class BaseLiveSchemaForm(SchemaFormMixin, LiveModelForm):
     pass
 
 
-class BaseSchemaForm(SchemaFormMixin, forms.ModelForm):
+class BaseSchemaForm(SchemaFormMixin, BaseModelForm):
     pass
 
 
@@ -184,7 +196,7 @@ class LiveFormsetMixin:
         forms_kwargs = self.get_formset_form_kwargs(formset)
 
         # provide a reference to parent instance in live update forms
-        if issubclass(formset.form, LiveUpdateForm):
+        if issubclass(formset.form, LiveModelForm):
             forms_kwargs["parent_instance"] = self.instance
 
         if issubclass(formset.form, SchemaFormMixin):

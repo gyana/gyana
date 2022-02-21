@@ -12,7 +12,7 @@ from apps.base.analytics import (
     identify_user,
     identify_user_group,
 )
-from apps.base.forms import BaseModelForm, LiveUpdateForm
+from apps.base.forms import BaseModelForm, LiveModelForm
 from apps.base.templatetags.help_utils import INTERCOM_ROOT, get_intercom
 from apps.invites.models import Invite
 from apps.teams import roles
@@ -47,7 +47,7 @@ class TeamSignupForm(SignupForm):
         return user
 
 
-class TeamCreateForm(forms.ModelForm):
+class TeamCreateForm(BaseModelForm):
     class Meta:
         model = Team
         fields = ("name",)
@@ -58,18 +58,11 @@ class TeamCreateForm(forms.ModelForm):
         self._user = kwargs.pop("user")
         super().__init__(*args, **kwargs)
 
-    def save(self, commit=True):
-        instance = super().save(commit=False)
-
-        if commit:
-            instance.save()
-            instance.members.add(self._user, through_defaults={"role": "admin"})
-            self.save_m2m()
+    def post_save(self, instance):
+        instance.members.add(self._user, through_defaults={"role": "admin"})
 
         analytics.track(self._user.id, TEAM_CREATED_EVENT)
         identify_user_group(self._user, instance)
-
-        return instance
 
 
 class TeamUpdateForm(BaseModelForm):
@@ -104,7 +97,7 @@ class TeamUpdateForm(BaseModelForm):
         Flag.set_beta_program_for_team(instance, self.cleaned_data["beta"])
 
 
-class MembershipUpdateForm(forms.ModelForm):
+class MembershipUpdateForm(BaseModelForm):
     class Meta:
         model = Membership
         fields = ("role",)
@@ -122,7 +115,7 @@ class MembershipUpdateForm(forms.ModelForm):
             )
 
 
-class TeamSubscriptionForm(LiveUpdateForm):
+class TeamSubscriptionForm(LiveModelForm):
     class Meta:
         model = Team
         fields = ()

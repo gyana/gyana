@@ -82,6 +82,10 @@ def or_(caller, args):
     return query
 
 
+def subtract_days(date, args):
+    return date.sub(ibis.interval(args[0], "D"))
+
+
 ODD_FUNCTIONS = {
     "and": and_,
     "or": or_,
@@ -90,6 +94,7 @@ ODD_FUNCTIONS = {
     "weekday": weekday,
     "create_date": create_date,
     "create_time": create_time,
+    "subtract_days": subtract_days,
 }
 
 NO_CALLER = {"today": today, "now": ibis.now}

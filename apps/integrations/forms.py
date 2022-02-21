@@ -10,7 +10,7 @@ from apps.uploads.forms import UploadUpdateForm
 from .models import Integration
 
 
-class IntegrationForm(forms.ModelForm):
+class IntegrationForm(BaseModelForm):
     class Meta:
         model = Integration
         fields = ["name"]

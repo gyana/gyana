@@ -26,7 +26,7 @@ class UploadCreateForm(BaseModelForm):
         )
 
 
-class UploadUpdateForm(LiveFormsetMixin, forms.ModelForm):
+class UploadUpdateForm(LiveFormsetMixin, BaseModelForm):
     class Meta:
         model = Upload
         fields = ["field_delimiter"]

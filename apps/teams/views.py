@@ -7,7 +7,6 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import DeleteView, DetailView
-from django.views.generic.edit import UpdateView
 from django_tables2.views import SingleTableMixin, SingleTableView
 from djpaddle.models import Plan
 from djpaddle.views import PaddlePostCheckoutApiView as BasePaddlePostCheckoutApiView
@@ -190,7 +189,7 @@ class TeamDetail(SingleTableMixin, DetailView):
         return self.projects
 
 
-class TeamAccount(UpdateView):
+class TeamAccount(TurboUpdateView):
     template_name = "teams/account.html"
     model = Team
     pk_url_kwarg = "team_id"

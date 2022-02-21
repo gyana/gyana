@@ -6,7 +6,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.forms.widgets import HiddenInput, PasswordInput
 from django.utils import timezone
 
-from apps.base.forms import LiveUpdateForm
+from apps.base.forms import BaseModelForm, LiveModelForm
 
 from .models import DASHBOARD_SETTING_TO_CATEGORY, Dashboard
 
@@ -56,20 +56,20 @@ class PaletteColorsField(forms.MultiValueField):
         return data_list
 
 
-class DashboardCreateForm(forms.ModelForm):
+class DashboardCreateForm(BaseModelForm):
     class Meta:
         model = Dashboard
         fields = ["project"]
         widgets = {"project": HiddenInput()}
 
 
-class DashboardNameForm(forms.ModelForm):
+class DashboardNameForm(BaseModelForm):
     class Meta:
         model = Dashboard
         fields = ["name"]
 
 
-class DashboardForm(forms.ModelForm):
+class DashboardForm(BaseModelForm):
     width = forms.IntegerField(
         required=False,
         widget=forms.NumberInput(
@@ -173,7 +173,7 @@ class DashboardForm(forms.ModelForm):
                     field.widget = forms.HiddenInput()
 
 
-class DashboardShareForm(LiveUpdateForm):
+class DashboardShareForm(LiveModelForm):
     class Meta:
         model = Dashboard
         fields = ["shared_status", "password"]

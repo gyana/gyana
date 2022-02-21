@@ -41,8 +41,55 @@ preview mode.
       {% if not request.GET.mode or request.GET.mode == "edit" %}
       <div class='widget-card__commands'>
         {% block widget.commands %}
+        <div
+          data-controller="popover" 
+          data-placement="bottom-start"
+          data-theme="popover-menu"
+        >
+          <button
+            class="widget-card__button"
+            data-popover-target="trigger" 
+          >
+            <i class="fas fa-fw fa-ellipsis-v"></i>
+          </button>
+
+          <div data-popover-target="body">
+            <form
+              method="POST"
+              action="{% url 'dashboard_widgets:detail' project.id dashboard.id object.pk %}"
+              class="form--no-layout"
+            >
+              {% csrf_token %}
+
+              <button
+                id="widget-duplicate-{{ object.id }}"
+                class="list__item list__item--interactive w-full"
+                data-loading-false
+              >
+                Duplicate
+              </button>
+            </form>
+    
+            <form
+              method="POST"
+              action="{% url 'dashboard_widgets:delete' project.id dashboard.id object.id %}"
+              class="form--no-layout"
+            >
+              {% csrf_token %}
+    
+              <button
+                id="widget-delete-{{ object.id }}"
+                class="list__item list__item--interactive w-full"
+              >
+                Delete
+              </button>
+            </form>
+          </div>
+        </div>
+
         {% if object.kind != "text" %}
         <button  
+          class="widget-card__button"
           data-controller="tooltip"
           data-action="click->tf-modal#open"
           id="widget-update-{{ object.id }}"
@@ -65,6 +112,7 @@ preview mode.
 
         {% if object.kind != "text" and object.kind != "iframe" and object.kind != "image" %}
         <button
+          class="widget-card__button"
           data-controller="tooltip"
           data-action="click->tf-modal#open"
           id="widget-update-{{ object.id }}"  
@@ -78,32 +126,8 @@ preview mode.
         </button>
         {% endif %}
 
-        <form
-          data-controller="tooltip"
-          method='post'
-          action="{% url 'dashboard_widgets:detail' project.id dashboard.id object.pk %}"
-        >
-          {% csrf_token %}
-          <button id="widget-duplicate-{{ object.id }}" type='submit' data-loading-false>
-            <i class="fas fa-fw fa-copy"></i>
-          </button>
-          <span data-tooltip-target="body">Duplicate</span>
-        </form>
-
-        <form
-          data-controller="tooltip"
-          method="post"
-          action="{% url 'dashboard_widgets:delete' project.id dashboard.id object.id %}">
-          {% csrf_token %}
-
-          <button id="widget-delete-{{ object.id }}" type='submit'>
-            <i class="fas fa-fw fa-trash cursor-pointer"></i>
-          </button>
-          <span data-tooltip-target="body">Delete</span>
-        </form>
-
         <button
-          class="widget-card__drag-handle cursor-move"
+          class="widget-card__drag-handle widget-card__button cursor-move"
           data-controller="tooltip"
           data-tooltip-content="Drag"
         >

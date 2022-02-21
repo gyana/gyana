@@ -20,7 +20,27 @@
 
     <div class="palette-colors">{{ bound_field }}</div>
   {% elif bound_field.widget_type == "connectorschemamultiselect" %}
-    <div class="w-full {{ bound_field.field.widget.attrs.class }}">
+    <div
+      data-controller="multi-select"
+      class="w-full {{ bound_field.field.widget.attrs.class }}"
+    > 
+      <div class="flex items-center gap-2 flex-row float-right">
+        <p class="text-black-50 small">Select:</p>
+        <a
+          class="link small"
+          data-action="click->multi-select#checkAllInputs"
+        >
+          All
+        </a>
+        <p>|</p>
+        <a
+          class="link small"
+          data-action="click->multi-select#uncheckAllInputs"
+        >
+          None
+        </a>
+      </div>
+
       <label>
         {{ bound_field.label }}
 
@@ -31,10 +51,25 @@
 
       {{ bound_field }}
     </div>
+  {% elif bound_field.widget_type == "radioselect" %}
+    <div class="{{ bound_field.field.widget.attrs.class }}">
+      <label class="block mb-2">
+        {{ bound_field.label }}
+    
+        {% if bound_field.help_text %}
+        <p class="input__help-text">
+          {{ bound_field.help_text }}
+          {% if not bound_field.field.required %} - optional{% endif %}
+        </p>
+        {% endif %}
+      </label>
+    
+      {{ bound_field }}
+    </div>
   {% elif bound_field.widget_type == "checkbox" %}
     <label  
       class="flex flex-row items-center gap-4 w-full"
-      {% if bound_field.name == 'DELETE' %}style="display: none;" {% endif %}
+      {% if bound_field.name == 'DELETE' %}style="display: none;"{% endif %}
     >
       {{ bound_field }}
       
@@ -122,7 +157,7 @@
 
 </div>
 
-{% for label, formset in formsets.items %}
+{% for label, formset in form.get_formsets.items %}
 <fieldset>
   <label>{{ label }}</label>
   {% include "components/formset.html" with formset=formset %}
