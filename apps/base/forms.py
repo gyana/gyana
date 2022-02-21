@@ -86,9 +86,7 @@ class LiveUpdateForm(BaseModelForm):
 
         Because LiveForms don't hold data for fields that haven't been displayed,
         we need to manually add these values."""
-        # When submitting we don't need to do anything
-        if not self.is_live:
-            return
+
         # self.data hold data from request.POST and can be a MultiValueDict or a QueryDict
         data = MultiValueDict({**self.data})
         for field in self.get_live_fields():
@@ -131,20 +129,18 @@ class LiveUpdateForm(BaseModelForm):
         self.prefix = kwargs.pop("prefix", None)
 
         # the rendered fields are determined by the values of the other fields
-        live_fields = self.get_live_fields()
-        self._update_data_with_initial()
-        # - when the Stimulus controller makes a POST request, it will always be invalid
-        # and re-render the same form with the updated values
-        # - when the form is valid and the user clicks a submit button, the live field is
-        # not rendered and it behaves like a normal form
-        if self.is_live:
-            live_fields += ["hidden_live"]
-        self.fields = {k: v for k, v in self.fields.items() if k in live_fields}
+        fields = self.get_live_fields()
 
-    @property
-    def is_live(self):
         # the "submit" value is populated when the user clicks the button
-        return "submit" not in self.data
+        if "submit" not in self.data:
+            self._update_data_with_initial()
+            # - when the Stimulus controller makes a POST request, it will always be invalid
+            # and re-render the same form with the updated values
+            # - when the form is valid and the user clicks a submit button, the live field is
+            # not rendered and it behaves like a normal form
+            fields += ["hidden_live"]
+
+        self.fields = {k: v for k, v in self.fields.items() if k in fields}
 
     def get_live_field(self, name):
         # potentially called before self._update_data_with_initial
@@ -153,7 +149,6 @@ class LiveUpdateForm(BaseModelForm):
 
         # data populated by POST request in update
         # as a fallback we are using the database value
-
         return self.data.get(key_) or getattr(self.instance, name)
 
     def get_live_fields(self):
