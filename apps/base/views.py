@@ -22,6 +22,10 @@ class TurboUpdateView(MultiValueDictMixin, TurboFormMixin, UpdateView):
         self.object = self.get_object()
 
         form = self.get_form()
+        # stimulus controller POST request sets the "hidden_live" field
+        if form.is_live:
+            return self.form_live(form)
+
         if form.is_valid() and all(
             formset.is_valid() for formset in form.get_formsets().values()
         ):
@@ -29,14 +33,11 @@ class TurboUpdateView(MultiValueDictMixin, TurboFormMixin, UpdateView):
         else:
             return self.form_invalid(form)
 
-    def form_valid(self, form):
-        # - when the Stimulus controller makes a POST request, it will be invalid
-        # and re-render the same form with the updated values
-        # - when the form is valid and the user clicks a submit button, it behaves
-        # like a normal form
-        if form.is_live:
-            return self.form_invalid(form)
+    def form_live(self, form):
+        # skip the turbo form mixin 422 status code
+        return super(UpdateView, self).form_invalid(form)
 
+    def form_valid(self, form):
         with transaction.atomic():
             response = super().form_valid(form)
             for formset in form.get_formsets().values():

@@ -93,6 +93,7 @@ class LiveModelForm(BaseModelForm):
         fields = self.get_live_fields()
 
         if self.is_live:
+            self._errors = {}  # disable form validation
             self.data.update(self._get_live_data(fields))
 
         self.fields = {k: v for k, v in self.fields.items() if k in fields}
@@ -102,10 +103,8 @@ class LiveModelForm(BaseModelForm):
         return f"{self.prefix}-{field}" if self.prefix else field
 
     def _get_live_data(self, fields):
-        """Updates the form's data missing fields with the initial values.
-
-        Because LiveForms don't hold data for fields that haven't been displayed,
-        we need to manually add these values."""
+        """Get the form data, falling back to initial or default values where
+        the field was not displayed in the previous live form render."""
 
         data = MultiValueDict()
 

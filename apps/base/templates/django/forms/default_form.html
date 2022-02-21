@@ -127,9 +127,7 @@
   {% endif %}
 
 
-  {% if not form.is_live %}
   {{ bound_field.errors }}
-  {% endif %}
   {% endfor %}
 
   {% if form.formatting_unfolded %}
