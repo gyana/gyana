@@ -30,6 +30,13 @@ class TurboUpdateView(MultiValueDictMixin, TurboFormMixin, UpdateView):
             return self.form_invalid(form)
 
     def form_valid(self, form):
+        # - when the Stimulus controller makes a POST request, it will be invalid
+        # and re-render the same form with the updated values
+        # - when the form is valid and the user clicks a submit button, it behaves
+        # like a normal form
+        if form.is_live:
+            return self.form_invalid(form)
+
         with transaction.atomic():
             response = super().form_valid(form)
             for formset in form.get_formsets().values():

@@ -82,9 +82,6 @@ class BaseModelForm(forms.ModelForm):
 
 
 class LiveModelForm(BaseModelForm):
-
-    hidden_live = forms.CharField(widget=forms.HiddenInput(), required=True)
-
     def __init__(self, *args, **kwargs):
 
         self.parent_instance = kwargs.pop("parent_instance", None)
@@ -97,11 +94,6 @@ class LiveModelForm(BaseModelForm):
 
         if self.is_live:
             self.data.update(self._get_live_data(fields))
-            # - when the Stimulus controller makes a POST request, it will always be invalid
-            # and re-render the same form with the updated values
-            # - when the form is valid and the user clicks a submit button, the live field is
-            # not rendered and it behaves like a normal form
-            fields += ["hidden_live"]
 
         self.fields = {k: v for k, v in self.fields.items() if k in fields}
 
@@ -140,8 +132,8 @@ class LiveModelForm(BaseModelForm):
 
     @property
     def is_live(self):
-        # the "submit" value is populated when the user clicks the button
-        return "submit" not in self.data
+        # the "hidden_live" value is populated by the stimulus controller
+        return "hidden_live" in self.data
 
     def get_live_field(self, field):
         """Return the current value of a field in a live form."""
@@ -167,7 +159,7 @@ class LiveModelForm(BaseModelForm):
         Designed to be overwritten by live form implementation. Default behaviour
         is a normal form (i.e. all fields)."""
 
-        return [f for f in self.fields.keys() if f != "hidden_live"]
+        return list(self.fields.keys())
 
     @property
     def deleted(self):

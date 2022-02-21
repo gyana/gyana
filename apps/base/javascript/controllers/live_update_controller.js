@@ -36,6 +36,8 @@ export default class extends Controller {
 
     // manually POST the form and get HTML response
     const data = new FormData(form)
+    // update view will re-render form with updated values
+    data.append('hidden_live', 'true')
     // HTML forms just omit unchecked checkboxes
     // https://developer.mozilla.org/en-US/docs/Web/API/FormData/FormData
     // which for us iss indistinguishable from the field not being rendered
