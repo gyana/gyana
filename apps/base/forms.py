@@ -6,6 +6,13 @@ from django.utils.datastructures import MultiValueDict
 
 from apps.base.core.utils import create_column_choices
 
+
+def get_formsets(self):
+    return {}
+
+
+forms.BaseForm.get_formsets = get_formsets
+
 # temporary overrides for formset labels
 FORMSET_LABELS = {
     "columns": "Group columns",
@@ -55,9 +62,6 @@ class SchemaFormMixin:
 
 
 class BaseModelForm(forms.ModelForm):
-    def get_formsets(self):
-        return {}
-
     def pre_save(self, instance):
         # override in child to add behaviour on commit save
         pass
@@ -123,10 +127,8 @@ class LiveUpdateForm(BaseModelForm):
     def __init__(self, *args, **kwargs):
 
         self.parent_instance = kwargs.pop("parent_instance", None)
-
         super().__init__(*args, **kwargs)
-
-        self.prefix = kwargs.pop("prefix", None)
+        self.prefix = kwargs.get("prefix", None)
 
         # the rendered fields are determined by the values of the other fields
         fields = self.get_live_fields()
