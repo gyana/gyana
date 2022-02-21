@@ -282,7 +282,12 @@ def test_duplicate_simple_project(
 
 
 def test_duplicate_project_with_connector(
-    client, bigquery, project, integration_factory, connector_factory
+    client,
+    bigquery,
+    project,
+    integration_factory,
+    connector_factory,
+    mock_update_kwargs_from_fivetran,
 ):
     """Duplicates a project with an integration->connector->table and confirms
     that the new dataset of the connector and table is updated"""
@@ -308,6 +313,7 @@ def test_duplicate_project_with_connector(
     assert connector_clone.schema != connector.schema
 
     table_clone = duplicate.integration_set.first().table_set.first()
+
     assert table_clone.bq_dataset == connector_clone.schema
     assert table_clone.bq_table == table.bq_table
 
@@ -317,6 +323,7 @@ def test_duplicate_project_with_connector(
         f"CREATE OR REPLACE TABLE {table_clone.bq_id} as (SELECT * FROM {table.bq_id})"
         == bigquery.query.call_args.args[0]
     )
+    assert mock_update_kwargs_from_fivetran.call_count == 1
 
     r = client.delete(f"/projects/{duplicate.id}/delete")
     assert r.status_code == 302
