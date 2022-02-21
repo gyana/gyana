@@ -1,8 +1,6 @@
 import json
 import logging
 
-from django import forms
-from django.http.response import HttpResponse
 from django.urls import reverse
 from django.utils import timezone
 from django_tables2.tables import Table
@@ -16,11 +14,7 @@ from apps.base.analytics import (
     track_node,
 )
 from apps.base.core.table_data import RequestConfig, get_table
-from apps.base.frames import (
-    TurboFrameDetailView,
-    TurboFrameFormsetUpdateView,
-    TurboFrameUpdateView,
-)
+from apps.base.frames import TurboFrameDetailView, TurboFrameUpdateView
 from apps.base.templates import template_exists
 
 from .bigquery import NodeResultNone, get_query_from_node
@@ -42,7 +36,7 @@ class NodeName(TurboFrameUpdateView):
         )
 
 
-class NodeUpdate(TurboFrameFormsetUpdateView):
+class NodeUpdate(TurboFrameUpdateView):
     template_name = "nodes/update.html"
     model = Node
     turbo_frame_dom_id = "workflow-modal"
@@ -156,7 +150,7 @@ class NodeCreditConfirmation(TurboFrameUpdateView):
             args=(self.object.id,),
         )
 
-    def form_valid(self, form: forms.Form) -> HttpResponse:
+    def form_valid(self, form):
         r = super().form_valid(form)
 
         self.object.credit_use_confirmed = timezone.now()

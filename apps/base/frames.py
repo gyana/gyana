@@ -9,7 +9,7 @@ from turbo_response.mixins import (
     TurboFrameTemplateResponseMixin as BaseTurboFrameTemplateResponseMixin,
 )
 
-from apps.base.views import FormsetUpdateView, TurboCreateView, TurboUpdateView
+from apps.base.views import TurboCreateView, TurboUpdateView
 
 
 class TurboFrame500Mixin:
@@ -56,8 +56,4 @@ class TurboFrameListView(TurboFrameTemplateResponseMixin, ListView):
 
 
 class TurboFrameTemplateView(TurboFrameTemplateResponseMixin, TemplateView):
-    pass
-
-
-class TurboFrameFormsetUpdateView(TurboFrameTemplateResponseMixin, FormsetUpdateView):
     pass

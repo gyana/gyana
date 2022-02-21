@@ -47,7 +47,7 @@ class TeamSignupForm(SignupForm):
         return user
 
 
-class TeamCreateForm(forms.ModelForm):
+class TeamCreateForm(BaseModelForm):
     class Meta:
         model = Team
         fields = ("name",)
@@ -104,7 +104,7 @@ class TeamUpdateForm(BaseModelForm):
         Flag.set_beta_program_for_team(instance, self.cleaned_data["beta"])
 
 
-class MembershipUpdateForm(forms.ModelForm):
+class MembershipUpdateForm(BaseModelForm):
     class Meta:
         model = Membership
         fields = ("role",)

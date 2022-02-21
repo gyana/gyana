@@ -1,8 +1,4 @@
-from functools import cache
-
-from django import forms
 from django.db import transaction
-from django.http.response import HttpResponse
 from django.views.generic.edit import CreateView, UpdateView
 from turbo_response.mixins import TurboFormMixin
 
@@ -12,19 +8,7 @@ class TurboCreateView(TurboFormMixin, CreateView):
 
 
 class TurboUpdateView(TurboFormMixin, UpdateView):
-    ...
-
-
-class FormsetUpdateView(TurboUpdateView):
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        # When a node has no parents or parents break the form can't be constructed
-
-        if context.get("form"):
-            context["formsets"] = context["form"].get_formsets()
-        return context
-
-    def post(self, request, *args: str, **kwargs) -> HttpResponse:
+    def post(self, request, *args: str, **kwargs):
         # override BaseUpdateView/ProcessFormView to check validation on formsets
         self.object = self.get_object()
 
@@ -36,7 +20,7 @@ class FormsetUpdateView(TurboUpdateView):
         else:
             return self.form_invalid(form)
 
-    def form_valid(self, form: forms.Form) -> HttpResponse:
+    def form_valid(self, form):
         with transaction.atomic():
             response = super().form_valid(form)
             for formset in form.get_formsets().values():

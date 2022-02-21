@@ -11,7 +11,7 @@ from django_tables2.views import SingleTableMixin
 from waffle import flag_is_active
 
 from apps.base.analytics import INTEGRATION_SYNC_STARTED_EVENT
-from apps.base.views import FormsetUpdateView, TurboUpdateView
+from apps.base.views import TurboUpdateView
 from apps.connectors.forms import FacebookAdsConnectorUpdateForm
 from apps.integrations.filters import IntegrationFilter
 from apps.integrations.tasks import run_integration
@@ -127,7 +127,7 @@ class IntegrationDelete(ProjectMixin, DeleteView):
 # Setup
 
 
-class IntegrationConfigure(ProjectMixin, FormsetUpdateView):
+class IntegrationConfigure(ProjectMixin, TurboUpdateView):
     template_name = "integrations/configure.html"
     model = Integration
 

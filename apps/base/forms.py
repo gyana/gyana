@@ -55,6 +55,9 @@ class SchemaFormMixin:
 
 
 class BaseModelForm(forms.ModelForm):
+    def get_formsets(self):
+        return {}
+
     def pre_save(self, instance):
         # override in child to add behaviour on commit save
         pass
@@ -166,7 +169,7 @@ class BaseLiveSchemaForm(SchemaFormMixin, LiveUpdateForm):
     pass
 
 
-class BaseSchemaForm(SchemaFormMixin, forms.ModelForm):
+class BaseSchemaForm(SchemaFormMixin, BaseModelForm):
     pass
 
 

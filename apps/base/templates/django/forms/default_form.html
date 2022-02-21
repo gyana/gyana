@@ -157,7 +157,7 @@
 
 </div>
 
-{% for label, formset in formsets.items %}
+{% for label, formset in form.get_formsets.items %}
 <fieldset>
   <label>{{ label }}</label>
   {% include "components/formset.html" with formset=formset %}

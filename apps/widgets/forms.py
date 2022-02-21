@@ -362,13 +362,13 @@ FORMS = {
 }
 
 
-class WidgetDuplicateForm(forms.ModelForm):
+class WidgetDuplicateForm(BaseModelForm):
     class Meta:
         model = Widget
         fields = ()
 
 
-class WidgetStyleForm(forms.ModelForm):
+class WidgetStyleForm(BaseModelForm):
     palette_colors = PaletteColorsField(required=False)
     background_color = forms.CharField(
         required=False,

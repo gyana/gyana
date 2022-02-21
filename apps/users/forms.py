@@ -1,14 +1,14 @@
-import analytics
 from allauth.account.forms import LoginForm
 from django import forms
 from django.contrib.auth.forms import UserChangeForm
 
 from apps.base.analytics import identify_user
+from apps.base.forms import BaseModelForm
 
 from .models import CustomUser
 
 
-class UserNameForm(forms.ModelForm):
+class UserNameForm(BaseModelForm):
     first_name = forms.CharField(required=True)
     last_name = forms.CharField(required=True)
     marketing_allowed = forms.TypedChoiceField(
@@ -25,18 +25,11 @@ class UserNameForm(forms.ModelForm):
         model = CustomUser
         fields = ["first_name", "last_name", "marketing_allowed"]
 
-    def save(self, commit=True):
-        instance = super().save(commit=False)
+    def pre_save(self, instance):
         instance.onboarded = True
 
-        if commit:
-            instance.save()
-            self.save_m2m()
 
-        return instance
-
-
-class UserOnboardingForm(forms.ModelForm):
+class UserOnboardingForm(BaseModelForm):
     class Meta:
         model = CustomUser
         fields = [
@@ -50,15 +43,8 @@ class UserOnboardingForm(forms.ModelForm):
             "company_size": "Company size",
         }
 
-    def save(self, commit=True):
-        instance = super().save(commit=False)
+    def pre_save(self, instance):
         instance.onboarded = True
-
-        if commit:
-            instance.save()
-            self.save_m2m()
-
-        return instance
 
 
 class UserLoginForm(LoginForm):
