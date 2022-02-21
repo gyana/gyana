@@ -15,6 +15,13 @@
         {% if object.kind == 'customapi' %}
           data-controller="live-update"
           enctype='multipart/form-data'
+          data-action="
+          change->tf-modal#change 
+          formset:remove->live-update#updateForm 
+          formset:add->live-update#updateForm 
+          formset:remove->tf-modal#change 
+          formset:add->tf-modal#change
+        "
         {% endif %}
         {% flag 'alpha' %}
           {% if object.kind == 'connector' and object.connector.service == 'facebook_ads' %}
