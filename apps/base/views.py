@@ -4,17 +4,19 @@ from django.views.generic.edit import CreateView, UpdateView
 from turbo_response.mixins import TurboFormMixin
 
 
-class TurboCreateView(TurboFormMixin, CreateView):
-    ...
-
-
-class TurboUpdateView(TurboFormMixin, UpdateView):
+class MultiValueDictMixin:
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         if "data" in kwargs:
             kwargs["data"] = MultiValueDict({**kwargs["data"]})  # make it mutable
         return kwargs
 
+
+class TurboCreateView(MultiValueDictMixin, TurboFormMixin, CreateView):
+    ...
+
+
+class TurboUpdateView(MultiValueDictMixin, TurboFormMixin, UpdateView):
     def post(self, request, *args: str, **kwargs):
         # override BaseUpdateView/ProcessFormView to check validation on formsets
         self.object = self.get_object()
