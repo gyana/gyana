@@ -50,10 +50,11 @@ def chart_to_output(widget: Widget, control) -> Dict[str, Any]:
 
 
 def format_value(column, value):
-    value = round(value, column.rounding)
     if column.currency:
+        value = round(value, column.rounding)
         return f"{CURRENCY_SYMBOLS_MAP[column.currency]}{value}"
     if column.is_percentage:
+        value = round(value * 100, column.rounding)
         return f"{value}%"
     return value
 
