@@ -58,18 +58,11 @@ class TeamCreateForm(BaseModelForm):
         self._user = kwargs.pop("user")
         super().__init__(*args, **kwargs)
 
-    def save(self, commit=True):
-        instance = super().save(commit=False)
-
-        if commit:
-            instance.save()
-            instance.members.add(self._user, through_defaults={"role": "admin"})
-            self.save_m2m()
+    def post_save(self, instance):
+        instance.members.add(self._user, through_defaults={"role": "admin"})
 
         analytics.track(self._user.id, TEAM_CREATED_EVENT)
         identify_user_group(self._user, instance)
-
-        return instance
 
 
 class TeamUpdateForm(BaseModelForm):
