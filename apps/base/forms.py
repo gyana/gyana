@@ -95,8 +95,7 @@ class LiveUpdateForm(BaseModelForm):
         # implementation designed to be overriden by subclass
         fields = self.get_live_fields()
 
-        # the "submit" value is populated when the user clicks the button
-        if "submit" not in self.data:
+        if self.is_live:
             self.data.update(self._get_live_data(fields))
             # - when the Stimulus controller makes a POST request, it will always be invalid
             # and re-render the same form with the updated values
@@ -138,6 +137,11 @@ class LiveUpdateForm(BaseModelForm):
                 data[key] = value
 
         return data
+
+    @property
+    def is_live(self):
+        # the "submit" value is populated when the user clicks the button
+        return "submit" not in self.data
 
     def get_live_field(self, field):
         """Return the current value of a field in a live form."""
