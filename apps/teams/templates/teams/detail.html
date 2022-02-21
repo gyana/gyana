@@ -1,4 +1,5 @@
 {% extends "teams/base.html" %}
+
 {% load render_table from django_tables2 %}
 {% load django_tables2 %}
 {% load humanize %}
@@ -6,119 +7,95 @@
 {% load help_utils %}
 
 {% block app %}
-<div class="pad">
-  {% flag 'templates' %}
-  <div class="mb-7">
-    <h2 class="flex gap-3 items-center">Create a new project {% link_article 'overview' 'templates' %}</h2>
-    <p class="mb-3">Use a blank project or choose a template to get you started.</p>
-
-    <turbo-frame
-      id="templates:list"
-      src="{% url 'team_templates:list' team.id %}"
-      target="_top"
-    >
-      <div class='placeholder-scr placeholder-scr--fillscreen'>
-        <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
-        <p class='placeholder-scr__title'>Loading templates...</p>
-      </div>
-    </turbo-frame>
-  </div>
-  {% endflag %}
-
-  {% if project_count > 0 %}
-  <div class="flex mb-3 gap-3">
-    <h2 class="flex gap-3 items-center mr-auto">
-      Your Projects {% link_article 'overview' 'collaborate' %}
-    </h2>
-
-    <div
-      data-controller="popover"
-      data-placement="bottom-end"
-      data-theme="popover-menu"
-    >
-      <button class="button button--sm button--tertiary">
-        Sort <i class="fas fa-chevron-down"></i>
-      </button>
-
-      <template data-popover-target="body">
-        {% for column in table.columns.iterorderable %}
-        <a
-          class="list__item list__item--interactive w-full {{ column.attrs.th.class }} "
-          {% if column.is_ordered %}
-          href="{% querystring table.prefixed_order_by_field=""%}"
-          {% else %}
-          href="{% querystring table.prefixed_order_by_field=column.order_by_alias.opposite %}"
-          {% endif %}
+  <div class="pad">
+    {% flag 'templates' %}
+      <div class="mb-7">
+        <h2 class="flex gap-3 items-center">
+          Create a new project {% link_article 'overview' 'templates' %}
+        </h2>
+        <p class="mb-3">
+          Use a blank project or choose a template to get you started.
+        </p>
+        <turbo-frame
+        id="templates:list"
+        src="{% url 'team_templates:list' team.id %}"
+        target="_top"
         >
-          <span class="mr-7">
-            {{ column.header }}
-          </span>
-
-          <i class="fas fa-fw fa-check ml-auto {% if not column.is_ordered %}invisible{% endif %}"></i>
-        </a>
-        {% endfor %}
-      </template>
-    </div>
-
-    {% if team.can_create_project %}
-    <a
-      class="button button--sm"
-      href="{% url 'team_projects:create' team.id %}"
-    >
-      <i class="fas fa-fw fa-plus"></i> New Project
-    </a>
+        <div class='placeholder-scr placeholder-scr--fillscreen'>
+          <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+          <p class='placeholder-scr__title'>
+            Loading templates...
+          </p>
+        </div>
+        </turbo-frame>
+      </div>
+    {% endflag %}
+    {% if project_count > 0 %}
+      <div class="flex mb-3 gap-3">
+        <h2 class="flex gap-3 items-center mr-auto">
+          Your Projects {% link_article 'overview' 'collaborate' %}
+        </h2>
+        <div data-controller="popover"
+             data-placement="bottom-end"
+             data-theme="popover-menu">
+          <button class="button button--sm button--tertiary">
+            Sort <i class="fas fa-chevron-down"></i>
+          </button>
+          <template data-popover-target="body">
+            {% for column in table.columns.iterorderable %}
+              <a class="list__item list__item--interactive w-full {{ column.attrs.th.class }} "
+                 {% if column.is_ordered %} href="{% querystring table.prefixed_order_by_field="" %}" {% else %} href="{% querystring table.prefixed_order_by_field=column.order_by_alias.opposite %}" {% endif %}>
+                <span class="mr-7">{{ column.header }}</span>
+                <i class="fas fa-fw fa-check ml-auto {% if not column.is_ordered %}invisible{% endif %}"></i>
+              </a>
+            {% endfor %}
+          </template>
+        </div>
+        {% if team.can_create_project %}
+          <a class="button button--sm"
+             href="{% url 'team_projects:create' team.id %}">
+            <i class="fas fa-fw fa-plus"></i> New Project
+          </a>
+        {% else %}
+          <div data-controller='tooltip' id="new-project">
+            <p class="button button--sm" disabled>
+              <i class="fas fa-fw fa-plus"></i> New Project
+            </p>
+            <span data-tooltip-target="body">
+              You have reached the maximum number of projects on your current plan.
+            </span>
+          </div>
+        {% endif %}
+      </div>
+      {% render_table table %}
     {% else %}
-    <div data-controller='tooltip' id="new-project">
-      <p
-        class="button button--sm"
-        disabled
-      >
-        <i class="fas fa-fw fa-plus"></i> New Project
-      </p>
-      <span data-tooltip-target="body">
-        You have reached the maximum number of projects on your current plan.
-      </span>
-    </div>
-    {% endif %}
+      <div class="table__empty">
+        <i class="fas fa-fw fa-4x fa-sparkles text-orange mb-7"></i>
+        <h3 class="mb-3">Create your first project to get started</h3>
+        <p>
+          We recommend you watch the video below to get an idea of what Gyana can
+          do first, but if you want to jump right in you can watch it later in our
+          help center.
+        </p>
+      </div>
+      <div class="mx-auto" style="width: 48rem;">
+        {% embed_loom 'overview' %}
+        <p class="alert mt-7">
+          <strong>Note:</strong> Look out for
+          <span class="button button--sm button--circle button--tertiary"/><i class="fas fa-fw fa-question"></i></span>
+          buttons, click them to go to relevant help articles
+        </p>
+        <div class="flex gap-8 mt-7">
+          <a href="{% article_url 'overview' 'intro' %}"
+             class="button button--tertiary flex-1">
+            Read getting started
+          </a>
+          <a href="{% url 'team_projects:create' team.id %}"
+             class="button button--primary flex-1">
+            Create a new project
+          </a>
+        </div>
+      </div>
+    {% endif  %}
   </div>
-
-  {% render_table table %}
-
-  {% else %}
-  <div class="table__empty">
-    <i class="fas fa-fw fa-4x fa-sparkles text-orange mb-7"></i>
-    <h3 class="mb-3">Create your first project to get started</h3>
-    <p>
-      We recommend you watch the video below to get an idea of what Gyana can
-      do first, but if you want to jump right in you can watch it later in our
-      help center.
-    </p>
-  </div>
-
-  <div class="mx-auto" style="width: 48rem;">
-    {% embed_loom 'overview' %}
-
-    <p class="alert mt-7">
-      <strong>Note:</strong> Look out for
-      <span class="button button--sm button--circle button--tertiary"/><i class="fas fa-fw fa-question"></i></span>
-      buttons, click them to go to relevant help articles
-    </p>
-
-    <div class="flex gap-8 mt-7">
-      <a
-        href="{% article_url 'overview' 'intro' %}"
-        class="button button--tertiary flex-1"
-      >
-        Read getting started
-      </a>
-      <a
-        href="{% url 'team_projects:create' team.id %}"
-        class="button button--primary flex-1"
-      >
-        Create a new project
-      </a>
-    </div>
-  </div>
-  {% endif  %}
-</div>
 {% endblock %}
