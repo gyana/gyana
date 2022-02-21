@@ -39,6 +39,7 @@ def test_column_form_with_formatting(column_factory, node_factory):
         "name",
         "rounding",
         "formatting_unfolded",
+        "is_percentage",
     }
 
     data["column"] = "athlete"
@@ -87,6 +88,7 @@ def test_aggregation_form_with_formatting(aggregation_column_factory, node_facto
         "name",
         "rounding",
         "formatting_unfolded",
+        "is_percentage",
     }
 
     data["column"] = "athlete"
