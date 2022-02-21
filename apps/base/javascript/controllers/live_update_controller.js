@@ -90,6 +90,15 @@ export default class extends Controller {
       },
     })
 
+    // gya-351: deleted rows have required attributes set to false
+    for (const row of document.querySelectorAll('.formset-wrapper')) {
+      if (row.querySelector("input[name*='-DELETE'][checked]")) {
+        row.querySelectorAll('[required]').forEach((el) => {
+          el.removeAttribute('required')
+        })
+      }
+    }
+
     this.clicked_button = false
     this.loadingTarget.classList.add('hidden')
   }
