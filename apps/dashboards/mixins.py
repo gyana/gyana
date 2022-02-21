@@ -18,4 +18,6 @@ class DashboardMixin(ProjectMixin):
 
     @cached_property
     def page(self):
-        return self.dashboard.pages.get(position=self.request.GET.get("dashboardPage", 1))
+        return self.dashboard.pages.get(
+            position=self.request.GET.get("dashboardPage", 1)
+        )

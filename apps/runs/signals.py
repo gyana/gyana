@@ -15,7 +15,7 @@ def update_run_on_task_result_save(sender, instance, *args, **kwargs):
             job_run.result = instance
         job_run.update_run_from_result()
         job_run.save()
-        
+
     elif graph_run:
         if not graph_run.result:
             graph_run.result = instance

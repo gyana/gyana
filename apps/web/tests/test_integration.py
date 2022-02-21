@@ -84,12 +84,12 @@ def test_integrations_page(client):
     # integration search
     r = client.get("/demo/search-integrations")
     assertOK(r)
-    
+
     r = client.get("/demo/search-integrations?query=google")
     assertOK(r)
     assertContains(r, "Google Ads")
     assertNotContains(r, "Facebook Pages")
-    
+
     r = client.get("/demo/search-integrations?category=Organic")
     assertOK(r)
     assertContains(r, "Facebook Pages")

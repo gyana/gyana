@@ -20,7 +20,7 @@ class InviteForm(BaseModelForm):
 
         email = cleaned_data.get("email")
 
-        if (user := CustomUser.objects.filter(email=email).first()) :
+        if user := CustomUser.objects.filter(email=email).first():
             if self.team in user.teams.all():
                 raise ValidationError(
                     "A user with this email is already part of your team."

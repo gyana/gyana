@@ -12,14 +12,13 @@ class UserNameForm(BaseModelForm):
     first_name = forms.CharField(required=True)
     last_name = forms.CharField(required=True)
     marketing_allowed = forms.TypedChoiceField(
-        coerce=lambda x: x == 'True',
-        choices=( (True, 'Yes'), (False, 'No')),
+        coerce=lambda x: x == "True",
+        choices=((True, "Yes"), (False, "No")),
         label="Opt-in to email communications",
         help_text="There is a lot you can do with Gyana, opt-in so we can send you occasional tips. (You can always opt-out)",
         widget=forms.RadioSelect,
         required=True,
     )
-
 
     class Meta:
         model = CustomUser
@@ -72,11 +71,11 @@ class CustomUserChangeForm(UserChangeForm):
     email = forms.EmailField(required=True, label="Email Address")
     password = forms.CharField(widget=forms.HiddenInput(), required=False)
     marketing_allowed = forms.TypedChoiceField(
-        coerce=lambda x: x == 'True',
-        choices=( (True, 'Yes'), (False, 'No')),
+        coerce=lambda x: x == "True",
+        choices=((True, "Yes"), (False, "No")),
         label="Opt-in to email communications",
         help_text="Allow us to email you with content relevant to the app",
-        widget=forms.RadioSelect
+        widget=forms.RadioSelect,
     )
 
     class Meta:
