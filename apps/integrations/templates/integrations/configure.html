@@ -15,11 +15,14 @@
         {% if object.kind == 'customapi' %}
           data-controller="live-update"
           enctype='multipart/form-data'
+          data-action="
+          formset:remove->live-update#updateForm 
+          formset:add->live-update#updateForm
+        "
         {% endif %}
         {% flag 'alpha' %}
           {% if object.kind == 'connector' and object.connector.service == 'facebook_ads' %}
             data-controller="live-update"
-            enctype='multipart/form-data'
           {% endif %}
         {% endflag %}
         >
