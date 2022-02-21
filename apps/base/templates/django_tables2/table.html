@@ -42,7 +42,10 @@
     {% endblock table.tbody %}
     {% block table.tfoot %}
     {% if table.has_footer %}
-    <tfoot {{ table.attrs.tfoot.as_html }}>
+    <tfoot
+      class="{% if table.paginator.num_pages > 1 %}tfoot--pagination{% endif %}"
+      {{ table.attrs.tfoot.as_html }}
+    >
       <tr>
         {% for column in table.columns %}
         <td {{ column.attrs.tf.as_html }}>{{ column.footer }}</td>
