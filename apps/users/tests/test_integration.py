@@ -2,10 +2,10 @@ import re
 
 import pytest
 from django.core import mail
-from pytest_django.asserts import assertFormError, assertRedirects
+from pytest_django.asserts import assertRedirects
 
 from apps.base.tests.asserts import assertFormRenders, assertLink, assertOK
-from apps.users.models import ApprovedWaitlistEmail, CustomUser
+from apps.users.models import CustomUser
 
 pytestmark = pytest.mark.django_db
 

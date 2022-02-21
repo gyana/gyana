@@ -6,4 +6,4 @@ class ConnectorsConfig(AppConfig):
     label = "connectors"
 
     def ready(self):
-        from . import signals
+        from . import signals  # noqa

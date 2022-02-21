@@ -15,7 +15,7 @@ from apps.base.models import BaseModel
 
 from . import roles
 from .config import PLANS
-from .flag import Flag
+from .flag import Flag  # noqa
 from .utils import getRandomColor
 
 WARNING_BUFFER = 0.2

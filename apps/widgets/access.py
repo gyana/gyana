@@ -1,8 +1,6 @@
 from functools import wraps
 
-from django.http.response import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
-from django.urls.base import reverse
 
 from apps.base.access import login_and_permission_to_access
 from apps.dashboards.access import can_access_password_protected_dashboard

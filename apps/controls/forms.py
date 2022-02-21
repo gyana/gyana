@@ -1,4 +1,3 @@
-from django import forms
 
 from apps.base.forms import BaseLiveSchemaForm
 from apps.base.widgets import DatetimeInput

@@ -1,5 +1,5 @@
 from django.core.mail.message import EmailMultiAlternatives
-from django.template.loader import get_template, render_to_string
+from django.template.loader import render_to_string
 
 
 def send_duplicate_email(user, project):

@@ -7,7 +7,6 @@ from pytest_django.asserts import assertContains, assertNotContains
 from wagtail.core.models import Locale, Site
 
 from apps.base.tests.asserts import (
-    assertFormRenders,
     assertLink,
     assertOK,
     assertSelectorLength,

@@ -1,3 +1,3 @@
-from apps.base.tests.client import *
-from apps.base.tests.factory import *
-from apps.base.tests.fixtures import *
+from apps.base.tests.client import *  # noqa
+from apps.base.tests.factory import *  # noqa
+from apps.base.tests.fixtures import *  # noqa

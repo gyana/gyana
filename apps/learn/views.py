@@ -1,5 +1,4 @@
 from django.views.generic import TemplateView
-from wagtail.core.models import Page
 from wagtail.search.models import Query
 
 from .models import LearnPage

@@ -1,7 +1,5 @@
 import analytics
-from django import forms
 from django.db.models.query import QuerySet
-from django.http.response import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.utils import timezone

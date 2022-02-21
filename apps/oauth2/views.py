@@ -1,5 +1,5 @@
 from django.shortcuts import redirect
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse
 from django.views.generic import DetailView
 from django.views.generic.edit import DeleteView
 from requests_oauthlib import OAuth2Session

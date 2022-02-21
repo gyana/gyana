@@ -8,7 +8,7 @@ class InvitesConfig(AppConfig):
     def ready(self):
         from django.contrib import admin
 
-        from . import signals
+        from . import signals  # noqa
         from .models import Invite
 
         # remove app registered automatically by django-invitations

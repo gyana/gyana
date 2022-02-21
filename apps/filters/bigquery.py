@@ -1,5 +1,5 @@
 import datetime as dt
-from functools import partial, reduce
+from functools import reduce
 from inspect import signature
 from typing import List
 
@@ -7,7 +7,7 @@ from dateutil.relativedelta import relativedelta
 from ibis.expr.types import TimestampValue
 
 from apps.controls.bigquery import DATETIME_FILTERS
-from apps.filters.models import PREDICATE_MAP, DateRange, Filter
+from apps.filters.models import Filter, PREDICATE_MAP
 
 
 def eq(query, column, value):

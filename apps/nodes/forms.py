@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.postgres.search import TrigramSimilarity
-from django.db.models import Case, Q, Value, When
+from django.db.models import Case, Q, When
 from django.db.models.functions import Greatest
 from django.forms.widgets import HiddenInput
 from django.utils.functional import cached_property

@@ -1,4 +1,3 @@
-from beeline.patch.requests import *
 from django.apps import AppConfig
 
 

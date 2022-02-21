@@ -5,7 +5,6 @@ from django.http import HttpResponse
 from django.http.response import Http404
 from django.shortcuts import redirect
 from django.urls import reverse
-from django.utils.translation import ugettext_lazy as _
 from django.views.generic import DeleteView, DetailView
 from django_tables2.views import SingleTableMixin, SingleTableView
 from djpaddle.models import Plan

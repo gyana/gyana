@@ -1,6 +1,5 @@
 from django.contrib import admin
 
-from apps.widgets.admin import WidgetInline
 
 from .models import Dashboard, Page
 

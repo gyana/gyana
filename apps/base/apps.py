@@ -1,5 +1,5 @@
 import analytics
-from beeline.patch.requests import *
+from beeline.patch.requests import *  # noqa
 from django.apps import AppConfig
 from django.conf import settings
 

@@ -1,7 +1,7 @@
 import pandas as pd
 import pytest
 
-from apps.widgets.fusion.chart import CHART_DATA, COLOR_CODES
+from apps.widgets.fusion.chart import CHART_DATA
 from apps.widgets.models import Widget
 
 pytestmark = pytest.mark.django_db

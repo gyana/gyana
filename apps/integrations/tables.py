@@ -5,7 +5,6 @@ from django.template.loader import get_template
 from django.utils.html import format_html
 
 from apps.base.tables import FaBooleanColumn, NaturalDatetimeColumn, NaturalDayColumn
-from apps.tables.models import Table
 
 from .models import Integration
 

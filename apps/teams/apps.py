@@ -6,4 +6,4 @@ class TeamsConfig(AppConfig):
     label = "teams"
 
     def ready(self):
-        from . import signals
+        from . import signals  # noqa

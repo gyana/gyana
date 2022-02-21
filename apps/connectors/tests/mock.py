@@ -1,6 +1,5 @@
 from datetime import datetime
 
-from django.utils import timezone
 from google.cloud.bigquery.table import Table as BqTable
 
 from apps.connectors.fivetran.config import get_services_obj

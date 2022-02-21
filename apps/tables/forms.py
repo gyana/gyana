@@ -1,4 +1,3 @@
-from django import forms
 
 from apps.base.forms import BaseModelForm
 

@@ -6,7 +6,7 @@ from celery import states
 from django.core import mail
 from pytest_django.asserts import assertRedirects
 
-from apps.base.tests.asserts import assertFormRenders, assertLink, assertOK
+from apps.base.tests.asserts import assertFormRenders, assertOK
 from apps.integrations.models import Integration
 
 pytestmark = pytest.mark.django_db

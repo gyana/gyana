@@ -6,4 +6,4 @@ class TablesConfig(AppConfig):
     label = "tables"
 
     def ready(self):
-        from . import signals
+        from . import signals  # noqa

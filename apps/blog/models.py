@@ -1,6 +1,6 @@
 import readtime
 from django.db import models
-from wagtail.admin.edit_handlers import FieldPanel, InlinePanel, MultiFieldPanel
+from wagtail.admin.edit_handlers import FieldPanel, MultiFieldPanel
 from wagtail.core.fields import RichTextField
 from wagtail.core.models import Page
 from wagtail.images.edit_handlers import ImageChooserPanel

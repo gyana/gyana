@@ -8,7 +8,6 @@ from django.db import transaction
 from django.db.models import Q
 from django.utils import timezone
 
-from apps.base.bigquery import copy_table
 from apps.integrations.models import Integration
 from apps.integrations.tasks import run_integration_task
 from apps.nodes.models import Node

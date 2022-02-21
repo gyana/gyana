@@ -1,6 +1,5 @@
 from django.db import transaction
 from django.urls.base import reverse
-from django.views.generic.edit import DeleteView
 from turbo_response import TurboStream
 from turbo_response.response import TurboStreamResponse
 from turbo_response.views import TurboStreamDeleteView

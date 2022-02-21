@@ -2,7 +2,7 @@ import re
 
 import pytest
 from django.core import mail
-from pytest_django.asserts import assertContains, assertFormError, assertRedirects
+from pytest_django.asserts import assertFormError, assertRedirects
 
 from apps.base.tests.asserts import assertFormRenders, assertLink, assertOK
 from apps.invites.models import Invite

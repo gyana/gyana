@@ -1,4 +1,3 @@
-import copy
 
 import analytics
 from django.db.models.query import QuerySet
@@ -14,7 +13,6 @@ from django.views.generic.base import TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView, DeleteView, FormView
 from django_tables2 import SingleTableView
-from turbo_response.response import HttpResponseSeeOther
 
 from apps.base.analytics import (
     DASHBOARD_CREATED_EVENT,

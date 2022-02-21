@@ -41,4 +41,3 @@ def delete_heroku_domain(cname: CName):
         clients.heroku().get_domain(cname.domain).remove()
     except HTTPError as e:
         honeybadger.notify(e)
-        pass

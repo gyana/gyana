@@ -7,7 +7,7 @@ from turbo_response.response import HttpResponseSeeOther
 from turbo_response.views import TurboFormView
 
 from apps.base.mixins import PageTitleMixin
-from apps.base.views import TurboCreateView, TurboUpdateView
+from apps.base.views import TurboUpdateView
 from apps.teams.mixins import TeamMixin
 from apps.users.helpers import require_email_confirmation
 
@@ -15,10 +15,9 @@ from .forms import (
     AppsumoCodeForm,
     AppsumoRedeemForm,
     AppsumoRedeemNewTeamForm,
-    AppsumoReviewForm,
     AppsumoSignupForm,
 )
-from .models import AppsumoCode, AppsumoReview
+from .models import AppsumoCode
 
 
 class AppsumoLanding(TurboFormView):

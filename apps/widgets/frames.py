@@ -1,7 +1,6 @@
 import logging
 
 import analytics
-from django.db.models.query import QuerySet
 from django.urls import reverse
 from django_tables2.tables import Table as DjangoTable
 from django_tables2.views import SingleTableMixin

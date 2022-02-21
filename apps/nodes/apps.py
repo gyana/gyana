@@ -6,4 +6,4 @@ class NodesConfig(AppConfig):
     label = "nodes"
 
     def ready(self):
-        from . import signals
+        from . import signals  # noqa

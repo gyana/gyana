@@ -66,7 +66,7 @@ update:
     poetry install
 
 format:
-    # autoflake --in-place --recursive --remove-all-unused-imports --ignore-init-module-imports .
+    # autoflake --in-place --recursive --remove-all-unused-imports --ignore-init-module-imports --exclude .venv .
     black .
     isort .
 

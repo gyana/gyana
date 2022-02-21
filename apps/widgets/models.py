@@ -6,7 +6,7 @@ from apps.base.clients import SLUG
 from apps.base.core.aggregations import AggregationFunctions
 from apps.base.models import BaseModel, SaveParentModel
 from apps.columns.bigquery import DatePeriod
-from apps.dashboards.models import Dashboard, Page, getFusionThemePalette
+from apps.dashboards.models import Page
 from apps.tables.models import Table
 
 # Need to be a multiple of GRID_SIZE found in GyWidget.tsx

@@ -10,10 +10,10 @@ from google.cloud import bigquery as bigquery_client
 from google.cloud import storage
 from googleapiclient import discovery
 
-from .core.bigquery import *
-from .core.ibis.client import *
-from .core.ibis.compiler import *
-from .core.ibis.patch import *
+from .core.bigquery import *  # noqa
+from .core.ibis.client import *  # noqa
+from .core.ibis.compiler import *  # noqa
+from .core.ibis.patch import *  # noqa
 
 SLUG = (
     slugify(settings.CLOUD_NAMESPACE) if settings.CLOUD_NAMESPACE is not None else None

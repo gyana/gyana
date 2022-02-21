@@ -1,5 +1,4 @@
 import ibis.expr.datatypes as dt
-from ibis.backends.base.sql import compiler
 from ibis.backends.base.sql.compiler import query_builder
 from ibis.backends.base.sql.compiler.base import SetOp
 from ibis_bigquery.client import _DTYPE_TO_IBIS_TYPE

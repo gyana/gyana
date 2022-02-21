@@ -1,5 +1,4 @@
 from django.urls import path
-from django.views.decorators.cache import cache_control
 from rest_framework import routers
 
 from apps.projects.access import login_and_project_required

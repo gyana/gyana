@@ -1,6 +1,6 @@
 from django.forms.widgets import ChoiceWidget
 
-from apps.widgets.formsets import FORMSETS, AggregationColumnFormset
+from apps.widgets.formsets import FORMSETS
 from apps.widgets.models import WIDGET_KIND_TO_WEB, Widget
 
 ICONS = {"integration": "far fa-link", "workflow_node": "far fa-stream"}
