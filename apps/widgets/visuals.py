@@ -3,6 +3,7 @@ from typing import Any, Dict
 from apps.base import clients
 from apps.base.core.table_data import get_table
 from apps.columns.bigquery import aggregate_columns, resolve_colname
+from apps.columns.currency_symbols import CURRENCY_SYMBOLS_MAP
 from apps.controls.bigquery import slice_query
 from apps.filters.bigquery import get_query_from_filters
 from apps.tables.bigquery import get_query_from_table
@@ -48,21 +49,33 @@ def chart_to_output(widget: Widget, control) -> Dict[str, Any]:
     return {"chart": chart.render()}, chart_id
 
 
+def format_value(column, value):
+    value = round(value, column.rounding)
+    if column.currency:
+        return f"{CURRENCY_SYMBOLS_MAP[column.currency]}{value}"
+    if column.is_percentage:
+        return f"{value}%"
+    return value
+
+
 def get_summary_row(query, widget):
     # Only naming the first group column
     group = widget.columns.first()
-    aggregations = widget.aggregations.all()
-    column_names = [agg.column for agg in aggregations]
+    columns = widget.aggregations.all()
+    column_names = [agg.column for agg in columns]
     aggregations = [
         getattr(query[agg.column], agg.function)().name(
             resolve_colname(agg.column, agg.function, column_names)
         )
-        for agg in aggregations
+        for agg in columns
     ]
     query = query.aggregate(aggregations)
     summary = clients.bigquery().get_query_results(query.compile()).rows_dict[0]
+    column_map = {
+        resolve_colname(col.column, col.function, column_names): col for col in columns
+    }
     return {
-        **{key: round(value, 2) for key, value in summary.items()},
+        **{key: format_value(column_map[key], value) for key, value in summary.items()},
         group.column: "Total",
     }
 
@@ -81,6 +94,7 @@ def table_to_output(widget: Widget, control) -> Dict[str, Any]:
             "name": col.name,
             "rounding": col.rounding,
             "currency": col.currency,
+            "is_percentage": col.is_percentage,
         }
         for col in [*widget.columns.all(), *widget.aggregations.all()]
     }

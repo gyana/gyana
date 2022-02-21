@@ -6,7 +6,7 @@
 <div class="input-group">
 {% for bound_field in form.visible_fields %}
 {% comment %} Ignore these fields because they are going to be rendered in an extendable manner further down {% endcomment %}
-  {% if form.formatting_unfolded and bound_field.label in 'Currency, Rounding, Name, Formatting unfolded'%}
+  {% if form.formatting_unfolded and bound_field.label in 'Currency, Rounding, Name, Formatting unfolded, Show in %'%}
   {% elif bound_field.widget_type == "palettecolors" %}
     <label>
       <span>
@@ -147,7 +147,7 @@
         class="{% if not form.formatting_unfolded.value %}hidden{% endif %}"
       >
         {% for field in form.visible_fields  %}
-          {% if field.label in 'Currency, Rounding, Name'%}
+          {% if field.label in 'Currency, Rounding, Name, Show in %'%}
             {% include 'django/forms/field.html'%}
           {% endif %}
         {% endfor %}

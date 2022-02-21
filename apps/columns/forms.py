@@ -66,7 +66,7 @@ class ColumnFormWithFormatting(ColumnForm):
 
     class Meta:
         model = Column
-        fields = ("column", "rounding", "part", "name", "currency")
+        fields = ("column", "part", "name", "rounding", "currency", "is_percentage")
         widgets = {
             "currency": Datalist(attrs={"data-live-update-ignore": ""}),
             "name": forms.TextInput(attrs={"data-live-update-ignore": ""}),
@@ -80,7 +80,7 @@ class ColumnFormWithFormatting(ColumnForm):
             fields += ["name", "formatting_unfolded"]
 
         if isinstance(self.column_type, (Floating, Integer)):
-            fields += ["rounding", "currency"]
+            fields += ["rounding", "currency", "is_percentage"]
         return fields
 
 
@@ -122,7 +122,7 @@ class AggregationFormWithFormatting(AggregationColumnForm):
     )
 
     class Meta:
-        fields = ("column", "function", "rounding", "name", "currency")
+        fields = ("column", "function", "name", "rounding", "currency", "is_percentage")
         help_texts = {
             "column": "Select the column to aggregate over",
             "function": "Select the aggregation function",
@@ -132,6 +132,7 @@ class AggregationFormWithFormatting(AggregationColumnForm):
             "currency": Datalist(attrs={"data-live-update-ignore": ""}),
             "name": forms.TextInput(attrs={"data-live-update-ignore": ""}),
             "rounding": forms.NumberInput(attrs={"data-live-update-ignore": ""}),
+            "is_percentage": forms.CheckboxInput(attrs={"data-live-update-ignore": ""}),
         }
 
     def get_live_fields(self):
@@ -146,7 +147,7 @@ class AggregationFormWithFormatting(AggregationColumnForm):
             fields += ["formatting_unfolded"]
 
         if isinstance(self.column_type, (Floating, Integer)):
-            fields += ["rounding", "currency"]
+            fields += ["rounding", "currency", "is_percentage"]
         return fields
 
 

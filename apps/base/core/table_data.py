@@ -136,6 +136,7 @@ class BigQueryColumn(Column):
         self.verbose_name = settings.get("name") or self.verbose_name
         self.rounding = settings.get("rounding", 2)
         self.currency = settings.get("currency")
+        self.is_percentage = settings.get("is_percentage")
 
     def render(self, value):
         if value is None:
@@ -153,10 +154,13 @@ class BigQueryColumn(Column):
                 {
                     "value": value,
                     "clean_value": round(value, self.rounding),
+                    "is_percentage": self.is_percentage,
                 }
             )
         if isinstance(value, int):
-            return get_template("columns/int_cell.html").render({"value": value})
+            return get_template("columns/int_cell.html").render(
+                {"value": value, "is_percentage": self.is_percentage}
+            )
         if isinstance(value, str) and len(value) >= 64:
             # Truncate row values above 61 characters (61 + 3 ellipsis = 64)
             self.attrs["td"] = {

@@ -119,6 +119,9 @@ class ColumnSettings(models.Model):
         null=True,
         help_text="Select a currency",
     )
+    is_percentage = models.BooleanField(
+        default=False, blank=True, verbose_name="Show in %"
+    )
 
 
 class Column(ColumnSettings, SaveParentModel):
