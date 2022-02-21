@@ -1,131 +1,120 @@
 {% extends "projects/base.html" %}
+
 {% load static %}
 {% load humanize %}
 
-{% block app-class %}overflow-hidden{% endblock app-class %}
-
+{% block app-class %}
+  overflow-hidden
+{% endblock app-class %}
 {% block app %}
-<div class="workflow-detail__header">
-  <h3 class="mr-auto flex justify-center items-center">
-    <img class="h-12 w-12 mr-4" src="{% static object.icon %}" title="{{ object.name }}" />
-    <turbo-frame id="integration-name">
-      <form method="post" action="{% url 'project_integrations:detail' project.id object.id %}" class="form">
+  <div class="workflow-detail__header">
+    <h3 class="mr-auto flex justify-center items-center">
+      <img class="h-12 w-12 mr-4"
+           src="{% static object.icon %}"
+           title="{{ object.name }}"/>
+      <turbo-frame id="integration-name">
+      <form method="post"
+            action="{% url 'project_integrations:detail' project.id object.id %}"
+            class="form">
         {% csrf_token %}
-
-        <input
-          class="input__inline"
-          id="name"
-          type="text"
-          name="name"
-          value="{{ object.name }}"
-          onBlur="this.form.requestSubmit();"
-         />
+        <input class="input__inline"
+               id="name"
+               type="text"
+               name="name"
+               value="{{ object.name }}"
+               onBlur="this.form.requestSubmit();"/>
       </form>
-    </turbo-frame>
-  </h3>
-
-  {% if object.kind == "sheet" %}
-  <a
-    href="{{ object.sheet.url }}"
-    class="button button--circle button--tertiary"
-    target="_blank"
-    rel="noopener noreferer"
-    data-controller="tooltip"
-  >
-    <i class="fas fa-fw fa-external-link"></i>
-
-    <span data-tooltip-target="body">Go to Google Sheet</span>
-  </a>
-  {% endif %}
-
-  {% if integration.ready %}
-  <div data-controller='popover'>
-    <button class="button button--sm">
-      Use in<i class="fas fa-fw fa-angle-up fa-rotate-180"></i>
-    </button>
-
-    <ul data-popover-target="body" class="list list--bordered" style="margin-top:6px;">
-      <li class="list__item list__item--interactive">
-        {% include "workflows/create_from_integration.html" %}
-      </li>
-
-      <li class="list__item list__item--interactive">
-        {% include "dashboards/create_from_integration.html" %}
-      </li>
-    </ul>
-  </div>
-  {% endif %}
-</div>
-
-{% if integration.ready %}
-  <div class="workflow-detail__header flex items-center space-x-2 p-4 pl-8 bg-white border-b border-gray">
-    <div class="flex items-center">
-      <p>
-        <strong>{{ integration.num_rows }}</strong> row{{ integration.num_rows|pluralize }} •
-        <strong>{{ integration.num_tables }}</strong> table{{ integration.num_tables|pluralize }} •
-      </p>
-  
-      <p class="flex items-center gap-2 m-0">
-        {% if integration.created_by %}
-        <img
-          class="h-8 w-8 rounded-full ml-2"
-          src="{{ integration.created_by.avatar_url }}"
-          alt="{{ integration.created_by.get_display_name }}"
-        />
-        {% endif %}
-
-        <strong>{{ integration.created_by.get_display_name }}</strong> created this integration
-        <strong>{% include 'columns/natural_datetime.html' with datetime=integration.created %}</strong>
-
-        {% if object.kind == 'sheet' %}
-          • <turbo-frame id="sheets:status" src="{% url 'sheets:status' object.sheet.id %}">
-            {% include "sheets/status.html" with object=object.sheet %}
-          </turbo-frame>
-        {% elif object.kind == 'connector' %}
-          • <turbo-frame id="connectors:status" src="{% url 'connectors:status' object.connector.id %}">
-            {% include "connectors/status.html" with object=object.connector %}
-          </turbo-frame>
-        {% endif %}
-      </p>
-    </div>
-  </div>
-{% endif %}
-
-<nav id='tabbar' class="tabbar tabbar--top">
-  {% if object.ready or object.state == 'done' %}
-    <a class="tabbar__link {% if request.resolver_match.url_name == 'detail' %} tabbar__link--active {% endif %}"
-      href="{% url 'project_integrations:detail' project.id object.id %}">
-      Overview
-    </a>
-  {% endif %}
-  {% comment %} Uploads cannot be setup again after approval {% endcomment %}
-  {% if not object.ready or object.kind != object.Kind.UPLOAD %}
-    <a class="tabbar__link {% if request.resolver_match.url_name in 'configure,load,done,setup' %} tabbar__link--active {% endif %}"
-      href="{% url 'project_integrations:done' project.id object.id %}">
-      Sync
-    </a>
-  {% endif %}
-  {% if object.ready %}
-    {% if object.kind in 'sheet|customapi' %}
-      <a class="tabbar__link {% if request.resolver_match.url_name == 'runs' %} tabbar__link--active {% endif %}"
-        href="{% url 'project_integrations:runs' project.id object.id %}">
-        History
+      </turbo-frame>
+    </h3>
+    {% if object.kind == "sheet" %}
+      <a href="{{ object.sheet.url }}"
+         class="button button--circle button--tertiary"
+         target="_blank"
+         rel="noopener noreferer"
+         data-controller="tooltip">
+        <i class="fas fa-fw fa-external-link"></i>
+        <span data-tooltip-target="body">Go to Google Sheet</span>
       </a>
     {% endif %}
-    <a class="tabbar__link {% if request.resolver_match.url_name == 'references' %} tabbar__link--active {% endif %}"
-      href="{% url 'project_integrations:references' project.id object.id %}">
-      References
-    </a>
+    {% if integration.ready %}
+      <div data-controller='popover'>
+        <button class="button button--sm">
+          Use in<i class="fas fa-fw fa-angle-up fa-rotate-180"></i>
+        </button>
+        <ul data-popover-target="body"
+            class="list list--bordered"
+            style="margin-top:6px;">
+          <li class="list__item list__item--interactive">
+            {% include "workflows/create_from_integration.html" %}
+          </li>
+          <li class="list__item list__item--interactive">
+            {% include "dashboards/create_from_integration.html" %}
+          </li>
+        </ul>
+      </div>
+    {% endif %}
+  </div>
+  {% if integration.ready %}
+    <div class="workflow-detail__header flex items-center space-x-2 p-4 pl-8 bg-white border-b border-gray">
+      <div class="flex items-center">
+        <p>
+          <strong>{{ integration.num_rows }}</strong> row{{ integration.num_rows|pluralize }} •
+          <strong>{{ integration.num_tables }}</strong> table{{ integration.num_tables|pluralize }} •
+        </p>
+        <p class="flex items-center gap-2 m-0">
+          {% if integration.created_by %}
+            <img class="h-8 w-8 rounded-full ml-2"
+                 src="{{ integration.created_by.avatar_url }}"
+                 alt="{{ integration.created_by.get_display_name }}"/>
+          {% endif %}
+          <strong>{{ integration.created_by.get_display_name }}</strong> created this integration
+          <strong>{% include 'columns/natural_datetime.html' with datetime=integration.created %}</strong>
+          {% if object.kind == 'sheet' %}
+            • <turbo-frame id="sheets:status" src="{% url 'sheets:status' object.sheet.id %}">
+            {% include "sheets/status.html" with object=object.sheet %}
+            </turbo-frame>
+          {% elif object.kind == 'connector' %}
+            • <turbo-frame id="connectors:status" src="{% url 'connectors:status' object.connector.id %}">
+            {% include "connectors/status.html" with object=object.connector %}
+            </turbo-frame>
+          {% endif %}
+        </p>
+      </div>
+    </div>
   {% endif %}
-  <a class="tabbar__link {% if request.resolver_match.url_name == 'settings' %} tabbar__link--active {% endif %}"
-    href="{% url 'project_integrations:settings' project.id object.id %}">
-    Settings
-  </a>
-</nav>
-
-{% block extra_tab %}{% endblock %}
-
-<div id='main' class="flex flex-col flex-1 overflow-auto">
-  {% block tab %}{% endblock %}
-</div>
+  <nav id='tabbar' class="tabbar tabbar--top">
+    {% if object.ready or object.state == 'done' %}
+      <a class="tabbar__link {% if request.resolver_match.url_name == 'detail' %} tabbar__link--active{% endif %}"
+         href="{% url 'project_integrations:detail' project.id object.id %}">
+        Overview
+      </a>
+    {% endif %}
+    {% comment %} Uploads cannot be setup again after approval {% endcomment %}
+    {% if not object.ready or object.kind != object.Kind.UPLOAD %}
+      <a class="tabbar__link {% if request.resolver_match.url_name in 'configure,load,done,setup' %} tabbar__link--active {% endif %}"
+         href="{% url 'project_integrations:done' project.id object.id %}">
+        Sync
+      </a>
+    {% endif %}
+    {% if object.ready %}
+      {% if object.kind in 'sheet|customapi' %}
+        <a class="tabbar__link {% if request.resolver_match.url_name == 'runs' %} tabbar__link--active{% endif %}"
+           href="{% url 'project_integrations:runs' project.id object.id %}">
+          History
+        </a>
+      {% endif %}
+      <a class="tabbar__link {% if request.resolver_match.url_name == 'references' %} tabbar__link--active{% endif %}"
+         href="{% url 'project_integrations:references' project.id object.id %}">
+        References
+      </a>
+    {% endif %}
+    <a class="tabbar__link {% if request.resolver_match.url_name == 'settings' %} tabbar__link--active{% endif %}"
+       href="{% url 'project_integrations:settings' project.id object.id %}">
+      Settings
+    </a>
+  </nav>
+  {% block extra_tab %}{% endblock %}
+  <div id='main' class="flex flex-col flex-1 overflow-auto">
+    {% block tab %}{% endblock %}
+  </div>
 {% endblock %}
