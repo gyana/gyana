@@ -1,10 +1,8 @@
 from functools import cache
-from subprocess import call
 
 from django import forms
 from django.db import transaction
 from django.utils.datastructures import MultiValueDict
-from libhoney import init
 
 from apps.base.core.utils import create_column_choices
 
@@ -99,7 +97,7 @@ class LiveUpdateForm(BaseModelForm):
 
         # the "submit" value is populated when the user clicks the button
         if "submit" not in self.data:
-            self.data = self._get_live_data(fields)
+            self.data.update(self._get_live_data(fields))
             # - when the Stimulus controller makes a POST request, it will always be invalid
             # and re-render the same form with the updated values
             # - when the form is valid and the user clicks a submit button, the live field is
@@ -121,7 +119,7 @@ class LiveUpdateForm(BaseModelForm):
         data = MultiValueDict()
 
         for field in fields:
-            key = self._get_field_data_key()
+            key = self._get_field_data_key(field)
             value = self.get_live_field(field)
 
             # For HTML checkboxes, we need to distinguish two possibilities:
@@ -138,6 +136,8 @@ class LiveUpdateForm(BaseModelForm):
                 data.setlist(key, value)
             else:
                 data[key] = value
+
+        return data
 
     def get_live_field(self, field):
         """Return the current value of a field in a live form."""
