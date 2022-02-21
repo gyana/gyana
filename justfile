@@ -66,7 +66,7 @@ update:
     poetry install
 
 format:
-    autoflake --in-place --recursive --remove-all-unused-imports --ignore-init-module-imports gyana apps
+    autoflake --in-place --recursive --remove-all-unused-imports --ignore-init-module-imports --exclude 'apps/*/migrations' gyana apps
     black .
     isort .
 
