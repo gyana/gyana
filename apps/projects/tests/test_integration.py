@@ -40,7 +40,6 @@ def test_project_crudl(client, logged_in_user):
             "name": "Metrics",
             "description": "All the company metrics",
             "access": "everyone",
-            "submit": True,
         },
     )
     project = team.project_set.first()
@@ -73,7 +72,6 @@ def test_project_crudl(client, logged_in_user):
             "name": "KPIs",
             "description": "All the company kpis",
             "access": "everyone",
-            "submit": True,
         },
     )
     assertRedirects(r, f"/projects/{project.id}/update", status_code=303)
@@ -102,6 +100,7 @@ def test_private_projects(client, logged_in_user):
     r = client.post(
         f"/teams/{team.id}/projects/new",
         data={
+            "hidden_live": True,
             "name": "Metrics",
             "description": "All the company metrics",
             "access": "invite",
@@ -114,15 +113,15 @@ def test_private_projects(client, logged_in_user):
     r = client.post(
         f"/teams/{team.id}/projects/new",
         data={
+            "hidden_live": True,
             "name": "Metrics",
             "description": "All the company metrics",
             "access": "invite",
             "members": [logged_in_user.id],
-            "submit": True,
         },
     )
 
-    assertOK(r.status_code)
+    assertOK(r)
     project = team.project_set.first()
     assert project is None
 
@@ -137,7 +136,6 @@ def test_private_projects(client, logged_in_user):
             "description": "All the company metrics",
             "access": "invite",
             "members": [logged_in_user.id],
-            "submit": True,
         },
     )
 
@@ -171,7 +169,7 @@ def test_free_tier_project_limit(client, logged_in_user, project_factory):
             "access": "everyone",
         },
     )
-    assertOK(r.status_code)
+    assertOK(r)
 
 
 def test_automate(client, logged_in_user, project_factory, graph_run_factory, is_paid):

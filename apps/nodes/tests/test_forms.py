@@ -37,7 +37,7 @@ def test_output_form(setup, node_factory):
     node = create_and_connect(Node.Kind.OUTPUT, node_factory, table, workflow)
     form = KIND_TO_FORM[node.kind](instance=node)
 
-    assert set(form.fields.keys()) == {"hidden_live", "name"}
+    assert set(form.fields.keys()) == {"name"}
     assert form.fields["name"].label == "Output name"
 
 
@@ -46,7 +46,7 @@ def test_select_form(setup, node_factory):
     node = create_and_connect(Node.Kind.SELECT, node_factory, table, workflow)
     form = KIND_TO_FORM[node.kind](instance=node)
 
-    assert set(form.fields.keys()) == {"hidden_live", "select_mode", "select_columns"}
+    assert set(form.fields.keys()) == {"select_mode", "select_columns"}
     assert get_choice_len(form, "select_columns") == 8
 
     # Test custom save
@@ -71,7 +71,7 @@ def test_distinct_form(setup, node_factory):
     node = create_and_connect(Node.Kind.DISTINCT, node_factory, table, workflow)
     form = KIND_TO_FORM[node.kind](instance=node)
 
-    assert set(form.fields.keys()) == {"hidden_live", "distinct_columns"}
+    assert set(form.fields.keys()) == {"distinct_columns"}
     assert get_choice_len(form, "distinct_columns") == 8
 
     # Test custom save
@@ -94,7 +94,7 @@ def test_union_form(setup, node_factory):
     node = create_and_connect(Node.Kind.UNION, node_factory, table, workflow)
     form = KIND_TO_FORM[node.kind](instance=node)
 
-    assert set(form.fields.keys()) == {"hidden_live", "union_distinct"}
+    assert set(form.fields.keys()) == {"union_distinct"}
 
 
 def test_limit_form(setup, node_factory):
@@ -102,7 +102,7 @@ def test_limit_form(setup, node_factory):
     node = create_and_connect(Node.Kind.LIMIT, node_factory, table, workflow)
     form = KIND_TO_FORM[node.kind](instance=node)
 
-    assert set(form.fields.keys()) == {"hidden_live", "limit_limit", "limit_offset"}
+    assert set(form.fields.keys()) == {"limit_limit", "limit_offset"}
 
 
 def test_pivot_form(setup, node_factory):
@@ -111,7 +111,6 @@ def test_pivot_form(setup, node_factory):
     form = KIND_TO_FORM[node.kind](instance=node)
 
     assert set(form.fields.keys()) == {
-        "hidden_live",
         "pivot_value",
         "pivot_index",
         "pivot_column",
@@ -123,7 +122,6 @@ def test_pivot_form(setup, node_factory):
     data["pivot_value"] = "id"
     form = KIND_TO_FORM[node.kind](instance=node, data=data)
     assert set(form.fields.keys()) == {
-        "hidden_live",
         "pivot_value",
         "pivot_index",
         "pivot_column",
@@ -137,7 +135,7 @@ def test_unpivot_form(setup, node_factory):
     node = create_and_connect(Node.Kind.UNPIVOT, node_factory, table, workflow)
     form = KIND_TO_FORM[node.kind](instance=node)
 
-    assert set(form.fields.keys()) == {"hidden_live", "unpivot_column", "unpivot_value"}
+    assert set(form.fields.keys()) == {"unpivot_column", "unpivot_value"}
 
 
 def test_sentiment_form(setup, node_factory, logged_in_user):
@@ -146,7 +144,6 @@ def test_sentiment_form(setup, node_factory, logged_in_user):
     form = KIND_TO_FORM[node.kind](instance=node, user=logged_in_user)
 
     assert set(form.fields.keys()) == {
-        "hidden_live",
         "sentiment_column",
         "always_use_credits",
         "credit_confirmed_user",
@@ -186,5 +183,4 @@ def test_default_form(kind, setup, node_factory):
     table, workflow = setup
     node = create_and_connect(kind, node_factory, table, workflow)
     form = KIND_TO_FORM[node.kind](instance=node)
-    # Should only contain the hidden_live
-    assert set(form.fields.keys()) == {"hidden_live"}
+    assert set(form.fields.keys()) == {}

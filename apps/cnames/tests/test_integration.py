@@ -40,7 +40,7 @@ def test_cname_crudl(client, logged_in_user, heroku):
     assertFormRenders(r, ["domain"])
 
     r = client.post(f"/teams/{team.id}/cnames/new", data={"domain": "test.domain.com"})
-    assertOK(r.status_code)
+    assertOK(r)
 
     # upgrade user
     AppsumoCode.objects.create(code="12345678", team=team, redeemed=timezone.now())
@@ -159,12 +159,7 @@ def test_cname_middleware_for_public_dashboard(
 
     r = client.post(
         f"/projects/{project.id}/update",
-        data={
-            "name": "Project",
-            "access": "everyone",
-            "cname": cname.id,
-            "submit": True,
-        },
+        data={"name": "Project", "access": "everyone", "cname": cname.id},
     )
     assertRedirects(r, f"/projects/{project.id}/update", status_code=303)
 

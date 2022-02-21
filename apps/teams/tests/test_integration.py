@@ -301,7 +301,7 @@ def test_team_subscriptions(client, logged_in_user, settings, paddle):
 
     r = client.post(
         f"/teams/{team.id}/subscription",
-        data={"plan": str(business_plan.id)},
+        data={"hidden_live": True, "plan": str(business_plan.id)},
     )
     # the new price is calculated and shown
     assert paddle.get_plan.call_count == 2
@@ -310,7 +310,7 @@ def test_team_subscriptions(client, logged_in_user, settings, paddle):
 
     r = client.post(
         f"/teams/{team.id}/subscription",
-        data={"plan": str(business_plan.id), "submit": True},
+        data={"plan": str(business_plan.id)},
     )
     assertRedirects(r, f"/teams/{team.id}/account", status_code=303)
     assert paddle.update_subscription.call_count == 1

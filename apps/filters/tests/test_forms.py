@@ -80,8 +80,7 @@ def parametrize_column_predicate(
     return [
         pytest.param(
             {"column": column, predicate_name: predicate},
-            {"hidden_live", "column", predicate_name}
-            | ({value_name} if value_name else set()),
+            {"column", predicate_name} | ({value_name} if value_name else set()),
             {"column": COLUMN_LENGTH, predicate_name: predicate_length},
             id=f"{column_type} column with {predicate}",
         )
@@ -94,13 +93,13 @@ def parametrize_column_predicate(
     [
         pytest.param(
             {},
-            {"hidden_live", "column"},
+            {"column"},
             {"column": COLUMN_LENGTH},
             id="empty form",
         ),
         pytest.param(
             {"column": "id"},
-            {"hidden_live", "column", "numeric_predicate"},
+            {"column", "numeric_predicate"},
             {"column": COLUMN_LENGTH, "numeric_predicate": NUMERIC_LENGTH},
             id="integer column",
         ),
@@ -200,7 +199,7 @@ def parametrize_column_predicate(
         ),
         pytest.param(
             {"column": "is_nice"},
-            {"hidden_live", "column", "bool_value"},
+            {"column", "bool_value"},
             {},
             id="bool column",
         ),

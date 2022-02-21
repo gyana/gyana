@@ -83,7 +83,7 @@ def test_customreports_import(
     )
 
     CONFIGURE = f"/projects/{project.id}/integrations/{integration.id}/configure"
-    data = {"setup_mode": Connector.SetupMode.ADVANCED, "submit": True}
+    data = {"setup_mode": Connector.SetupMode.ADVANCED}
 
     # connector import
     client.post(CONFIGURE, data=data)

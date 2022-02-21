@@ -70,7 +70,7 @@ def assertFormRenders(response, expected_fields=[], formSelector=None):
     else:
         matches = soup.select("form input,select,textarea")
 
-    IGNORE_LIST = ["csrfmiddlewaretoken", "hidden_live", "__prefix__"]
+    IGNORE_LIST = ["csrfmiddlewaretoken", "__prefix__"]
     fields = [
         m["name"]
         for m in matches

@@ -26,14 +26,13 @@ def test_column_form_with_formatting(column_factory, node_factory):
     column = column_factory(node=node_factory())
     form = ColumnFormWithFormatting(instance=column, schema=TABLE.schema())
 
-    assert set(form.fields.keys()) == {"hidden_live", "column"}
+    assert set(form.fields.keys()) == {"column"}
     assertFormChoicesLength(form, "column", 9)
 
     data = QueryDict(mutable=True)
     data["column"] = "id"
     form = ColumnFormWithFormatting(instance=column, schema=TABLE.schema(), data=data)
     assert set(form.fields.keys()) == {
-        "hidden_live",
         "column",
         "currency",
         "name",
@@ -45,7 +44,6 @@ def test_column_form_with_formatting(column_factory, node_factory):
     data["column"] = "athlete"
     form = ColumnFormWithFormatting(instance=column, schema=TABLE.schema(), data=data)
     assert set(form.fields.keys()) == {
-        "hidden_live",
         "column",
         "name",
         "formatting_unfolded",
@@ -56,13 +54,13 @@ def test_aggregation_form(aggregation_column_factory, node_factory):
     column = aggregation_column_factory(node=node_factory())
     form = AggregationColumnForm(instance=column, schema=TABLE.schema())
 
-    assert set(form.fields.keys()) == {"hidden_live", "column"}
+    assert set(form.fields.keys()) == {"column"}
     assertFormChoicesLength(form, "column", 9)
 
     data = QueryDict(mutable=True)
     data["column"] = "id"
     form = AggregationColumnForm(instance=column, schema=TABLE.schema(), data=data)
-    assert set(form.fields.keys()) == {"hidden_live", "column", "function"}
+    assert set(form.fields.keys()) == {"column", "function"}
     assert {choice[0] for choice in form.fields["function"].choices} == {
         choice.value for choice in AggregationFunctions
     }
@@ -72,7 +70,7 @@ def test_aggregation_form_with_formatting(aggregation_column_factory, node_facto
     column = aggregation_column_factory(node=node_factory())
     form = AggregationFormWithFormatting(instance=column, schema=TABLE.schema())
 
-    assert set(form.fields.keys()) == {"hidden_live", "column"}
+    assert set(form.fields.keys()) == {"column"}
     assertFormChoicesLength(form, "column", 9)
 
     data = QueryDict(mutable=True)
@@ -81,7 +79,6 @@ def test_aggregation_form_with_formatting(aggregation_column_factory, node_facto
         instance=column, schema=TABLE.schema(), data=data
     )
     assert set(form.fields.keys()) == {
-        "hidden_live",
         "column",
         "function",
         "currency",
@@ -96,7 +93,6 @@ def test_aggregation_form_with_formatting(aggregation_column_factory, node_facto
         instance=column, schema=TABLE.schema(), data=data
     )
     assert set(form.fields.keys()) == {
-        "hidden_live",
         "column",
         "function",
         "name",
@@ -108,20 +104,20 @@ def test_operation_column_form(edit_column_factory):
     column = edit_column_factory()
     form = OperationColumnForm(instance=column, schema=TABLE.schema())
 
-    assert set(form.fields.keys()) == {"hidden_live", "column"}
+    assert set(form.fields.keys()) == {"column"}
     assertFormChoicesLength(form, "column", 9)
 
     # Adding a column changes the function field
     data = QueryDict(mutable=True)
     data["column"] = "athlete"
     form = OperationColumnForm(instance=column, schema=TABLE.schema(), data=data)
-    assert set(form.fields.keys()) == {"hidden_live", "column", "string_function"}
+    assert set(form.fields.keys()) == {"column", "string_function"}
     assertFormChoicesLength(form, "string_function", 13)
 
     data = QueryDict(mutable=True)
     data["column"] = "birthday"
     form = OperationColumnForm(instance=column, schema=TABLE.schema(), data=data)
-    assert set(form.fields.keys()) == {"hidden_live", "column", "date_function"}
+    assert set(form.fields.keys()) == {"column", "date_function"}
     assertFormChoicesLength(form, "date_function", 6)
 
 
@@ -129,14 +125,14 @@ def test_add_column_form(add_column_factory):
     column = add_column_factory()
     form = AddColumnForm(instance=column, schema=TABLE.schema())
 
-    assert set(form.fields.keys()) == {"hidden_live", "column"}
+    assert set(form.fields.keys()) == {"column"}
     assertFormChoicesLength(form, "column", 9)
 
     # Adding a column changes the function field
     data = QueryDict(mutable=True)
     data["column"] = "stars"
     form = AddColumnForm(instance=column, schema=TABLE.schema(), data=data)
-    assert set(form.fields.keys()) == {"hidden_live", "column", "integer_function"}
+    assert set(form.fields.keys()) == {"column", "integer_function"}
     assertFormChoicesLength(form, "integer_function", 18)
 
     data = QueryDict(mutable=True)
@@ -144,7 +140,6 @@ def test_add_column_form(add_column_factory):
     data["time_function"] = "hour"
     form = AddColumnForm(instance=column, schema=TABLE.schema(), data=data)
     assert set(form.fields.keys()) == {
-        "hidden_live",
         "column",
         "time_function",
         "label",
@@ -156,21 +151,20 @@ def test_formula_form(formula_column_factory):
     column = formula_column_factory()
     form = FormulaColumnForm(instance=column, schema=TABLE.schema())
 
-    assert set(form.fields.keys()) == {"hidden_live", "formula", "label"}
+    assert set(form.fields.keys()) == {"formula", "label"}
 
 
 def test_window_form(window_column_factory):
     column = window_column_factory()
     form = WindowColumnForm(instance=column, schema=TABLE.schema())
 
-    assert set(form.fields.keys()) == {"hidden_live", "column"}
+    assert set(form.fields.keys()) == {"column"}
     assertFormChoicesLength(form, "column", 9)
 
     data = QueryDict(mutable=True)
     data["column"] = "medals"
     form = WindowColumnForm(instance=column, schema=TABLE.schema(), data=data)
     assert set(form.fields.keys()) == {
-        "hidden_live",
         "column",
         "function",
         "group_by",
@@ -187,7 +181,7 @@ def test_convert_form(convert_column_factory):
     column = convert_column_factory()
     form = ConvertColumnForm(instance=column, schema=TABLE.schema())
 
-    assert set(form.fields.keys()) == {"hidden_live", "column", "target_type"}
+    assert set(form.fields.keys()) == {"column", "target_type"}
     assertFormChoicesLength(form, "column", 9)
     assertFormChoicesLength(form, "target_type", 8)
 
@@ -214,7 +208,6 @@ def test_join_form(
         prefix="join-column-0",
     )
     assert set(form.fields.keys()) == {
-        "hidden_live",
         "left_column",
         "right_column",
         "how",

@@ -103,7 +103,6 @@ def test_customapi_create(client, logged_in_user, project, bigquery, request_saf
             "http_request_method": "GET",
             "authorization": "no_auth",
             "body": "none",
-            "submit": True,
             **QUERY_PARAMS_BASE_DATA,
             **HTTP_HEADERS_BASE_DATA,
         },

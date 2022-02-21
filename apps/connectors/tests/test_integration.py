@@ -262,9 +262,10 @@ def test_connector_basic_reports(client, project, connector_factory, fivetran):
     )
 
     r = client.post(
-        f"{DETAIL}/configure", data={"setup_mode": Connector.SetupMode.BASIC}
+        f"{DETAIL}/configure",
+        data={"hidden_live": True, "setup_mode": Connector.SetupMode.BASIC},
     )
-    assertOK(r.status_code)
+    assertOK(r)
     assertFormRenders(
         r, ["setup_mode", "basic_reports"], formSelector="#configure-update-form"
     )
@@ -277,7 +278,6 @@ def test_connector_basic_reports(client, project, connector_factory, fivetran):
         data={
             "setup_mode": Connector.SetupMode.BASIC,
             "basic_reports": ["BASIC_AD_PERFORMANCE"],
-            "submit": True,
         },
     )
     assertRedirects(r, f"{DETAIL}/load")
