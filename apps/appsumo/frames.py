@@ -1,7 +1,8 @@
+from django_tables2 import SingleTableMixin, SingleTableView
+
 from apps.appsumo.tables import AppsumoExtraTable
 from apps.base.frames import TurboFrameListView
 from apps.teams.mixins import TeamMixin
-from django_tables2 import SingleTableMixin, SingleTableView
 
 from .models import AppsumoCode, AppsumoExtra
 from .tables import AppsumoCodeTable

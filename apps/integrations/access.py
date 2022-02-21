@@ -1,7 +1,8 @@
+from django.shortcuts import get_object_or_404
+
 from apps.base.access import login_and_permission_to_access
 from apps.integrations.models import Integration
 from apps.projects.access import user_can_access_project
-from django.shortcuts import get_object_or_404
 
 
 def integration_of_team(user, pk, *args, **kwargs):

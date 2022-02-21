@@ -23,6 +23,7 @@ extend-exclude = '''
 
 [tool.isort]
 profile = "black"
+extend_skip = ['migrations', 'migrate', 'apps/cookiecutter-app']
 
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "gyana.settings.development"

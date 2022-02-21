@@ -1,9 +1,10 @@
 from unittest.mock import Mock
 
 import pytest
-from apps.connectors.bigquery import get_bq_tables_for_connector
 from google.api_core.exceptions import NotFound
 from google.cloud.bigquery.table import Table as BqTable
+
+from apps.connectors.bigquery import get_bq_tables_for_connector
 
 from .mock import get_mock_list_tables, get_mock_schema
 

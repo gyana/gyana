@@ -1,7 +1,8 @@
+from django.shortcuts import get_object_or_404
+
 from apps.base.access import login_and_permission_to_access
 from apps.projects.access import user_can_access_project
 from apps.sheets.models import Sheet
-from django.shortcuts import get_object_or_404
 
 
 def sheet_of_team(user, pk, *args, **kwargs):

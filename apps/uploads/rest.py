@@ -3,12 +3,13 @@ import os
 import time
 
 import coreapi
-from apps.base.clients import SLUG, get_bucket
 from django.utils.text import slugify
 from rest_framework.decorators import api_view, schema
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.schemas import AutoSchema
+
+from apps.base.clients import SLUG, get_bucket
 
 
 @api_view(["POST"])

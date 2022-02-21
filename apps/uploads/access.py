@@ -1,7 +1,8 @@
+from django.shortcuts import get_object_or_404
+
 from apps.base.access import login_and_permission_to_access
 from apps.teams.roles import user_can_access_team
 from apps.uploads.models import Upload
-from django.shortcuts import get_object_or_404
 
 
 def upload_of_team(user, pk, *args, **kwargs):

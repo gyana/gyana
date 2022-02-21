@@ -1,11 +1,12 @@
+from google.cloud import bigquery
+from google.cloud.bigquery.job.load import LoadJob
+
 from apps.base import clients
 from apps.base.core.bigquery import (
     bq_table_schema_is_string_only,
     sanitize_bq_column_name,
 )
 from apps.tables.models import Table
-from google.cloud import bigquery
-from google.cloud.bigquery.job.load import LoadJob
 
 from .models import Upload
 

@@ -1,10 +1,11 @@
 import analytics
+from django.urls import reverse
+
 from apps.base.analytics import INTEGRATION_CREATED_EVENT, NEW_INTEGRATION_START_EVENT
 from apps.base.views import TurboCreateView
 from apps.integrations.models import Integration
 from apps.projects.mixins import ProjectMixin
 from apps.uploads.models import Upload
-from django.urls import reverse
 
 from .forms import UploadCreateForm
 from .models import Upload

@@ -1,11 +1,12 @@
 from functools import wraps
 
-from apps.base.access import login_and_permission_to_access
-from apps.projects.access import user_can_access_project
 from dateutil.parser import isoparse
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
+
+from apps.base.access import login_and_permission_to_access
+from apps.projects.access import user_can_access_project
 
 from .models import Dashboard
 

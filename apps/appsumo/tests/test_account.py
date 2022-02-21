@@ -1,7 +1,8 @@
 import pytest
+from django.utils import timezone
+
 from apps.appsumo.account import get_deal
 from apps.appsumo.models import AppsumoCode
-from django.utils import timezone
 
 M = 1_000_000
 

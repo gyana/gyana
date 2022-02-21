@@ -1,7 +1,8 @@
+from django.db import models
+
 from apps.base.models import BaseModel
 from apps.integrations.models import Integration
 from apps.projects.models import Project
-from django.db import models
 
 
 class Template(BaseModel):

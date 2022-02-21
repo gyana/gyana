@@ -1,5 +1,6 @@
-from apps.base.tasks import honeybadger_check_in
 from celery.app import shared_task
+
+from apps.base.tasks import honeybadger_check_in
 
 from .models import Integration
 

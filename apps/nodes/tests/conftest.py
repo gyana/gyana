@@ -1,4 +1,5 @@
 import pytest
+
 from apps.base.tests.mock_data import TABLE
 from apps.base.tests.mocks import mock_bq_client_with_schema
 

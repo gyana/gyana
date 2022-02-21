@@ -1,5 +1,10 @@
 import analytics
 import pandas as pd
+from django.conf import settings
+from django.core.validators import RegexValidator
+from django.db import models, transaction
+from django.utils import timezone
+
 from apps.base.analytics import (
     APPSUMO_CODE_REDEEMED_EVENT,
     TEAM_CREATED_EVENT,
@@ -9,10 +14,6 @@ from apps.base.clients import SLUG
 from apps.base.models import BaseModel
 from apps.teams.models import Team
 from apps.users.models import CustomUser
-from django.conf import settings
-from django.core.validators import RegexValidator
-from django.db import models, transaction
-from django.utils import timezone
 
 # review ids are incrementing integers, currently at 6 digits
 appsumo_review_regex = RegexValidator(

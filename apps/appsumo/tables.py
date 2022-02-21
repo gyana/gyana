@@ -1,4 +1,5 @@
 import django_tables2 as tables
+
 from apps.base.tables import NaturalDatetimeColumn
 
 from .models import AppsumoCode, AppsumoExtra

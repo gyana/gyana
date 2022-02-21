@@ -1,8 +1,9 @@
 from unittest.mock import Mock
 
 import pytest
-from apps.uploads.bigquery import import_table_from_upload
 from google.cloud.bigquery.schema import SchemaField
+
+from apps.uploads.bigquery import import_table_from_upload
 
 pytestmark = pytest.mark.django_db
 

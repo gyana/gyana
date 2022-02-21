@@ -1,6 +1,5 @@
-from django.utils.functional import cached_property
-
 from django.urls.base import reverse
+from django.utils.functional import cached_property
 
 from apps.base.frames import TurboFrameCreateView
 from apps.exports.tasks import export_to_gcs

@@ -1,6 +1,7 @@
 import django_tables2 as tables
-from apps.integrations.tables import PendingStatusColumn
 from django_tables2.utils import A
+
+from apps.integrations.tables import PendingStatusColumn
 
 from .models import Template, TemplateInstance, TemplateIntegration
 

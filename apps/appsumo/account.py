@@ -2,6 +2,7 @@ from pathlib import Path
 from typing import List
 
 import pandas as pd
+
 from apps.appsumo.models import AppsumoCode
 
 from .config import APPSUMO_PLANS

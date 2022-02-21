@@ -1,6 +1,7 @@
-from apps.tables.models import Table
 from django.views.decorators.cache import cache_control
 from django.views.decorators.http import condition
+
+from apps.tables.models import Table
 
 from .models import Integration
 

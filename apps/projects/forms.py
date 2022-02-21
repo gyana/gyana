@@ -2,8 +2,7 @@ from django import forms
 from django.urls import reverse
 from django.utils.html import mark_safe
 
-from apps.base.forms import BaseModelForm
-from apps.base.forms import LiveModelForm
+from apps.base.forms import BaseModelForm, LiveModelForm
 
 from .models import Project
 from .widgets import MemberSelect

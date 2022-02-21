@@ -1,5 +1,6 @@
 import random
 
+
 # Taken from tailwinds default colors at 100 weight
 def getRandomColor():
     return random.choice(

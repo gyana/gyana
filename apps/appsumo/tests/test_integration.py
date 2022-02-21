@@ -1,6 +1,10 @@
 import re
 
 import pytest
+from django.core import mail
+from django.utils import timezone
+from pytest_django.asserts import assertContains, assertFormError, assertRedirects
+
 from apps.appsumo.models import AppsumoCode, AppsumoExtra
 from apps.base.tests.asserts import (
     assertFormRenders,
@@ -10,9 +14,6 @@ from apps.base.tests.asserts import (
     assertSelectorLength,
 )
 from apps.users.models import CustomUser
-from django.core import mail
-from django.utils import timezone
-from pytest_django.asserts import assertContains, assertFormError, assertRedirects
 
 pytestmark = pytest.mark.django_db
 

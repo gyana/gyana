@@ -1,6 +1,7 @@
-from apps.teams.access import login_and_admin_required
 from django.contrib.auth.decorators import login_required
 from django.urls import path
+
+from apps.teams.access import login_and_admin_required
 
 from . import frames, views
 
