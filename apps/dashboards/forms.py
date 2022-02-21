@@ -6,7 +6,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.forms.widgets import HiddenInput, PasswordInput
 from django.utils import timezone
 
-from apps.base.forms import BaseModelForm, LiveUpdateForm
+from apps.base.forms import BaseModelForm, LiveModelForm
 
 from .models import DASHBOARD_SETTING_TO_CATEGORY, Dashboard
 
@@ -173,7 +173,7 @@ class DashboardForm(BaseModelForm):
                     field.widget = forms.HiddenInput()
 
 
-class DashboardShareForm(LiveUpdateForm):
+class DashboardShareForm(LiveModelForm):
     class Meta:
         model = Dashboard
         fields = ["shared_status", "password"]

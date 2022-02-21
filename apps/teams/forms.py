@@ -12,7 +12,7 @@ from apps.base.analytics import (
     identify_user,
     identify_user_group,
 )
-from apps.base.forms import BaseModelForm, LiveUpdateForm
+from apps.base.forms import BaseModelForm, LiveModelForm
 from apps.base.templatetags.help_utils import INTERCOM_ROOT, get_intercom
 from apps.invites.models import Invite
 from apps.teams import roles
@@ -115,7 +115,7 @@ class MembershipUpdateForm(BaseModelForm):
             )
 
 
-class TeamSubscriptionForm(LiveUpdateForm):
+class TeamSubscriptionForm(LiveModelForm):
     class Meta:
         model = Team
         fields = ()

@@ -81,7 +81,7 @@ class BaseModelForm(forms.ModelForm):
         return instance
 
 
-class LiveUpdateForm(BaseModelForm):
+class LiveModelForm(BaseModelForm):
 
     hidden_live = forms.CharField(widget=forms.HiddenInput(), required=True)
 
@@ -174,7 +174,7 @@ class LiveUpdateForm(BaseModelForm):
         return self.data.get(f"{self.prefix}-DELETE") == "on"
 
 
-class BaseLiveSchemaForm(SchemaFormMixin, LiveUpdateForm):
+class BaseLiveSchemaForm(SchemaFormMixin, LiveModelForm):
     pass
 
 
@@ -196,7 +196,7 @@ class LiveFormsetMixin:
         forms_kwargs = self.get_formset_form_kwargs(formset)
 
         # provide a reference to parent instance in live update forms
-        if issubclass(formset.form, LiveUpdateForm):
+        if issubclass(formset.form, LiveModelForm):
             forms_kwargs["parent_instance"] = self.instance
 
         if issubclass(formset.form, SchemaFormMixin):

@@ -5,7 +5,7 @@ from django.utils.html import mark_safe
 from honeybadger import honeybadger
 
 from apps.base import clients
-from apps.base.forms import BaseModelForm, LiveFormsetMixin, LiveUpdateForm
+from apps.base.forms import BaseModelForm, LiveFormsetMixin, LiveModelForm
 from apps.connectors.fivetran.services.facebook_ads import BASIC_REPORTS
 from apps.customreports.models import FacebookAdsCustomReport
 
@@ -112,7 +112,7 @@ class ConnectorUpdateForm(LiveFormsetMixin, BaseConnectorUpdateMixin, BaseModelF
 
 
 class FacebookAdsConnectorUpdateForm(
-    LiveFormsetMixin, BaseConnectorUpdateMixin, LiveUpdateForm
+    LiveFormsetMixin, BaseConnectorUpdateMixin, LiveModelForm
 ):
     class Meta:
         model = Connector
