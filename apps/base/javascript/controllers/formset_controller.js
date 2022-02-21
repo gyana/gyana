@@ -17,10 +17,11 @@ export default class extends Controller {
 
   add(e) {
     e.preventDefault()
+
     const TOTAL_FORMS = this.element.querySelector(`#id_${this.prefixValue}-TOTAL_FORMS`)
     const total = parseInt(TOTAL_FORMS.value)
-
     TOTAL_FORMS.value = parseInt(total) + 1
+
     window.dispatchEvent(new CustomEvent(GyanaEvents.UPDATE_FORM_COUNT))
     this.dispatch('add', { event: e })
   }
