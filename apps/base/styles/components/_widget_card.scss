@@ -34,7 +34,7 @@
     position: absolute;
     z-index: calc(var(--z-ui) + 1);
 
-    button:hover,
+    .widget-card__button:hover,
     a:hover {
       color: var(--c-black);
     }
@@ -43,7 +43,7 @@
       display: block;
     }
 
-    button {
+    .widget-card__button {
       box-sizing: content-box;
       padding: 0.9rem 0.7rem;
 
