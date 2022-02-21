@@ -12,7 +12,11 @@ indent = 2
 blank_line_after_tag = "load,extends"
 custom_blocks = "timezone"
 max_line_length = 100
-extend_exclude = ["apps/base/templates/django/forms/widgets/select_*.html"]
+extend_exclude = """
+  apps/base/templates/django/forms/widgets/select_source.html,
+  apps/base/templates/django/forms/widgets/select_visual.html,
+  apps/base/templates/django/forms/widgets/select_autocomplete.html
+"""
 
 [tool.black]
 extend-exclude = '''
