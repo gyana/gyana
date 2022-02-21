@@ -9,6 +9,8 @@ profile = "django"
 ignore = "T003,H021,H006,H013,H016"
 use_gitignore = true
 indent = 2
+blank_line_after_tag = "load,extends"
+max_line_length = 100
 
 [tool.black]
 extend-exclude = '''
