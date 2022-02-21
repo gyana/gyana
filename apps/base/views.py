@@ -1,31 +1,25 @@
 from django.db import transaction
 from django.utils.datastructures import MultiValueDict
-from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic.edit import CreateView, FormMixin, UpdateView
 from turbo_response.mixins import TurboFormMixin
 
 
-class MultiValueDictMixin:
+class LiveMixin:
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         if "data" in kwargs:
             kwargs["data"] = MultiValueDict({**kwargs["data"]})  # make it mutable
         return kwargs
 
-
-class TurboCreateView(MultiValueDictMixin, TurboFormMixin, CreateView):
-    ...
-
-
-class TurboUpdateView(MultiValueDictMixin, TurboFormMixin, UpdateView):
     def post(self, request, *args: str, **kwargs):
-        # override BaseUpdateView/ProcessFormView to check validation on formsets
-        self.object = self.get_object()
+        # override BaseCreateView/BaseUpdateView and ProcessFormView for live
+        # form logic and formset validation
 
         form = self.get_form()
         # stimulus controller POST request sets the "hidden_live" field
         if getattr(form, "is_live", False):
-            # skip the turbo form mixin 422 status code
-            return super(UpdateView, self).form_invalid(form)
+            # c.f. FormMixin.form_invalid
+            return self.render_to_response(self.get_context_data(form=form))
 
         if form.is_valid() and all(
             formset.is_valid() for formset in form.get_formsets().values()
@@ -42,3 +36,15 @@ class TurboUpdateView(MultiValueDictMixin, TurboFormMixin, UpdateView):
                     formset.save()
 
         return response
+
+
+class TurboCreateView(LiveMixin, TurboFormMixin, CreateView):
+    def post(self, request, *args, **kwargs):
+        self.object = None
+        return super().post(request, *args, **kwargs)
+
+
+class TurboUpdateView(LiveMixin, TurboFormMixin, UpdateView):
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super().post(request, *args, **kwargs)
