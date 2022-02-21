@@ -70,8 +70,8 @@ class Service:
 
 @lru_cache
 def get_services_obj():
-    services = yaml.load(open(SERVICES, "r"))
-    metadata = yaml.load(open(METADATA, "r"))
+    services = yaml.safe_load(open(SERVICES, "r"))
+    metadata = yaml.safe_load(open(METADATA, "r"))
     return {k: Service(**{**metadata.get(k, {}), **v}) for k, v in services.items()}
 
 
