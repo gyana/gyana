@@ -1,5 +1,6 @@
 import json
 import uuid
+from datetime import date
 
 import numpy as np
 import pandas as pd
@@ -118,6 +119,10 @@ def to_chart(df: pd.DataFrame, widget: Widget) -> FusionCharts:
     )
 
 
+def format_label(value):
+    return value.strftime("%b %-d %Y") if isinstance(value, date) else str(value)
+
+
 def _get_first_value_or_count(widget):
     aggregation = widget.aggregations.first()
     return aggregation.column if aggregation else COUNT_COLUMN_NAME
@@ -134,7 +139,7 @@ def to_multi_value_data(widget, df):
         "categories": [
             {
                 "category": [
-                    {"label": str(dimension)}
+                    {"label": format_label(dimension)}
                     for dimension in df[widget.dimension].to_list()
                 ]
             }
@@ -209,7 +214,9 @@ def to_bubble(widget, df):
     x, y, z = [unique_names.get(value, value.column) for value in aggregations][:3]
     df = df.rename(columns={x: "x", y: "y", z: "z", widget.dimension: "id"})
     return {
-        "categories": [{"category": [{"label": str(x)} for x in df.x.to_list()]}],
+        "categories": [
+            {"category": [{"label": format_label(x)} for x in df.x.to_list()]}
+        ],
         "dataset": [
             {
                 "data": df[["x", "y", "z", "id"]].to_dict(orient="records"),
@@ -264,11 +271,15 @@ def to_stack(widget, df):
         pivoted = pivoted.reindex(df[widget.dimension].unique())
     return {
         "categories": [
-            {"category": [{"label": str(dimension)} for dimension in pivoted.index]}
+            {
+                "category": [
+                    {"label": format_label(dimension)} for dimension in pivoted.index
+                ]
+            }
         ],
         "dataset": [
             {
-                "seriesname": str(color),
+                "seriesname": format_label(color),
                 "data": [{"value": value} for value in pivoted[color].to_list()],
             }
             for color in pivoted.columns
@@ -283,7 +294,7 @@ def to_combo_chart(widget, df):
         "categories": [
             {
                 "category": [
-                    {"label": str(dimension)}
+                    {"label": format_label(dimension)}
                     for dimension in df[widget.dimension].to_list()
                 ]
             }
