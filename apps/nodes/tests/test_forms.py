@@ -183,4 +183,4 @@ def test_default_form(kind, setup, node_factory):
     table, workflow = setup
     node = create_and_connect(kind, node_factory, table, workflow)
     form = KIND_TO_FORM[node.kind](instance=node)
-    assert set(form.fields.keys()) == {}
+    assert set(form.fields.keys()) == set()

@@ -164,12 +164,9 @@ def test_free_tier_project_limit(client, logged_in_user, project_factory):
     )
     r = client.post(
         f"/teams/{team.id}/projects/new",
-        data={
-            "name": "Metrics",
-            "access": "everyone",
-        },
+        data={"name": "Metrics", "access": "everyone"},
     )
-    assertOK(r)
+    assert r.status_code == 422
 
 
 def test_automate(client, logged_in_user, project_factory, graph_run_factory, is_paid):

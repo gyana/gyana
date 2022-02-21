@@ -306,7 +306,7 @@ def test_team_subscriptions(client, logged_in_user, settings, paddle):
     # the new price is calculated and shown
     assert paddle.get_plan.call_count == 2
     assert paddle.get_plan.call_args.args == (business_plan.id,)
-    assertContains(r, "150", status_code=422)
+    assertContains(r, "150")
 
     r = client.post(
         f"/teams/{team.id}/subscription",

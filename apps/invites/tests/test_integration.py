@@ -197,7 +197,7 @@ def test_cannot_invite_existing_user_or_existing_invited_user(client, logged_in_
         data={"email": "member@gyana.com", "role": "member"},
     )
 
-    assertOK(r)
+    assert r.status_code == 422
     assertFormError(
         r, "form", None, "A user with this email is already part of your team."
     )
@@ -215,7 +215,7 @@ def test_cannot_invite_existing_user_or_existing_invited_user(client, logged_in_
         f"/teams/{team.id}/invites/new",
         data={"email": "member@gyana.com", "role": "member"},
     )
-    assertOK(r)
+    assert r.status_code == 422
     assertFormError(
         r, "form", None, "A user with this email is already invited to your team."
     )
