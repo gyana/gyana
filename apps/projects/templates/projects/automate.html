@@ -1,38 +1,34 @@
 {% extends "projects/base.html" %}
+
 {% load static %}
 {% load help_utils %}
 
-{% block app-class %}relative{% endblock app-class %}
-
+{% block app-class %}
+  relative
+{% endblock app-class %}
 {% block app %}
-<div class="automate__header">
-  <h1 class="flex items-center gap-3 mr-auto">
-    Automate
-    {% link_article 'overview' 'automate' %}
-  </h1>
-
-  <button
-    class="button button--sm button--tertiary"
-    data-controller="tooltip"
-    data-cy="settings"
-    data-action="click->tf-modal#open"
-    data-modal-src="{% url "projects:runs" project.id %}"
-    data-modal-id="projects:runs"
-  >
-    <i class="fas fa-fw fa-cog"></i> Settings & History
-
-    <span data-tooltip-target="body">View all runs for this project</span>
-  </button>
-
-  <div id="run-button-portal"></div>
-</div>
-
-<div class="flex flex-1 overflow-hidden">
-  <div class="w-full dndflow">
-    <automate-flow class="w-full" projectId="{{ project.id }}"></automate-flow>
+  <div class="automate__header">
+    <h1 class="flex items-center gap-3 mr-auto">
+      Automate
+      {% link_article 'overview' 'automate' %}
+    </h1>
+    <button class="button button--sm button--tertiary"
+            data-controller="tooltip"
+            data-cy="settings"
+            data-action="click->tf-modal#open"
+            data-modal-src="{% url "projects:runs" project.id %}"
+            data-modal-id="projects:runs">
+      <i class="fas fa-fw fa-cog"></i> Settings & History
+      <span data-tooltip-target="body">View all runs for this project</span>
+    </button>
+    <div id="run-button-portal"></div>
   </div>
-</div>
-<script src="{% static 'celery_progress/celery_progress.js' %}"></script>
-<script src="{% static "js/automate-bundle.js" %}"></script>
-<link rel="stylesheet" href="{% static "css/workflow.css" %}" />
+  <div class="flex flex-1 overflow-hidden">
+    <div class="w-full dndflow">
+      <automate-flow class="w-full" projectId="{{ project.id }}"></automate-flow>
+    </div>
+  </div>
+  <script src="{% static 'celery_progress/celery_progress.js' %}"></script>
+  <script src="{% static "js/automate-bundle.js" %}"></script>
+  <link rel="stylesheet" href="{% static "css/workflow.css" %}" />
 {% endblock %}
