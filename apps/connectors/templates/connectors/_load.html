@@ -9,8 +9,8 @@
         This can take anywhere from 5 minutes to an hour. You'll get an email when it's ready.
       </p>
       <p class="alert">
-          We recommend you continue with your work. You can manually keep track of progress, either by refreshing this page,
-          or in <a class="link" href="{% url 'project_integrations:list' project.id %}">integrations</a>.
+        We recommend you continue with your work. You can manually keep track of progress, either by refreshing this page,
+        or in <a class="link" href="{% url 'project_integrations:list' project.id %}">integrations</a>.
       </p>
     </div>
   {% elif integration.state == 'error' %}
@@ -20,33 +20,43 @@
         <h1>Your connector setup is broken {% link_article 'integrations' 'error' %}</h1>
         <p>
           Try
-          <a class="link" href="{{ connector.fivetran_authorization_url }}" data-turbo-frame="_top">
+          <a class="link"
+             href="{{ connector.fivetran_authorization_url }}"
+             data-turbo-frame="_top">
             fixing it
           </a>
           or reach out to support.
         </p>
       {% else %}
         <h1>No data is available {% link_article 'integrations' 'error' %}</h1>
-        <p>Your connector is setup, but we haven't received any data yet.</p>
-        <p class="alert">Check that you are sending events, and
-          <a class="link" href="{% url 'project_integrations:configure' project.id integration.id %}">trigger another sync</a>
-        after a few minutes.
+        <p>
+          Your connector is setup, but we haven't received any data yet.
         </p>
-        <p>Reach out to us if the error persists.</p>
+        <p class="alert">
+          Check that you are sending events, and
+          <a class="link"
+             href="{% url 'project_integrations:configure' project.id integration.id %}">trigger another sync</a>
+          after a few minutes.
+        </p>
+        <p>
+          Reach out to us if the error persists.
+        </p>
       {% endif %}
     </div>
   {% endif %}
   <table class="table card card--none">
     <thead>
-     <tr>
-       <th>Step</th>
-       <th>Status</th>
-       <th>Actions</th>
-     </tr>
+      <tr>
+        <th>Step</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
     </thead>
     <tbody>
       <tr>
-        <td><h3>Setup</h3></td>
+        <td>
+          <h3>Setup</h3>
+        </td>
         <td>
           <p data-controller="tooltip">
             <i class="{{ connector.setup_state_icon }}"></i>
@@ -54,13 +64,17 @@
           </p>
         </td>
         <td>
-          <a class="link" href="{{ connector.fivetran_authorization_url }}" data-turbo-frame="_top">
+          <a class="link"
+             href="{{ connector.fivetran_authorization_url }}"
+             data-turbo-frame="_top">
             Setup connector
           </a>
         </td>
       </tr>
       <tr>
-        <td><h3>Sync</h3></td>
+        <td>
+          <h3>Sync</h3>
+        </td>
         <td>
           <p data-controller="tooltip">
             {% if connector.setup_state != 'connected' %}
@@ -79,13 +93,16 @@
           </p>
         </td>
         <td>
-          <a class="link" href="{% url 'project_integrations:configure' project.id integration.id %}">
+          <a class="link"
+             href="{% url 'project_integrations:configure' project.id integration.id %}">
             Trigger sync
           </a>
         </td>
       </tr>
       <tr>
-        <td><h3>Validation</h3></td>
+        <td>
+          <h3>Validation</h3>
+        </td>
         <td>
           <p data-controller="tooltip">
             {% if connector.setup_state != 'connected' or not connector.latest_sync_completed %}
@@ -104,9 +121,7 @@
           </p>
         </td>
         <td>
-          <a class="link" href="#" onClick='window.location.reload()'>
-            Reload page
-          </a>
+          <a class="link" href="#" onClick='window.location.reload()'>Reload page</a>
         </td>
       </tr>
     </tbody>

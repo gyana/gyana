@@ -3,8 +3,9 @@
 
 last synced at <strong>{% include 'columns/natural_datetime.html' with datetime=object.succeeded_at %}</strong>
 {% if object.requires_authorization %}
-  • <a class="link text-red" href="{{ object.fivetran_authorization_url }}" data-turbo-frame="_top">
-      needs attention
-    </a>
+  • <a class="link text-red"
+    href="{{ object.fivetran_authorization_url }}"
+    data-turbo-frame="_top">
+  needs attention
+</a>
 {% endif %}
-
