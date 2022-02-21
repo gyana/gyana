@@ -194,7 +194,7 @@ class LiveFormsetMixin:
             # POST request for form creation
             formset(
                 self.data,
-                # self.request.FILES,?
+                self.files,
                 instance=self.instance,
                 **self.get_formset_kwargs(formset),
                 form_kwargs=forms_kwargs,
