@@ -264,7 +264,7 @@ def test_connector_basic_reports(client, project, connector_factory, fivetran):
     r = client.post(
         f"{DETAIL}/configure", data={"setup_mode": Connector.SetupMode.BASIC}
     )
-    assert r.status_code == 422
+    assertOK(r.status_code)
     assertFormRenders(
         r, ["setup_mode", "basic_reports"], formSelector="#configure-update-form"
     )

@@ -122,7 +122,7 @@ def test_private_projects(client, logged_in_user):
         },
     )
 
-    assert r.status_code == 422
+    assertOK(r.status_code)
     project = team.project_set.first()
     assert project is None
 
@@ -171,7 +171,7 @@ def test_free_tier_project_limit(client, logged_in_user, project_factory):
             "access": "everyone",
         },
     )
-    assert r.status_code == 422
+    assertOK(r.status_code)
 
 
 def test_automate(client, logged_in_user, project_factory, graph_run_factory, is_paid):

@@ -40,7 +40,7 @@ def test_cname_crudl(client, logged_in_user, heroku):
     assertFormRenders(r, ["domain"])
 
     r = client.post(f"/teams/{team.id}/cnames/new", data={"domain": "test.domain.com"})
-    assert r.status_code == 422
+    assertOK(r.status_code)
 
     # upgrade user
     AppsumoCode.objects.create(code="12345678", team=team, redeemed=timezone.now())

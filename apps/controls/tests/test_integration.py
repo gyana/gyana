@@ -75,7 +75,7 @@ def test_control_crudl(
         control_url + f"{control.id}/update-widget",
         data={"date_range": CustomChoice.CUSTOM},
     )
-    assert r.status_code == 422
+    assertOK(r.status_code)
     assertFormRenders(r, ["date_range", "start", "end"])
 
     r = client.post(
