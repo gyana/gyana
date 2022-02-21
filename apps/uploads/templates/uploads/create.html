@@ -1,30 +1,26 @@
 {% extends "projects/settings_base.html" %}
+
 {% load static %}
 {% load help_utils %}
 
 {% block app %}
-<h1 class="flex pad items-center gap-3">
-  CSV Upload
-  {% link_article 'integrations' 'upload' %}
-  {% link_video 'upload' %}
-</h1>
-<div class="upload-csv flex flex-1 justify-center items-center">
-  <div class='upload-csv__form flex flex-col items-center flex-1'>
-    <form
-      method="POST"
-      id="create-form"
-      action="{{ request.get_full_path }}"
-      class="form--no-layout w-full"
-    >
-      <div class="flex flex-1 items-center" id='create-container'>
-        {% csrf_token %}
-
-        {{ form.file_gcs_path }}
-      </div>
-    </form>
+  <h1 class="flex pad items-center gap-3">
+    CSV Upload
+    {% link_article 'integrations' 'upload' %}
+    {% link_video 'upload' %}
+  </h1>
+  <div class="upload-csv flex flex-1 justify-center items-center">
+    <div class='upload-csv__form flex flex-col items-center flex-1'>
+      <form method="POST"
+            id="create-form"
+            action="{{ request.get_full_path }}"
+            class="form--no-layout w-full">
+        <div class="flex flex-1 items-center" id='create-container'>
+          {% csrf_token %}
+          {{ form.file_gcs_path }}
+        </div>
+      </form>
+    </div>
   </div>
-</div>
-
-{{ form.media.js }}
-
+  {{ form.media.js }}
 {% endblock %}
