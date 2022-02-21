@@ -1,5 +1,8 @@
 {% load humanize %}
 
 <span data-controller="tooltip" data-tooltip-content="{{ value|intcomma }}">
-{{ clean_value|intcomma }}{% if is_percentage %}%{% endif %}
+  {{ clean_value|intcomma }}
+  {% if is_percentage %}
+    %
+  {% endif %}
 </span>

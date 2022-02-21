@@ -1,10 +1,7 @@
 <span class="toggle {% if 'hidden' in widget.attrs.class %}hidden{% endif %}">
-  <input
-    type="{{ widget.type }}"
-    name="{{ widget.name }}"
-    data-live-update-ignore
-    {% include "django/forms/widgets/attrs.html" %}
-  />
-
+  <input type="{{ widget.type }}"
+         name="{{ widget.name }}"
+         data-live-update-ignore
+         {% include "django/forms/widgets/attrs.html" %}/>
   <span class="toggle__slider"></span>
 </span>
