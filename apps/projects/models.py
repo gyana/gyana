@@ -17,7 +17,7 @@ class Project(DirtyFieldsMixin, BaseModel):
         EVERYONE = ("everyone", "Everyone in your team can access")
         INVITE_ONLY = ("invite", "Only invited team members can access")
 
-    _clone_excluded_m2o_or_o2m_fields = ["table_set"]
+    _clone_excluded_m2o_or_o2m_fields = ["runs", "table_set"]
     _clone_excluded_m2m_fields = ["members"]
 
     name = models.CharField(max_length=255)

@@ -78,7 +78,7 @@ class Integration(BaseModel):
         ERROR = "error", "Error"
         DONE = "done", "Done"
 
-    _clone_excluded_m2o_or_o2m_fields = ["table_set"]
+    _clone_excluded_m2o_or_o2m_fields = ["runs", "table_set"]
     _clone_excluded_o2o_fields = ["connector"]
 
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
