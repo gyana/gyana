@@ -1,4 +1,3 @@
-
 from apps.base.forms import BaseModelForm, LiveFormsetMixin
 from apps.uploads.widgets import GCSFileUpload
 

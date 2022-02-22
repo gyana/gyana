@@ -1,7 +1,6 @@
 from django.views.decorators.cache import cache_control
 from django.views.decorators.http import condition
 
-
 from .models import Integration
 
 

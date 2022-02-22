@@ -1,4 +1,3 @@
-
 import pytest
 
 from apps.base.tests.asserts import (

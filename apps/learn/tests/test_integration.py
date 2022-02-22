@@ -6,11 +6,7 @@ import wagtail_factories
 from pytest_django.asserts import assertContains, assertNotContains
 from wagtail.core.models import Locale, Site
 
-from apps.base.tests.asserts import (
-    assertLink,
-    assertOK,
-    assertSelectorLength,
-)
+from apps.base.tests.asserts import assertLink, assertOK, assertSelectorLength
 
 pytestmark = pytest.mark.django_db
 

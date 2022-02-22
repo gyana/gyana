@@ -7,7 +7,7 @@ from dateutil.relativedelta import relativedelta
 from ibis.expr.types import TimestampValue
 
 from apps.controls.bigquery import DATETIME_FILTERS
-from apps.filters.models import Filter, PREDICATE_MAP
+from apps.filters.models import PREDICATE_MAP, Filter
 
 
 def eq(query, column, value):

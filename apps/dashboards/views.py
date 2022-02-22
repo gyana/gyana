@@ -1,4 +1,3 @@
-
 import analytics
 from django.db.models.query import QuerySet
 from django.http import HttpResponseRedirect
