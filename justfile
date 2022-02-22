@@ -68,6 +68,7 @@ update:
 format:
     autoflake --in-place --recursive --remove-all-unused-imports --ignore-init-module-imports --exclude 'apps/*/migrations' gyana apps
     black .
+    djlint . --reformat
     isort .
 
 alias bf := branchformat
