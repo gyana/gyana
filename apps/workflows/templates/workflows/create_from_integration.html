@@ -1,10 +1,10 @@
-<form method="post" action="{% url 'project_workflows:create_from_integration' project.id %}">
+<form method="post"
+      action="{% url 'project_workflows:create_from_integration' project.id %}">
   {% csrf_token %}
-
   <input type="hidden" name="project" value="{{ integration.project.id }}" />
   <input type="hidden" name="integration" value="{{ integration.id }}" />
-
-  <button type="submit" href="{% url 'project_integrations_uploads:create' project.id %}">
+  <button type="submit"
+          href="{% url 'project_integrations_uploads:create' project.id %}">
     <i class="fas fa-fw fa-sitemap mr-4"></i> New workflow
   </button>
 </form>
