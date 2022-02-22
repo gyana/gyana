@@ -1,3 +1,4 @@
+
 from apps.base.forms import BaseLiveSchemaForm
 from apps.base.widgets import DatetimeInput
 
@@ -22,6 +23,3 @@ class ControlForm(BaseLiveSchemaForm):
         if self.get_live_field("date_range") == CustomChoice.CUSTOM:
             fields += ["start", "end"]
         return fields
-
-    def save(self, commit=True):
-        return super().save(commit)
