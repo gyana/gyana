@@ -6,7 +6,7 @@ const createWidget = (kind, offsetX, offsetY) => {
   cy.drag(`#widget-${kind}`)
   cy.drop('.widgets', { offsetX, offsetY })
   cy.get('[data-cy=widget-configure]').click()
-  cy.get('select-source[name=table]').click()
+  cy.get('gy-select-source[name=table]').click()
   cy.contains('store_info').click({ force: true })
 }
 

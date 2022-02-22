@@ -28,7 +28,6 @@
     "editor.defaultFormatter": "monosans.djlint"
   },
   "djlint.indent": 2,
-  "djlint.ignore": ["T003", "H021", "H006", "H013", "H016"],
   "python.testing.pytestArgs": ["--no-migrations", "--disable-pytest-warnings"],
   "python.testing.unittestEnabled": false,
   "python.testing.nosetestsEnabled": false,

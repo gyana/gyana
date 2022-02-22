@@ -7,7 +7,7 @@ const newProjectUrl = `/projects/${getModelStartId('projects.project')}`
 const newTeamId = getModelStartId('teams.team')
 
 describe('signup', () => {
-  it('signup from waitlist', () => {
+  it('signup from website', () => {
     cy.visit('/signup')
     cy.get('input[name=email]').type('new@gyana.com')
     cy.get('input[name=password1]').type('seewhatmatters')
@@ -25,6 +25,7 @@ describe('signup', () => {
     // onboarding
     cy.get('input[name=first_name]').type('Waitlist')
     cy.get('input[name=last_name]').type('User')
+    cy.get('input[name=marketing_allowed][value=True]').click()
     cy.contains('Next').click()
 
     cy.get('select[name=company_industry]').select('Agency')

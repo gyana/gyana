@@ -16,7 +16,9 @@
   data-paddle-plan-value="{{ plan.id }}"
   data-paddle-email-value="{{ request.user.email }}"
   data-paddle-marketing-consent-value="{% if request.user.marketing_allowed %}1{% else %}0{% endif %}"
+  {# djlint:off #}
   data-paddle-passthrough-value='{"user_id": {{ request.user.id }}, "team_id": {{ object.id }}}'
+  {# djlint:on #}
   class="flex flex-col justify-center items-center h-full"
   >
   <div class="flex flex-row items-center">
