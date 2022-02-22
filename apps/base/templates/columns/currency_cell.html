@@ -1,2 +1,3 @@
+{% load humanize %}
 
-<span>{{currency}}{{value|floatformat:rounding}}</span>
+<span>{{currency}}{{value|floatformat:rounding|intcomma}}</span>
