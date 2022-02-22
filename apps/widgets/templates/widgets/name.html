@@ -1,24 +1,16 @@
 {% load help_utils %}
 
-<form 
-  id="widget-name-update-form"
-  class="flex flex-row items-center w-full"
-  method="POST" 
-  action="{% url 'widgets:name' object.id %}"
->
+<form id="widget-name-update-form"
+      class="flex flex-row items-center w-full"
+      method="POST"
+      action="{% url 'widgets:name' object.id %}">
   {% csrf_token %}
-
-  <input 
-    class='input__inline' 
-    id="name" 
-    type="text" 
-    name="name"
-    placeholder="Untitled widget" 
-    value="{% if object.name %}{{ object.name }}{% endif %}"
-    onBlur="this.form.requestSubmit();"
-   /> 
-
-  <div class="ml-auto">
-    {% link_article 'dashboards' widget.kind %}
-  </div>
+  <input class='input__inline'
+         id="name"
+         type="text"
+         name="name"
+         placeholder="Untitled widget"
+         value="{% if object.name %}{{ object.name }}{% endif %}"
+         onBlur="this.form.requestSubmit();"/>
+  <div class="ml-auto">{% link_article 'dashboards' widget.kind %}</div>
 </form>

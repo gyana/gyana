@@ -1,15 +1,8 @@
 {% if request.GET.source == 'modal' %}
-  {% include 'widgets/modal_nav_bar.html'%}
+  {% include 'widgets/modal_nav_bar.html' %}
 {% endif %}
-<div 
-  id="widgets-output-{{ widget.id }}-stream"
-  style="
-    display: flex; flex: 1 1 0%; min-height: 0;overflow: auto; height: auto;
-    {% if widget.is_valid and widget.computed_background_color %}
-    background: {{ widget.computed_background_color }};
-    {% endif %}
-  "
->
+<div id="widgets-output-{{ widget.id }}-stream"
+     style=" display: flex; flex: 1 1 0%; min-height: 0;overflow: auto; height: auto; {% if widget.is_valid and widget.computed_background_color %} background: {{ widget.computed_background_color }}; {% endif %} ">
   {% if widget.is_valid and not error_template %}
     {% if widget.kind == "table" %}
       {% include 'widgets/visuals/grid.html' %}
@@ -25,9 +18,9 @@
       {% include 'widgets/visuals/chart.html' %}
     {% endif %}
   {% elif not widget.is_valid %}
-  <div class='flex flex-col items-center justify-center flex-1  p-10'>
-    {% include 'widgets/errors/_configure_widget.html' %}
-  </div>
+    <div class='flex flex-col items-center justify-center flex-1  p-10'>
+      {% include 'widgets/errors/_configure_widget.html' %}
+    </div>
   {% else %}
     {% include error_template %}
   {% endif %}

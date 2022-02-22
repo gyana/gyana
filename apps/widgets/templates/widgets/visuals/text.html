@@ -1,10 +1,7 @@
 <div class="flex flex-col flex-1">
-  <div
-    data-controller="widget-visuals-text"
-    data-widget-visuals-text-text-value="{{ object.text_content }}"
-    data-widget-visuals-text-id-value="{{ object.id }}"
-    {% if request.GET.mode != "edit" %}
-    data-widget-visuals-text-read-only-value="true"
-    {% endif %}
-  ></div>
+  <div data-controller="widget-visuals-text"
+       data-widget-visuals-text-text-value="{{ object.text_content }}"
+       data-widget-visuals-text-id-value="{{ object.id }}"
+       {% if request.GET.mode != "edit" %} data-widget-visuals-text-read-only-value="true"{% endif %}>
+  </div>
 </div>
