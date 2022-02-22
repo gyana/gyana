@@ -1,16 +1,25 @@
 {% load static heroicons %}
 
 <div class='mt-4 flex flex-col sm:flex-row items-center gap-2 sm:gap-4'>
-  <form class="w-full sm:w-64" action="{% url 'web:search-integrations-demo' %}" method="GET">
-    <input type="search" name="query" class="focus:outline-none w-full border border-gray rounded-lg p-1 input input--sm" value="{{ request.GET.query }}" placeholder="Search...">
+  <form class="w-full sm:w-64"
+        action="{% url 'web:search-integrations-demo' %}"
+        method="GET">
+    <input type="search"
+           name="query"
+           class="focus:outline-none w-full border border-gray rounded-lg p-1 input input--sm"
+           value="{{ request.GET.query }}"
+           placeholder="Search...">
   </form>
-  <p class="text-2xl lg:text-3xl text-caveat text-indigo-600 mb-2">or</p>
+  <p class="text-2xl lg:text-3xl text-caveat text-indigo-600 mb-2">
+    or
+  </p>
   <p class="text-lg text-gray-600 max-w-3xl flex items-center">
     Browse by category
     {% heroicon 'arrow-down' class="ml-1 h-5 w-5" style="solid" %}
   </p>
   {% if request.GET.query or request.GET.category %}
-    <a href="{% url 'web:search-integrations-demo' %}" class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
+    <a href="{% url 'web:search-integrations-demo' %}"
+       class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
       {% heroicon 'x' class="-ml-1 mr-1 h-5 w-5" %}
       Cancel
     </a>
@@ -26,10 +35,14 @@
       {% for connector in services_query %}
         <div class="card card--none">
           <div class="flex flex-col h-full">
-            <img class="w-full p-4" src="{% static 'images/integrations/fivetran/'|add:connector.icon_path %}" alt="">
-            <div class="mt-auto bg-gray text-gray-600 border border-gray w-full text-center">{{ connector.name }}</div>
+            <img class="w-full p-4"
+                 src="{% static 'images/integrations/fivetran/'|add:connector.icon_path %}"
+                 alt="">
+            <div class="mt-auto bg-gray text-gray-600 border border-gray w-full text-center">
+              {{ connector.name }}
+            </div>
           </div>
-        </div>        
+        </div>
       {% endfor %}
     {% elif request.GET.category %}
       {% for category in content.apps %}
@@ -38,26 +51,35 @@
             {% with connector=services|get_item:id %}
               <div class="card card--none">
                 <div class="flex flex-col h-full">
-                  <img class="w-full p-4" src="{% static 'images/integrations/fivetran/'|add:connector.icon_path %}" alt="">
-                  <div class="mt-auto bg-gray text-gray-600 border border-gray w-full text-center">{{ connector.name }}</div>
+                  <img class="w-full p-4"
+                       src="{% static 'images/integrations/fivetran/'|add:connector.icon_path %}"
+                       alt="">
+                  <div class="mt-auto bg-gray text-gray-600 border border-gray w-full text-center">
+                    {{ connector.name }}
+                  </div>
                 </div>
               </div>
             {% endwith %}
-          {% endfor %}   
-        {% endif %}    
+          {% endfor %}
+        {% endif %}
       {% endfor %}
     {% else %}
       {% for category in content.apps %}
-        <a href="{% url 'web:search-integrations-demo' %}?category={{ category.name }}" class="card card--none">
+        <a href="{% url 'web:search-integrations-demo' %}?category={{ category.name }}"
+           class="card card--none">
           <div class="flex flex-col h-full">
             <div class="grid grid-cols-2 gap-4 p-4">
               {% for id in category.connectors|slice:":4" %}
                 {% with connector=services|get_item:id %}
-                  <img class="w-full h-full" src="{% static 'images/integrations/fivetran/'|add:connector.icon_path %}" alt="">
+                  <img class="w-full h-full"
+                       src="{% static 'images/integrations/fivetran/'|add:connector.icon_path %}"
+                       alt="">
                 {% endwith %}
               {% endfor %}
             </div>
-            <div class="mt-auto bg-gray text-gray-600 border border-gray w-full text-center">{{ category.name }}</div>
+            <div class="mt-auto bg-gray text-gray-600 border border-gray w-full text-center">
+              {{ category.name }}
+            </div>
           </div>
         </a>
       {% endfor %}

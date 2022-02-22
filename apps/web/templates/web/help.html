@@ -3,71 +3,60 @@
 <section class="flex flex-col h-full whitespace-normal">
   <div class="workflow-detail__header">
     <h3 class="mr-auto">Help</h3>
-
-    <button
-      class="tf-modal__close"
-      data-action="click->tf-modal#close"
-      data-loading-false
-    >
+    <button class="tf-modal__close"
+            data-action="click->tf-modal#close"
+            data-loading-false>
       <i class="fal fa-times fa-lg"></i>
     </button>
   </div>
-
   <div class="flex flex-col pad flex-1">
     <p class="mb-7">
       Using a new tool can be hard, that's why we want to offer you resoures to
       help you learn how to use
-      <strong class="text-blue">Gyana</strong>, and offer support when 
+      <strong class="text-blue">Gyana</strong>, and offer support when
       anything goes wrong.
     </p>
-
     <h2 class="mb-7">Read our articles</h2>
     <ul class="flex flex-col gap-7 mb-7">
       <li>
-        <a
-          class="h4 link"
-          href="{% article_url 'overview' 'intro' %}"
-          target="_blank"
-        >
-          What is Gyana?
-        </a>
-        <p>A no-code data analytics tool with big ambitions 💪</p>
+        <a class="h4 link"
+           href="{% article_url 'overview' 'intro' %}"
+           target="_blank">What is Gyana?</a>
+        <p>
+          A no-code data analytics tool with big ambitions 💪
+        </p>
       </li>
-
       <li>
-        <a
-          class="h4 link"
-          href="https://intercom.help/gyana/en/collections/3117612-gyana-explained"
-          target="_blank"
-        >
+        <a class="h4 link"
+           href="https://intercom.help/gyana/en/collections/3117612-gyana-explained"
+           target="_blank">
           Getting Started
         </a>
-        <p>Collection of articles on how we use Gyana to get you started.</p>
+        <p>
+          Collection of articles on how we use Gyana to get you started.
+        </p>
       </li>
     </ul>
-
     <div class="flex justify-around gap-7 mt-auto mb-7">
-      <a
-        class="flex flex-row items-center gap-5"
-        href="{% article_url 'videos' 'intro' %}"
-      >
+      <a class="flex flex-row items-center gap-5"
+         href="{% article_url 'videos' 'intro' %}">
         <div class="p-4 rounded-md bg-blue text-white">
           <i class="fas fa-fw fa-video fa-1x"></i>
         </div>
-        <h4 class="text-center">Watch our intro video</h3>
+        <h4 class="text-center">
+          Watch our intro video
+        </h3>
       </a>
-
-      <a
-        class="flex flex-row items-center gap-5"
-        href="https://feedback.gyana.com/"
-      >
+      <a class="flex flex-row items-center gap-5"
+         href="https://feedback.gyana.com/">
         <div class="p-4 rounded-md bg-blue text-white">
           <i class="fas fa-fw fa-comment-alt-lines fa-1x"></i>
         </div>
-        <h4 class="text-center">Give us feedback</h3>
+        <h4 class="text-center">
+          Give us feedback
+        </h3>
       </a>
     </div>
-
     <footer class="text-center">
       <p>
         Need anything else?

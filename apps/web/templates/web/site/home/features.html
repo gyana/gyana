@@ -13,9 +13,7 @@
             </span>
           </div>
           <div class="mt-6 flex flex-col gap-y-4">
-            <h2 class="text-3xl font-extrabold text-gray-900">
-              Connect your sources
-            </h2>
+            <h2 class="text-3xl font-extrabold text-gray-900">Connect your sources</h2>
             <p class="text-lg text-gray-600">
               Connect to most popular online sources out of the box, including apps, databases, webhooks and APIs.
               <strong>Need something custom?</strong> We can integrate any new source in 2 weeks.
@@ -24,7 +22,8 @@
               <b>100+</b> native integrations • <b>2B+</b> rows synced
             </p>
             <div class="flex flex-col lg:flex-row gap-4">
-              <a href="{% url 'web:integrations' %}" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+              <a href="{% url 'web:integrations' %}"
+                 class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
                 <span class="mr-2">Learn about integrations</span>
                 {% heroicon 'external-link' class="w-5 h-5" style="solid" %}
               </a>
@@ -42,7 +41,8 @@
       </div>
       <div class="mt-12 sm:mt-16 lg:mt-0 relative integration-demo flex flex-col justify-center">
         <turbo-frame id="web:integrations-demo" src="{% url 'web:integrations-demo' %}" data-turbo="true">
-          <img src="{% static 'images/site/home/integrations-fallback.jpg' %}" alt="Integrations"/>
+        <img src="{% static 'images/site/home/integrations-fallback.jpg' %}"
+             alt="Integrations"/>
         </turbo-frame>
       </div>
     </div>
@@ -59,9 +59,7 @@
             </span>
           </div>
           <div class="mt-6 flex flex-col gap-y-4">
-            <h2 class="text-3xl font-extrabold text-gray-900">
-              Prepare your data
-            </h2>
+            <h2 class="text-3xl font-extrabold text-gray-900">Prepare your data</h2>
             <p class="text-lg text-gray-600">
               Our visual editor makes it easy. Connect data processing steps like
               <span class="inline-flex items-center px-2 py-1 rounded-md text-sm font-normal bg-indigo-100 text-gray-800">
@@ -92,7 +90,8 @@
       </div>
       <div class="mt-12 sm:mt-16 lg:mt-0 lg:col-start-1 p-4 lg:p-0 workflow-demo">
         <turbo-frame id="web:workflows-demo" src="{% url 'web:workflows-demo' %}" data-turbo="true">
-          <img src="{% static 'images/site/home/workflows-fallback.jpg' %}" alt="Workflows"/>
+        <img src="{% static 'images/site/home/workflows-fallback.jpg' %}"
+             alt="Workflows"/>
         </turbo-frame>
       </div>
     </div>
@@ -109,9 +108,7 @@
             </span>
           </div>
           <div class="mt-6 flex flex-col gap-y-4">
-            <h2 class="text-3xl font-extrabold text-gray-900">
-              Build your report
-            </h2>
+            <h2 class="text-3xl font-extrabold text-gray-900">Build your report</h2>
             <p class="text-lg text-gray-600">
               It's like making a presentation, but with live data sources that never break. Drag and drop widgets like
               <span class="inline-flex items-center px-2 py-1 rounded-md text-sm font-normal bg-indigo-100 text-gray-800">
@@ -134,19 +131,19 @@
             </div>
             <p class="text-indigo-600 text-xl lg:text-2xl text-right text-caveat">
               Give your browser tabs a holiday
-            </p>  
+            </p>
           </div>
         </div>
       </div>
       <div class="mt-12 sm:mt-16 lg:mt-0 dashboard-demo">
         <turbo-frame id="web:dashboards-demo" src="{% url 'web:dashboards-demo' %}" data-turbo="true">
-          <img src="{% static 'images/site/home/dashboards-fallback.jpg' %}" alt="Dashboards"/>
+        <img src="{% static 'images/site/home/dashboards-fallback.jpg' %}"
+             alt="Dashboards"/>
         </turbo-frame>
       </div>
     </div>
   </div>
 </div>
-
 <script>
   window.__demo_store__ = {
     integrations: [

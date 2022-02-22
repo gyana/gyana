@@ -1,11 +1,12 @@
 {% extends 'web/site_base.html' %}
+
 {% load static site_tags heroicons %}
 
 {% block meta %}
-<title>Integrations | Gyana</title>
-<meta name="description" content="Gyana has integrations for most popular online sources. After a one-time setup, we'll sync your raw data, daily. Need something custom? We can integrate any new source in 2 weeks." /> 
+  <title>Integrations | Gyana</title>
+  <meta name="description"
+        content="Gyana has integrations for most popular online sources. After a one-time setup, we'll sync your raw data, daily. Need something custom? We can integrate any new source in 2 weeks."/>
 {% endblock %}
-
 {% block body.content %}
   {% include 'web/site/integrations/hero.html' %}
   {% include 'web/site/integrations/animation.html' %}

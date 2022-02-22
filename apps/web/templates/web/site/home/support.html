@@ -1,16 +1,14 @@
 {% load heroicons site_tags static %}
 
-
 <div class="bg-white">
   <div class="relative max-w-7xl mx-auto py-24 px-4 sm:px-6 lg:px-8">
     <div class="sm:flex sm:flex-col sm:align-center">
-      <h2 class="text-3xl font-extrabold text-gray-900">
-        We're here to help
-      </h2>
+      <h2 class="text-3xl font-extrabold text-gray-900">We're here to help</h2>
       <p class="mt-4 max-w-lg text-base text-gray-800">
         We'll support you on every step of your journey to Gyana mastery.
         <strong>Looking to get started fast?</strong>
-        <a href="{% external_url 'talk_to_us' %}" class="underline hover:text-gray-900">Get our team to build your report.</a>
+        <a href="{% external_url 'talk_to_us' %}"
+           class="underline hover:text-gray-900">Get our team to build your report.</a>
       </p>
     </div>
     <nav aria-label="Progress" class="mt-8 lg:grid lg:grid-cols-2">
@@ -19,12 +17,17 @@
           {% for item in content.support %}
             <li class="relative pb-10">
               {% if not forloop.first %}
-                <div class="-ml-px absolute mt-0.5 -top-6 left-4 w-0.5 h-1/2 {% if forloop.counter0 <= step %}bg-indigo-600{% else %}bg-gray-300{% endif %}" aria-hidden="true"></div>
+                <div class="-ml-px absolute mt-0.5 -top-6 left-4 w-0.5 h-1/2 {% if forloop.counter0 <= step %}bg-indigo-600{% else %}bg-gray-300{% endif %}"
+                     aria-hidden="true">
+                </div>
               {% endif %}
               {% if not forloop.last %}
-                <div class="-ml-px absolute mt-0.5 top-4 left-4 w-0.5 h-full {% if forloop.counter0 < step %}bg-indigo-600{% else %}bg-gray-300{% endif %}" aria-hidden="true"></div>
+                <div class="-ml-px absolute mt-0.5 top-4 left-4 w-0.5 h-full {% if forloop.counter0 < step %}bg-indigo-600{% else %}bg-gray-300{% endif %}"
+                     aria-hidden="true">
+                </div>
               {% endif %}
-              <a href="{% url 'web:support-demo' %}?step={{ forloop.counter0 }}" class="relative flex items-start group">
+              <a href="{% url 'web:support-demo' %}?step={{ forloop.counter0 }}"
+                 class="relative flex items-start group">
                 <span class="h-9 flex items-center">
                   <span class="relative w-8 h-8 flex items-center justify-center rounded-full {% if forloop.counter0 < step %}bg-indigo-600 group-hover:bg-indigo-800{% elif forloop.counter0 == step %}bg-white border-2 border-indigo-600{% else %}bg-white border-2 border-gray-300 group-hover:border-gray-400{% endif %}">
                     {% if forloop.counter0 < step %}
@@ -50,7 +53,9 @@
               {% endif %}
             </li>
             {% if step == forloop.counter0 %}
-              <div class="-mt-3 mb-3 lg:my-0 lg:absolute lg:top-16 lg:right-0 lg:w-1/2 relative" style="height: 70vh; z-index: 5;">
+              <div class="-mt-3 mb-3 lg:my-0 lg:absolute lg:top-16 lg:right-0 lg:w-1/2 relative"
+                   style="height: 70vh;
+                          z-index: 5;">
                 <div class="card card--none w-full h-full relative">
                   <div class="absolute w-full h-full flex flex-col items-center justify-center">
                     <i class="mb-2 text-black-50 fad fa-lg fa-spinner-third fa-spin"></i>
@@ -58,26 +63,45 @@
                   <div class="absolute w-full h-full">
                     {% if step == 0 %}
                       {% comment %} Signup page: link clicks and form submit will happen at parent level {% endcomment %}
-                      <iframe width="100%" height="100%" loading="lazy" sandbox="allow-same-origin allow-top-navigation allow-forms" src="{% url 'account_signup' %}?iframe=true"></iframe>
+                      <iframe width="100%"
+                              height="100%"
+                              loading="lazy"
+                              sandbox="allow-same-origin allow-top-navigation allow-forms"
+                              src="{% url 'account_signup' %}?iframe=true"></iframe>
                     {% elif step == 1 %}
                       {% comment %} Gyana University {% endcomment %}
-                      <iframe width="100%" height="100%" src="{% url 'web:intercom-demo' %}?demo=help"></iframe>
+                      <iframe width="100%"
+                              height="100%"
+                              src="{% url 'web:intercom-demo' %}?demo=help"></iframe>
                     {% elif step == 2 %}
                       {% include 'web/site/home/community.html' %}
                     {% elif step == 3 %}
                       {% comment %} Intercom widget {% endcomment %}
-                      <iframe width="100%" height="100%" src="{% url 'web:intercom-demo' %}?demo=chat"></iframe>
+                      <iframe width="100%"
+                              height="100%"
+                              src="{% url 'web:intercom-demo' %}?demo=chat"></iframe>
                     {% elif step == 4 %}
                       <!-- Calendly inline widget begin -->
-                      <div class="calendly-inline-widget" data-url="https://calendly.com/lorraine-chabeda/30min?hide_gdpr_banner=1" style="min-width:320px;height:100%;"></div>
-                      <script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js" async></script>
+                      <div class="calendly-inline-widget"
+                           data-url="https://calendly.com/lorraine-chabeda/30min?hide_gdpr_banner=1"
+                           style="min-width:320px;
+                                  height:100%;">
+                      </div>
+                      <script type="text/javascript"
+                              src="https://assets.calendly.com/assets/external/widget.js"
+                              async></script>
                       <!-- Calendly inline widget end -->
                     {% elif step == 5 %}
                       {% comment %} HelloNext changelog {% endcomment %}
-                      <iframe style='border:0px; height:100%; width:100%;' src='https://feedback.gyana.com/embed/c?no_header=true'></iframe>
+                      <iframe style='border:0px;
+                                     height:100%;
+                                     width:100%;'
+                              src='https://feedback.gyana.com/embed/c?no_header=true'></iframe>
                     {% endif %}
                     {% if item.cta %}
-                      <a href="{% external_url item.cta.external_url %}" class="text-sm absolute bottom-0 inset-x-0 bg-gray-50 text-right flex items-center justify-end text-gray-600 gap-1 p-2 border-gray border-t" data-turbo-frame="_top">
+                      <a href="{% external_url item.cta.external_url %}"
+                         class="text-sm absolute bottom-0 inset-x-0 bg-gray-50 text-right flex items-center justify-end text-gray-600 gap-1 p-2 border-gray border-t"
+                         data-turbo-frame="_top">
                         {{ item.cta.message }}
                         {% heroicon 'external-link' class="w-5 h-5" style="solid" %}
                       </a>
@@ -88,7 +112,6 @@
             {% endif %}
           {% endfor %}
         {% endwith %}
-    
       </ol>
     </nav>
   </div>
