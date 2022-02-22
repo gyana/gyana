@@ -1,9 +1,13 @@
-{% raw %}{% extends "teams/settings_base.html" %}
-<!---->
-{% block app %}
-<h1>Detail</h1>
-<p>{{ object.name }}</p>
-<a href="{% url '{% endraw %}{{ cookiecutter.app_name }}{% raw %}:list' %}"
-  >List</a
->
-{% endblock %} {% endraw %}
+{% raw %}
+  {% extends "teams/settings_base.html" %}
+
+  <!---->
+  {% block app %}
+    <h1>Detail</h1>
+    <p>
+      {{ object.name }}
+    </p>
+  <a href="{% url '{% endraw %}{{ cookiecutter.app_name }}{% raw %}:list' %}">List</a
+  >
+{% endblock %}
+{% endraw %}

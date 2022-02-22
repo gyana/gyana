@@ -1,8 +1,12 @@
-{% raw %}{% extends "teams/settings_base.html" %}
-{% load render_table from django_tables2 %}
-{% block app %}
-<h1>Listing</h1>
-<a href="{% url '{% endraw %}{{ cookiecutter.app_name }}{% raw %}:create' %}"
-  >Create</a
->
-{% render_table table %} {% endblock %} {% endraw %}
+{% raw %}
+  {% extends "teams/settings_base.html" %}
+
+  {% load render_table from django_tables2 %}
+
+  {% block app %}
+    <h1>Listing</h1>
+  <a href="{% url '{% endraw %}{{ cookiecutter.app_name }}{% raw %}:create' %}">Create</a
+  >
+  {% render_table table %}
+{% endblock %}
+{% endraw %}
