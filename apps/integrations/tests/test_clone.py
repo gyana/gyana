@@ -46,10 +46,15 @@ def test_integration_sheet_clone(sheet_factory, integration_table_factory, bigqu
 
 
 def test_integration_connector_clone(
-    connector_factory, integration_table_factory, bigquery, fivetran
+    connector_factory,
+    integration_table_factory,
+    bigquery,
+    fivetran,
+    mock_update_kwargs_from_fivetran,
 ):
     connector = connector_factory()
     table = integration_table_factory(integration=connector.integration)
+
     clone = connector.integration.make_clone()
 
     assert Integration.objects.count() == 2
@@ -67,3 +72,4 @@ def test_integration_connector_clone(
     assert bigquery.query.call_args.args[0] == COPY_QUERY.format(
         clone_table.bq_id, table.bq_id
     )
+    assert mock_update_kwargs_from_fivetran.call_count == 1
