@@ -5,6 +5,14 @@ from turbo_response.mixins import TurboFormMixin
 
 
 class LiveMixin:
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # When a node has no parents or parents break the form can't be constructed
+
+        if context.get("form"):
+            context["formsets"] = context["form"].get_formsets()
+        return context
+
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         if "data" in kwargs:
