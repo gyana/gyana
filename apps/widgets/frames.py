@@ -1,5 +1,3 @@
-import logging
-
 import analytics
 from django.urls import reverse
 from django_tables2.tables import Table as DjangoTable
@@ -258,11 +256,6 @@ class WidgetStyle(DashboardMixin, TurboFrameUpdateView):
             return WidgetStyleForm
 
     def form_valid(self, form):
-        import logging
-        logger = logging.getLogger()
-
-        logger.critical("VALID")
-
         r = super().form_valid(form)
 
         analytics.track(
@@ -331,12 +324,6 @@ class WidgetStyle(DashboardMixin, TurboFrameUpdateView):
         )
 
     def get_success_url(self) -> str:
-
-        import logging
-        logger = logging.getLogger()
-
-        logger.critical("success url")
-
         if self.request.POST.get("submit") == "Save & Preview":
             return "{}?{}".format(
                 reverse(
