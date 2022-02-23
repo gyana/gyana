@@ -24,9 +24,6 @@
     "**/templates/**/*.tsx": "typescript",
     "**/templates/**/*.txt": "django-txt"
   },
-  "[django-html]": {
-    "editor.defaultFormatter": "monosans.djlint"
-  },
   "djlint.indent": 2,
   "python.testing.pytestArgs": ["--no-migrations", "--disable-pytest-warnings"],
   "python.testing.unittestEnabled": false,

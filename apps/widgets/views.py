@@ -128,3 +128,12 @@ class WidgetDelete(DashboardMixin, TurboStreamDeleteView):
             "project_dashboards:detail",
             args=(self.project.id, self.dashboard.id),
         )
+
+
+class WidgetMovePage(DashboardMixin, TurboUpdateView):
+    model = Widget
+    fields = ("page",)
+    template_name = "widgets/forms/move_page.html"
+
+    def get_success_url(self) -> str:
+        return f"{reverse('project_dashboards:detail', args=(self.project.id,self.dashboard.id),)}?dashboardPage={self.object.page.position}"
