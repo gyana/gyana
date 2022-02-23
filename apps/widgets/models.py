@@ -30,6 +30,14 @@ class WidgetStyle(models.Model):
     font_size = models.IntegerField(null=True)
     font_color = models.CharField(null=True, max_length=7)
 
+    # Widget specific configuration
+    metric_font_size = models.IntegerField(null=True)
+    metric_font_color = models.CharField(null=True, max_length=7)
+    metric_header_font_size = models.IntegerField(null=True)
+    metric_header_font_color = models.CharField(null=True, max_length=7)
+    metric_comparison_font_size = models.IntegerField(null=True)
+    metric_comparison_font_color = models.CharField(null=True, max_length=7)
+
     @property
     def computed_background_color(self):
         if self.background_color:

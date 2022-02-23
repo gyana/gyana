@@ -1,6 +1,18 @@
 {% load humanize %}
 
-<div class="metric">
+<div
+  class="metric"
+  style="
+    --metric-title-color: {{ widget.metric_header_font_color }};
+    --metric-title-size: {{ widget.metric_header_font_size }};
+
+    --metric-value-color: {{ widget.metric_value_font_color }};
+    --metric-value-size: {{ widget.metric_value_font_size }};
+
+    --metric-comparison-color: {{ widget.metric_comparison_font_color }};
+    --metric-comparison-size: {{ widget.metric_comparison_font_size }};
+  "
+>
   {% if widget.name %}
   <h4 class="metric__title">{{ widget.name }}</h4>
   {% endif %}
@@ -40,7 +52,7 @@
       ></i>
       {{ change|floatformat:2 }}%
     </span>
-    <span>from {{period}}</span>
+    <span>from {{ period }}</span>
     {% endif %}
   </p>
 </div>

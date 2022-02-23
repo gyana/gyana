@@ -388,10 +388,7 @@ class WidgetStyleForm(BaseModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        if (
-            self.instance.kind == Widget.Kind.METRIC
-            or self.instance.kind == Widget.Kind.TABLE
-        ):
+        if self.instance.kind == Widget.Kind.TABLE:
             self.fields = copy.deepcopy(
                 {
                     key: field
@@ -410,4 +407,68 @@ class WidgetStyleForm(BaseModelForm):
         if hasattr(self.instance.page.dashboard, field_name):
             return getattr(self.instance.page.dashboard, field_name)
 
+        if field.initial:
+            return field.initial
+
         return super().get_initial_for_field(field, field_name)
+
+
+class MetricStyleForm(WidgetStyleForm):
+    metric_header_font_size = forms.IntegerField(
+        required=False,
+        initial=16,
+        widget=forms.NumberInput(
+            attrs={"class": "label--half", "unit_suffix": "pixels"}
+        ),
+    )
+    metric_header_font_color = forms.CharField(
+        required=False,
+        initial="#6a6b77",
+        widget=forms.TextInput(attrs={"class": "label--half", "type": "color"}),
+    )
+    metric_font_size = forms.IntegerField(
+        required=False,
+        initial=60,
+        widget=forms.NumberInput(
+            attrs={"class": "label--half", "unit_suffix": "pixels"}
+        ),
+    )
+    metric_font_color = forms.CharField(
+        required=False,
+        initial="#242733",
+        widget=forms.TextInput(attrs={"class": "label--half", "type": "color"}),
+    )
+    metric_comparison_font_size = forms.IntegerField(
+        required=False,
+        initial=30,
+        widget=forms.NumberInput(
+            attrs={"class": "label--half", "unit_suffix": "pixels"}
+        ),
+    )
+    metric_comparison_font_color = forms.CharField(
+        required=False,
+        initial="#6a6b77",
+        widget=forms.TextInput(attrs={"class": "label--half", "type": "color"}),
+    )
+
+    class Meta:
+        model = Widget
+        fields = [
+            "background_color",
+            "metric_header_font_size",
+            "metric_header_font_color",
+            "metric_font_size",
+            "metric_font_color",
+            "metric_comparison_font_size",
+            "metric_comparison_font_color",
+        ]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields = copy.deepcopy(
+            {
+                key: field
+                for key, field in self.base_fields.items()
+                if key not in ["palette_colors", "font_size", "show_tooltips"]
+            }
+        )
