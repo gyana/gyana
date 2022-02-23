@@ -3,14 +3,14 @@
 <div
   class="metric"
   style="
-    --metric-title-color: {{ widget.metric_header_font_color }};
-    --metric-title-size: {{ widget.metric_header_font_size }};
+    --metric-title-color: {% firstof widget.metric_header_font_color "var(--c-black-50)" %};
+    --metric-title-size: {% firstof widget.metric_header_font_size "16" %}px;
 
-    --metric-value-color: {{ widget.metric_value_font_color }};
-    --metric-value-size: {{ widget.metric_value_font_size }};
+    --metric-value-color: {% firstof widget.metric_font_color "var(--c-black)" %};
+    --metric-value-size: {% firstof widget.metric_font_size "60" %}px;
 
-    --metric-comparison-color: {{ widget.metric_comparison_font_color }};
-    --metric-comparison-size: {{ widget.metric_comparison_font_size }};
+    --metric-comparison-color: {% firstof widget.metric_comparison_font_color "var(--c-black-50)" %};
+    --metric-comparison-size: {% firstof widget.metric_comparison_font_size "30" %}px;
   "
 >
   {% if widget.name %}
