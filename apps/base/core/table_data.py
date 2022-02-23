@@ -88,7 +88,7 @@ class BigQueryTableData(TableData):
             for alias in aliases
         ]
         # If data has a ordering set we need to overwrite it
-        if self.data.op().sort_keys:
+        if hasattr(self.data.op(), "sort_keys"):
             self.data = self.data.projection([]).sort_by(sort_by)
         else:
             self.data = self.data.sort_by(sort_by)
