@@ -2,7 +2,7 @@ import pytest
 from pytest_django.asserts import assertContains
 from turbo_response.response import TurboStreamResponse
 
-from apps.base.tests.asserts import assertLink, assertOK
+from apps.base.tests.asserts import assertLink, assertOK, assertSelectorLength
 from apps.base.tests.mock_data import TABLE
 from apps.base.tests.mocks import mock_bq_client_with_schema
 from apps.widgets.models import Widget
@@ -76,3 +76,26 @@ def test_widget_crudl(
     # delete
     r = client.delete(f"{dashboard_url}/widgets/{widget.id}/delete")
     assert Widget.objects.first() is None
+
+
+def test_widget_move_page(
+    client,
+    dashboard_factory,
+    project,
+):
+    dashboard = dashboard_factory(project=project)
+    page_1 = dashboard.pages.create()
+    page_2 = dashboard.pages.create(position=2)
+    widget = page_1.widgets.create(kind=Widget.Kind.TABLE)
+
+    url = f"/projects/{project.id}/dashboards/{dashboard.id}/widgets/{widget.id}/move-page"
+    r = client.get(url)
+    assertOK(r)
+    assertSelectorLength(r, "option", 2)
+
+    r = client.post(url, data={"page": page_2.id})
+    assert r.status_code == 303
+    assert r.url == f"/projects/{project.id}/dashboards/{dashboard.id}?dashboardPage=2"
+    widget.refresh_from_db()
+
+    assert widget.page == page_2

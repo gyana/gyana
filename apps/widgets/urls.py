@@ -44,7 +44,7 @@ dashboard_urlpatterns = (
             name="delete",
         ),
         path(
-            "<hashid:pk>/move_page",
+            "<hashid:pk>/move-page",
             login_and_project_required(views.WidgetMovePage.as_view()),
             name="move_page",
         ),
