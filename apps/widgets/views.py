@@ -70,11 +70,10 @@ class WidgetDetail(DashboardMixin, TurboUpdateView):
     form_class = WidgetDuplicateForm
 
     def form_valid(self, form):
-        lowest_widget = self.page.widgets.order_by("-y").first()
         clone = self.object.make_clone(
             attrs={
-                "name": "Copy of " + (self.object.name or ""),
-                "y": lowest_widget.y + lowest_widget.height,
+                "name": "Copy of " + self.object.name if self.object.name else "",
+                "y": self.object.y + self.object.height,
             }
         )
 
