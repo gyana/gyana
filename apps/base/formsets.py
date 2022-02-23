@@ -23,3 +23,17 @@ class RequiredInlineFormset(BaseInlineFormSet):
             # but we don't want to render more than necessary
             return min(len(self.get_queryset()), self.max_num)
         return super().initial_form_count()
+
+    def save_new_objects(self, commit=True):
+        """Overwrites Django's BaseModelFormSet that doesnt save an instance of
+        a formset form if the initial values haven't changed."""
+        self.new_objects = []
+        for form in self.extra_forms:
+            # If someone has marked an add form for deletion, don't save the
+            # object.
+            if self.can_delete and self._should_delete_form(form):
+                continue
+            self.new_objects.append(self.save_new(form, commit=commit))
+            if not commit:
+                self.saved_forms.append(form)
+        return self.new_objects
