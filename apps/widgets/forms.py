@@ -131,7 +131,7 @@ class GenericWidgetForm(LiveFormsetForm):
         return fields
 
     def get_live_formsets(self):
-        if self.get_live_field("table") is None:
+        if not self.get_live_field("table"):
             return []
 
         formsets = [FilterFormset]
