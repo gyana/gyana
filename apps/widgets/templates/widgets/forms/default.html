@@ -34,7 +34,7 @@
     {% csrf_token %}
 
     <div class="flex flex-col flex-1 w-full pad">
-      {% include "django/forms/default_form.html" with form=styleForm only %}
+      {% include "django/forms/default_form.html" with form=styleForm optional=False only %}
     </div>
 
     <div class="widget-update__footer">
