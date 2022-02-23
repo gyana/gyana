@@ -87,7 +87,11 @@ class BigQueryTableData(TableData):
             (self.get_column_from_md5(alias.replace("-", "")), alias.startswith("-"))
             for alias in aliases
         ]
-        self.data = self.data.sort_by(sort_by)
+        # If data has a ordering set we need to overwrite it
+        if self.data.op().sort_keys:
+            self.data = self.data.projection([]).sort_by(sort_by)
+        else:
+            self.data = self.data.sort_by(sort_by)
 
     def set_table(self, table):
         """
