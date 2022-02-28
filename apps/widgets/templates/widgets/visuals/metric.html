@@ -19,7 +19,8 @@
 
   <h2 class="metric__value">
     {% if metric is None %}
-      <p>No data found</p>
+      <i class="fal fa-empty-set empty-icon"></i>
+      <p>No data found for the applied filters and date range</p>
     {% else %}
       {% if currency %}
         {{ currency }}

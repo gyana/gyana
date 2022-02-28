@@ -77,6 +77,15 @@
     text-align: center;
     text-overflow: ellipsis;
     white-space: nowrap;
+
+    .empty-icon {
+      color: var(--c-black-50);
+      margin-bottom: 1rem;
+    }
+
+    p {
+      font-weight: 400;
+    }
   }
 
   &__comparison {
@@ -93,7 +102,7 @@
   padding-bottom: 1.6rem;
 }
 
-[data-controller*=widget-visuals-text] {
+[data-controller*='widget-visuals-text'] {
   border: none;
   cursor: text;
 }
@@ -113,7 +122,7 @@
   width: 100%;
 }
 
-.react-draggable[data-focused*=true] .ql-toolbar.ql-snow {
+.react-draggable[data-focused*='true'] .ql-toolbar.ql-snow {
   display: block;
   visibility: visible;
 }

@@ -46,17 +46,18 @@ def add_output_context(context, widget, request, control):
             ).configure(table)
     elif widget.kind == Widget.Kind.METRIC:
         metric = metric_to_output(widget, control)
-        if widget.compare_previous_period and (
-            used_control := widget.control if widget.has_control else control
+        if (
+            metric
+            and widget.compare_previous_period
+            and (used_control := widget.control if widget.has_control else control)
         ):
-            previous_metric = metric_to_output(widget, control, True)
-            if not previous_metric:
-                context["zero_division"] = True
-            else:
+            if previous_metric := metric_to_output(widget, control, True):
                 context["change"] = (metric - previous_metric) / previous_metric * 100
                 context["period"] = DATETIME_FILTERS[used_control.date_range][
                     "previous_label"
                 ]
+            else:
+                context["zero_division"] = True
         column = widget.aggregations.first()
         context["column"] = column
         if column.currency:
