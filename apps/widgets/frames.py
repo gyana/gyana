@@ -24,7 +24,7 @@ from apps.tables.bigquery import get_query_from_table
 from apps.tables.models import Table
 from apps.widgets.visuals import chart_to_output, metric_to_output, table_to_output
 
-from .forms import FORMS, WidgetStyleForm
+from .forms import FORMS, MetricStyleForm, WidgetStyleForm
 from .models import Widget
 
 
@@ -46,17 +46,18 @@ def add_output_context(context, widget, request, control):
             ).configure(table)
     elif widget.kind == Widget.Kind.METRIC:
         metric = metric_to_output(widget, control)
-        if widget.compare_previous_period and (
-            used_control := widget.control if widget.has_control else control
+        if (
+            metric
+            and widget.compare_previous_period
+            and (used_control := widget.control if widget.has_control else control)
         ):
-            previous_metric = metric_to_output(widget, control, True)
-            if not previous_metric:
-                context["zero_division"] = True
-            else:
+            if previous_metric := metric_to_output(widget, control, True):
                 context["change"] = (metric - previous_metric) / previous_metric * 100
                 context["period"] = DATETIME_FILTERS[used_control.date_range][
                     "previous_label"
                 ]
+            else:
+                context["zero_division"] = True
         column = widget.aggregations.first()
         context["column"] = column
         if column.currency:
@@ -133,6 +134,9 @@ class WidgetUpdate(DashboardMixin, TurboFrameUpdateView):
                 context["form"].get_live_field("date_column")
             )
             context["styleForm"] = WidgetStyleForm(instance=self.object)
+
+        if self.object.kind == Widget.Kind.METRIC:
+            context["styleForm"] = MetricStyleForm(instance=self.object)
 
         return context
 
@@ -247,7 +251,12 @@ class WidgetStyle(DashboardMixin, TurboFrameUpdateView):
     template_name = "widgets/update.html"
     model = Widget
     turbo_frame_dom_id = "widget-modal-style"
-    form_class = WidgetStyleForm
+
+    def get_form_class(self):
+        if self.object.kind == Widget.Kind.METRIC:
+            return MetricStyleForm
+        else:
+            return WidgetStyleForm
 
     def form_valid(self, form):
         r = super().form_valid(form)

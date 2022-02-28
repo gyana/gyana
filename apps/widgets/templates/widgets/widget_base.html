@@ -84,6 +84,21 @@ preview mode.
                 Delete
               </button>
             </form>
+            <div
+              data-controller="popover" 
+              data-placement="right"
+              data-theme="popover-menu"
+            >
+              <button
+                data-popover-target="trigger" 
+                class="list__item list__item--interactive w-full"
+              >
+                Move to page
+              </button>
+              <div data-popover-target="body">
+                {% include 'widgets/forms/move_page.html' %}
+              </div>
+            </div>
           </div>
         </div>
 

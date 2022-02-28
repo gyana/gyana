@@ -56,6 +56,8 @@ def format_value(column, value):
     if column.is_percentage:
         value = round(value * 100, column.rounding)
         return f"{value}%"
+    if isinstance(value, (int, float)):
+        return round(value, column.rounding)
     return value
 
 

@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 
 from apps.base.core.utils import default_json_encoder
+from apps.columns.currency_symbols import CURRENCY_SYMBOLS_MAP
 from apps.widgets.bigquery import get_unique_column_names
 from apps.widgets.fusion.utils import DEFAULT_HEIGHT, DEFAULT_WIDTH, TO_FUSION_CHART
 from apps.widgets.models import COUNT_COLUMN_NAME, NO_DIMENSION_WIDGETS, Widget
@@ -91,12 +92,19 @@ def to_chart(df: pd.DataFrame, widget: Widget) -> FusionCharts:
             if widget.font_color
             else widget.page.dashboard.font_color,
             # Fusioncharts client-side export feature
-            "exportenabled": "0",
+            # TODO: If True we need to add an explicit import for
+            # fusionchart.excelexport.js to our fusionchart scripts
+            "exportenabled": False,
             "exportmode": "client",
             "exportFileName": widget.name if widget.name else "untitled_chart",
             **(
                 {"showLabels": "0"}
                 if widget.kind in [Widget.Kind.PIE, Widget.Kind.DONUT]
+                else {}
+            ),
+            **(
+                {"numberPrefix": CURRENCY_SYMBOLS_MAP[widget.currency]}
+                if widget.currency
                 else {}
             ),
             **axis_names,

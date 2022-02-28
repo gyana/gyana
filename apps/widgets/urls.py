@@ -43,6 +43,11 @@ dashboard_urlpatterns = (
             login_and_project_required(views.WidgetDelete.as_view()),
             name="delete",
         ),
+        path(
+            "<hashid:pk>/move-page",
+            login_and_project_required(views.WidgetMovePage.as_view()),
+            name="move_page",
+        ),
         # frames
         path(
             "<hashid:pk>/update",

@@ -50,27 +50,47 @@
 }
 
 .metric {
+  --metric-title-color: var(--c-black-50);
+  --metric-title-size: 1.6rem;
+
+  --metric-value-color: var(--c-black);
+  --metric-value-size: 6rem;
+
+  --metric-comparison-color: var(--c-black-50);
+  --metric-comparison-size: 3rem;
+
   align-self: center;
   margin: 0 auto;
   overflow: hidden;
   text-align: center;
 
   &__title {
-    color: var(--c-black-50);
+    color: var(--metric-title-color);
+    font-size: var(--metric-title-size);
     margin-bottom: 0.6rem;
   }
 
   &__value {
-    font-size: 6rem;
+    color: var(--metric-value-color);
+    font-size: var(--metric-value-size);
     overflow: hidden;
     text-align: center;
     text-overflow: ellipsis;
     white-space: nowrap;
+
+    .empty-icon {
+      color: var(--c-black-50);
+      margin-bottom: 1rem;
+    }
+
+    p {
+      font-weight: 400;
+    }
   }
 
   &__comparison {
-    font-size: 3rem;
-    color: var(--c-black-50);
+    color: var(--metric-comparison-color);
+    font-size: var(--metric-comparison-size);
   }
 }
 
@@ -82,7 +102,7 @@
   padding-bottom: 1.6rem;
 }
 
-[data-controller*=widget-visuals-text] {
+[data-controller*='widget-visuals-text'] {
   border: none;
   cursor: text;
 }
@@ -102,7 +122,7 @@
   width: 100%;
 }
 
-.react-draggable[data-focused*=true] .ql-toolbar.ql-snow {
+.react-draggable[data-focused*='true'] .ql-toolbar.ql-snow {
   display: block;
   visibility: visible;
 }

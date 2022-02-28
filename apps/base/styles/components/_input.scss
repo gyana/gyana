@@ -101,14 +101,15 @@ input[type='search'] {
 input[type='color'] {
   @extend %input;
 
-  border: none;
-  height: 3.2rem;
+  border: 1px solid var(--c-gray);
+  height: 4.3rem;
   padding: 0;
   width: 100%;
 
   &::-webkit-color-swatch,
   &::-moz-color-swatch {
-    border: 1px solid var(--c-gray);
+    border: none;
+    border-radius: 5px;
   }
 }
 

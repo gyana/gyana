@@ -52,7 +52,7 @@ def _cast_string(py_scalar_or_column):
     )
 
 
-def create_date(caller, args):
+def create_date(caller, args):  # sourcery skip: use-fstring-for-concatenation
     year = _cast_string(caller)
     month = _cast_string(args[0])
     day = _cast_string(args[1])
@@ -60,7 +60,7 @@ def create_date(caller, args):
     return text.parse_date("%Y-%m-%d")
 
 
-def create_time(caller, args):
+def create_time(caller, args):  # sourcery skip: use-fstring-for-concatenation
     hour = _cast_string(caller)
     minute = _cast_string(args[0])
     second = _cast_string(args[1])
@@ -82,10 +82,6 @@ def or_(caller, args):
     return query
 
 
-def subtract_days(date, args):
-    return date.sub(ibis.interval(args[0], "D"))
-
-
 ODD_FUNCTIONS = {
     "and": and_,
     "or": or_,
@@ -94,7 +90,6 @@ ODD_FUNCTIONS = {
     "weekday": weekday,
     "create_date": create_date,
     "create_time": create_time,
-    "subtract_days": subtract_days,
 }
 
 NO_CALLER = {"today": today, "now": ibis.now}

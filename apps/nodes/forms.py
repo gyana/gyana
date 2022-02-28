@@ -104,6 +104,13 @@ class OutputNodeForm(NodeForm):
 
 
 class SelectNodeForm(NodeForm):
+
+    select_columns = forms.MultipleChoiceField(
+        choices=(),
+        widget=MultiSelect,
+        label="Select the columns you want to use:",
+    )
+
     class Meta:
         model = Node
         fields = ("select_mode",)
@@ -111,12 +118,10 @@ class SelectNodeForm(NodeForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.fields["select_columns"] = forms.MultipleChoiceField(
-            choices=[(col, col) for col in self.columns],
-            widget=MultiSelect,
-            label="Select the columns you want to use:",
-            initial=list(self.instance.columns.all().values_list("column", flat=True)),
+        self.fields["select_columns"].initial = list(
+            self.instance.columns.all().values_list("column", flat=True)
         )
+        self.fields["select_columns"].choices = [(col, col) for col in self.columns]
 
     def save(self, *args, **kwargs):
         self.instance.columns.all().delete()

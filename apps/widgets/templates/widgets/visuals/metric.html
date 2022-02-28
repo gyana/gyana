@@ -1,13 +1,26 @@
 {% load humanize %}
 
-<div class="metric">
+<div
+  class="metric"
+  style="
+    --metric-title-color: {% firstof widget.metric_header_font_color "var(--c-black-50)" %};
+    --metric-title-size: {% firstof widget.metric_header_font_size "16" %}px;
+
+    --metric-value-color: {% firstof widget.metric_font_color "var(--c-black)" %};
+    --metric-value-size: {% firstof widget.metric_font_size "60" %}px;
+
+    --metric-comparison-color: {% firstof widget.metric_comparison_font_color "var(--c-black-50)" %};
+    --metric-comparison-size: {% firstof widget.metric_comparison_font_size "30" %}px;
+  "
+>
   {% if widget.name %}
   <h4 class="metric__title">{{ widget.name }}</h4>
   {% endif %}
 
   <h2 class="metric__value">
     {% if metric is None %}
-      <p>No data found</p>
+      <i class="fal fa-empty-set empty-icon"></i>
+      <p>No data found for the applied filters and date range</p>
     {% else %}
       {% if currency %}
         {{ currency }}
@@ -40,7 +53,7 @@
       ></i>
       {{ change|floatformat:2 }}%
     </span>
-    <span>from {{period}}</span>
+    <span>from {{ period }}</span>
     {% endif %}
   </p>
 </div>

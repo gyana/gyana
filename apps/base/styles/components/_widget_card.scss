@@ -53,6 +53,7 @@
     }
   }
 
+  &:focus-within &__commands,
   &:hover &__commands {
     display: flex;
   }
