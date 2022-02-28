@@ -152,17 +152,17 @@ def test_one_dimension_form(kind, formset_classes, setup, widget_factory):
         ),
         pytest.param(
             Widget.Kind.STACKED_LINE,
-            {FilterFormset, AggregationColumnFormset},
+            {FilterFormset, OptionalMetricFormset},
             id="stacked line",
         ),
         pytest.param(
             Widget.Kind.TIMESERIES_STACKED_COLUMN,
-            {FilterFormset, AggregationColumnFormset},
+            {FilterFormset, OptionalMetricFormset},
             id="timeseries stacked column",
         ),
         pytest.param(
             Widget.Kind.TIMESERIES_STACKED_LINE,
-            {FilterFormset, AggregationColumnFormset},
+            {FilterFormset, OptionalMetricFormset},
             id="timeseries stacked line",
         ),
     ],
