@@ -292,3 +292,21 @@ def _subtract_days(translator, expr):
     t_days = translator.translate(days)
 
     return f"DATE_SUB({t_date}, INTERVAL {t_days} DAY)"
+
+
+class Date(ValueOp):
+    date = Arg(rlz.date)
+    output_type = rlz.shape_like("date", dt.date)
+
+
+def date(d):
+    return Date(d).to_expr()
+
+
+DateValue.date = date
+
+
+@compiles(Date)
+def _date(t, expr):
+    d = expr.op().args[0]
+    return t.translate(d)
