@@ -6,7 +6,7 @@ from ibis.expr.datatypes import Date, Time, Timestamp
 
 from apps.base.core.utils import create_column_choices
 from apps.base.forms import BaseModelForm, LiveFormsetForm, LiveFormsetMixin
-from apps.base.widgets import SelectWithDisable
+from apps.base.widgets import Datalist, SelectWithDisable
 from apps.dashboards.forms import PaletteColorsField
 from apps.tables.models import Table
 
@@ -383,7 +383,11 @@ class WidgetStyleForm(BaseModelForm):
             "background_color",
             "show_tooltips",
             "font_size",
+            "currency",
         ]
+        widgets = {
+            "currency": Datalist(attrs={"data-live-update-ignore": ""}),
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -396,8 +400,6 @@ class WidgetStyleForm(BaseModelForm):
                     if key not in ["palette_colors", "font_size", "show_tooltips"]
                 }
             )
-        else:
-            self.fields = dict(self.base_fields.items())
 
     # If widget has no value set for a setting, default to dashboard settings.
     def get_initial_for_field(self, field, field_name):

@@ -6,6 +6,7 @@ from apps.base.clients import SLUG
 from apps.base.core.aggregations import AggregationFunctions
 from apps.base.models import BaseModel, SaveParentModel
 from apps.columns.bigquery import DatePeriod
+from apps.columns.currency_symbols import CurrencySymbols
 from apps.dashboards.models import Page
 from apps.tables.models import Table
 
@@ -29,6 +30,13 @@ class WidgetStyle(models.Model):
     show_tooltips = models.BooleanField(null=True)
     font_size = models.IntegerField(null=True)
     font_color = models.CharField(null=True, max_length=7)
+    currency = models.CharField(
+        max_length=32,
+        choices=CurrencySymbols.choices,
+        blank=True,
+        null=True,
+        help_text="Select a currency",
+    )
 
     # Widget specific configuration
     metric_font_size = models.IntegerField(null=True)

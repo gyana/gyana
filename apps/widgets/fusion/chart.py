@@ -99,7 +99,8 @@ def to_chart(df: pd.DataFrame, widget: Widget) -> FusionCharts:
                 if widget.kind in [Widget.Kind.PIE, Widget.Kind.DONUT]
                 else {}
             ),
-            **axis_names,
+            **({"numberPrefix": widget.currency} if widget.currency else {})
+            ** axis_names,
         },
         **data,
     }
