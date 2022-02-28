@@ -64,7 +64,10 @@
   {% if table.page.has_previous %}
   {% block pagination.previous %}
   <li class="previous">
-    <a href="{% querystring table.prefixed_page_field=table.page.previous_page_number %}">
+    <a
+      href="{% querystring table.prefixed_page_field=table.page.previous_page_number %}"
+      data-turbo-loading
+    >
       <i class="far fa-sm fa-chevron-left"></i>
     </a>
   </li>
@@ -77,7 +80,10 @@
     {% if p == '...' %}
     <a>{{ p }}</a>
     {% else %}
-    <a href="{% querystring table.prefixed_page_field=p %}">
+    <a
+      href="{% querystring table.prefixed_page_field=p %}"
+      data-turbo-loading
+    >
       {{ p }}
     </a>
     {% endif %}
@@ -88,7 +94,10 @@
   {% if table.page.has_next %}
   {% block pagination.next %}
   <li class="next">
-    <a href="{% querystring table.prefixed_page_field=table.page.next_page_number %}">
+    <a
+      href="{% querystring table.prefixed_page_field=table.page.next_page_number %}"
+      data-turbo-loading
+    >
       <i class="far fa-sm fa-chevron-right"></i>
     </a>
   </li>
