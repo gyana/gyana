@@ -162,6 +162,10 @@ class BigQueryColumn(Column):
                     "is_percentage": self.is_percentage,
                 }
             )
+        if isinstance(value, bool) or value == "True" or value == "False":
+            return get_template("columns/bool_cell.html").render(
+                {"value": value}
+            )
         if isinstance(value, int):
             return get_template("columns/int_cell.html").render(
                 {"value": value, "is_percentage": self.is_percentage}
