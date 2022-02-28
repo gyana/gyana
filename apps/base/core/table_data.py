@@ -154,6 +154,7 @@ class BigQueryColumn(Column):
                 }
             )
         if isinstance(value, float):
+            self.attrs["td"] = {"style": "text-align: right;"}
             value = value * 100 if self.is_percentage else value
             return get_template("columns/float_cell.html").render(
                 {
@@ -167,6 +168,7 @@ class BigQueryColumn(Column):
                 {"value": value}
             )
         if isinstance(value, int):
+            self.attrs["td"] = {"style": "text-align: right;"}
             return get_template("columns/int_cell.html").render(
                 {"value": value, "is_percentage": self.is_percentage}
             )
