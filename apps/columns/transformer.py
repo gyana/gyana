@@ -56,7 +56,7 @@ def create_date(caller, args):
     year = _cast_string(caller)
     month = _cast_string(args[0])
     day = _cast_string(args[1])
-    text = year + "-" + month + "-" + day
+    text = f"{year}-{month}-{day}"
     return text.parse_date("%Y-%m-%d")
 
 
@@ -64,7 +64,7 @@ def create_time(caller, args):
     hour = _cast_string(caller)
     minute = _cast_string(args[0])
     second = _cast_string(args[1])
-    text = hour + ":" + minute + ":" + second
+    text = f"{hour}:{minute}:{second}"
     return text.parse_time("%H:%M:%S")
 
 
@@ -82,10 +82,6 @@ def or_(caller, args):
     return query
 
 
-def subtract_days(date, args):
-    return date.sub(ibis.interval(args[0], "D"))
-
-
 ODD_FUNCTIONS = {
     "and": and_,
     "or": or_,
@@ -94,7 +90,6 @@ ODD_FUNCTIONS = {
     "weekday": weekday,
     "create_date": create_date,
     "create_time": create_time,
-    "subtract_days": subtract_days,
 }
 
 NO_CALLER = {"today": today, "now": ibis.now}
