@@ -92,6 +92,8 @@ def to_chart(df: pd.DataFrame, widget: Widget) -> FusionCharts:
             if widget.font_color
             else widget.page.dashboard.font_color,
             # Fusioncharts client-side export feature
+            # TODO: If True we need to add an explicit import for
+            # fusionchart.excelexport.js to our fusionchart scripts
             "exportenabled": False,
             "exportmode": "client",
             "exportFileName": widget.name if widget.name else "untitled_chart",
