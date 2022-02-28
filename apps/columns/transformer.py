@@ -52,19 +52,19 @@ def _cast_string(py_scalar_or_column):
     )
 
 
-def create_date(caller, args):
+def create_date(caller, args):  # sourcery skip: use-fstring-for-concatenation
     year = _cast_string(caller)
     month = _cast_string(args[0])
     day = _cast_string(args[1])
-    text = f"{year}-{month}-{day}"
+    text = year + "-" + month + "-" + day
     return text.parse_date("%Y-%m-%d")
 
 
-def create_time(caller, args):
+def create_time(caller, args):  # sourcery skip: use-fstring-for-concatenation
     hour = _cast_string(caller)
     minute = _cast_string(args[0])
     second = _cast_string(args[1])
-    text = f"{hour}:{minute}:{second}"
+    text = hour + ":" + minute + ":" + second
     return text.parse_time("%H:%M:%S")
 
 
