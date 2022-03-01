@@ -4,10 +4,12 @@
   "description": "",
   "main": "webpack.config.js",
   "scripts": {
+    "build": "NODE_ENV=production webpack --mode=production --progress",
     "build:dev": "webpack --mode=development --progress",
     "build:watch": "webpack --mode=development --watch --progress",
-    "build": "NODE_ENV=production webpack --mode=production --progress",
-    "prettier": "prettier --write ./**/*.{js,ts,tsx}",
+    "prettier": "prettier --ignore-path .gitignore",
+    "prettier:check": "prettier --ignore-path .gitignore --check",
+    "prettier:write": "prettier --ignore-path .gitignore --write",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
     "cypress:failed": "ls cypress/screenshots/*/ | grep ' -- '"
@@ -38,7 +40,7 @@
     "postcss-import": "^13.0.0",
     "postcss-loader": "^4.0.4",
     "postcss-nested": "^5.0.2",
-    "prettier": "^2.3.0",
+    "prettier": "2.5.1",
     "react-html-parser": "^2.0.2",
     "sass": "^1.32.12",
     "sass-loader": "^7.3.1",
