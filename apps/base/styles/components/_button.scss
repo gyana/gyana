@@ -1,4 +1,4 @@
-@use 'utilities/mixins';
+@use 'utilities' as u;
 
 $button-colors: (
   'primary': var(--c-blue),
@@ -120,7 +120,7 @@ $button-colors: (
     width: 2.4rem;
   }
 
-  @include mixins.fa-icon {
+  @include u.fa-icon {
     align-items: center;
     display: flex;
     height: 1.25em;

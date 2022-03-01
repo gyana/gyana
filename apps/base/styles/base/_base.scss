@@ -14,6 +14,7 @@
     BlinkMacSystemFont, Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji',
     'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   height: 100%;
+  line-height: 1;
 }
 
 body {
@@ -21,7 +22,6 @@ body {
   flex-direction: column;
   font-size: 1.6em; // Setting font size back to 16px for most cases.
   height: 100%;
-  line-height: 1;
 
   > main {
     display: flex;
@@ -42,7 +42,8 @@ body {
 
 .disabled,
 [disabled],
-:disabled {
+:disabled,
+[class*='--disabled'] {
   cursor: not-allowed;
 }
 

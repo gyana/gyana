@@ -1,3 +1,53 @@
+$colors: (
+  // BLACK
+  'black': #242733,
+  'black-50': #6a6b77,
+  'black-20': #a0a1ae,
+  'black-10': #cbccd6,
+  // GRAY
+  'gray': #e6e6e6,
+  'gray-50': #f7f7f7,
+  'gray-20': #fafafa,
+  'gray-10': #fafafc,
+  // WHITE
+  'white': #fff,
+  // BLUE
+  'blue': #2550f5,
+  'blue-50': #5677f7,
+  'blue-20': #879ef9,
+  'blue-10': #e8edfe,
+  // PINK
+  'pink': #d10070,
+  'pink-50': #e880b7,
+  'pink-20': #f6cce2,
+  'pink-10': #fbeef5,
+  // ORANGE
+  'orange': #f38e4f,
+  'orange-50': #f9c6a7,
+  'orange-20': #fce3d4,
+  'orange-10': #fdf4ee,
+  // GREE
+  'green': #0db145,
+  'green-50': #86d8a2,
+  'green-20': #cfefda,
+  'green-10': #e2f6e9,
+  // RED
+  'red': #e30303,
+  'red-50': #f18181,
+  'red-20': #f9cdcd,
+  'red-10': #fce6e6
+);
+
+@function color($color) {
+  $-value: map-get($colors, $color);
+
+  @if $-value != null {
+    @return $-value;
+  } @else {
+    @error "#{$color} cannot be found in the $colors map";
+  }
+}
+
 :root {
   // Simple z-index layering system.
   // Avoid creating new layers, only create one when there is a new group of items.
@@ -12,42 +62,42 @@
 
   // Color variables.
   // If ever updating/adding colours make sure to also add to `tailwind.config.js`
-  --c-black: #242733;
-  --c-black-50: #6a6b77;
-  --c-black-20: #a0a1ae;
-  --c-black-10: #cbccd6;
+  --c-black: #{color('black')};
+  --c-black-50: #{color('black-50')};
+  --c-black-20: #{color('black-20')};
+  --c-black-10: #{color('black-10')};
 
-  --c-gray: #e6e6e6;
-  --c-gray-50: #f7f7f7;
-  --c-gray-20: #fafafa;
-  --c-gray-10: #fafafc;
+  --c-gray: #{color('gray')};
+  --c-gray-50: #{color('gray-50')};
+  --c-gray-20: #{color('gray-20')};
+  --c-gray-10: #{color('gray-10')};
 
-  --c-white: #ffffff;
+  --c-white: #{color('white')};
 
-  --c-blue: #2550f5;
-  --c-blue-50: #5677f7;
-  --c-blue-20: #879ef9;
-  --c-blue-10: #e8edfe;
+  --c-blue: #{color('blue')};
+  --c-blue-50: #{color('blue-50')};
+  --c-blue-20: #{color('blue-20')};
+  --c-blue-10: #{color('blue-10')};
 
-  --c-pink: #d10070;
-  --c-pink-50: #e880b7;
-  --c-pink-20: #f6cce2;
-  --c-pink-10: #fbeef5;
+  --c-pink: #{color('pink')};
+  --c-pink-50: #{color('pink-50')};
+  --c-pink-20: #{color('pink-20')};
+  --c-pink-10: #{color('pink-10')};
 
-  --c-orange: #f38e4f;
-  --c-orange-50: #f9c6a7;
-  --c-orange-20: #fce3d4;
-  --c-orange-10: #fdf4ee;
+  --c-orange: #{color('orange')};
+  --c-orange-50: #{color('orange-50')};
+  --c-orange-20: #{color('orange-20')};
+  --c-orange-10: #{color('orange-10')};
 
-  --c-green: #0db145;
-  --c-green-50: #86d8a2;
-  --c-green-20: #cfefda;
-  --c-green-10: #e2f6e9;
+  --c-green: #{color('green')};
+  --c-green-50: #{color('green-50')};
+  --c-green-20: #{color('green-20')};
+  --c-green-10: #{color('green-10')};
 
-  --c-red: #e30303;
-  --c-red-50: #f18181;
-  --c-red-20: #f9cdcd;
-  --c-red-10: #fce6e6;
+  --c-red: #{color('red')};
+  --c-red-50: #{color('red-50')};
+  --c-red-20: #{color('red-20')};
+  --c-red-10: #{color('red-10')};
 
   --c-transparent: hsla(0, 0%, 0%, 0);
 
