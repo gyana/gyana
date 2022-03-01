@@ -1,0 +1,149 @@
+@use 'sass:math';
+
+// Tailwind style responsiveness
+// https://sass-guidelin.es/#responsive-web-design-and-breakpoints
+$breakpoints: (
+  'sm': 640px,
+  'md': 768px,
+  'lg': 1024px,
+  'xl': 1280px,
+  '2xl': 1536px,
+);
+
+@mixin respond-to($breakpoint) {
+  // Retrieves the value from the key
+  $value: map-get($breakpoints, $breakpoint);
+
+  // If the key exists in the map
+  @if $value != null {
+    // Prints a media query based on the value
+    @media (min-width: $value) {
+      @content;
+    }
+  }
+
+  // If the key doesn't exist in the map
+  @else {
+    @warn "Unfortunately, no value could be retrieved from `#{$breakpoint}`. "
+        + "Please make sure it is defined in `$breakpoints` map.";
+  }
+}
+
+@function spacing($spacing) {
+  @return math.div($spacing, 4) * 1rem;
+}
+
+.venn {
+  position: relative;
+  display: flex;
+  justify-content: center;
+
+  .venn__gyana {
+    position: absolute;
+    right: 0; 
+    left: 0;
+    top: spacing(24); 
+    color: var(--c-blue); 
+    font-size: 1.5rem;
+    text-align: center; 
+    font-family: 'Caveat';
+    z-index: 3;
+    animation: fade-in 3s ease-in-out;
+
+    @include respond-to(sm) { 
+      top: spacing(28); 
+      font-size: 1.875rem;
+    }
+  }
+
+  .venn__circle {
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    width: spacing(56); 
+    height: spacing(56); 
+    border-radius: 9999px; 
+    border-width: 1px; 
+    background-color: rgba(197, 230, 251, 0.25);
+
+    @include respond-to(sm) { 
+      width: spacing(64); 
+      height: spacing(64); 
+    }
+
+    &-left {
+      margin-right: spacing(-16);
+      animation: float-left 3s ease-in-out;
+    }
+
+    &-right {
+      margin-left: spacing(-16);
+      animation: float-right 3s ease-in-out;
+    }
+  }
+
+  .venn__value {
+    color: var(--c-gray-600); 
+    font-size: 0.875rem;
+    text-align: center; 
+    width: spacing(20);
+
+    @include respond-to(sm) { 
+      font-size: 1rem;
+    }
+
+    &-left {
+      margin-right: spacing(32);
+    }
+
+    &-right {
+      margin-left: spacing(32);
+    }
+  }
+
+  .venn__label {
+    margin-top: spacing(4); 
+    color: var(--c-gray-400); 
+    font-size: 0.75rem;
+    text-align: center; 
+
+    @include respond-to(sm) { 
+      font-size: 0.875rem;
+    }
+
+    &-left {
+      padding-left: spacing(12); 
+    }
+
+    &-right {
+      padding-right: spacing(12); 
+    }
+  }
+}
+
+@keyframes float-left {
+  0% {
+    transform: translatex(-20%);
+  }
+  100% {
+    transform: translatex(0);
+  }
+}
+
+@keyframes float-right {
+  0% {
+    transform: translatex(10%);
+  }
+  100% {
+    transform: translatex(0);
+  }
+}
+
+@keyframes fade-in {
+  0%, 50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
