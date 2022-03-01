@@ -1,16 +1,10 @@
 /**
- * Prettier config file.
+ * Prettier config file, only non-default options are listed.
  *
  * @see https://prettier.io/docs/en/configuration.html
  */
 module.exports = {
-  arrowParens: 'always',
-  bracketSpacing: true,
   jsxSingleQuote: true,
-  printWidth: 80,
   semi: false,
   singleQuote: true,
-  tabs: false,
-  tabWidth: 2,
-  trailingComma: 'es5',
 }
