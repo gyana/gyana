@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
+from simple_history.models import HistoricalRecords
 
 from apps.base.clients import SLUG
 from apps.base.core.aggregations import AggregationFunctions
@@ -105,6 +106,7 @@ class Widget(WidgetStyle, BaseModel):
         MEAN = "mean", "Average"
 
     _clone_excluded_m2o_or_o2m_fields = ["table"]
+    history = HistoricalRecords()
 
     page = models.ForeignKey(Page, on_delete=models.CASCADE, related_name="widgets")
 
@@ -240,7 +242,7 @@ WIDGET_KIND_TO_WEB = {
     Widget.Kind.TEXT.value: ("fa-text", Widget.Category.CONTENT, "Text"),
     Widget.Kind.IMAGE.value: ("fa-image", Widget.Category.CONTENT, "Image"),
     Widget.Kind.IFRAME.value: (
-        f"fa-browser",
+        "fa-browser",
         Widget.Category.CONTENT,
         "URL Embed",
     ),

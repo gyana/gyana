@@ -810,6 +810,14 @@ reference = "21a4058c2a758fac687f837cb523175c64c567c3"
 resolved_reference = "21a4058c2a758fac687f837cb523175c64c567c3"
 
 [[package]]
+name = "django-simple-history"
+version = "3.0.0"
+description = "Store model history and view/revert changes from admin site."
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[[package]]
 name = "django-storages"
 version = "1.12.3"
 description = "Support for many storage backends in Django"
@@ -2693,7 +2701,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "3.9.*"
-content-hash = "d5a668452b32f5f24776b798eaa5b539c641749acd2d731585b3e44322f9141b"
+content-hash = "ada237299b59d14768c178da0cd829fa9df470da3403f9f820d289c691f0c436"
 
 [metadata.files]
 amqp = [
@@ -3069,6 +3077,10 @@ django-safedelete = [
     {file = "django_safedelete-1.1.2-py3-none-any.whl", hash = "sha256:36581eb9d18e1cf9c3f25cd63c2d5833096a627234850e4c1dccfd3bece71d29"},
 ]
 django-silk = []
+django-simple-history = [
+    {file = "django-simple-history-3.0.0.tar.gz", hash = "sha256:66fe76c560054be393c52b1799661e104fbe372918d37d151e5d41c676158118"},
+    {file = "django_simple_history-3.0.0-py2.py3-none-any.whl", hash = "sha256:a312adfe8fbec4c450b08e641b11249a8a589a7e7d1ba2404764b8b5bed53552"},
+]
 django-storages = [
     {file = "django-storages-1.12.3.tar.gz", hash = "sha256:a475edb2f0f04c4f7e548919a751ecd50117270833956ed5bd585c0575d2a5e7"},
     {file = "django_storages-1.12.3-py3-none-any.whl", hash = "sha256:204a99f218b747c46edbfeeb1310d357f83f90fa6a6024d8d0a3f422570cee84"},

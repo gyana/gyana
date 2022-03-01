@@ -94,6 +94,7 @@ wagtail = "^2.15.1"
 readtime = "^1.1.1"
 wagtailmenus = "^3.0.2"
 PyYAML = "^6.0"
+django-simple-history = "^3.0.0"
   
 [tool.poetry.dev-dependencies]
 isort = "^5.7.0"
