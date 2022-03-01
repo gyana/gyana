@@ -333,9 +333,13 @@ def test_duplicate_project_with_connector(
     assert not DeepDiff(project_dict, new_project_dict)
 
 
-def test_duplicate_project_with_connector(client, project, project_factory):
+def test_duplicate_project_disabled(client, project, project_factory):
     team = project.team
     project_factory.create_batch(2, team=team)
+
+    r = client.get(f"/projects/{project.id}/duplicate")
+    assertOK(r)
+    assertSelectorHasAttribute(r, "button", "disabled")
 
     r = client.post(f"/projects/{project.id}/duplicate")
     assert r.status_code == 404
