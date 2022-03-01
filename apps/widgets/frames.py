@@ -28,7 +28,7 @@ from .forms import FORMS, MetricStyleForm, WidgetStyleForm
 from .models import Widget
 
 
-def add_output_context(context, widget, request, control):
+def add_output_context(context, widget, request, control, url=None):
     if not widget.is_valid:
         return
     if widget.kind == Widget.Kind.TEXT:
@@ -40,7 +40,7 @@ def add_output_context(context, widget, request, control):
     elif widget.kind == Widget.Kind.TABLE:
         # avoid duplicating work for widget output
         if "table" not in context:
-            table = table_to_output(widget, control)
+            table = table_to_output(widget, control, url)
             context["table"] = RequestConfig(
                 request,
             ).configure(table)
@@ -109,7 +109,7 @@ class WidgetUpdate(DashboardMixin, TurboFrameUpdateView):
         return kwargs
 
     def get_success_url(self) -> str:
-        if self.request.POST.get("submit") == "Save & Preview":
+        if self.is_preview_request:
             return reverse(
                 "dashboard_widgets:update",
                 args=(
@@ -163,6 +163,16 @@ class WidgetUpdate(DashboardMixin, TurboFrameUpdateView):
                 self.object,
                 self.request,
                 self.page.control if self.page.has_control else None,
+                url=self.get_success_url()
+                if self.is_preview_request
+                else reverse(
+                    "dashboard_widgets:output",
+                    args=(
+                        self.project.id,
+                        self.dashboard.id,
+                        self.object.id,
+                    ),
+                ),
             )
             if self.object.error:
                 self.object.error = None
@@ -173,7 +183,7 @@ class WidgetUpdate(DashboardMixin, TurboFrameUpdateView):
                 logging.warning(e, exc_info=e)
                 honeybadger.notify(e)
 
-        if self.request.POST.get("submit") == "Save & Preview":
+        if self.is_preview_request:
             analytics.track(
                 self.request.user.id,
                 WIDGET_PREVIEWED_EVENT,
@@ -281,6 +291,16 @@ class WidgetStyle(DashboardMixin, TurboFrameUpdateView):
                 self.object,
                 self.request,
                 self.page.control if self.page.has_control else None,
+                url=self.get_success_url()
+                if self.is_preview_request
+                else reverse(
+                    "dashboard_widgets:output",
+                    args=(
+                        self.project.id,
+                        self.dashboard.id,
+                        self.object.id,
+                    ),
+                ),
             )
             if self.object.error:
                 self.object.error = None
@@ -291,7 +311,7 @@ class WidgetStyle(DashboardMixin, TurboFrameUpdateView):
                 logging.warning(e, exc_info=e)
                 honeybadger.notify(e)
 
-        if self.request.POST.get("submit") == "Save & Preview":
+        if self.is_preview_request:
             analytics.track(
                 self.request.user.id,
                 WIDGET_PREVIEWED_EVENT,
@@ -327,7 +347,7 @@ class WidgetStyle(DashboardMixin, TurboFrameUpdateView):
         )
 
     def get_success_url(self) -> str:
-        if self.request.POST.get("submit") == "Save & Preview":
+        if self.is_preview_request:
             return "{}?{}".format(
                 reverse(
                     "dashboard_widgets:update",
