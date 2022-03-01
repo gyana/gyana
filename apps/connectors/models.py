@@ -231,6 +231,17 @@ class Connector(DirtyFieldsMixin, BaseModel):
 
         return {self.schema}
 
+    @property
+    def bq_dataset_prefix(self):
+        # Webhooks and Report APIs append the table name to the fivetran schema
+        if self.conf.service_type in [
+            ServiceTypeEnum.WEBHOOKS,
+            ServiceTypeEnum.REPORTING_API,
+        ]:
+            return self.schema.split(".")[0]
+
+        return self.schema
+
     def update_kwargs_from_fivetran(self, data):
         status = data["status"]
 
