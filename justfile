@@ -72,6 +72,7 @@ format:
 
 alias bf := branchformat
 branchformat:
+    git diff --diff-filter=M --name-only main '***.scss' | xargs yarn prettier:write
     git diff --diff-filter=M --name-only main '***.py' | xargs black
     git diff --diff-filter=M --name-only main '***.py' | xargs isort
 
