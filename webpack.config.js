@@ -4,7 +4,7 @@ const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin')
 
 module.exports = {
   resolve: {
-    extensions: ['.ts', '.tsx', '.js', '.jsx'],
+    extensions: ['.ts', '.tsx', '.js'],
     plugins: [new TsconfigPathsPlugin()],
   },
   entry: {
@@ -13,8 +13,8 @@ module.exports = {
     fontawesome: './apps/base/styles/vendors/fontawesome.css',
     stimulus: './apps/base/javascript/stimulus.ts',
     style: './apps/base/styles/style.scss',
-    website: './apps/base/styles/style__website.scss',
-    'website-components': './apps/web/styles/style__website-components.scss',
+    website: './apps/base/styles/website.scss',
+    'website-components': './apps/web/styles/website-components.scss',
     university: './apps/learn/styles/style__university.scss',
     tailwind: './apps/base/styles/vendors/tailwind.pcss',
     turbo: './apps/base/javascript/turbo.ts',
@@ -39,11 +39,11 @@ module.exports = {
         // options: {}
       },
       {
-        test: /\.(s)?css$/i,
-        use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader', 'sass-loader'],
+        test: /\.scss$/i,
+        use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
       },
       {
-        test: /\.pcss$/i,
+        test: /\.(p)?css$/i,
         use: [MiniCssExtractPlugin.loader, 'css-loader', 'postcss-loader'],
       },
       {

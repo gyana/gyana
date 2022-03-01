@@ -6,13 +6,13 @@
 // <button data-action='click->collapsable#toggle'>
 //   Toggle Button
 // </button>
-// 
+//
 // <div class="collapsable" data-collapsable-target='body'>
 //   Collapsable content!
 // </div>
 // </div>
 // ```
-[data-controller="collapsable"] {
+[data-controller='collapsable'] {
   position: relative;
 
   [data-action] {
@@ -22,7 +22,7 @@
   [data-action]::after {
     content: '\f078';
     display: inline;
-    font-family: "Font Awesome 5 Pro";
+    font-family: 'Font Awesome 5 Pro';
     font-weight: 900;
     margin-left: 0.5em;
     position: absolute;

@@ -10,7 +10,9 @@
   // font-size our rem values will increase.
   font-size: 62.5%;
 
-  font-family: Roboto, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-family: Roboto, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, Arial,
+    'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+    'Noto Color Emoji';
   height: 100%;
 }
 
@@ -30,17 +32,21 @@ body {
 
 // Common HTML states
 
-.hidden, [hidden], [class*="--hidden"] {
+// TODO: figure out what to do about .hidden tailwind incompatibility
+[hidden],
+[class*='--hidden'] {
   // It's considered dangerous to use !important but this needs to override any
   // displays set on the element later in the flow.
   display: none !important;
 }
 
-.disabled, [disabled], :disabled {
+.disabled,
+[disabled],
+:disabled {
   cursor: not-allowed;
 }
 
-[data-action*="click"] {
+[data-action*='click'] {
   cursor: pointer;
 }
 

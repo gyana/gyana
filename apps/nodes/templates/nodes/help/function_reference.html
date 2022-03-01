@@ -1,8 +1,8 @@
 {% extends 'web/base.html' %}
 
 {% block sidebar %}{% endblock sidebar %}
-{% block body %}
 
+{% block body.content%}
   <div class="formula flex flex-col gap-5 p-10">
 
     {% for function in functions %}
@@ -20,9 +20,6 @@
 
       {% endfor %}
       </ul>
-
-        {% endfor %}
-
+    {% endfor %}
   </div>
-
-{% endblock body %}
+{% endblock body.content %}

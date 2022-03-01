@@ -16,7 +16,11 @@
 
 // Target all fontawesome icons
 @mixin fa-icon {
-  .fas, .far, .fal, .fad, .fab {
-    @content
+  .fas,
+  .far,
+  .fal,
+  .fad,
+  .fab {
+    @content;
   }
 }

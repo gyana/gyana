@@ -6,90 +6,98 @@
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="turbo-cache-control" content="no-cache" />
 
   {% block head %}
-  {% include "web/components/meta.html" %}
-  {% include "web/components/favicon.html" %}
+    <meta name="turbo-cache-control" content="no-cache" />
 
-  <link rel="preconnect" href="//fonts.gstatic.com" />
-  <link
-    href="//fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap"
-    rel="stylesheet"
-  />
-  <link
-    href="//fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap&text=Gyana"
-    rel="stylesheet"
-  />
+    {% include "web/components/meta.html" %}
+    {% include "web/components/favicon.html" %}
 
-  <link rel="stylesheet" href="{% static "css/fontawesome.css" %}" />
-  <link rel="stylesheet" href="{% static "css/tailwind.css" %}" />
-  <link rel="stylesheet" href="{% static "css/style.css" %}" />
+    <link rel="preconnect" href="//fonts.gstatic.com" />
+    <link
+      href="//fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="//fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap&text=Gyana"
+      rel="stylesheet"
+    />
 
-  {% comment %} Before all javascript is loaded {% endcomment %}
-  {% comment %} {% if HONEYBADGER_API_KEY %}
-  {% include "web/components/honeybadger.html" %}
-  {% endif %} {% endcomment %}
+    <link rel="stylesheet" href="{% static "css/fontawesome.css" %}" />
+    <link rel="stylesheet" href="{% static "css/tailwind.css" %}" />
+    <link rel="stylesheet" href="{% static "css/style.css" %}" />
 
-  {% comment %} Enables iframe embedding with top navigation {% endcomment %}
-  {% if request.GET.iframe %}
-    <base target="_parent">
-  {% else %}
-    <script src="{% static "js/turbo-bundle.js" %}"></script>
-  {% endif %}
-  <script src="{% static "js/stimulus-bundle.js" %}"></script>
-  <script src="{% static "rest_framework/js/coreapi-0.1.1.js" %}"></script>
-  <script src="{% url "api_schemajs" %}"></script>
-  
+    {% comment %} Before all javascript is loaded {% endcomment %}
+    {% comment %} {% if HONEYBADGER_API_KEY %}
+    {% include "web/components/honeybadger.html" %}
+    {% endif %} {% endcomment %}
 
-  {% if SEGMENT_ANALYTICS_JS_WRITE_KEY %}
-  {% include "web/components/analytics.html" %}
-  {% endif %}
+    {% comment %} Enables iframe embedding with top navigation {% endcomment %}
+    {% if request.GET.iframe %}
+      <base target="_parent">
+    {% else %}
+      <script src="{% static "js/turbo-bundle.js" %}"></script>
+    {% endif %}
 
-  {% if GOOGLE_ANALYTICS_ID %}
-  {% include "web/components/google_analytics.html" %}
-  {% endif %}
+    <script src="{% static "js/stimulus-bundle.js" %}"></script>
+    <script src="{% static "rest_framework/js/coreapi-0.1.1.js" %}"></script>
+    <script src="{% url "api_schemajs" %}"></script>
 
-  {% block head.extra %}{% endblock head.extra %}
+    {% if SEGMENT_ANALYTICS_JS_WRITE_KEY %}
+      {% include "web/components/analytics.html" %}
+    {% endif %}
+
+    {% if GOOGLE_ANALYTICS_ID %}
+      {% include "web/components/google_analytics.html" %}
+    {% endif %}
+
+    {% block head.extra %}{% endblock head.extra %}
   {% endblock head %}
 </head>
 
-<body data-controller="tf-modal on-submit-loading turbo-loading">
-  {% block banner %}{% endblock %}
+<body
+  {% block body.attrs %}
+    data-controller="tf-modal on-submit-loading turbo-loading"
+  {% endblock body.attrs %}
+>
+  {% block body %}
+    {% block body.banner %}{% endblock %}
 
-  {% block messages %}
-  {% include "web/components/messages.html" %}
-  {% endblock %}
+    {% block body.messages %}
+      {% include "web/components/messages.html" %}
+    {% endblock body.messages %}
+  
+    <main>
+      {% block body.content %}{% endblock body.content %}
+    </main>
 
-  <main>
-    {% block body %}{% endblock %}
-  </main>
-
-  {% comment %}
-  For use with the `tf_modal_controller.js` controller.
-  {% endcomment %}
-  {% block modal %}
-  <div
-    data-tf-modal-target="modal"
-    class="tf-modal"
-    hidden
-  >
-    <div class="card card--none card--modal">
-      {% block modal.body %}
-      <turbo-frame
-        class="overflow-hidden flex-1"
-        data-tf-modal-target="turboFrame"
+    {% comment %}
+    For use with the `tf_modal_controller.js` controller.
+    {% endcomment %}
+    {% block body.modal %}
+      <div
+        data-tf-modal-target="modal"
+        class="tf-modal"
+        hidden
       >
-        <div class='placeholder-scr placeholder-scr--fillscreen'>
-          <i class='placeholder-scr__icon fad fa-spinner-third fa-spin fa-2x'></i>
+        <div class="card card--none card--modal">
+          {% block modal.body %}
+            <turbo-frame
+              class="overflow-hidden flex-1"
+              data-tf-modal-target="turboFrame"
+            >
+              <div class="placeholder-scr placeholder-scr--fillscreen">
+                <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-2x"></i>
+              </div>
+            </turbo-frame>
+          {% endblock modal.body %}
         </div>
-      </turbo-frame>
-      {% endblock modal.body %}
-    </div>
-  </div>
-  {% include "components/modal_closing_warning.html" %}
-  {% endblock modal %}
+      </div>
 
-  {% block page_js %}{% endblock %}
+      {% include "components/modal_closing_warning.html" %}
+    {% endblock body.modal %}
+
+    {% block body.javascript %}{% endblock body.javascript %}
+  {% endblock body %}
 </body>
 </html>

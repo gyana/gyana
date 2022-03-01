@@ -33,7 +33,7 @@
   {% endif %}
 {% endblock %}
 
-{% block body %}
+{% block body.content %}
 
   {% include "web/components/team_sidebar.html" %}
 
@@ -155,4 +155,4 @@
   <section class="flex flex-col flex-1 overflow-hidden {% block app-class %}{% endblock %}">
     {% block main %}{% endblock %}
   </section>
-{% endblock %}
+{% endblock body.content %}

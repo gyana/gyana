@@ -1,8 +1,8 @@
 $banner-colors: (
-  "primary": var(--c-blue),
-  "warning": var(--c-orange),
-  "danger": var(--c-red),
-  "success": var(--c-green),
+  'primary': var(--c-blue),
+  'warning': var(--c-orange),
+  'danger': var(--c-red),
+  'success': var(--c-green),
 ) !default;
 
 .banner {
@@ -18,7 +18,7 @@ $banner-colors: (
   justify-content: center;
   min-height: 3.6rem;
   text-align: center;
-  
+
   // color variant generation
   @each $color, $value in $banner-colors {
     &--#{$color} {

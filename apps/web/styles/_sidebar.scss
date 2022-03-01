@@ -1,8 +1,8 @@
-@use "utilities/mixins";
+@use 'utilities/mixins';
 
 // Navigational sidebar present throughout the site.
 //
-// Use is slightly complicated, see 
+// Use is slightly complicated, see
 // `web/templates/web/base.html` for detailed implementation.
 .sidebar {
   background-color: var(--c-white);
@@ -125,7 +125,7 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    
+
     i {
       color: var(--c-blue);
     }
@@ -157,7 +157,7 @@
         div:first-letter {
           font-size: 1.8rem;
         }
-      
+
         div::after {
           content: '.';
           font-size: 1.8rem;
