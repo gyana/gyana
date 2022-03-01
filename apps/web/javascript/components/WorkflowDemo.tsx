@@ -107,15 +107,14 @@ const WorkflowDemo = () => {
         />
       </div>
       <div className='mt-4 card card--none'>
-        <div className='pad w-full grid grid-cols-10 divide-x divide-y'>
+        <div className='w-full grid grid-cols-10 divide-x divide-y'>
           {Object.values(NODES).map((item) => (
             <button
               key={item.icon}
-              className={`p-2 focus:outline-none ${
-                node?.icon === item.icon
+              className={`p-2 focus:outline-none ${node?.icon === item.icon
                   ? 'text-white bg-indigo-600 hover:bg-indigo-700'
                   : 'text-gray-600 hover:text-gray-900'
-              }`}
+                }`}
               onClick={() => {
                 setDemoStore({ integrations, node: item })
                 selectNode(item)

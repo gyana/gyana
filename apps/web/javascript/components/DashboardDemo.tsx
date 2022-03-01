@@ -76,15 +76,14 @@ const AGENCY_CONFIG = [
 
 const TypeButtonGroup = ({ type, setType }) => {
   return (
-    <div className='pad flex divide-x card card--none'>
+    <div className='flex divide-x card card--none'>
       {TYPE_CONFIG.map((option) => (
         <button
           key={option.id}
-          className={`p-2 text-lg lg:text-xl focus:outline-none h-full ${
-            type === option.id
-              ? 'text-white bg-indigo-600 hover:bg-indigo-700'
-              : 'text-gray-600 hover:text-gray-900'
-          }`}
+          className={`p-2 text-lg lg:text-xl focus:outline-none h-full ${type === option.id
+            ? 'text-white bg-indigo-600 hover:bg-indigo-700'
+            : 'text-gray-600 hover:text-gray-900'
+            }`}
           onClick={() => setType(option.id)}
         >
           <i className={`fa ${option.icon}`}></i>
@@ -96,13 +95,12 @@ const TypeButtonGroup = ({ type, setType }) => {
 
 const ThemeButtonGroup = ({ theme, setTheme }) => {
   return (
-    <div className='pad flex divide-x card card--none'>
+    <div className='flex divide-x card card--none'>
       {THEME_CONFIG.map(({ id }) => (
         <button
           key={id}
-          className={`p-2 focus:outline-none w-10 h-full ${
-            theme === id ? `bg-${id}-600 hover:bg-${id}-700` : `bg-${id}-100 hover:bg-${id}-200`
-          }`}
+          className={`p-2 focus:outline-none w-10 h-full ${theme === id ? `bg-${id}-600 hover:bg-${id}-700` : `bg-${id}-100 hover:bg-${id}-200`
+            }`}
           onClick={() => setTheme(id)}
         ></button>
       ))}
@@ -112,16 +110,15 @@ const ThemeButtonGroup = ({ theme, setTheme }) => {
 
 const FontButtonGroup = ({ font, setFont }) => {
   return (
-    <div className='pad flex divide-x card card--none'>
+    <div className='flex divide-x card card--none'>
       {FONT_CONFIG.map((id) => (
         <button
           key={id}
           style={{ fontFamily: id }}
-          className={`p-2 text-lg lg:text-xl focus:outline-none w-10 h-full ${
-            font === id
-              ? 'text-white bg-indigo-600 hover:bg-indigo-700'
-              : 'text-gray-600 hover:text-gray-900'
-          }`}
+          className={`p-2 text-lg lg:text-xl focus:outline-none w-10 h-full ${font === id
+            ? 'text-white bg-indigo-600 hover:bg-indigo-700'
+            : 'text-gray-600 hover:text-gray-900'
+            }`}
           onClick={() => setFont(id)}
         >
           T
@@ -133,15 +130,14 @@ const FontButtonGroup = ({ font, setFont }) => {
 
 const AgencyButtonGroup = ({ agency, setAgency }) => {
   return (
-    <div className='pad flex divide-x card card--none'>
+    <div className='flex divide-x card card--none'>
       {AGENCY_CONFIG.map(({ id }) => (
         <button
           key={id}
-          className={`p-2 text-lg lg:text-xl focus:outline-none w-10 h-full ${
-            agency === id
-              ? 'text-white bg-indigo-600 hover:bg-indigo-700'
-              : 'text-gray-600 hover:text-gray-900'
-          }`}
+          className={`p-2 text-lg lg:text-xl focus:outline-none w-10 h-full ${agency === id
+            ? 'text-white bg-indigo-600 hover:bg-indigo-700'
+            : 'text-gray-600 hover:text-gray-900'
+            }`}
           onClick={() => setAgency(id)}
         >
           <i className={`fa fa-${id}`}></i>
