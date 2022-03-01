@@ -30,7 +30,8 @@ $button-colors: ('primary', 'secondary', 'transparent') !default;
   background: var(--button-background);
   border: 1px solid var(--c-transparent);
   border-radius: 5px;
-  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
+    var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
   color: var(--button-color);
   display: inline-flex;
   font-size: inherit;
