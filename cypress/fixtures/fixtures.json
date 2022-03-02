@@ -190,8 +190,10 @@
       "updated": "2021-12-16T01:46:48.925Z",
       "deleted": null,
       "icon": "",
+      "color": "#d1fae5",
       "name": "Vayu",
       "override_row_limit": null,
+      "override_credit_limit": null,
       "row_count": 257,
       "row_count_calculated": "2021-12-16T01:46:48.925Z",
       "last_checkout": null,
@@ -206,8 +208,10 @@
       "updated": "2021-07-26T14:53:37.587Z",
       "deleted": null,
       "icon": "",
+      "color": "#ccfbf1",
       "name": "Alone",
       "override_row_limit": null,
+      "override_credit_limit": null,
       "row_count": 15,
       "row_count_calculated": null,
       "last_checkout": null,
@@ -222,8 +226,10 @@
       "updated": "2022-01-06T20:55:49.701Z",
       "deleted": null,
       "icon": "",
+      "color": "#f3e8ff",
       "name": "Admin Templates",
       "override_row_limit": null,
+      "override_credit_limit": null,
       "row_count": 12943,
       "row_count_calculated": "2021-08-31T00:58:25.986Z",
       "last_checkout": null,
@@ -238,8 +244,10 @@
       "updated": "2021-11-08T23:50:26.037Z",
       "deleted": null,
       "icon": "",
+      "color": "#ede9fe",
       "name": "Billing",
       "override_row_limit": null,
+      "override_credit_limit": null,
       "row_count": 0,
       "row_count_calculated": null,
       "last_checkout": null,
@@ -663,6 +671,13 @@
       "show_tooltips": null,
       "font_size": null,
       "font_color": null,
+      "currency": null,
+      "metric_font_size": null,
+      "metric_font_color": null,
+      "metric_header_font_size": null,
+      "metric_header_font_color": null,
+      "metric_comparison_font_size": null,
+      "metric_comparison_font_color": null,
       "page": 1,
       "table": 12,
       "text_content": null,
@@ -700,6 +715,13 @@
       "show_tooltips": null,
       "font_size": null,
       "font_color": null,
+      "currency": null,
+      "metric_font_size": null,
+      "metric_font_color": null,
+      "metric_header_font_size": null,
+      "metric_header_font_color": null,
+      "metric_comparison_font_size": null,
+      "metric_comparison_font_color": null,
       "page": 1,
       "table": 19,
       "text_content": null,
@@ -737,6 +759,13 @@
       "show_tooltips": null,
       "font_size": null,
       "font_color": null,
+      "currency": null,
+      "metric_font_size": null,
+      "metric_font_color": null,
+      "metric_header_font_size": null,
+      "metric_header_font_color": null,
+      "metric_comparison_font_size": null,
+      "metric_comparison_font_color": null,
       "page": 2,
       "table": 22,
       "text_content": null,
@@ -830,7 +859,8 @@
       "intermediate_node": null,
       "cache_node": null,
       "num_rows": 15,
-      "data_updated": "2021-07-27T13:17:27.679Z"
+      "data_updated": "2021-07-27T13:17:27.679Z",
+      "copied_from": null
     }
   },
   {
@@ -848,7 +878,8 @@
       "intermediate_node": null,
       "cache_node": null,
       "num_rows": 10,
-      "data_updated": "2021-08-08T20:28:27.912Z"
+      "data_updated": "2021-08-08T20:28:27.912Z",
+      "copied_from": null
     }
   },
   {
@@ -866,7 +897,8 @@
       "intermediate_node": null,
       "cache_node": null,
       "num_rows": 15,
-      "data_updated": "2021-08-10T07:30:05.119Z"
+      "data_updated": "2021-08-10T07:30:05.119Z",
+      "copied_from": null
     }
   },
   {
@@ -884,7 +916,8 @@
       "intermediate_node": null,
       "cache_node": null,
       "num_rows": 15,
-      "data_updated": "2021-08-10T07:32:08.896Z"
+      "data_updated": "2021-08-10T07:32:08.896Z",
+      "copied_from": null
     }
   },
   {
@@ -902,7 +935,8 @@
       "intermediate_node": null,
       "cache_node": null,
       "num_rows": 2,
-      "data_updated": "2021-08-11T14:07:44.801Z"
+      "data_updated": "2021-08-11T14:07:44.801Z",
+      "copied_from": null
     }
   },
   {
@@ -920,7 +954,8 @@
       "intermediate_node": null,
       "cache_node": null,
       "num_rows": 204,
-      "data_updated": "2021-08-30T19:29:18.765Z"
+      "data_updated": "2021-08-30T19:29:18.765Z",
+      "copied_from": null
     }
   },
   {
@@ -938,7 +973,8 @@
       "intermediate_node": null,
       "cache_node": null,
       "num_rows": 4333,
-      "data_updated": "2021-08-30T19:29:18.883Z"
+      "data_updated": "2021-08-30T19:29:18.883Z",
+      "copied_from": null
     }
   },
   {
@@ -956,7 +992,8 @@
       "intermediate_node": null,
       "cache_node": null,
       "num_rows": 423,
-      "data_updated": "2021-08-30T19:29:18.996Z"
+      "data_updated": "2021-08-30T19:29:18.996Z",
+      "copied_from": null
     }
   },
   {
@@ -974,7 +1011,8 @@
       "intermediate_node": null,
       "cache_node": null,
       "num_rows": 204,
-      "data_updated": "2021-08-30T19:29:19.102Z"
+      "data_updated": "2021-08-30T19:29:19.102Z",
+      "copied_from": null
     }
   },
   {
@@ -992,7 +1030,8 @@
       "intermediate_node": null,
       "cache_node": null,
       "num_rows": 2415,
-      "data_updated": "2021-08-30T19:29:19.199Z"
+      "data_updated": "2021-08-30T19:29:19.199Z",
+      "copied_from": null
     }
   },
   {
@@ -1010,7 +1049,8 @@
       "intermediate_node": null,
       "cache_node": null,
       "num_rows": 351,
-      "data_updated": "2021-08-30T19:29:19.317Z"
+      "data_updated": "2021-08-30T19:29:19.317Z",
+      "copied_from": null
     }
   },
   {
@@ -1028,7 +1068,8 @@
       "intermediate_node": null,
       "cache_node": null,
       "num_rows": 907,
-      "data_updated": "2021-08-30T19:29:19.414Z"
+      "data_updated": "2021-08-30T19:29:19.414Z",
+      "copied_from": null
     }
   },
   {
@@ -1046,7 +1087,8 @@
       "intermediate_node": null,
       "cache_node": null,
       "num_rows": 257,
-      "data_updated": "2021-08-30T19:29:19.513Z"
+      "data_updated": "2021-08-30T19:29:19.513Z",
+      "copied_from": null
     }
   },
   {
@@ -1064,7 +1106,8 @@
       "intermediate_node": null,
       "cache_node": null,
       "num_rows": 589,
-      "data_updated": "2021-08-30T19:29:19.579Z"
+      "data_updated": "2021-08-30T19:29:19.579Z",
+      "copied_from": null
     }
   },
   {
@@ -1082,7 +1125,8 @@
       "intermediate_node": null,
       "cache_node": null,
       "num_rows": 3245,
-      "data_updated": "2021-08-30T19:29:19.676Z"
+      "data_updated": "2021-08-30T19:29:19.676Z",
+      "copied_from": null
     }
   },
   {
@@ -1100,7 +1144,8 @@
       "intermediate_node": null,
       "cache_node": null,
       "num_rows": 15,
-      "data_updated": "2021-08-31T00:58:23.746Z"
+      "data_updated": "2021-08-31T00:58:23.746Z",
+      "copied_from": null
     }
   },
   {
@@ -1118,7 +1163,8 @@
       "intermediate_node": 31,
       "cache_node": null,
       "num_rows": 0,
-      "data_updated": "2021-12-03T23:51:58.995Z"
+      "data_updated": "2021-12-03T23:51:58.995Z",
+      "copied_from": null
     }
   },
   {
@@ -1136,7 +1182,8 @@
       "intermediate_node": null,
       "cache_node": null,
       "num_rows": 0,
-      "data_updated": "2021-12-03T23:52:58.711Z"
+      "data_updated": "2021-12-03T23:52:58.711Z",
+      "copied_from": null
     }
   },
   {
@@ -1154,7 +1201,8 @@
       "intermediate_node": null,
       "cache_node": null,
       "num_rows": 0,
-      "data_updated": "2021-12-03T23:55:11.723Z"
+      "data_updated": "2021-12-03T23:55:11.723Z",
+      "copied_from": null
     }
   },
   {
@@ -1172,7 +1220,8 @@
       "intermediate_node": null,
       "cache_node": null,
       "num_rows": 200,
-      "data_updated": "2021-12-16T01:46:44.986Z"
+      "data_updated": "2021-12-16T01:46:44.986Z",
+      "copied_from": null
     }
   },
   {
@@ -2560,6 +2609,10 @@
     "fields": {
       "created": "2021-08-30T19:30:10.265Z",
       "updated": "2021-08-30T19:30:10.265Z",
+      "name": null,
+      "rounding": 2,
+      "currency": null,
+      "is_percentage": false,
       "column": "bounce_rate",
       "function": "mean",
       "node": null,
@@ -2572,6 +2625,10 @@
     "fields": {
       "created": "2021-08-30T19:30:48.636Z",
       "updated": "2021-08-30T19:30:48.636Z",
+      "name": null,
+      "rounding": 2,
+      "currency": null,
+      "is_percentage": false,
       "column": "avg_session_duration",
       "function": "mean",
       "node": null,
@@ -2584,6 +2641,10 @@
     "fields": {
       "created": "2021-08-31T00:59:45.612Z",
       "updated": "2021-08-31T01:00:23.789Z",
+      "name": null,
+      "rounding": 2,
+      "currency": null,
+      "is_percentage": false,
       "column": "Employees",
       "function": "sum",
       "node": null,
@@ -2747,7 +2808,9 @@
       "source_sync_details": null,
       "schema_config": null,
       "sync_task_id": null,
-      "sync_started": null
+      "sync_started": null,
+      "setup_mode": "advanced",
+      "basic_reports": "[]"
     }
   },
   {
@@ -2784,7 +2847,9 @@
       "source_sync_details": { "account_ids": ["act_78363492"] },
       "schema_config": null,
       "sync_task_id": null,
-      "sync_started": null
+      "sync_started": null,
+      "setup_mode": "advanced",
+      "basic_reports": "[]"
     }
   },
   {
@@ -2996,7 +3061,9 @@
       "source_sync_details": { "profile_ids": ["237044023"] },
       "schema_config": null,
       "sync_task_id": null,
-      "sync_started": null
+      "sync_started": null,
+      "setup_mode": "advanced",
+      "basic_reports": "[]"
     }
   },
   {
@@ -3035,7 +3102,9 @@
       "source_sync_details": null,
       "schema_config": null,
       "sync_task_id": null,
-      "sync_started": null
+      "sync_started": null,
+      "setup_mode": "advanced",
+      "basic_reports": "[]"
     }
   },
   {
@@ -3123,7 +3192,9 @@
       "source_sync_details": null,
       "schema_config": null,
       "sync_task_id": null,
-      "sync_started": null
+      "sync_started": null,
+      "setup_mode": "advanced",
+      "basic_reports": "[]"
     }
   },
   {
@@ -3344,7 +3415,7 @@
     "pk": 10,
     "fields": {
       "created": "2021-12-16T01:46:42.564Z",
-      "updated": "2022-02-01T15:38:13.947Z",
+      "updated": "2022-03-02T11:01:05.930Z",
       "state": "success",
       "started_at": "2021-12-16T01:46:42.563Z",
       "completed_at": "2021-12-16T01:46:46.036Z",
@@ -3518,7 +3589,7 @@
   {
     "model": "django_celery_beat.periodictasks",
     "pk": 1,
-    "fields": { "last_update": "2022-02-01T15:38:13.937Z" }
+    "fields": { "last_update": "2022-03-02T11:01:05.922Z" }
   },
   {
     "model": "django_celery_beat.periodictask",
@@ -3611,7 +3682,7 @@
     "fields": {
       "content_type": ["wagtailcore", "page"],
       "object_id": "1",
-      "title_norm": 2.5,
+      "title_norm": 1.9,
       "autocomplete": "'root':1",
       "title": "'root':1B",
       "body": ""
@@ -3623,7 +3694,7 @@
     "fields": {
       "content_type": ["wagtailcore", "page"],
       "object_id": "2",
-      "title_norm": 0.625,
+      "title_norm": 0.475,
       "autocomplete": "'new':4 'site':6 'to':2 'wagtail':5 'welcome':1 'your':3",
       "title": "'new':4B 'site':6B 'wagtail':5B 'welcom':1B",
       "body": ""
@@ -3683,10 +3754,10 @@
     "fields": {
       "content_type": ["learn", "learnpage"],
       "object_id": "5",
-      "title_norm": 0.8666666666666667,
-      "autocomplete": "'gyana':3 'to':2 'university':4 'welcome':1",
-      "title": "'gyana':3B 'univers':4B 'welcom':1B",
-      "body": "'cours':5 'deep':8 'dive':9 'gyana':14 'put':3 'teach':11 'togeth':4 've':2 'video':6 'work':15"
+      "title_norm": 1.0,
+      "autocomplete": "",
+      "title": "",
+      "body": ""
     }
   },
   {
@@ -3695,9 +3766,9 @@
     "fields": {
       "content_type": ["learn", "learnpage"],
       "object_id": "6",
-      "title_norm": 0.95,
-      "autocomplete": "'getting':1 'started':2",
-      "title": "'get':1B 'start':2B",
+      "title_norm": 1.0,
+      "autocomplete": "",
+      "title": "",
       "body": "'case':7 'complet':2 'end':3,5 'gyana':9 'use':6"
     }
   },
@@ -3707,9 +3778,9 @@
     "fields": {
       "content_type": ["learn", "learnpage"],
       "object_id": "7",
-      "title_norm": 1.9,
-      "autocomplete": "'guides':1",
-      "title": "'guid':1B",
+      "title_norm": 1.0,
+      "autocomplete": "",
+      "title": "",
       "body": "'guid':4 'gyana':7 'step':1,3 'use':6"
     }
   },
@@ -3719,9 +3790,9 @@
     "fields": {
       "content_type": ["learn", "learnpage"],
       "object_id": "8",
-      "title_norm": 1.9,
-      "autocomplete": "'integrations':1",
-      "title": "'integr':1B",
+      "title_norm": 1.0,
+      "autocomplete": "",
+      "title": "",
       "body": "'150':122 '2000':202 '2021':128 '24':167 '413d09614b2b41d3bd5a7b4514176be7':1 '80':115 'account':21,360 'ad':20,112,359 'add':457 'also':478 'altern':228,339 'alway':402,420 'analyt':32,109 'anywher':53 'api':469 'app':25,358 'armi':344 'around':452 'author':141,213 'autodetect':391,421 'autom':247 'automat':313 'avail':135 'bar':262 'basi':150 'best':132 'box':120 'browser':261 'built':191 'chang':321 'choic':133 'choos':68,160 'connect':251,414 'connector':85,97,98,116,129,180,212,222,283 'copi':274,298 'csv':16,336,349,364,376,383,395,427 'custom':204 'd':500 'daili':173 'data':13,31,34,51,60,82,105,144,158,163,195,232,276,310,347,451,463 'databas':22,356 'dataset':482,491 'dedic':221 'default':308 'demand':203 'demograph':484 'design':379 'difficulti':58 'done':306 'download':369 'drive':407 'duct':444 'e.g':483 'effortless':44 'end':126 'enterpris':193 'even':489 'excel':355 'explor':479 'export':242,362 'facebook':111 'fail':397 'file':17,350,365,396 'final':338 'first':423,439 'fivetran':188 'focus':454 'frequenc':165 'futur':435 'get':81,230,507 'go':91 'googl':18,108,215,223,244,255,281,406,411,486 'grade':194 'great':227 'guid':67 'gyana':84,277,373 'hand':440 'handl':381 'header':392,430 'high':74 'hold':436 'host':480 'hour':168 'import':59,70,291,377,399 'improv':331 'includ':354,385,467 'instead':417 'integr':6,8,50,102,196,459 'interact':207 'interest':502 'jag':388 'jot':271 'knife':345 'know':268,438 'level':75 'like':14,107 'line':424,475 'll':90,153,206 'look':63 'made':101 'make':41,320 'mani':155,234,246,462 'manual':325 'method':71 'move':449 'n8n':252 'nativ':280,375 'need':323 'new':143,309 'newlin':387 'nonsens':384 'nowaday':351 'offer':225,236 'one':94,96,139,238 'one-off':237 'one-tim':138 'open':408 'overview':3 'pabbl':250 'page':214 'paid':490 'pain':442 'partner':493 'partnership':186 'past':275,300 'plan':123,334 'platform':197 'pleas':506 'possibl':46,466 'power':182 'prioriti':39 'process':142 'project':178 'provid':494 'public':481 'quick':270 'quickest':265 'quot':386 're':56,305,327,477 're-sync':326 'readi':233 'regular':149 'row':389,431 'schedul':241 'scraper':472 'seamless':458 'second':289 'segment':485 'set':171,179 'share':293 'sheet':19,86,216,224,245,256,282,295,317,412 'sheet.new':258 'sinc':26 'someth':498 'sourc':11,106,464 'special':100 'specif':104 'support':114 'swiss':343 'swiss-armi':342 'sync':146,164,174,314,328 'tabl':156 'take':61,286 'tape':445 'three':78 'time':140,175 'togeth':447 'tool':235,248,353,446 'top':38 'touch':509 'trend':487 'tri':403,504 'troubleshoot':66 'trust':200 'type':257 'uniqu':185 'upload':88,335,371,404 'url':302 'us':297 've':190 'video':2 'way':79,266 'web':24,357,471 'webhook':468 'without':33 'write':253 'zapier':249"
     }
   },
@@ -3731,9 +3802,9 @@
     "fields": {
       "content_type": ["learn", "learnpage"],
       "object_id": "9",
-      "title_norm": 1.9,
-      "autocomplete": "'workflows':1",
-      "title": "'workflow':1B",
+      "title_norm": 1.0,
+      "autocomplete": "",
+      "title": "",
       "body": "'introduct':1 'workflow':3"
     }
   },
@@ -3743,9 +3814,9 @@
     "fields": {
       "content_type": ["learn", "learnpage"],
       "object_id": "10",
-      "title_norm": 1.9,
-      "autocomplete": "'dashboards':1",
-      "title": "'dashboard':1B",
+      "title_norm": 1.0,
+      "autocomplete": "",
+      "title": "",
       "body": "'dashboard':3 'introduct':1"
     }
   },
