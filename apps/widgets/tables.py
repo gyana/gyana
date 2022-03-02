@@ -1,4 +1,5 @@
 import django_tables2 as tables
+from django.utils.html import format_html
 from django_tables2.utils import A
 
 from apps.base.tables import NaturalDatetimeColumn
@@ -19,9 +20,7 @@ class WidgetHistory(tables.Table):
         order_by = ("-history_date",)
 
     history_date = NaturalDatetimeColumn(verbose_name="Changed")
-    name = tables.Column(
-        linkify=True,
-    )
+    name = tables.Column(empty_values=())
     page__position = tables.Column(
         verbose_name="Page", linkify=lambda record: record.page.get_absolute_url()
     )
@@ -31,3 +30,9 @@ class WidgetHistory(tables.Table):
         args=(A("page__dashboard__project__team__id"), A("history_user_id")),
     )
     history_type = tables.Column(verbose_name="Change")
+
+    def render_name(self, record):
+        name = record.name or f"Untitled {record.get_kind_display()}"
+        return format_html(
+            f"<a target='_top' href='{record.instance.get_absolute_url()}'>{name}</a>"
+        )

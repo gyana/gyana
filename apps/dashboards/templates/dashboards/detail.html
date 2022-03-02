@@ -1,5 +1,7 @@
 {% extends "projects/base.html" %}
 
+{% load waffle_tags %}
+
 {% block app-class %}
     overflow-hidden
 {% endblock app-class %}
@@ -94,17 +96,19 @@
                     </a>
                 </template>
             </div>
-            <div data-controller="tooltip">
-                <button data-action="click->tf-modal#open"
-                        data-modal-id="dashboard:history"
-                        data-modal-classes="tf-modal--auto tf-modal--wide tf-modal--tall"
-                        data-modal-src="{% url "project_dashboards:history" project.id object.id %}?category=general"
-                        data-modal-target="_top"
-                        class="button button--sm button--tertiary">
-                    <i class="fas fa-fw fa-history"></i> History
-                </button>
-                <span data-tooltip-target="body">Show dashboard history</span>
-            </div>
+            {% flag 'beta' %}
+                <div data-controller="tooltip">
+                    <button data-action="click->tf-modal#open"
+                            data-modal-id="dashboard:history"
+                            data-modal-classes="tf-modal--auto tf-modal--wide tf-modal--tall"
+                            data-modal-src="{% url "project_dashboards:history" project.id object.id %}?category=general"
+                            data-modal-target="_top"
+                            class="button button--sm button--tertiary">
+                        <i class="fas fa-fw fa-history"></i><span class='beta mr-4'>History</span>
+                    </button>
+                    <span data-tooltip-target="body">Show dashboard history</span>
+                </div>
+            {% endflag %}
             <div data-controller="tooltip">
                 <button data-action="click->tf-modal#open"
                         data-modal-id="dashboard:settings"

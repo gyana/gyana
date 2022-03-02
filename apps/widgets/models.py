@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
+from django.urls import reverse
 from simple_history.models import HistoricalRecords
 
 from apps.base.clients import SLUG
@@ -228,6 +229,13 @@ class Widget(WidgetStyle, BaseModel):
     @property
     def icon(self):
         return WIDGET_KIND_TO_WEB[self.kind][0]
+
+    def get_absolute_url(self):
+        dashboard = self.page.dashboard
+        url = reverse(
+            "project_dashboards:detail", args=(dashboard.project.id, dashboard.id)
+        )
+        return f"{url}?dashboardPage={self.page.position}&modal_item={self.id}"
 
 
 NO_DIMENSION_WIDGETS = [
