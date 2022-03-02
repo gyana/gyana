@@ -237,6 +237,14 @@ class Widget(WidgetStyle, BaseModel):
         )
         return f"{url}?dashboardPage={self.page.position}&modal_item={self.id}"
 
+    @property
+    def controlled_by(self):
+        if self.date_column:
+            if self.has_control:
+                return "self_controlled"
+            if self.page.has_control:
+                return "page_controlled"
+
 
 NO_DIMENSION_WIDGETS = [
     Widget.Kind.RADAR,

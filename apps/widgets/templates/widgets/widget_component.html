@@ -2,6 +2,8 @@
 
 {% block widget %}
 
+{% include 'widgets/_date_range_indicator.html' %}
+
 {% if object.page.dashboard.show_widget_headers %}
   {% include 'widgets/_widget_title.html' %}
 {% endif %}
