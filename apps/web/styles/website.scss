@@ -1,3 +1,5 @@
+@use 'components';
+
 // Overriding the default sizing scale of the rest of the app to ensure tailwind
 // works properly.
 :root {
