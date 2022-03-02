@@ -98,6 +98,11 @@ project_urlpatterns = (
             login_and_project_required(frames.DashboardSettings.as_view()),
             name="settings",
         ),
+        path(
+            "<hashid:pk>/history",
+            login_and_project_required(frames.DashboardHistory.as_view()),
+            name="history",
+        ),
     ],
     "project_dashboards",
 )
