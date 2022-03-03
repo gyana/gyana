@@ -1,0 +1,40 @@
+{% load heroicons site_tags %}
+
+<div class="bg-white">
+  <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8">
+    <div class="space-y-4 lg:space-y-0 lg:grid lg:grid-cols-3 lg:gap-6 lg:max-w-4xl lg:mx-auto xl:max-w-none xl:mx-0">
+      {% for tier in content.tiers %}
+        <div class="card card--none">
+          <div class="p-6 border-b border-gray-200">
+            <h2 class="text-3xl font-extrabold text-indigo-900">
+              {{ tier.name }}
+            </h2>
+            <p class="mt-4 text-base text-gray-600">{{ tier.description }}</p>
+            <a
+              href="{% external_url 'request_demo' %}"
+              class="mt-8 button {{ tier.button }}"
+            >
+              Request Demo
+            </a>
+          </div>
+          <div class="pt-6 pb-8 px-6">
+            <h3 class="text-xs font-normal text-gray-900 tracking-wide uppercase">
+              {{ tier.includedHeader }}
+            </h3>
+            <ul class="mt-6 space-y-4">
+              {% for feature in tier.includedFeatures %}
+                <li class="flex space-x-3 {{ tier.color }}">
+                  {% heroicon 'check-circle' class="flex-shrink-0 h-5 w-5" %}
+                  <span class="text-sm text-gray-600">{{ feature|safe }}</span>
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
+          {% if tier.mostPopular %}
+            <div class="absolute top-6 -right-12 transform rotate-45 bg-indigo-900 text-white text-2xl text-center p-2 w-48 text-caveat">Most popular</div>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
