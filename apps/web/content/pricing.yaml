@@ -19,7 +19,7 @@ tiers:
     includedHeader: Everything in elite, plus
     includedFeatures:
       - Client management
-      - Whitelabel
+      - White-label
       - Custom domains
 
 faqs:
