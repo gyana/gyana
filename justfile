@@ -33,7 +33,7 @@ fixtures:
     ./manage.py dumpdata --natural-foreign -e blog -e learn {{ excludes }} {{ wagtail_excludes }} > cypress/fixtures/fixtures.json
     # wagtail custom page fixtures need to run after wagtailcore_locale
     ./manage.py dumpdata blog learn > cypress/fixtures/fixtures-wagtail.json
-    yarn prettier-fixtures
+    yarn prettier:fixtures
 
 shell:
     ./manage.py shell -i ipython

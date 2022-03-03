@@ -10,10 +10,10 @@
     "prettier": "prettier --ignore-path .gitignore",
     "prettier:check": "prettier --ignore-path .gitignore --check",
     "prettier:write": "prettier --ignore-path .gitignore --write",
+    "prettier:fixtures": "prettier --write cypress/fixtures/fixtures.json cypress/fixtures/fixtures-wagtail.json",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
-    "cypress:failed": "ls cypress/screenshots/*/ | grep ' -- '",
-    "prettier-fixtures": "prettier --write cypress/fixtures/fixtures.json cypress/fixtures/fixtures-wagtail.json"
+    "cypress:failed": "ls cypress/screenshots/*/ | grep ' -- '"
   },
   "author": "Gyana",
   "homepage": "https://app.gyana.com/",
