@@ -1,6 +1,6 @@
 tiers:
   - name: Pro
-    description: For small teams and freelancers
+    description: Best-in-class, no-code custom report builder with 100+ integrations.
     includedHeader: What's included
     includedFeatures:
       - Pre-built integrations
@@ -9,8 +9,8 @@ tiers:
     color: text-gray-600
     button: button--tertiary
   - name: Elite
+    description: Build a custom report for any sources, supported by our team of experts.
     includedHeader: Everything in pro, plus
-    description: Scale to large organisations
     includedFeatures:
       - Custom integrations
       - Personalized setup
@@ -19,7 +19,7 @@ tiers:
     button: button--primary
     mostPopular: True
   - name: Agency
-    description: For growing teams and agencies
+    description: Manage custom reports for your clients, in your own branded portal.
     includedHeader: Everything in elite, plus
     includedFeatures:
       - Client management
