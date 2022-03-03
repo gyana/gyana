@@ -13,6 +13,7 @@ tiers:
       - Custom integrations
       - Personalized setup
       - Hands-on training
+    mostPopular: True
   - name: Agency
     description: For growing teams and agencies
     includedHeader: Everything in elite, plus
@@ -20,7 +21,6 @@ tiers:
       - Client management
       - Whitelabel
       - Custom domains
-    mostPopular: True
 
 faqs:
   - q: What is a row of data?

@@ -49,6 +49,9 @@
               {% endfor %}
             </ul>
           </div>
+          {% if tier.mostPopular %}
+            <div class="absolute top-6 -right-12 transform rotate-45 bg-indigo-100 text-indigo-900 text-2xl text-center p-2 w-48 text-caveat">Most popular</div>
+          {% endif %}
         </div>
       {% endfor %}
     </div>
