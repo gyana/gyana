@@ -43,7 +43,7 @@
             <ul class="mt-6 space-y-4">
               {% for feature in tier.includedFeatures %}
                 <li class="flex space-x-3 {{ tier.color }}">
-                  {% heroicon 'check' class="flex-shrink-0 h-5 w-5" style="solid" %}
+                  {% heroicon 'check-circle' class="flex-shrink-0 h-5 w-5" %}
                   <span class="text-sm text-gray-600">{{ feature|safe }}</span>
                 </li>
               {% endfor %}
