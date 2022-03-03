@@ -1,3 +1,4 @@
+@use '../../base/styles/utilities/mixins';
 @use 'components';
 
 // Overriding the default sizing scale of the rest of the app to ensure tailwind
@@ -57,7 +58,7 @@ body {
 .integration-demo {
   height: 18rem;
 
-  @screen lg {
+  @include mixins.respond-to(lg) {
     height: auto;
   }
 }
@@ -65,7 +66,7 @@ body {
 .workflow-demo {
   height: 28rem;
 
-  @screen lg {
+  @include mixins.respond-to(lg) {
     height: auto;
   }
 }
@@ -73,7 +74,7 @@ body {
 .dashboard-demo {
   height: 30rem;
 
-  @screen lg {
+  @include mixins.respond-to(lg) {
     height: auto;
   }
 }
