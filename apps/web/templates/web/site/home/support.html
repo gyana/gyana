@@ -67,12 +67,14 @@
                     {% elif step == 3 %}
                       {% comment %} Intercom widget {% endcomment %}
                       <iframe width="100%" height="100%" src="{% url 'web:intercom-demo' %}?demo=chat"></iframe>
-                    {% elif step == 4 %}
+                    {% comment %}
+                      {% elif step == 4 %}
                       <!-- Calendly inline widget begin -->
                       <div class="calendly-inline-widget" data-url="https://calendly.com/lorraine-chabeda/30min?hide_gdpr_banner=1" style="min-width:320px;height:100%;"></div>
                       <script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js" async></script>
                       <!-- Calendly inline widget end -->
-                    {% elif step == 5 %}
+                    {% endcomment %}
+                    {% elif step == 4 %}
                       {% comment %} HelloNext changelog {% endcomment %}
                       <iframe style='border:0px; height:100%; width:100%;' src='https://feedback.gyana.com/embed/c?no_header=true'></iframe>
                     {% endif %}
