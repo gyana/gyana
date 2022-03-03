@@ -3,21 +3,19 @@ tiers:
     description: For small teams and freelancers
     includedHeader: What's included
     includedFeatures:
-      - Unlimited projects
-      - Unbranded dashboards
-      - Project permissions
-      - Scheduled flows
-    # extraRows: 30
+      - Pre-built integrations
+      - Build custom reports
+      - Scheduled updates
   - name: Agency
     description: For growing teams and agencies
     includedHeader: 'Everything in pro, plus'
     includedFeatures:
-      - White-label
+      - Custom integrations
+      - White-labeling
       - Custom domains
-      - External collaborators <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-normal bg-gray-100 text-gray-800">Soon</span>
-    # extraRows: 15
+    mostPopular: True
   - name: Enterprise
-    includedHeader: Coming soon
+    includedHeader: 'Everything in agency, plus'
     description: Scale to large organisations
     includedFeatures:
       - SAML-based SSO

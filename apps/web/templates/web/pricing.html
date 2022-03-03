@@ -28,10 +28,10 @@
             <h2 class="text-3xl font-extrabold text-gray-900">
               {{ tier.name }}
             </h2>
-            <p class="mt-4 text-sm text-gray-600">{{ tier.description }}</p>
+            <p class="mt-4 text-base text-gray-600">{{ tier.description }}</p>
             <a
               href="{% external_url 'request_demo' %}"
-              class="mt-8 w-full button"
+              class="mt-8 button"
             >
               Request Demo
             </a>
@@ -40,7 +40,7 @@
             <h3 class="text-xs font-normal text-gray-900 tracking-wide uppercase">
               {{ tier.includedHeader }}
             </h3>
-            <ul class="my-6 space-y-4 h-32">
+            <ul class="mt-6 space-y-4">
               {% for feature in tier.includedFeatures %}
                 <li class="flex space-x-3">
                   {% heroicon 'check' class="flex-shrink-0 h-5 w-5 text-green-500" style="solid" %}
