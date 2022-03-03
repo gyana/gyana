@@ -102,19 +102,19 @@
         <a href="{% url 'account_login' %}" class="button button--transparent">
           Sign in
         </a>
-        <a 
+        {% comment %} <a 
           id="CTA_header"
           class="button button--secondary"
           href="{% url 'account_signup' %}"
         >
           Sign up
-        </a>
+        </a> {% endcomment %}
         <a
           id="CTA_header"
           class="ml-4 button"
-          href="{% external_url 'talk_to_us' %}"
+          href="{% external_url 'request_demo' %}"
         >
-          Talk to us
+          Request Demo
         </a>
         {% endif %}
       </div>

@@ -29,11 +29,13 @@
     </a>
   </p>
 
-  <p class="text-center">
-    No account yet? No problem,
-    <a class="link" href="{% url 'account_signup' %}">
-      create one here!
-    </a>
-  </p>
+  {% comment %}
+    <p class="text-center">
+      No account yet? No problem,
+      <a class="link" href="{% url 'account_signup' %}">
+        create one here!
+      </a>
+    </p>
+  {% endcomment %}
 </section>
 {% endblock %}
