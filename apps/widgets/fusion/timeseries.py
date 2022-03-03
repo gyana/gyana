@@ -35,7 +35,7 @@ def to_multivariate(type_, widget, df, query):
         list(row)
         for row in zip(dimension, *[df[metric].to_list() for metric in metrics])
     ]
-    data = json.loads(json.dumps(data, default=default_json_encoder))
+    data = json.dumps(data, default=default_json_encoder)
     fusiontable = FusionTable(schema, data)
     timeseries = TimeSeries(fusiontable)
     timeseries.AddAttribute(

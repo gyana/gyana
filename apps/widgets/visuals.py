@@ -83,7 +83,7 @@ def get_summary_row(query, widget):
     }
 
 
-def table_to_output(widget: Widget, control) -> Dict[str, Any]:
+def table_to_output(widget: Widget, control, url=None) -> Dict[str, Any]:
     query = pre_filter(widget, control)
     summary = None
     if widget.columns.first():
@@ -104,7 +104,7 @@ def table_to_output(widget: Widget, control) -> Dict[str, Any]:
 
     if widget.sort_column:
         query = query.sort_by([(widget.sort_column, widget.sort_ascending)])
-    return get_table(query.schema(), query, summary, settings)
+    return get_table(query.schema(), query, summary, settings, url=url)
 
 
 def metric_to_output(widget, control, use_previous_period=False):

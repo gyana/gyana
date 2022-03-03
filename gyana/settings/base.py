@@ -81,6 +81,7 @@ THIRD_PARTY_APPS = [
     "django_celery_results",
     # TODO: Remove after website migration is complete
     "heroicons",
+    "simple_history",
     # wagtail
     "wagtail.contrib.forms",
     "wagtail.contrib.redirects",
@@ -147,6 +148,7 @@ MIDDLEWARE = [
     "apps.base.middleware.HoneybadgerUserContextMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "simple_history.middleware.HistoryRequestMiddleware",
     "hijack.middleware.HijackUserMiddleware",
     "waffle.middleware.WaffleMiddleware",
     "wagtail.contrib.redirects.middleware.RedirectMiddleware",

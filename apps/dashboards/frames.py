@@ -1,5 +1,6 @@
 from django.db.models import Count, Q
 from django.urls.base import reverse
+from django_tables2 import SingleTableMixin, SingleTableView
 from turbo_response import TurboStream
 from turbo_response.response import TurboStreamResponse
 
@@ -11,6 +12,7 @@ from apps.base.frames import (
 from apps.dashboards.forms import DashboardShareForm
 from apps.projects.mixins import ProjectMixin
 from apps.widgets.models import Widget
+from apps.widgets.tables import WidgetHistory
 
 from .forms import DashboardForm
 from .models import Dashboard
@@ -114,3 +116,14 @@ class DashboardSettings(ProjectMixin, TurboFrameUpdateView):
         return reverse(
             "project_dashboards:detail", args=(self.project.id, self.object.id)
         )
+
+
+class DashboardHistory(ProjectMixin, SingleTableMixin, TurboFrameDetailView):
+    template_name = "dashboards/history.html"
+    model = Dashboard
+    table_class = WidgetHistory
+    paginate_by = 20
+    turbo_frame_dom_id = "dashboard:history"
+
+    def get_table_data(self):
+        return self.object.widget_history

@@ -28,9 +28,11 @@ def create_attrs(attrs, original):
         elif integration_clone.kind == Integration.Kind.CONNECTOR:
             # Connectors should have a new dataset created but the table name stays the same
             attrs["bq_table"] = original.bq_table
+            # We are replacing the connector schema from the bq_dataset to
+            # To maintain schema names for e.g. database connectors.
             attrs["bq_dataset"] = original.bq_dataset.replace(
-                original.integration.connector.schema,
-                integration_clone.connector.schema,
+                original.integration.connector.bq_dataset_prefix,
+                integration_clone.connector.bq_dataset_prefix,
             )
 
     # Dependies to nodes simply stay in the same dataset but change the table name

@@ -11,7 +11,7 @@
         {% for column in table.columns %}
         <th {{ column.attrs.th.as_html }}>
           {% if column.orderable %}
-          <a href="{% querystring table.prefixed_order_by_field=column.order_by_alias.next %}">{{ column.header }}</a>
+          <a href="{% firstof table.attrs.url request.path%}{% querystring table.prefixed_order_by_field=column.order_by_alias.next %}">{{ column.header }}</a>
           {% else %}
           {{ column.header }}
           {% endif %}
@@ -65,7 +65,7 @@
   {% block pagination.previous %}
   <li class="previous">
     <a
-      href="{% querystring table.prefixed_page_field=table.page.previous_page_number %}"
+      href="{% firstof table.attrs.url request.path%}{% querystring table.prefixed_page_field=table.page.previous_page_number %}"
       data-turbo-loading
     >
       <i class="far fa-sm fa-chevron-left"></i>
@@ -81,7 +81,7 @@
     <a>{{ p }}</a>
     {% else %}
     <a
-      href="{% querystring table.prefixed_page_field=p %}"
+      href="{% firstof table.attrs.url request.path%}{% querystring table.prefixed_page_field=p %}"
       data-turbo-loading
     >
       {{ p }}
@@ -95,7 +95,7 @@
   {% block pagination.next %}
   <li class="next">
     <a
-      href="{% querystring table.prefixed_page_field=table.page.next_page_number %}"
+      href="{% firstof table.attrs.url request.path%}{% querystring table.prefixed_page_field=table.page.next_page_number %}"
       data-turbo-loading
     >
       <i class="far fa-sm fa-chevron-right"></i>

@@ -32,7 +32,10 @@ class SaveParentModel(DirtyFieldsMixin, BaseModel):
     def save(self, *args, **kwargs) -> None:
         if self.is_dirty():
             self.parent.data_updated = timezone.now()
-            self.parent.save()
+            if hasattr(self.parent, "history"):
+                self.parent.save_without_historical_record()
+            else:
+                self.parent.save()
         return super().save(*args, **kwargs)
 
     def delete(self, *args, **kwargs):

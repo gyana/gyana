@@ -1,0 +1,13 @@
+{% load render_table from django_tables2 %}
+
+<section class="flex flex-col h-full whitespace-normal">
+    <div class="workflow-detail__header">
+        <h3 class="mr-auto">History</h3>
+        <button class="tf-modal__close"
+                data-action="click->tf-modal#close"
+                data-loading-false>
+            <i class="fal fa-times fa-lg"></i>
+        </button>
+    </div>
+    {% render_table table %}
+</section>
