@@ -47,7 +47,6 @@ _dist/
 .env.dev
 .env.production
 .DS_Store
-.vscode
 
 # redis output
 dump.rdb
