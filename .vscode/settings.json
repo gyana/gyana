@@ -5,10 +5,14 @@
   "editor.linkedEditing": true,
   "editor.rulers": [80, 120],
   "[django-html]": {
-    "editor.formatOnSave": false
+    "editor.detectIndentation": false,
+    "editor.formatOnSave": false,
+    "editor.tabSize": 2
   },
   "[html]": {
-    "editor.formatOnSave": false
+    "editor.detectIndentation": false,
+    "editor.formatOnSave": false,
+    "editor.tabSize": 2
   },
   "[python]": {
     "editor.codeActionsOnSave": {

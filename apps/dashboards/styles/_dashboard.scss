@@ -1,3 +1,5 @@
+@use 'utilities' as u;
+
 .dashboard {
   flex: 1 1 0%;
   overflow: auto;
@@ -81,12 +83,15 @@
   bottom: 0;
   display: inline-flex;
   font-size: 1.2rem;
-  gap: 0.6rem;
+  gap: u.size('xs');
   justify-content: center;
-  left: 0;
+  left: 50%;
   line-height: 0;
-  margin: 1.6rem auto 0 auto;
+  margin: u.size('base') auto 0 auto;
   padding: 1.2rem;
   position: sticky;
+  transform: translateX(-50%);
   width: max-content;
+
+  @include u.shadow;
 }

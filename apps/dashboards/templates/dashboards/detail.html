@@ -1,10 +1,10 @@
 {% extends "projects/base.html" %}
-
 {% load waffle_tags %}
 
 {% block app-class %}
     overflow-hidden
 {% endblock app-class %}
+
 {% block head.extra %}
     {% if dashboard.font_family %}
         <link href="https://fonts.googleapis.com/css2?family={{ dashboard.font_family.split|join:'+' }}:wght@400&display=swap"
@@ -185,9 +185,10 @@
         {% endif %}
     </div>
 {% endblock %}
-{% block page_js %}
-    <!-- Include the Quill library -->
-    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
-    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
-    {% include "components/fusionchart_scripts.html" with palette_colors=object.palette_colors %}
-{% endblock %}
+
+{% block body.javascript %}
+  <!-- Include the Quill library -->
+  <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+  {% include "components/fusionchart_scripts.html" %}
+{% endblock body.javascript %}
