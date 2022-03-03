@@ -2,6 +2,12 @@
 {% load static %}
 {% load socialaccount %}
 
+{% block header %}
+<p>
+  Welcome, log in to start where you left off.
+</p>
+{% endblock %}
+
 {% block content %}
 <section>
   <a class="button button--primary button--outline button--google w-full" href="{% provider_login_url 'google' %}">
