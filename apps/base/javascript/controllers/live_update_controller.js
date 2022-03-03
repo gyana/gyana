@@ -19,12 +19,19 @@ export default class extends Controller {
     // But always disable the submit buttons
 
     for (const element of form.elements) {
-      if (flag_disabled && formset_row && get_formset_row(element) !== formset_row)
+      if (
+        flag_disabled &&
+        formset_row &&
+        get_formset_row(element) !== formset_row
+      )
         flag_disabled = false
 
       // TODO: This makes it necessary to double click Save & Preview
       // When clicking shifts focus from an input field
-      if (element.type === 'submit' || (flag_disabled && element.type !== 'hidden'))
+      if (
+        element.type === 'submit' ||
+        (flag_disabled && element.type !== 'hidden')
+      )
         element.disabled = true
 
       if (element === event.target) flag_disabled = true
@@ -43,7 +50,9 @@ export default class extends Controller {
     // which for us iss indistinguishable from the field not being rendered
     // So we add the fields to the form data manually
     form
-      .querySelectorAll('input[type=checkbox]:not([data-live-update-ignore]):not(:checked)')
+      .querySelectorAll(
+        'input[type=checkbox]:not([data-live-update-ignore]):not(:checked)'
+      )
       .forEach((el) => {
         data.append(el.name, false)
       })
@@ -106,12 +115,20 @@ export default class extends Controller {
   }
 
   listener = async (event) => {
-    if (this.clicked_button || event.target.hasAttribute('data-live-update-ignore')) return
+    if (
+      this.clicked_button ||
+      event.target.hasAttribute('data-live-update-ignore')
+    )
+      return
     this.updateForm(event)
   }
 
   connect() {
-    this.element.addEventListener('change', this.listener)
+    this.element.addEventListener('change', (event) => {
+      // Ignore custom events dispatched by SortableJS
+      // https://developer.mozilla.org/en-US/docs/Web/API/Event/isTrusted
+      if (event.isTrusted) this.listener()
+    })
     this.element.addEventListener('mousedown', (event) => {
       this.clicked_button = event.target.nodeName == 'BUTTON'
     })
