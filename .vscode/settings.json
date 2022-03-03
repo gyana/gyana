@@ -4,6 +4,12 @@
   "editor.tabSize": 2,
   "editor.linkedEditing": true,
   "editor.rulers": [80, 120],
+  "[django-html]": {
+    "editor.formatOnSave": false
+  },
+  "[html]": {
+    "editor.formatOnSave": false
+  },
   "[python]": {
     "editor.codeActionsOnSave": {
       "source.organizeImports": true
