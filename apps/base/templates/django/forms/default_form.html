@@ -19,7 +19,7 @@
     </label>
 
     <div class="palette-colors">{{ bound_field }}</div>
-  {% elif bound_field.widget_type == "connectorschemamultiselect" %}
+  {% elif bound_field.widget_type == "connecprschemamultiselect" %}
     <div
       data-controller="multi-select"
       class="w-full {{ bound_field.field.widget.attrs.class }}"
@@ -137,11 +137,14 @@
         class="small link link--foldable {% if form.formatting_unfolded.value %}link--unfolded {% endif %} ml-auto"
         data-action='column-format#handle'
         data-column-format-target='button'
-      >Formatting</button>
+      >
+        Formatting
+      </button>
 
       {{form.formatting_unfolded}}
 
       <div
+        class="input-group"
         data-column-format-target='inputs' 
         {% if not form.formatting_unfolded.value %}hidden{% endif %}
       >

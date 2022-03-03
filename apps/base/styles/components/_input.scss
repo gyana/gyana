@@ -1,4 +1,4 @@
-@use 'utilities/mixins';
+@use 'utilities' as u;
 
 %input {
   background-color: var(--c-white);
@@ -39,7 +39,7 @@ input[type='email'] {
 [data-controller*='password-input'] {
   position: relative;
 
-  @include mixins.fa-icon {
+  @include u.fa-icon {
     color: var(--c-black);
     display: inline;
     position: absolute;
