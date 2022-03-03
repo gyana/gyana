@@ -31,7 +31,7 @@ quotes:
 support:
   - heading: Request Demo
     description: Discuss your use case with us
-    icon: login
+    icon: video-camera
     note: It only takes a minute
   - heading: Visit help center # Attend Gyana University
     description: Go through the fundamentals
