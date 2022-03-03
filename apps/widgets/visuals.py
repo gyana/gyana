@@ -49,18 +49,6 @@ def chart_to_output(widget: Widget, control) -> Dict[str, Any]:
     return {"chart": chart.render()}, chart_id
 
 
-def format_value(column, value):
-    if column.currency:
-        value = round(value, column.rounding)
-        return f"{CURRENCY_SYMBOLS_MAP[column.currency]}{value}"
-    if column.is_percentage:
-        value = round(value * 100, column.rounding)
-        return f"{value}%"
-    if isinstance(value, (int, float)):
-        return round(value, column.rounding)
-    return value
-
-
 def get_summary_row(query, widget):
     # Only naming the first group column
     group = widget.columns.first()
@@ -78,7 +66,7 @@ def get_summary_row(query, widget):
         resolve_colname(col.column, col.function, column_names): col for col in columns
     }
     return {
-        **{key: format_value(column_map[key], value) for key, value in summary.items()},
+        **{key: value for key, value in summary.items()},
         group.column: "Total",
     }
 
