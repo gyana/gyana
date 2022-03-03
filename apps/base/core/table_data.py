@@ -164,9 +164,7 @@ class BigQueryColumn(Column):
                 }
             )
         if isinstance(value, bool) or value == "True" or value == "False":
-            return get_template("columns/bool_cell.html").render(
-                {"value": value}
-            )
+            return get_template("columns/bool_cell.html").render({"value": value})
         if isinstance(value, int):
             self.attrs["td"] = {"style": "text-align: right;"}
             return get_template("columns/int_cell.html").render(
