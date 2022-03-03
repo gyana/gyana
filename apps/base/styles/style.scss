@@ -1,22 +1,22 @@
 @charset "utf-8";
 
 // SCSS specific code/styles. Functions/mixins/variables belong here.
-@use "utilities";
+@use 'utilities';
 
 // Base styles that apply throughout the entire site.
 // Minimal classes should be present here, usually mirroring default elements.
 // i.e `strong, .strong { ... }`
-@use "base";
+@use 'base';
 
 // Reusable components, accompanied by usage documentation.
-@use "components";
+@use 'components';
 
 // Layout classes, used for element placement.
-@use "layout";
+@use 'layout';
 
 // App-specific code, not used anywhere else but a specific view or a set of them.
 // At some point, would be nice to bundle split per app.
-@use "apps";
+@use 'apps';
 
 // Third-party libraries.
 
@@ -24,5 +24,5 @@
 // webpack compile times when developing.
 // @use "vendors/tailwind";
 // @use "vendors/fontawesome.css";
-@use "vendors/libcodemirror";
-@import "tippy.js/dist/tippy.css"; // This import must be AFTER any @use/at-use
+@use 'vendors/libcodemirror';
+@import 'tippy.js/dist/tippy.css'; // This import must be AFTER any @use/at-use

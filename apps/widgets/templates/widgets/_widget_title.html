@@ -1,11 +1,12 @@
 {% if object.kind != "text" and object.kind != "metric" %}
   <h3
     id="widget-name-{{ object.id }}-stream"
-    class="text-center py-4 {% if not object.name %}hidden{% endif %}"
+    class="text-center py-4"
     style="
       {% if object.page.dashboard.widget_header_font_size %}font-size:{{ object.page.dashboard.widget_header_font_size }}px;{% endif %}
       {% if object.page.dashboard.widget_background_color %}background-color:{{ object.page.dashboard.widget_background_color }};{% endif %}
     "
+    {% if not object.name %}hidden{% endif %}
   >
     {{ object.name }}
   </h3>

@@ -1,27 +1,39 @@
-h1, h2, h3, h4, h5
-.h1, .h2, .h3, .h4, .h6 {
+h1,
+h2,
+h3,
+h4,
+h5 .h1,
+.h2,
+.h3,
+.h4,
+.h6 {
   font-weight: 500;
   line-height: inherit;
   margin: 0;
 }
 
-h1, .h1 {
+h1,
+.h1 {
   font-size: 2.6rem;
 }
 
-h2, .h2 {
-  font-size: 2.0rem;
+h2,
+.h2 {
+  font-size: 2rem;
 }
 
-h3, .h3 {
+h3,
+.h3 {
   font-size: 1.8rem;
 }
 
-h4, .h4 {
+h4,
+.h4 {
   font-size: 1.6rem;
 }
 
-p, .p {
+p,
+.p {
   font-size: 1.4rem;
   line-height: 1.35;
 }
@@ -50,8 +62,10 @@ small,
   font-size: 1.2rem;
 }
 
-b, .bold,
-strong, .strong {
+b,
+.bold,
+strong,
+.strong {
   font-weight: 600;
 }
 

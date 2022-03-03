@@ -45,8 +45,8 @@ export default class extends Controller {
           data.eventData.checkout.redirect_url = ''
           window.checkoutComplete(data.eventData)
 
-          this.checkoutMessageTarget.classList.add('hidden')
-          this.successMessageTarget.classList.remove('hidden')
+          this.checkoutMessageTarget.setAttribute('hidden', '')
+          this.successMessageTarget.removeAttribute('hidden')
         }
       },
     })

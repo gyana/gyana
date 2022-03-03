@@ -1,8 +1,4 @@
-$button-colors: (
-  "primary",
-  "secondary",
-  "transparent",
-) !default;
+$button-colors: ('primary', 'secondary', 'transparent') !default;
 
 %primary {
   --button-color: var(--c-white);
@@ -32,15 +28,16 @@ $button-colors: (
 
   align-items: center;
   background: var(--button-background);
-  border-radius: 5px;
   border: 1px solid var(--c-transparent);
-  box-shadow:
-    var(--tw-ring-offset-shadow,0 0 #0000),
-    var(--tw-ring-shadow,0 0 #0000),
-    var(--tw-shadow);
+  border-radius: 5px;
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
+    var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
   color: var(--button-color);
   display: inline-flex;
+  font-size: inherit;
+  height: auto;
   justify-content: center;
+  line-height: inherit;
   padding: 0.5rem 1rem;
   white-space: nowrap;
 
@@ -49,7 +46,7 @@ $button-colors: (
     background: var(--button-background--hover);
     color: var(--button-color--hover, --button-color);
   }
-  
+
   // Color variant generation
   @each $color in $button-colors {
     &.button--#{$color} {

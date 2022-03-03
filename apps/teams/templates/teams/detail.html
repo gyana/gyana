@@ -45,7 +45,7 @@
         <a
           class="list__item list__item--interactive w-full {{ column.attrs.th.class }} "
           {% if column.is_ordered %}
-          href="{% querystring table.prefixed_order_by_field=""%}"
+          href="{% querystring table.prefixed_order_by_field='' %}"
           {% else %}
           href="{% querystring table.prefixed_order_by_field=column.order_by_alias.opposite %}"
           {% endif %}

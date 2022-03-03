@@ -30,11 +30,11 @@
       color: var(--c-black-20);
     }
 
-    &[data-controller*=popover]::after {
+    &[data-controller*='popover']::after {
       color: var(--c-black-50);
       content: '\f054';
       display: inline;
-      font-family: "Font Awesome 5 Pro";
+      font-family: 'Font Awesome 5 Pro';
       font-size: 1.2rem;
       font-weight: normal;
       margin-left: auto;

@@ -48,7 +48,7 @@ export default class extends Controller {
         data.append(el.name, false)
       })
 
-    this.loadingTarget.classList.remove('hidden')
+    this.loadingTarget.removeAttribute('hidden')
 
     this.disable(event)
 
@@ -102,7 +102,7 @@ export default class extends Controller {
     }
 
     this.clicked_button = false
-    this.loadingTarget.classList.add('hidden')
+    this.loadingTarget.setAttribute('hidden', '')
   }
 
   listener = async (event) => {

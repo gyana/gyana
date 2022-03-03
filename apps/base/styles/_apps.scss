@@ -1,28 +1,28 @@
-@use "../../dashboards/styles/dashboard";
-@use "../../dashboards/styles/dashboard-sidebar";
-@use "../../columns/styles/columns";
+@use '../../dashboards/styles/dashboard';
+@use '../../dashboards/styles/dashboard-sidebar';
+@use '../../columns/styles/columns';
 
-@use "../../controls/styles/control";
+@use '../../controls/styles/control';
 
-@use "../../integrations/styles/integration";
+@use '../../integrations/styles/integration';
 
-@use "../../projects/styles/project";
-@use "../../projects/styles/automate";
+@use '../../projects/styles/project';
+@use '../../projects/styles/automate';
 
-@use "../../teams/styles/account";
-@use "../../teams/styles/detail";
-@use "../../teams/styles/plan";
+@use '../../teams/styles/account';
+@use '../../teams/styles/detail';
+@use '../../teams/styles/plan';
 
-@use "../../web/styles/landing";
-@use "../../web/styles/project-card";
-@use "../../web/styles/sidebar";
-@use "../../web/styles/team-sidebar";
+@use '../../web/styles/landing';
+@use '../../web/styles/project-card';
+@use '../../web/styles/sidebar';
+@use '../../web/styles/team-sidebar';
 
-@use "../../nodes/styles/index";
+@use '../../nodes/styles/index';
 
-@use "../../widgets/styles/widget";
+@use '../../widgets/styles/widget';
 
-@use "../../workflows/styles/workflow";
-@use "../../workflows/styles/dnd-sidebar";
+@use '../../workflows/styles/workflow';
+@use '../../workflows/styles/dnd-sidebar';
 
-@use "../../uploads/styles/upload_csv";
+@use '../../uploads/styles/upload_csv';

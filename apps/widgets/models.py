@@ -1,6 +1,8 @@
 from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
+from django.urls import reverse
+from simple_history.models import HistoricalRecords
 
 from apps.base.clients import SLUG
 from apps.base.core.aggregations import AggregationFunctions
@@ -105,6 +107,7 @@ class Widget(WidgetStyle, BaseModel):
         MEAN = "mean", "Average"
 
     _clone_excluded_m2o_or_o2m_fields = ["table"]
+    history = HistoricalRecords()
 
     page = models.ForeignKey(Page, on_delete=models.CASCADE, related_name="widgets")
 
@@ -227,6 +230,13 @@ class Widget(WidgetStyle, BaseModel):
     def icon(self):
         return WIDGET_KIND_TO_WEB[self.kind][0]
 
+    def get_absolute_url(self):
+        dashboard = self.page.dashboard
+        url = reverse(
+            "project_dashboards:detail", args=(dashboard.project.id, dashboard.id)
+        )
+        return f"{url}?dashboardPage={self.page.position}&modal_item={self.id}"
+
 
 NO_DIMENSION_WIDGETS = [
     Widget.Kind.RADAR,
@@ -240,7 +250,7 @@ WIDGET_KIND_TO_WEB = {
     Widget.Kind.TEXT.value: ("fa-text", Widget.Category.CONTENT, "Text"),
     Widget.Kind.IMAGE.value: ("fa-image", Widget.Category.CONTENT, "Image"),
     Widget.Kind.IFRAME.value: (
-        f"fa-browser",
+        "fa-browser",
         Widget.Category.CONTENT,
         "URL Embed",
     ),

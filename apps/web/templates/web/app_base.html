@@ -2,7 +2,7 @@
 {% load static %}
 {% load team_tags %}
 
-{% block banner %}
+{% block body.banner %}
   {% if team and team.warning %}
   <div class="banner banner--warning">
     <p>
@@ -31,9 +31,9 @@
     </p>
   </div>
   {% endif %}
-{% endblock %}
+{% endblock body.banner %}
 
-{% block body %}
+{% block body.content %}
 
   {% include "web/components/team_sidebar.html" %}
 
@@ -155,4 +155,4 @@
   <section class="flex flex-col flex-1 overflow-hidden {% block app-class %}{% endblock %}">
     {% block main %}{% endblock %}
   </section>
-{% endblock %}
+{% endblock body.content %}

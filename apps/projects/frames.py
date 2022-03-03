@@ -1,3 +1,4 @@
+from django.http import Http404
 from django.urls import reverse
 from django_tables2.views import SingleTableMixin
 
@@ -34,6 +35,8 @@ class ProjectDuplicate(TurboFrameUpdateView):
     turbo_frame_dom_id = "projects:duplicate"
 
     def form_valid(self, form):
+        if not self.object.team.can_create_project:
+            raise Http404("Cannot create new projects on the current plan")
         duplicate_project.delay(self.object.id, self.request.user.id)
         return super().form_valid(form)
 

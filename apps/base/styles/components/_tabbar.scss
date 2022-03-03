@@ -1,6 +1,7 @@
 .tabbar {
   display: flex;
   height: 4.2rem;
+
   flex: 0 0 4.2rem;
 
   &::after {
@@ -47,8 +48,8 @@
   }
 
   &--full {
-  height: auto;
-  
+    height: auto;
+
     &::after {
       display: none;
     }

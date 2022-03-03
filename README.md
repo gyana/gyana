@@ -11,7 +11,7 @@ In short:
 
 ```bash
 # Create a virtual environment
-mkvirtualenv --no-site-packages gyana -p python3
+mkvirtualenv gyana -p python3
 
 # Install poetry and yarn dependencies
 poetry install

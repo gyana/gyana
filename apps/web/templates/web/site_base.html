@@ -1,52 +1,49 @@
+{% extends 'web/base.html' %}
 {% load static %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+{% block head %}
+<title>Gyana | Custom reports for any source</title>
+<meta
+  name="description"
+  content="Gyana delivers the power of business intelligence and data analytics in a web interface. Build repeatable workflows and dashboards with all your online data."
+/>
 
-  {% block meta %}
-    <title>Gyana | Custom reports for any source</title>
-    <meta name="description" content="Gyana delivers the power of business intelligence and data analytics in a web interface. Build repeatable workflows and dashboards with all your online data." /> 
-  {% endblock  %}
+{% include "web/components/favicon.html" %}
 
-  {% include "web/components/favicon.html" %}
+{% comment %} Only load Poppins to use for our Logo {% endcomment %}
+<link rel="preconnect" href="//fonts.gstatic.com" />
+<link
+  href="//fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap&text=Gyana"
+  rel="stylesheet"
+/>
+<link
+  href="//fonts.googleapis.com/css2?family=Caveat:wght@400&display=swap"
+  rel="stylesheet"
+/>
 
-  {% comment %} Only load Poppins to use for our Logo {% endcomment %}
-  <link rel="preconnect" href="//fonts.gstatic.com" />
-  <link
-    href="//fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap&text=Gyana"
-    rel="stylesheet"
-  />
+<link rel="stylesheet" href="{% static "css/fontawesome.css" %}" />
+<link rel="stylesheet" href="{% static "css/tailwind.css" %}" />
+<link rel="stylesheet" href="{% static "css/style.css" %}" />
+<link rel="stylesheet" href="{% static "css/website.css" %}" />
 
-  <link
-    href="//fonts.googleapis.com/css2?family=Caveat:wght@400&display=swap"
-    rel="stylesheet"
-  />
+<script src="{% static "js/turbo-bundle.js" %}"></script>
+<script src="{% static "js/stimulus-bundle.js" %}"></script>
+<script>
+  Turbo.session.drive = false
+</script>
 
-  <link rel="stylesheet" href="{% static "css/fontawesome.css" %}" />
-  <link rel="stylesheet" href="{% static "css/tailwind.css" %}" />
-  <link rel="stylesheet" href="{% static "css/website.css" %}" />
-  <link rel="stylesheet" href="{% static "css/website-components.css" %}" />
+{% if WEBSITE_GTM_ID %}
+{% include "web/components/gtm_head.html" %}
+{% endif %}
 
-  <script src="{% static "js/turbo-bundle.js" %}"></script>
-  <script src="{% static "js/stimulus-bundle.js" %}"></script>
-  <script>
-    Turbo.session.drive = false
-  </script>
+{% include "web/components/intercom-visitors.html" %}
+{% endblock head %}
 
-  {% if WEBSITE_GTM_ID %}
-  {% include "web/components/gtm_head.html" %}
-  {% endif %}
+{% block body.attrs %}
+data-controller="tf-modal"
+{% endblock body.attrs %}
 
-  {% include "web/components/intercom-visitors.html" %}
-</head>
-
-<body>
-  {% block body %}
-
+{% block body %}
   {% block body.header %}
     {% include "web/site/header.html" %}
   {% endblock body.header %}
@@ -56,8 +53,6 @@
   {% block body.footer %}
     {% include "web/site/footer.html" %}
   {% endblock body.footer %}
-
-  {% endblock body %}
 
   {% block termly %}
   <script
@@ -80,5 +75,5 @@
   {% if WEBSITE_GTM_ID %}
   {% include "web/components/gtm_body.html" %}
   {% endif %}
-</body>
-</html>
+{% endblock body %}
+

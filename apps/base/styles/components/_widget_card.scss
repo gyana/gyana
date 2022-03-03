@@ -1,4 +1,4 @@
-@use "utilities/mixins";
+@use 'utilities/mixins';
 
 .widget-card {
   display: flex;
@@ -11,7 +11,7 @@
     overflow: hidden;
     width: 100%;
     z-index: calc(var(--z-default) + 1);
-    
+
     &--view {
       border: 1px solid var(--c-gray-50);
     }
@@ -58,7 +58,7 @@
     display: flex;
   }
 
-  [data-focused~="true"] &__indicator {
+  [data-focused~='true'] &__indicator {
     display: flex;
     justify-content: center;
     align-items: center;

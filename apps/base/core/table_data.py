@@ -12,22 +12,6 @@ from apps.base import clients
 from apps.base.core.utils import md5
 from apps.columns.currency_symbols import CURRENCY_SYMBOLS_MAP
 
-# Monkey patch the querystring templatetag for the pagination links
-# Without this links only lead to the whole document url and add query parameter
-# instead we want to link to the turbo-frame/request url
-
-
-old_render = QuerystringNode.render
-
-
-def new_render(self, context):
-    value = old_render(self, context)
-    # we are adding the whole path instead of only the query parameters
-    return context["request"].path + value
-
-
-QuerystringNode.render = new_render
-
 
 class BigQueryTableData(TableData):
     """Django table data class that queries data from BigQuery
@@ -164,9 +148,7 @@ class BigQueryColumn(Column):
                 }
             )
         if isinstance(value, bool) or value == "True" or value == "False":
-            return get_template("columns/bool_cell.html").render(
-                {"value": value}
-            )
+            return get_template("columns/bool_cell.html").render({"value": value})
         if isinstance(value, int):
             self.attrs["td"] = {"style": "text-align: right;"}
             return get_template("columns/int_cell.html").render(
@@ -189,6 +171,7 @@ def get_table(schema, query, footer=None, settings=None, **kwargs):
     See https://django-tables2.readthedocs.io/en/stable/_modules/django_tables2/views.html
     """
     settings = settings or {}
+    url = kwargs.pop("url", None)
     # Inspired by https://stackoverflow.com/questions/16696066/django-tables2-dynamically-adding-columns-to-table-not-adding-attrs-to-table
     attrs = {
         md5(name): BigQueryColumn(
@@ -200,13 +183,19 @@ def get_table(schema, query, footer=None, settings=None, **kwargs):
                     "class": get_type_class(type_),
                     "data-controller": "tooltip",
                     "data-tooltip-content": get_type_name(type_),
-                }
+                },
             },
             footer=footer.get(name) if footer else None,
         )
         for name, type_ in schema.items()
     }
-    attrs["Meta"] = type("Meta", (), {"attrs": {"class": "table"}})
+    attrs["Meta"] = type(
+        "Meta",
+        (),
+        {
+            "attrs": {"class": "table", **({"url": url} if url else {})},
+        },
+    )
     table_class = type("DynamicTable", (Table,), attrs)
 
     table_data = BigQueryTableData(query)

@@ -33,6 +33,9 @@ pytestmark = pytest.mark.django_db
         pytest.param(
             "/projects/{project_id}/dashboards/{dashboard_id}/settings", id="settings"
         ),
+        pytest.param(
+            "/projects/{project_id}/dashboards/{dashboard_id}/history", id="history"
+        ),
         pytest.param("/dashboards/{dashboard_id}/duplicate", id="duplicate"),
         pytest.param("/dashboards/{dashboard_id}/share", id="share"),
     ],

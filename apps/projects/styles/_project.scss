@@ -37,7 +37,7 @@
       align-items: center;
     }
   }
-  
+
   h2 {
     display: flex;
     justify-content: center;
@@ -71,6 +71,6 @@
 
 // Disable selecting minutes in time picker
 // https://stackoverflow.com/a/61934417/15425660
-input[type="time"]::-webkit-calendar-picker-indicator {
+input[type='time']::-webkit-calendar-picker-indicator {
   background: none;
 }

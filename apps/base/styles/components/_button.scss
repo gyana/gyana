@@ -1,12 +1,12 @@
-@use "utilities/mixins";
+@use 'utilities' as u;
 
 $button-colors: (
-  "primary": var(--c-blue),
-  "success": var(--c-green),
-  "pink": var(--c-pink),
-  "danger": var(--c-red),
-  "warning": var(--c-orange),
-  "tertiary": var(--c-black),
+  'primary': var(--c-blue),
+  'success': var(--c-green),
+  'pink': var(--c-pink),
+  'danger': var(--c-red),
+  'warning': var(--c-orange),
+  'tertiary': var(--c-black),
 ) !default;
 
 // Generic button component.
@@ -38,7 +38,7 @@ $button-colors: (
   border: 1px solid transparent;
   color: var(--c-white);
 
-  &[type="submit"],
+  &[type='submit'],
   &[href],
   &[data-action] {
     cursor: pointer;
@@ -53,7 +53,7 @@ $button-colors: (
       box-shadow: 0 0 0 2px var(--c-white), 0 0 0 4px var(--button-color);
     }
   }
-  
+
   &[disabled],
   &:disabled,
   &.disabled {
@@ -120,7 +120,7 @@ $button-colors: (
     width: 2.4rem;
   }
 
-  @include mixins.fa-icon {
+  @include u.fa-icon {
     align-items: center;
     display: flex;
     height: 1.25em;

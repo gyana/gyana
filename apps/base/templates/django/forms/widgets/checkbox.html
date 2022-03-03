@@ -1,4 +1,7 @@
-<span class="toggle {% if 'hidden' in widget.attrs.class %}hidden{% endif %}">
+<span
+  class="toggle"
+  {% if 'hidden' in widget.attrs.class %}hidden{% endif %}
+>
   <input
     type="{{ widget.type }}"
     name="{{ widget.name }}"

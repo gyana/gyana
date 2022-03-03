@@ -134,6 +134,12 @@ class Dashboard(DashboardSettings, BaseModel):
 
         return Widget.objects.filter(page__dashboard=self).all()
 
+    @property
+    def widget_history(self):
+        from apps.widgets.models import Widget
+
+        return Widget.history.filter(page__dashboard=self).all()
+
 
 class Page(BaseModel):
     class Meta:
@@ -147,6 +153,9 @@ class Page(BaseModel):
     @property
     def has_control(self):
         return hasattr(self, "control")
+
+    def get_absolute_url(self):
+        return f'{reverse("project_dashboards:detail", args=(self.dashboard.project.id, self.dashboard.id))}?dashboardPage={self.position}'
 
 
 DASHBOARD_SETTING_TO_CATEGORY = {

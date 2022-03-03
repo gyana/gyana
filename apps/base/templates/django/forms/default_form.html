@@ -141,8 +141,9 @@
 
       {{form.formatting_unfolded}}
 
-      <div data-column-format-target='inputs' 
-        class="{% if not form.formatting_unfolded.value %}hidden{% endif %}"
+      <div
+        data-column-format-target='inputs' 
+        {% if not form.formatting_unfolded.value %}hidden{% endif %}
       >
         {% for field in form.visible_fields  %}
           {% if field.label in 'Currency, Rounding, Name, Show in %'%}

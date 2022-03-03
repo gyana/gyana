@@ -80,7 +80,7 @@ class NodeUpdate(TurboFrameUpdateView):
         base_url = reverse("nodes:update", args=(self.object.id,))
         track_node(self.request.user, self.object, NODE_UPDATED_EVENT)
 
-        if self.request.POST.get("submit") == "Save & Preview":
+        if self.is_preview_request:
             track_node(self.request.user, self.object, NODE_PREVIEWED_EVENT)
             return f"{base_url}?preview_node_id={self.preview_node_id}"
 

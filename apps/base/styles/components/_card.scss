@@ -1,11 +1,11 @@
-@use "utilities/mixins";
+@use 'utilities/mixins';
 
 $card-colors: (
-  "primary": var(--c-blue),
-  "green": var(--c-green),
-  "pink": var(--c-pink),
-  "warning": var(--c-orange),
-  "tertiary": var(--c-black),
+  'primary': var(--c-blue),
+  'green': var(--c-green),
+  'pink': var(--c-pink),
+  'warning': var(--c-orange),
+  'tertiary': var(--c-black),
 ) !default;
 
 .card {
@@ -20,9 +20,9 @@ $card-colors: (
   position: relative;
   z-index: var(--z-default);
   overflow: auto;
-  
+
   @include mixins.shadow;
-  
+
   &--inline {
     display: inline-flex;
   }
@@ -31,7 +31,7 @@ $card-colors: (
     border: 1px dashed var(--card-color);
     background-color: var(--c-transparent);
   }
-  
+
   &--square {
     align-items: center;
     color: var(--c-black-50);
@@ -79,7 +79,7 @@ $card-colors: (
   &--sm {
     padding: 1.6rem;
   }
-  
+
   &--none {
     padding: 0;
   }

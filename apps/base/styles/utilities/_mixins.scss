@@ -1,12 +1,46 @@
-// Padding
-@mixin padding {
-  --padding: 1.6rem;
-  padding: var(--padding);
+/*
+ * Style mixins, import via `@use 'mixins';` at the top of your scss file.
+ */
+
+// https://sass-guidelin.es/#responsive-web-design-and-breakpoints
+$breakpoints: (
+  'sm': 640px,
+  'md': 768px,
+  'lg': 1024px,
+  'xl': 1280px,
+  '2xl': 1536px,
+) !default;
+
+// Breakpoint map manager
+@mixin respond-to($breakpoint) {
+  $value: map-get($breakpoints, $breakpoint);
+
+  @if $value != null {
+    @media (min-width: $value) {
+      @content;
+    }
+  } @else {
+    @warn "Unfortunately, no value could be found for `#{$breakpoint}`. "
+        + "Please make sure it is defined in `$breakpoints` map.";
+  }
 }
 
-@mixin padding--small {
-  --padding: 1rem;
-  padding: var(--padding);
+$sizing: (
+  'xs': 0.6rem,
+  'sm': 0.8rem,
+  'base': 1.6rem,
+  'lg': 2.4rem,
+  'xl': 3.6rem,
+) !default;
+
+@function size($size) {
+  $-value: map-get($sizing, $size);
+
+  @if $-value != null {
+    @return $-value;
+  } @else {
+    @error "#{$size} cannot be found in the $sizes map";
+  }
 }
 
 // Box-shadows
@@ -14,9 +48,14 @@
   box-shadow: 4px 4px 20px rgba(0, 0, 0, 0.04);
 }
 
-// Target all fontawesome icons
+// Target any Fontawesome icons
 @mixin fa-icon {
-  .fas, .far, .fal, .fad, .fab {
-    @content
+  .fas,
+  .far,
+  .fal,
+  .fad,
+  .fab,
+  .fa {
+    @content;
   }
 }

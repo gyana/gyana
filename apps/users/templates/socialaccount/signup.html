@@ -1,6 +1,7 @@
 {% extends "web/base.html" %}
 {% load i18n %}
-{% block body %}
+
+{% block body.content %}
 <p class="app-message notification is-info">
   {% blocktrans with provider_name=account.get_provider.name site_name=site.name %}
   You are about to use your {{ provider_name }} account to login to
@@ -30,4 +31,4 @@
         </form>
     </div>
 </div>
-{% endblock %}
+{% endblock body.content %}

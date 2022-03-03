@@ -30,10 +30,10 @@ fixtures:
     ./manage.py purge_revisions
     # natural-foreign for wagtail references to contenttypes
     # https://docs.wagtail.io/en/stable/advanced_topics/testing.html#using-dumpdata
-    ./manage.py dumpdata --natural-foreign -e blog learn {{ excludes }} {{ wagtail_excludes }} > cypress/fixtures/fixtures.json
+    ./manage.py dumpdata --natural-foreign -e blog -e learn {{ excludes }} {{ wagtail_excludes }} > cypress/fixtures/fixtures.json
     # wagtail custom page fixtures need to run after wagtailcore_locale
     ./manage.py dumpdata blog learn > cypress/fixtures/fixtures-wagtail.json
-    yarn prettier --write cypress/fixtures/fixtures.json cypress/fixtures/fixtures-wagtail.json
+    yarn prettier:fixtures
 
 shell:
     ./manage.py shell -i ipython
@@ -72,6 +72,7 @@ format:
 
 alias bf := branchformat
 branchformat:
+    git diff --diff-filter=M --name-only main '***.scss' | xargs yarn prettier:write
     git diff --diff-filter=M --name-only main '***.py' | xargs black
     git diff --diff-filter=M --name-only main '***.py' | xargs isort
 
