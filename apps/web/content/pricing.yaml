@@ -6,6 +6,8 @@ tiers:
       - Pre-built integrations
       - Build custom reports
       - Automated updates
+    color: text-gray-600
+    button: button--tertiary
   - name: Elite
     includedHeader: Everything in pro, plus
     description: Scale to large organisations
@@ -13,6 +15,8 @@ tiers:
       - Custom integrations
       - Personalized setup
       - Hands-on training
+    color: text-indigo-900
+    button: button--primary
     mostPopular: True
   - name: Agency
     description: For growing teams and agencies
@@ -21,6 +25,8 @@ tiers:
       - Client management
       - White-label
       - Custom domains
+    color: text-indigo-600
+    button: button--secondary
 
 faqs:
   - q: What is a row of data?
