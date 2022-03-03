@@ -45,3 +45,8 @@ faqs:
   - q: What about GDPR?
     a: Gyana is committed to GDPR compliance. Your data is always located in the UK and
       EU, and we act as your data processing partner.
+testimonial:
+  quote: As an <b>online marketing freelancer</b>, I have tried and tested many reporting tools such as DigiXport and Portometrics, but the issues I kept facing were data limitation and <b>restrictions on how I can display my data</b>. Gyana allows me to pull in <b>all the data I need</b> and the workflow stage let’s me create <b>the exact metrics that I require</b>.
+  avatar: images/site/home/neels-van-niekerk.jpeg
+  name: Neels Van Niekerk
+  role: beOnline Media

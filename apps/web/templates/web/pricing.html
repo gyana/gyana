@@ -19,7 +19,7 @@
   </div>
 </div>
 
-<div class="bg-white border-b border-gray">
+<div class="bg-white">
   <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8">
     <div class="space-y-4 lg:space-y-0 lg:grid lg:grid-cols-3 lg:gap-6 lg:max-w-4xl lg:mx-auto xl:max-w-none xl:mx-0">
       {% for tier in content.tiers %}
@@ -58,25 +58,26 @@
   </div>
 </div>
 
-<div class="bg-gray-20 border-b border-gray">
-  <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8">
-    <div class="lg:grid lg:grid-cols-3 lg:gap-8">
-      <div>
-        <h2 class="text-3xl font-extrabold text-gray-900">
-          Frequently asked questions
-        </h2>
-        <p class="mt-4 text-lg text-gray-600">
-          Can’t find the answer you’re looking for? Reach out to us in the
-          chat.
-        </p>
-      </div>
-      <div class="prose prose-indigo text-gray-600 mx-auto mt-12 lg:mt-0 lg:col-span-2">
+{% include "web/site/home/testimonial.html" with testimonial=content.testimonial %}
+
+<div class="bg-white">
+  <div class="max-w-7xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:px-8">
+    <h2 class="text-3xl font-extrabold text-gray-900 text-center">Frequently asked questions</h2>
+    <p class="mt-4 text-base text-gray-600 text-center">
+      Can’t find the answer you’re looking for? Reach out to us in the
+      chat.
+    </p>
+    <div class="mt-12">
+      <dl class="space-y-10 md:space-y-0 md:grid md:grid-cols-2 md:gap-x-8 md:gap-y-12 lg:grid-cols-3">
         {% for faq in content.faqs %}
-          <h3>{{ faq.q }}</h3>
-          <p class='text-base'>{{ faq.a }}</p>
+          <div>
+            <dt class="text-lg leading-6 font-medium text-gray-900">{{ faq.q }}</dt>
+            <dd class="mt-2 text-base text-gray-500">{{ faq.a }}</dd>
+          </div>
         {% endfor %}
-      </div>
+      </dl>
     </div>
   </div>
 </div>
+
 {% endblock %}
