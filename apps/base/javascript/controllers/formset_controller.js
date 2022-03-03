@@ -1,5 +1,6 @@
 import { Controller } from '@hotwired/stimulus'
 import { GyanaEvents } from 'apps/base/javascript/events'
+import Sortable from 'sortablejs'
 
 // Dynamically add and remove formset in Django
 // Inspired by https://github.com/stimulus-components/stimulus-rails-nested-form
@@ -13,12 +14,16 @@ export default class extends Controller {
 
   connect() {
     this.wrapperSelector = this.wrapperSelectorValue || '.formset-wrapper'
+
+    this.sortable = Sortable.create(this.targetTarget)
   }
 
   add(e) {
     e.preventDefault()
 
-    const TOTAL_FORMS = this.element.querySelector(`#id_${this.prefixValue}-TOTAL_FORMS`)
+    const TOTAL_FORMS = this.element.querySelector(
+      `#id_${this.prefixValue}-TOTAL_FORMS`
+    )
     const total = parseInt(TOTAL_FORMS.value)
     TOTAL_FORMS.value = parseInt(total) + 1
 
