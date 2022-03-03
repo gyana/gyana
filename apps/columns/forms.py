@@ -13,6 +13,7 @@ from apps.columns.models import (
     EditColumn,
     FormulaColumn,
     JoinColumn,
+    SortColumn,
     WindowColumn,
 )
 from apps.widgets.models import Widget
@@ -350,3 +351,10 @@ class JoinColumnForm(BaseLiveSchemaForm):
         self.instance.left_column = left_column
 
         return super().save(*args, **kwargs)
+
+
+class SortColumnForm(BaseLiveSchemaForm):
+    class Meta:
+        model = SortColumn
+        fields = ["column", "ascending", "sort_index"]
+        widgets = {"sort_index": forms.HiddenInput()}

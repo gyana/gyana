@@ -191,6 +191,9 @@ class AggregationColumn(ColumnSettings, SaveParentModel):
 
 
 class SortColumn(SaveParentModel):
+    class Meta:
+        ordering = ("-sort_index",)
+
     node = models.ForeignKey(
         Node, on_delete=models.CASCADE, related_name="sort_columns"
     )
@@ -198,6 +201,9 @@ class SortColumn(SaveParentModel):
     column = models.CharField(
         max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
     )
+    # formset sort index, elements sorted in reverse order with the final element at "0"
+    # text field for arbitrary length integer, parsed at BigInt in javascript
+    sort_index = models.TextField(default="0")
 
 
 class EditColumn(AbstractOperationColumn):

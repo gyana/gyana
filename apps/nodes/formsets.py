@@ -11,6 +11,7 @@ from apps.columns.forms import (
     FormulaColumnForm,
     JoinColumnForm,
     OperationColumnForm,
+    SortColumnForm,
     WindowColumnForm,
 )
 from apps.columns.models import (
@@ -55,8 +56,7 @@ ColumnFormSet = forms.inlineformset_factory(
 SortColumnFormSet = forms.inlineformset_factory(
     Node,
     SortColumn,
-    form=BaseLiveSchemaForm,
-    fields=("column", "ascending"),
+    form=SortColumnForm,
     can_delete=True,
     extra=0,
     min_num=1,
