@@ -5,22 +5,23 @@ tiers:
     includedFeatures:
       - Pre-built integrations
       - Build custom reports
-      - Scheduled updates
-  - name: Agency
-    description: For growing teams and agencies
-    includedHeader: 'Everything in pro, plus'
-    includedFeatures:
-      - Custom integrations
-      - White-labeling
-      - Custom domains
-    mostPopular: True
-  - name: Enterprise
-    includedHeader: 'Everything in agency, plus'
+      - Automated updates
+  - name: Elite
+    includedHeader: Everything in pro, plus
     description: Scale to large organisations
     includedFeatures:
-      - SAML-based SSO
-      - Dedicated manager
-      - Personalized onboarding
+      - Custom integrations
+      - Personalized setup
+      - Hands-on training
+  - name: Agency
+    description: For growing teams and agencies
+    includedHeader: Everything in elite, plus
+    includedFeatures:
+      - Client management
+      - Whitelabel
+      - Custom domains
+    mostPopular: True
+
 faqs:
   - q: What is a row of data?
     a: Every integration you connect to Gyana (like a file, Google Sheet or Facebook
