@@ -11,7 +11,7 @@
     overflow: hidden;
     width: 100%;
     z-index: calc(var(--z-default) + 1);
-    
+
     &--view {
       border: 1px solid var(--c-gray-50);
     }
@@ -53,12 +53,21 @@
     }
   }
 
+  &__date-range-indicator {
+    display: none;
+    position: absolute;
+    top: 1.6rem;
+    right: 1.6rem;
+    z-index: calc(var(--z-ui) + 1);
+  }
+
   &:focus-within &__commands,
-  &:hover &__commands {
+  &:hover &__commands,
+  &:hover &__date-range-indicator {
     display: flex;
   }
 
-  [data-focused~="true"] &__indicator {
+  [data-focused~='true'] &__indicator {
     display: flex;
     justify-content: center;
     align-items: center;

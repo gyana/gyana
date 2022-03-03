@@ -126,10 +126,3 @@
   display: block;
   visibility: visible;
 }
-
-.date-range-indicator {
-  position: absolute;
-  top: -0.6rem;
-  right: -0.6rem;
-  z-index: calc(var(--z-ui) + 1);
-}
