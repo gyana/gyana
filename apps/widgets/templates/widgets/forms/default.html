@@ -80,11 +80,11 @@
     The pressed button is outside the form this is just to trigger the submit
     {% endcomment %}
     <button
-      class="hidden"
       type="submit"
       formnovalidate
       name="close"
       value="close"
+      hidden
     ></button>
     {% csrf_token %}
 
@@ -93,7 +93,7 @@
     {% endfor %}
 
     <div class="flex flex-1 flex-col gap-5 w-full pad overflow-y-auto">
-      <span data-live-update-target="loading" class="hidden">
+      <span data-live-update-target="loading" hidden>
         <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-2x"></i>
       </span>
 
@@ -203,8 +203,11 @@
         <fieldset>
           <div class='formset-wrapper' data-controller='widget-slice' >
             <label>Date range</label>
-            <div >
-              <div data-widget-slice-target ="input" class='{% if not show_date_column%}hidden{%endif%}'>
+            <div>
+              <div
+                data-widget-slice-target="input"
+                {% if not show_date_column%}hidden{%endif%}
+              >
                 <p class="input__help-text">{{ form.date_column.help_text }}</p>
                 <div class='flex flex-row items-center gap-2'>
                   {{form.date_column}}
@@ -217,12 +220,14 @@
                 </div>
               </div>
             <button 
-              class="button button--sm {% if show_date_column %}hidden{%endif%}"
+              class="button button--sm"
               data-widget-slice-target='addButton' 
               type='button' 
               data-action="widget-slice#add" 
               data-turbo='false'
-            ><i class='fa fa-plus'></i> Add date control column
+              {% if show_date_column %}hidden{%endif%}
+            >
+              <i class='fa fa-plus'></i> Add date control column
             </button>
             </div>
           

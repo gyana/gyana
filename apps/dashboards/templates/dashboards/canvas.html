@@ -11,7 +11,7 @@
     <form
       method="post"
       action="{% url 'dashboard_widgets:create' project.id dashboard.id %}?mode=edit"
-      class="hidden"
+      hidden
       data-canvas-target="form"
     >
       {% csrf_token %}
@@ -24,9 +24,9 @@
       <button type="submit"></button>
     </form>
     <form
-      method="post"
+      method="POST"
       action="{% url 'dashboard_controls:create-widget' project.id dashboard.id %}"
-      class="hidden"
+      hidden
       data-canvas-target="formControl"
     >
       {% csrf_token %}
