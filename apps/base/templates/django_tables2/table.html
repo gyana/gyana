@@ -61,31 +61,46 @@
 {% block pagination %}
 {% if table.page and table.paginator.num_pages > 1 %}
 <ul class="pagination">
-  {% if table.page.has_previous %}
   {% block pagination.previous %}
   <li class="previous">
-    <a
-      href="{% firstof table.attrs.url request.path%}{% querystring table.prefixed_page_field=table.page.previous_page_number %}"
-      data-turbo-loading
-    >
-      <i class="far fa-sm fa-chevron-left"></i>
-    </a>
+    {% if table.page.has_previous %}
+      <a
+        href="{% firstof table.attrs.url request.path %}{% querystring table.prefixed_page_field=table.page.previous_page_number %}"
+        data-turbo-loading
+      >
+        <i class="far fa-sm fa-chevron-left"></i>
+      </a>
+    {% else %}
+      <a>
+        <i class="far fa-sm fa-chevron-left text-black-10"></i>
+      </a>
+    {% endif %}
   </li>
   {% endblock pagination.previous %}
-  {% endif %}
+
   {% if table.page.has_previous or table.page.has_next %}
   {% block pagination.range %}
   {% for p in table.page|table_page_range:table.paginator %}
   <li {% if p == table.page.number %}class="active"{% endif %}>
     {% if p == '...' %}
-    <a>{{ p }}</a>
+      <form class="form--no-layout" action="{% firstof table.attrs.url request.path %}">
+        <input
+          class="input" 
+          max={{ table.paginator.num_pages }}
+          min="1"
+          name="page"
+          placeholder="..."
+          type="number"
+          required
+        /> 
+      </form>
     {% else %}
-    <a
-      href="{% firstof table.attrs.url request.path%}{% querystring table.prefixed_page_field=p %}"
-      data-turbo-loading
-    >
-      {{ p }}
-    </a>
+      <a
+        href="{% firstof table.attrs.url request.path%}{% querystring table.prefixed_page_field=p %}"
+        data-turbo-loading
+      >
+        {{ p }}
+      </a>
     {% endif %}
   </li>
   {% endfor %}
@@ -95,7 +110,7 @@
   {% block pagination.next %}
   <li class="next">
     <a
-      href="{% firstof table.attrs.url request.path%}{% querystring table.prefixed_page_field=table.page.next_page_number %}"
+      href="{% firstof table.attrs.url request.path %}{% querystring table.prefixed_page_field=table.page.next_page_number %}"
       data-turbo-loading
     >
       <i class="far fa-sm fa-chevron-right"></i>

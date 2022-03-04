@@ -1,3 +1,5 @@
+@use 'utilities' as u;
+
 .table {
   border-collapse: separate;
   border-spacing: 0;
@@ -192,21 +194,44 @@
   border-top: 1px solid var(--c-gray);
   bottom: 0;
   display: flex;
-  gap: 1.6rem;
   height: 3.2rem;
   justify-content: center;
   left: 0;
   position: sticky;
   width: 100%;
 
+  a {
+    padding: u.size('xs') u.size('sm');
+
+    &:hover {
+      text-decoration: underline;
+      color: var(--c-blue-50);
+    }
+  }
+
   li.active a {
     color: var(--c-blue);
     font-weight: 500;
   }
 
-  a:hover {
-    text-decoration: underline;
-    color: var(--c-blue-50);
+  .form--no-layout {
+    display: inline;
+  }
+
+  .input {
+    -moz-appearance: textfield;
+    border: 0;
+    color: inherit;
+    font-size: inherit;
+    padding: 0;
+    text-align: center;
+    width: u.size('lg');
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
   }
 }
 
