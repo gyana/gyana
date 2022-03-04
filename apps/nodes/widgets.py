@@ -20,6 +20,6 @@ class InputNode(ChoiceWidget):
             for option in self.choices.queryset
         ]
 
-        context["widget"]["selected"] = f"{value}"
+        context["widget"]["selected"] = value
         context["widget"]["name"] = name
         return context

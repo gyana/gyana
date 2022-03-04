@@ -1,6 +1,6 @@
 import { Controller } from '@hotwired/stimulus'
 
-const debounceTime = 300
+const debounceTime = 450
 
 /**
  * Modal controller with content populated by a turbo-frame.
@@ -174,11 +174,11 @@ export default class extends Controller {
 
   search(event) {
     if (this.debounce) clearTimeout(this.debounce)
-    this.debounce = setTimeout(this.handleSearch(), debounceTime)
+    this.debounce = setTimeout(this.handleSearch.bind(this, event), debounceTime)
   }
 
-  handleSearch() {
-    this.formTarget.requestSubmit(this.formTarget.querySelector("button[value*='close']"))
+  handleSearch(event) {
+    this.liveUpdateController.updateForm(event)
   }
 
   handleKeyup(event) {
@@ -191,5 +191,9 @@ export default class extends Controller {
     if (this.hasTurboFrameTarget && !this.turboFrameTarget.contains(event.target)) {
       this.close(event)
     }
+  }
+
+  get liveUpdateController() {
+    return this.application.getControllerForElementAndIdentifier(this.formTarget, "live-update")
   }
 }

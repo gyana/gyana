@@ -3,7 +3,7 @@
 <fieldset name="{{ widget.name }}">
  {% for option in widget.options %}
  <label 
-    class="checkbox checkbox--radio checkbox--icon {% if option.id|stringformat:'i' == widget.selected %}checkbox--checked{% endif %}"
+    class="checkbox checkbox--radio checkbox--icon {% if option.id == widget.selected %}checkbox--checked{% endif %}"
     id="{{ option.id }}"
   >
     <input 

@@ -60,6 +60,11 @@ class InputNodeForm(NodeForm):
 
         self.order_fields(["search", "input_table"])
         self.fields["search"].widget.attrs["data-action"] = "input->tf-modal#search"
+
+        # Re-focus the search bar when there is a value
+        if self.data.get("search"):
+            self.fields["search"].widget.attrs["autofocus"] = ""
+            
         self.fields["input_table"].queryset = (
             Table.available.filter(project=self.instance.workflow.project)
             .exclude(
