@@ -83,15 +83,34 @@
   bottom: 0;
   display: inline-flex;
   font-size: 1.2rem;
-  gap: u.size('xs');
+  gap: u.size('sm');
   justify-content: center;
   left: 50%;
   line-height: 0;
   margin: u.size('base') auto 0 auto;
-  padding: 1.2rem;
+  padding: u.size('sm');
   position: sticky;
   transform: translateX(-50%);
   width: max-content;
 
   @include u.shadow;
+
+  .form--no-layout {
+    display: inline;
+  }
+
+  .input {
+    -moz-appearance: textfield;
+    color: inherit;
+    font-size: inherit;
+    padding: 0.2rem 0;
+    text-align: center;
+    width: u.size('lg');
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+  }
 }

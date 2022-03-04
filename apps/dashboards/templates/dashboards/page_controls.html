@@ -1,54 +1,46 @@
+{% url 'project_dashboards:detail' project.id object.id as dashboard_detail %}
+{% firstof request.GET.mode 'edit' as mode %}
+
 <div class="page-controls">
   {% if previous_page == 0 %}
     <i class="fas fa-fw fa-chevron-left text-gray"></i>
   {% else %}
-    <a href="{% url 'project_dashboards:detail' project.id object.id %}?dashboardPage={{ previous_page}}&mode={{request.GET.mode}}">
+    <a href="{{ dashboard_detail }}?dashboardPage={{ previous_page }}&mode={{ mode }}">
       <i class="fas fa-fw fa-chevron-left"></i>
     </a>
   {% endif %}
 
-  Page {{ page.position }} of {{ page_count }}
+  <span>
+    Page
+    <form class="form--no-layout" action="{{ dashboard_detail }}?mode={{ mode }}">
+      <input class="input" type="number" min="1" max={{ page_count }} value="{{ page.position }}" name="dashboardPage" required> 
+    </form>
+    of {{ page_count }}
+  </span>
 
   {% if next_page > page_count and request.GET.mode == "view" %}
-  <i class="fas fa-fw fa-chevron-right text-black-20"></i>
+    <i class="fas fa-fw fa-chevron-right text-black-20"></i>
   {% elif next_page > page_count %}
-  <form
-    method="POST"
-    action="{% url "project_dashboards:page-create" project.id object.id %}"
-    data-controller="tooltip"
-    data-tooltip-content="Add new page"
-    class="form--no-layout"
-  >
-    {% csrf_token %}
-
-    <button
-      type="submit"
-      id="dashboards-add-page-{{ object.id }}"
-      data-loading-false
+    <form
+      method="POST"
+      action="{% url "project_dashboards:page-create" project.id object.id %}"
+      data-controller="tooltip"
+      data-tooltip-content="Add new page"
+      class="form--no-layout"
     >
-      <i class="fa fa-fw fa-plus mr-2"></i>
-    </button>
-  </form>
+      {% csrf_token %}
+
+      <button
+        type="submit"
+        id="dashboards-add-page-{{ object.id }}"
+        data-loading-false
+      >
+        <i class="fa fa-fw fa-plus"></i>
+      </button>
+    </form>
   {% else %}
-    <a href="{% url 'project_dashboards:detail' project.id object.id %}?dashboardPage={{ next_page }}&mode={{request.GET.mode}}">
+    <a href="{{ dashboard_detail }}?dashboardPage={{ next_page }}&mode={{ mode }}">
       <i class="fas fa-fw fa-chevron-right"></i>
     </a>
   {% endif %}
 </div>
-
-{% comment %} <form
-  method="POST"
-  action="{% url "project_dashboards:page-create" project.id object.id %}"
-  class="form--no-layout"
->
-  {% csrf_token %}
-
-  <button
-    type="submit"
-    class="button button--sm button--tertiary"
-    id="dashboards-add-page-{{ object.id }}-topbar"
-    data-loading-false
-  >
-    <i class="fa fa-plus mr-2"></i> Add new page
-  </button>
-</form> {% endcomment %}
