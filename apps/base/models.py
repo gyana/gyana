@@ -1,6 +1,7 @@
 from dirtyfields import DirtyFieldsMixin
 from django.db import models
 from django.utils import timezone
+from simple_history.models import HistoricalRecords
 
 from .clone import CloneMixin
 
@@ -28,6 +29,7 @@ class SaveParentModel(DirtyFieldsMixin, BaseModel):
         abstract = True
 
     _clone_excluded_m2o_or_o2m_fields = ["widget", "node"]
+    history = HistoricalRecords(inherit=True)
 
     def save(self, *args, **kwargs) -> None:
         if self.is_dirty():

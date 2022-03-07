@@ -11,6 +11,7 @@ from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext_lazy
+from simple_history.models import HistoricalRecords
 
 from apps.base.models import BaseModel
 from apps.projects.models import Project
@@ -66,6 +67,8 @@ class Dashboard(DashboardSettings, BaseModel):
         PRIVATE = "private", "Private"
         PUBLIC = "public", "Public"
         PASSWORD_PROTECTED = "password_protected", "Password Protected"
+
+    history = HistoricalRecords()
 
     name = models.CharField(max_length=255, default="Untitled")
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
@@ -151,6 +154,8 @@ class Dashboard(DashboardSettings, BaseModel):
 class Page(BaseModel):
     class Meta:
         unique_together = ("dashboard", "position")
+
+    history = HistoricalRecords()
 
     dashboard = models.ForeignKey(
         Dashboard, on_delete=models.CASCADE, related_name="pages"
