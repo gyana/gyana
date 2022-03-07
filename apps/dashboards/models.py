@@ -150,6 +150,10 @@ class Dashboard(DashboardSettings, BaseModel):
             attrs["shared_id"] = uuid4()
         return super().make_clone(attrs, sub_clone, using)
 
+    @property
+    def versions(self):
+        self.history.filter(version__isnull=False).all()
+
 
 class Page(BaseModel):
     class Meta:
@@ -168,6 +172,12 @@ class Page(BaseModel):
 
     def get_absolute_url(self):
         return f'{reverse("project_dashboards:detail", args=(self.dashboard.project.id, self.dashboard.id))}?dashboardPage={self.position}'
+
+
+class DashboardVersion(BaseModel):
+    dashboard = models.OneToOneField(
+        Dashboard.history.model, on_delete=models.CASCADE, related_name="version"
+    )
 
 
 DASHBOARD_SETTING_TO_CATEGORY = {
