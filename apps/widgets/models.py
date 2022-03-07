@@ -245,6 +245,10 @@ class Widget(WidgetStyle, BaseModel):
             if self.page.has_control:
                 return "page_controlled"
 
+    def save(self, **kwargs):
+        self.page.dashboard.save()
+        return super().save(**kwargs)
+
 
 NO_DIMENSION_WIDGETS = [
     Widget.Kind.RADAR,

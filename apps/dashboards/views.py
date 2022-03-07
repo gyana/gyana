@@ -1,4 +1,3 @@
-
 import analytics
 from django.db.models.query import QuerySet
 from django.http import HttpResponseRedirect
@@ -159,7 +158,7 @@ class DashboardDuplicate(TurboUpdateView):
 
         clone = self.object.make_clone(
             attrs={
-                "name": "Copy of " + self.object.name,
+                "name": f"Copy of {self.object.name}",
                 "shared_id": None,
                 "shared_status": Dashboard.SharedStatus.PRIVATE,
             }

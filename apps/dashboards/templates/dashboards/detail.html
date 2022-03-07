@@ -69,6 +69,18 @@
                        href="{% url "project_dashboards:delete" project.id object.id %}">
                         Delete
                     </a>
+                    <turbo-frame id='dashboard:save'></turbo-frame>
+                    <form method="POST"
+                          action="{% url "project_dashboards:save" project.id object.id %}"
+                          class="form--no-layout">
+                        {% csrf_token %}
+                        <button type="submit"
+                                class="list__item list__item--interactive w-full"
+                                id="dashboards-duplicate-{{ object.id }}"
+                                data-loading-false>
+                                Save current version
+                        </button>
+                    </form>
                     <a class="list__item list__item--interactive w-full"
                        data-controller="popover"
                        data-trigger="mouseenter focus"

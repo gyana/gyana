@@ -10,12 +10,13 @@ from apps.base.frames import (
     TurboFrameUpdateView,
 )
 from apps.dashboards.forms import DashboardShareForm
+from apps.dashboards.tables import DashboardHistoryTable
 from apps.projects.mixins import ProjectMixin
 from apps.widgets.models import Widget
 from apps.widgets.tables import WidgetHistory
 
 from .forms import DashboardForm
-from .models import Dashboard
+from .models import Dashboard, DashboardVersion
 
 
 class DashboardOverview(ProjectMixin, TurboFrameTemplateView):
@@ -121,9 +122,21 @@ class DashboardSettings(ProjectMixin, TurboFrameUpdateView):
 class DashboardHistory(ProjectMixin, SingleTableMixin, TurboFrameDetailView):
     template_name = "dashboards/history.html"
     model = Dashboard
-    table_class = WidgetHistory
+    table_class = DashboardHistoryTable
     paginate_by = 20
     turbo_frame_dom_id = "dashboard:history"
 
     def get_table_data(self):
-        return self.object.widget_history
+        return self.object.versions
+
+
+class DashboardVersionSave(ProjectMixin, TurboFrameUpdateView):
+    model = Dashboard
+    fields = []
+    template_name = "dashboards/save.html"
+    turbo_frame_dom_id = "dashboard:save"
+
+    def form_valid(self, form):
+        most_recent_history = form.instance.history.latest()
+        DashboardVersion(dashboard=most_recent_history).save()
+        return super().form_valid(form)
