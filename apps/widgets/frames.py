@@ -378,9 +378,10 @@ class WidgetOutput(DashboardMixin, SingleTableMixin, TurboFrameDetailView):
         return f"widgets-output-{self.object.id}{source}"
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["project"] = self.dashboard.project
+        context = None
         try:
+            context = super().get_context_data(**kwargs)
+
             add_output_context(
                 context,
                 self.object,
@@ -388,6 +389,14 @@ class WidgetOutput(DashboardMixin, SingleTableMixin, TurboFrameDetailView):
                 self.page.control if self.page.has_control else None,
             )
         except Exception as e:
+            if context is None:
+                context = {
+                    "dashboard": self.dashboard,
+                    "page": self.page,
+                    "project": self.dashboard.project,
+                    "object": self.object,
+                    "widget": self.object,
+                }
             error_template = f"widgets/errors/{error_name_to_snake(e)}.html"
             if template_exists(error_template):
                 context["error_template"] = error_template

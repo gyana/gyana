@@ -47,6 +47,25 @@
     transform: translate(-50%, -50%);
     width: max-content;
   }
+
+  &__error {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 0%;
+    justify-content: center;
+    align-items: center;
+    padding: 2.5rem;
+
+    i {
+      margin-bottom: 0.25rem;
+      font-size: 2em;
+    }
+  }
+
+  &__error-text {
+    white-space: normal;
+    text-align: center;
+  }
 }
 
 .metric {
