@@ -3,11 +3,24 @@
 <section class="flex flex-col h-full whitespace-normal">
     <div class="workflow-detail__header">
         <h3 class="mr-auto">History</h3>
+        
         <button class="tf-modal__close"
                 data-action="click->tf-modal#close"
                 data-loading-false>
             <i class="fal fa-times fa-lg"></i>
         </button>
     </div>
-    {% render_table table %}
+    <div class="pad">
+      <p class="mb-2">
+        You can revert to previously saved versions by clicking on the Restore button.
+      </p>
+      <p class="alert mb-2">
+        Restoring will recreate the frame of the dashboard but not the underlying data.
+        This can lead to the dashboard looking different compared to when it was saved or widgets
+        breaking if datasources have been changed or removed.
+      </p>
+      <div class="card card--none">
+        {% render_table table %}
+      </div>
+    </div>
 </section>

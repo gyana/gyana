@@ -28,7 +28,7 @@ class NaturalDayColumn(tables.Column):
         return get_template("columns/natural_day.html").render(context.flatten())
 
 
-class DuplicateColumn(tables.TemplateColumn):
+class TemplateColumn(tables.TemplateColumn):
     def render(self, record, table, **kwargs):
         context = getattr(table, "context", Context())
         context["object"] = record

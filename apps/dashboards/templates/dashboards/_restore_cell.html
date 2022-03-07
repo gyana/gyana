@@ -1,0 +1,13 @@
+<form 
+  method="post"
+  action="{% url 'dashboards:restore' object.id %}"
+  class="form--no-layout"
+>
+  {% csrf_token %}
+  <button type="submit" 
+    data-controller='tooltip' 
+    data-tooltip-content="Restore current dashboard to this version"
+  >
+    <i class="fa fa-fw fa-undo"></i> Restore
+  </button>
+</form>

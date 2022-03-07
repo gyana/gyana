@@ -94,7 +94,8 @@ wagtail = "^2.15.1"
 readtime = "^1.1.1"
 wagtailmenus = "^3.0.2"
 PyYAML = "^6.0"
-django-simple-history = "^3.0.0"
+# Until https://github.com/jazzband/django-simple-history/pull/866 is released
+django-simple-history = {git = "https://github.com/jazzband/django-simple-history", branch="master"}
   
 [tool.poetry.dev-dependencies]
 isort = "^5.7.0"

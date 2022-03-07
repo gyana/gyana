@@ -9,6 +9,7 @@ from .access import (
     dashboard_is_password_protected,
     dashboard_is_public,
     login_and_dashboard_required,
+    login_and_dashboardversion_required,
 )
 
 app_name = "dashboards"
@@ -45,6 +46,11 @@ urlpatterns = [
         "<hashid:pk>/preview",
         dashboard_is_in_template(frames.DashboardPreview.as_view()),
         name="preview",
+    ),
+    path(
+        "restore/<hashid:pk>",
+        login_and_dashboardversion_required(views.DashboardRestore.as_view()),
+        name="restore",
     ),
 ]
 

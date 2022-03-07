@@ -8,7 +8,7 @@ from django.urls import reverse
 from apps.base.access import login_and_permission_to_access
 from apps.projects.access import user_can_access_project
 
-from .models import Dashboard
+from .models import Dashboard, DashboardVersion
 
 
 def dashboard_of_team(user, pk, *args, **kwargs):
@@ -17,6 +17,18 @@ def dashboard_of_team(user, pk, *args, **kwargs):
 
 
 login_and_dashboard_required = login_and_permission_to_access(dashboard_of_team)
+
+
+def dashboard_version_of_team(user, pk, *args, **kwargs):
+    dashboard_version = get_object_or_404(DashboardVersion, pk=pk)
+    return user_can_access_project(
+        user, dashboard_version.historical_dashboard.instance.project
+    )
+
+
+login_and_dashboardversion_required = login_and_permission_to_access(
+    dashboard_version_of_team
+)
 
 
 def can_access_password_protected_dashboard(request, dashboard) -> bool:

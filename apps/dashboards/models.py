@@ -152,7 +152,9 @@ class Dashboard(DashboardSettings, BaseModel):
 
     @property
     def versions(self):
-        return DashboardVersion.objects.filter(dashboard__in=self.history.all())
+        return DashboardVersion.objects.filter(
+            historical_dashboard__in=self.history.all()
+        )
 
 
 class Page(BaseModel):
@@ -175,7 +177,7 @@ class Page(BaseModel):
 
 
 class DashboardVersion(BaseModel):
-    dashboard = models.OneToOneField(
+    historical_dashboard = models.OneToOneField(
         Dashboard.history.model, on_delete=models.CASCADE, related_name="version"
     )
 
@@ -183,10 +185,21 @@ class DashboardVersion(BaseModel):
         from apps.widgets.models import Widget
 
         dashboard = self.historical_dashboard.instance
-        for historical_widget in Widget.history.filter(page__dashboard=dashboard).as_of(
-            self.historical_dashboard.history_date
-        ):
-            historical_widget.save()
+
+        restore_widgets = (
+            Widget.history.as_of(self.historical_dashboard.history_date)
+            .filter(
+                page__dashboard=dashboard,
+            )
+            .all()
+        )
+
+        for widget in restore_widgets:
+            widget.save()
+        for widget in dashboard.widgets.exclude(
+            id__in=restore_widgets.values_list("id")
+        ).all():
+            widget.delete()
 
 
 DASHBOARD_SETTING_TO_CATEGORY = {
