@@ -1,3 +1,5 @@
+from uuid import uuid4
+
 from django.conf import settings
 from django.contrib.auth import password_validation
 from django.contrib.auth.hashers import (
@@ -70,7 +72,7 @@ class Dashboard(DashboardSettings, BaseModel):
     shared_status = models.CharField(
         max_length=20, default=SharedStatus.PRIVATE, choices=SharedStatus.choices
     )
-    shared_id = models.UUIDField(null=True, blank=True)
+    shared_id = models.UUIDField(null=True, blank=True, unique=True)
     password = models.CharField(gettext_lazy("password"), max_length=128, null=True)
     password_set = models.DateTimeField(null=True, editable=False)
 
@@ -139,6 +141,11 @@ class Dashboard(DashboardSettings, BaseModel):
         from apps.widgets.models import Widget
 
         return Widget.history.filter(page__dashboard=self).all()
+
+    def make_clone(self, attrs=None, sub_clone=False, using=None):
+        if self.shared_id:
+            attrs["shared_id"] = uuid4()
+        return super().make_clone(attrs, sub_clone, using)
 
 
 class Page(BaseModel):
