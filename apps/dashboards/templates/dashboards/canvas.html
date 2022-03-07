@@ -9,6 +9,7 @@
   >
     {% comment %} Hidden form used by canvas controller {% endcomment %}
     <form
+      id="dashboard-widget-create-form"
       method="post"
       action="{% url 'dashboard_widgets:create' project.id dashboard.id %}?mode=edit"
       hidden

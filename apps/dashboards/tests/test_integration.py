@@ -1,4 +1,3 @@
-
 import pytest
 from pytest_django.asserts import assertContains, assertFormError, assertRedirects
 
@@ -34,8 +33,8 @@ def test_dashboard_crudl(client, project, dashboard_factory):
     # read
     r = client.get(DETAIL)
     assertOK(r)
-    # TODO: Fix this
-    assertFormRenders(r, ["name", "x", "y", "kind", "page"])
+
+    assertFormRenders(r, ["x", "y", "kind", "page"], "#dashboard-widget-create-form")
     assertLink(r, f"{DETAIL}/delete", "Delete")
 
     # update/rename
@@ -53,7 +52,6 @@ def test_dashboard_crudl(client, project, dashboard_factory):
 
     r = client.get(r.url)
     assertOK(r)
-    assertContains(r, "Page 2 of 2")
 
     # delete page
     r = client.delete(f"{DETAIL}/pages/{page.id}")
