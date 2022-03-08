@@ -14,6 +14,7 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy
 from simple_history.models import HistoricalRecords
 
+from apps.base.core.utils import restore_and_delete
 from apps.base.models import BaseModel
 from apps.projects.models import Project
 
@@ -180,24 +181,24 @@ class DashboardVersion(BaseModel):
     )
 
     def restore(self):
+        """Restores a dashboard at the creation of the version.
+
+        Loops through related and nested children models and restores them as well.
+        Widgets restore their own relationships notably columns and filters.
+        The other models are restored here in a "flatter" approach."""
+
         from apps.controls.models import Control, ControlWidget
         from apps.widgets.models import Widget
 
         self.dashboard.history.as_of(self.created).save()
 
-        restore_pages = (
+        to_restore_pages = (
             Page.history.as_of(self.created).filter(dashboard=self.dashboard).all()
         )
 
-        for page in restore_pages:
-            page.save()
+        restore_and_delete(to_restore_pages, self.dashboard.pages)
 
-        for page in self.dashboard.pages.exclude(
-            id__in=restore_pages.values_list("id")
-        ).all():
-            page.delete()
-
-        restore_widgets = (
+        to_restore_widgets = (
             Widget.history.as_of(self.created)
             .filter(
                 page__dashboard=self.dashboard,
@@ -205,14 +206,14 @@ class DashboardVersion(BaseModel):
             .all()
         )
 
-        for widget in restore_widgets:
+        for widget in to_restore_widgets:
             widget.restore_as_of(self.created)
         for widget in self.dashboard.widgets.exclude(
-            id__in=restore_widgets.values_list("id")
+            id__in=to_restore_widgets.values_list("id")
         ).all():
             widget.delete()
 
-        restore_controls = (
+        to_restore_controls = (
             Control.history.as_of(self.created)
             .filter(
                 Q(page__dashboard=self.dashboard)
@@ -220,34 +221,21 @@ class DashboardVersion(BaseModel):
             )
             .all()
         )
+        restore_and_delete(
+            to_restore_controls, Control.objects.filter(page__dashboard=self.dashboard)
+        )
 
-        for control in restore_controls:
-            control.save()
-
-        for control in (
-            Control.objects.filter(page__dashboard=self.dashboard)
-            .exclude(id__in=restore_controls.values_list("id"))
-            .all()
-        ):
-            control.delete()
-
-        restore_control_widgets = (
+        to_restore_control_widgets = (
             ControlWidget.history.as_of(self.created)
             .filter(
                 page__dashboard=self.dashboard,
             )
             .all()
         )
-
-        for control_widget in restore_control_widgets:
-            control_widget.save()
-
-        for control_widget in (
-            ControlWidget.objects.filter(page__dashboard=self.dashboard)
-            .exclude(id__in=restore_control_widgets.values_list("id"))
-            .all()
-        ):
-            control_widget.delete()
+        restore_and_delete(
+            to_restore_control_widgets,
+            ControlWidget.objects.filter(page__dashboard=self.dashboard),
+        )
 
 
 DASHBOARD_SETTING_TO_CATEGORY = {
