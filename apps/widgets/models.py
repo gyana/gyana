@@ -250,6 +250,8 @@ class Widget(WidgetStyle, BaseModel):
         from apps.columns.models import AggregationColumn, Column
         from apps.filters.models import Filter
 
+        self.save()
+
         to_restore_columns = (
             Column.history.as_of(history_date).filter(widget=self).all()
         )
@@ -264,8 +266,6 @@ class Widget(WidgetStyle, BaseModel):
             Filter.history.as_of(history_date).filter(widget=self).all()
         )
         restore_and_delete(to_restore_filters, self.filters)
-
-        self.save()
 
         # TODO: add control
         # to_restore_control = self.control.history.as_of(history_date)

@@ -151,12 +151,6 @@ class Dashboard(DashboardSettings, BaseModel):
             attrs["shared_id"] = uuid4()
         return super().make_clone(attrs, sub_clone, using)
 
-    @property
-    def versions(self):
-        return DashboardVersion.objects.filter(
-            historical_dashboard__in=self.history.all()
-        )
-
 
 class Page(BaseModel):
     class Meta:
@@ -181,13 +175,15 @@ class Page(BaseModel):
 # For the other models. Hopefully, this is robust even in the event of children not
 # propagating their update to their parents.
 class DashboardVersion(BaseModel):
-    dashboard = models.OneToOneField(
-        Dashboard, on_delete=models.CASCADE, related_name="version"
+    dashboard = models.ForeignKey(
+        Dashboard, on_delete=models.CASCADE, related_name="versions"
     )
 
     def restore(self):
         from apps.controls.models import Control, ControlWidget
         from apps.widgets.models import Widget
+
+        self.dashboard.history.as_of(self.created).save()
 
         restore_pages = (
             Page.history.as_of(self.created).filter(dashboard=self.dashboard).all()
@@ -252,8 +248,6 @@ class DashboardVersion(BaseModel):
             .all()
         ):
             control_widget.delete()
-
-        self.dashboard.history.as_of(self.created).save()
 
 
 DASHBOARD_SETTING_TO_CATEGORY = {
