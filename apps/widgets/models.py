@@ -6,6 +6,7 @@ from simple_history.models import HistoricalRecords
 
 from apps.base.clients import SLUG
 from apps.base.core.aggregations import AggregationFunctions
+from apps.base.core.utils import restore_and_delete
 from apps.base.models import BaseModel, SaveParentModel
 from apps.columns.bigquery import DatePeriod
 from apps.columns.currency_symbols import CurrencySymbols
@@ -248,6 +249,30 @@ class Widget(WidgetStyle, BaseModel):
     def save(self, **kwargs):
         self.page.dashboard.save()
         return super().save(**kwargs)
+
+    def restore_as_of(self, history_date):
+        from apps.columns.models import AggregationColumn, Column
+        from apps.filters.models import Filter
+
+        to_restore_columns = (
+            Column.history.as_of(history_date).filter(widget=self).all()
+        )
+        restore_and_delete(to_restore_columns, self.columns)
+
+        to_restore_aggregations = (
+            AggregationColumn.history.as_of(history_date).filter(widget=self).all()
+        )
+        restore_and_delete(to_restore_aggregations, self.aggregations)
+
+        to_restore_filters = (
+            Filter.history.as_of(history_date).filter(widget=self).all()
+        )
+        restore_and_delete(to_restore_filters, self.filters)
+
+        self.save()
+
+        # TODO: add control
+        # to_restore_control = self.control.history.as_of(history_date)
 
 
 NO_DIMENSION_WIDGETS = [

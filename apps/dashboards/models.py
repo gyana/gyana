@@ -182,12 +182,25 @@ class DashboardVersion(BaseModel):
     )
 
     def restore(self):
+        from apps.controls.models import Control, ControlWidget
         from apps.widgets.models import Widget
 
         dashboard = self.historical_dashboard.instance
+        history_date = self.historical_dashboard.history_date
+        restore_pages = (
+            Page.history.as_of(history_date).filter(dashboard=dashboard).all()
+        )
+
+        for page in restore_pages:
+            page.save()
+
+        for page in dashboard.pages.exclude(
+            id__in=restore_pages.values_list("id")
+        ).all():
+            page.delete()
 
         restore_widgets = (
-            Widget.history.as_of(self.historical_dashboard.history_date)
+            Widget.history.as_of(history_date)
             .filter(
                 page__dashboard=dashboard,
             )
@@ -195,11 +208,47 @@ class DashboardVersion(BaseModel):
         )
 
         for widget in restore_widgets:
-            widget.save()
+            widget.restore_as_of(history_date)
         for widget in dashboard.widgets.exclude(
             id__in=restore_widgets.values_list("id")
         ).all():
             widget.delete()
+
+        restore_controls = (
+            Control.history.as_of(history_date)
+            .filter(
+                page__dashboard=dashboard,
+            )
+            .all()
+        )
+
+        for control in restore_controls:
+            control.save()
+
+        for control in (
+            Control.objects.filter(page__dashboard=dashboard)
+            .exclude(id__in=restore_controls.values_list("id"))
+            .all()
+        ):
+            control.delete()
+
+        restore_control_widgets = (
+            ControlWidget.history.as_of(history_date)
+            .filter(
+                page__dashboard=dashboard,
+            )
+            .all()
+        )
+
+        for control_widget in restore_control_widgets:
+            control_widget.save()
+
+        for control_widget in (
+            ControlWidget.objects.filter(page__dashboard=dashboard)
+            .exclude(id__in=restore_control_widgets.values_list("id"))
+            .all()
+        ):
+            control_widget.delete()
 
 
 DASHBOARD_SETTING_TO_CATEGORY = {

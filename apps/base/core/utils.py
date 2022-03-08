@@ -40,3 +40,13 @@ def default_json_encoder(obj):
     if isinstance(obj, (dt.date, dt.datetime, dt.time)):
         return obj.isoformat()
     raise TypeError("Object of type '%s' is not JSON serializable" % type(obj).__name__)
+
+
+def restore_and_delete(to_restore_instances, delete_queryset):
+    for instance in to_restore_instances:
+        instance.save()
+
+    for instance in delete_queryset.exclude(
+        id__in=to_restore_instances.values_list("id")
+    ).all():
+        instance.delete()
