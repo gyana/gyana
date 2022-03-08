@@ -1,4 +1,3 @@
-
 import analytics
 from django.db.models.query import QuerySet
 from django.http import HttpResponseRedirect
@@ -286,3 +285,39 @@ class PageDelete(DashboardMixin, DeleteView):
 
     def get_success_url(self) -> str:
         return f"{reverse('project_dashboards:detail', args=(self.project.id, self.dashboard.id))}?dashboardPage={min(self.object.position, self.dashboard.pages.count()-1)}"
+
+
+class PageMove(DashboardMixin, TurboUpdateView):
+    model = Page
+    fields = []
+    template_name = "dashboards/forms/move_page.html"
+
+    def form_valid(self, form):
+        page = self.get_object()
+        destination = int(form.data["position"])
+
+        if page.position == destination:
+            return HttpResponseRedirect(self.get_success_url())
+
+        if page.position < int(destination):
+            following_pages = list(self.dashboard.pages.filter(position__gt=page.position, position__lte=destination))
+
+            for dashboard_page in following_pages:
+                dashboard_page.position = dashboard_page.position - 1
+            
+            page.position = destination
+            Page.objects.bulk_update(following_pages + [page], ["position"])
+
+        if page.position > int(destination):
+            preceding_pages = list(self.dashboard.pages.filter(position__gte=destination, position__lt=page.position))
+
+            for dashboard_page in preceding_pages:
+                dashboard_page.position = dashboard_page.position + 1
+            
+            page.position = destination
+            Page.objects.bulk_update(preceding_pages + [page], ["position"])
+
+        return HttpResponseRedirect(self.get_success_url())
+
+    def get_success_url(self) -> str:
+        return f"{reverse('project_dashboards:detail', args=(self.project.id, self.dashboard.id),)}?dashboardPage={self.get_object().position}"

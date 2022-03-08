@@ -47,6 +47,7 @@ preview mode.
           data-theme="popover-menu"
         >
           <button
+            id="widget-card__more-button"
             class="widget-card__button"
             data-popover-target="trigger" 
           >
@@ -89,12 +90,13 @@ preview mode.
               data-placement="right"
               data-theme="popover-menu"
             >
-              <button
-                data-popover-target="trigger" 
+              <button 
                 class="list__item list__item--interactive w-full"
+                data-popover-target="trigger"
               >
                 Move to page
               </button>
+
               <div data-popover-target="body">
                 {% include 'widgets/forms/move_page.html' %}
               </div>

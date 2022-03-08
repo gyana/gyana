@@ -1,12 +1,12 @@
 <form 
   method="post"
   action="{% url 'dashboard_widgets:move_page' project.id dashboard.id object.id %}"
-  class="form--no-layout"
   target="_top"
   data-controller="autosubmit"
   data-action="change->autosubmit#onchange"
 >
   {% csrf_token %}
+
   <select name='page' id="page" class="list__item list__item--interactive w-full">
     {% for page in object.page.dashboard.pages.all %}
         <option 

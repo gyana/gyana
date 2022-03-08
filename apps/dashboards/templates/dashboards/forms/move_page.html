@@ -1,0 +1,20 @@
+<form 
+  method="POST"
+  action="{% url 'project_dashboards:page-move' project.id object.id page.id %}"
+  target="_top"
+  data-controller="autosubmit"
+  data-action="change->autosubmit#onchange"
+>
+  {% csrf_token %}
+
+  <select name="position" id="position" class="list__item list__item--interactive w-full">
+    {% for dashboard_page in object.pages.all %}
+      <option 
+        value="{{ dashboard_page.position }}"
+        {% if dashboard_page.position == page.position %}data-autosubmit-target="selected"{% endif %}
+      >
+        {{ dashboard_page.position }}
+      </option>
+    {% endfor %}
+  </select>
+</form>

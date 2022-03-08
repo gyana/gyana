@@ -2,7 +2,7 @@
 {% load waffle_tags %}
 
 {% block app-class %}
-    overflow-hidden
+  overflow-hidden
 {% endblock app-class %}
 
 {% block head.extra %}
@@ -31,172 +31,236 @@
   {% endif %}
 {% endblock head.extra %}
 {% block app %}
-    <div class="dashboard__header">
-        <turbo-frame id="dashboard-name" class="flex-1 mr-auto">
-        <form method="POST"
-              action="{% url "project_dashboards:detail" project.id object.id %}"
-              class="form--no-layout w-full">
-            {% csrf_token %}
-            <input class="input__inline mr-auto"
-                   id="name"
-                   type="text"
-                   name="name"
-                   value="{{ object.name }}"
-                   onBlur="this.form.requestSubmit();"/>
-        </form>
-        </turbo-frame>
-        {% if not request.GET.mode or request.GET.mode == "edit" %}
-            <div data-controller="popover"
-                 data-placement="bottom-start"
-                 data-theme="popover-menu">
-                <button data-popover-target="trigger"
-                        class="button button--sm button--tertiary">
-                    More <i class="fas fa-chevron-down"></i>
-                </button>
-                <template data-popover-target="body">
-                    <form method="POST"
-                          action="{% url "dashboards:duplicate" object.id %}"
-                          class="form--no-layout">
-                        {% csrf_token %}
-                        <button type="submit"
-                                class="list__item list__item--interactive w-full"
-                                id="dashboards-duplicate-{{ object.id }}"
-                                data-loading-false>
-                            Duplicate
-                        </button>
-                    </form>
-                    <a class="list__item list__item--interactive w-full"
-                       href="{% url "project_dashboards:delete" project.id object.id %}">
-                        Delete
-                    </a>
-                    <a class="list__item list__item--interactive w-full"
-                       data-controller="popover"
-                       data-trigger="mouseenter focus"
-                       data-placement="right-start"
-                       data-theme="popover-menu"
-                       data-popover-target="trigger">
-                        Page
-                        <div data-popover-target="body">
-                            <form method="POST"
-                                  action="{% url "project_dashboards:page-create" project.id object.id %}"
-                                  class="form--no-layout">
-                                {% csrf_token %}
-                                <button type="submit"
-                                        class="list__item list__item--interactive w-full"
-                                        id="dashboards-add-page-{{ object.id }}"
-                                        data-loading-false>
-                                    New page
-                                </button>
-                            </form>
-                            <form method="POST"
-                                  action="{% url "project_dashboards:page-delete" project.id object.id page.id %}"
-                                  class="form--no-layout">
-                                {% csrf_token %}
-                                <button type="submit"
-                                        {% if page_count == 1 %}disabled{% endif %}
-                                        class="list__item list__item--interactive w-full {% if page_count == 1 %}disabled{% endif %}"
-                                        id="dashboards-delete-page-{{ object.id }}"
-                                        data-loading-false>
-                                    Delete current page
-                                </button>
-                            </form>
-                        </div>
-                    </a>
-                </template>
-            </div>
-            {% flag 'alpha' %}
-                <div data-controller="tooltip">
-                    <button data-action="click->tf-modal#open"
-                            data-modal-id="dashboard:history"
-                            data-modal-classes="tf-modal--auto tf-modal--wide tf-modal--tall"
-                            data-modal-src="{% url "project_dashboards:history" project.id object.id %}?category=general"
-                            data-modal-target="_top"
-                            class="button button--sm button--tertiary">
-                        <i class="fas fa-fw fa-history"></i><span class='beta mr-4'>History</span>
-                    </button>
-                    <span data-tooltip-target="body">Show dashboard history</span>
-                </div>
-            {% endflag %}
-            <div data-controller="tooltip">
-                <button data-action="click->tf-modal#open"
-                        data-modal-id="dashboard:settings"
-                        data-modal-classes="tf-modal--auto tf-modal--wide tf-modal--tall"
-                        data-modal-src="{% url "project_dashboards:settings" project.id object.id %}?category=general"
-                        data-modal-target="_top"
-                        class="button button--sm button--tertiary">
-                    <i class="fas fa-fw fa-paint-brush"></i> Theme and Layout
-                </button>
-                <span data-tooltip-target="body">Customize dimensions, grid spacing and color palette</span>
-            </div>
-        {% endif %}
-        <div data-controller="tooltip">
-            {% if not request.GET.mode or request.GET.mode == "edit" %}
-                <a href="?mode=view&dashboardPage={{ page.position }}"
-                   class="button button--sm button--tertiary">
-                    <i class="fas fa-fw fa-eye"></i> Preview
-                </a>
-            {% else %}
-                <a href="?mode=edit&dashboardPage={{ page.position }}"
-                   class="button button--sm">
-                    <i class="fas fa-fw fa-pen"></i> Edit
-                </a>
-            {% endif %}
-            <span data-tooltip-target="body">Click to change view mode</span>
-        </div>
-        <button id="dashboard-share-{{ object.id }}"
-                class="button button--sm button--success"
-                data-controller="tooltip"
-                data-action="click->tf-modal#open"
-                data-modal-src="{% url "dashboards:share" object.id %}"
-                data-modal-id="dashboard-share">
-            <i class="fas fa-fw fa-share"></i> Share
-            <span data-tooltip-target="body">Share a public or password-protected link</span>
+  <div class="dashboard__header">
+    <turbo-frame id="dashboard-name" class="flex-1 mr-auto">
+      <form
+        method="POST"
+        action="{% url "project_dashboards:detail" project.id object.id %}"
+        class="form--no-layout w-full"
+      >
+        {% csrf_token %}
+
+        <input
+          class="input__inline mr-auto"
+          id="name"
+          type="text"
+          name="name"
+          value="{{ object.name }}"
+          onBlur="this.form.requestSubmit();"
+        />
+      </form>
+    </turbo-frame>
+
+    {% if not request.GET.mode or request.GET.mode == "edit" %}
+      <div
+        data-controller="popover"
+        data-placement="bottom-start"
+        data-theme="popover-menu"
+      >
+        <button
+          data-popover-target="trigger"
+          class="button button--sm button--tertiary"
+        >
+          More <i class="fas fa-chevron-down"></i>
         </button>
-    </div>
-    <div class="w-full flex flex-row overflow-hidden">
-        <div class="dashboard">
-            {% include "dashboards/canvas.html" %}
-            {% include "dashboards/page_controls.html" %}
+
+        <template data-popover-target="body">
+          <p
+            class="list__item list__item--br w-full"
+          >
+            Dashboard
+          </p>
+
+          <form
+            method="POST"
+            action="{% url "dashboards:duplicate" object.id %}"
+            class="form--no-layout"
+          >
+            {% csrf_token %}
+
+            <button
+              type="submit"
+              class="list__item list__item--interactive w-full"
+              id="dashboards-duplicate-{{ object.id }}"
+              data-loading-false
+            >
+              Duplicate
+            </button>
+          </form>
+
+          <a
+            class="list__item list__item--interactive w-full"
+            href="{% url "project_dashboards:delete" project.id object.id %}"
+          >
+            Delete
+          </a>
+
+            <p
+              class="list__item list__item--br w-full"
+            >
+              Page
+            </p>
+
+            <form
+              method="POST"
+              action="{% url "project_dashboards:page-create" project.id object.id %}"
+              class="form--no-layout"
+            >
+              {% csrf_token %}
+
+              <button
+                type="submit"
+                class="list__item list__item--interactive w-full"
+                id="dashboards-add-page-{{ object.id }}"
+                data-loading-false
+              >
+                Add new page
+              </button>
+            </form>
+
+            <form
+              method="POST"
+              action="{% url "project_dashboards:page-delete" project.id object.id page.id %}"
+              class="form--no-layout"
+            >
+              {% csrf_token %}
+
+              <button
+                type="submit"
+                {% if page_count == 1 %}disabled{% endif %}
+                class="list__item list__item--interactive w-full {% if page_count == 1 %}disabled{% endif %}"
+                id="dashboards-delete-page-{{ object.id }}"
+                data-loading-false
+              >
+                Delete current page
+              </button>
+            </form>
+
+            <div
+              data-controller="popover" 
+              data-placement="right"
+              data-theme="popover-menu"
+            >
+              <button
+                class="list__item list__item--interactive w-full"
+                data-popover-target="trigger"
+              >
+                Move page to
+              </button>
+
+              <div data-popover-target="body">
+                {% include 'dashboards/forms/move_page.html' %}
+              </div>
+            </div>
+        </template>
+      </div>
+
+      {% flag 'alpha' %}
+        <div
+          data-controller="tooltip"
+          data-tooltip-content="Show dashboard history"
+        >
+          <button
+            data-action="click->tf-modal#open"
+            data-modal-id="dashboard:history"
+            data-modal-classes="tf-modal--auto tf-modal--wide tf-modal--tall"
+            data-modal-src="{% url "project_dashboards:history" project.id object.id %}?category=general"
+            data-modal-target="_top"
+            class="button button--sm button--tertiary"
+          >
+            <i class="fas fa-fw fa-history"></i><span class='beta mr-4'>History</span>
+          </button>
         </div>
-        {% if request.GET.mode != "view" %}
-            <aside class="dashboard-sidebar">
-                {% for category_id, category in categories %}
-                    <div class="active pad" data-controller="collapsable">
-                        <h3 class="cursor-pointer" data-action="click->collapsable#toggle">{{ category }}</h3>
-                        <div class="collapsable flex flex-col max-h-0 overflow-hidden"
-                             data-collapsable-target="body">
-                            <div class="flex flex-col gap-3 pt-4">
-                                {% for id, txt, icon, choice_category, verbose_name in choices %}
-                                    {% if choice_category|lower == category_id|lower %}
-                                        <div id="widget-{{ id }}"
-                                             class="dashboard-sidebar__item w-full cursor-draggable"
-                                             ondragstart="event.dataTransfer.setData('application/gydashboard', '{{ id }}'); event.dataTransfer.effectAllowed = 'move';"
-                                             draggable="true">
-                                            <i class="dashboard-sidebar__icon fas fa-fw fa-lg {{ icon }}"></i>
-                                            <p class="dashboard-sidebar__name">
-                                                {{ verbose_name }}
-                                            </p>
-                                            <i class="fas fa-fw fa-grip-vertical fa-sm text-black-10"></i>
-                                        </div>
-                                    {% endif %}
-                                {% endfor %}
-                            </div>
-                        </div>
-                    </div>
-                    <hr>
-                {% endfor %}
-                <div class="active pad" data-controller="collapsable">
-                    <h3 class="cursor-pointer" data-action="click->collapsable#toggle">Controls</h3>
-                    {% include 'controls/create.html' %}
-                </div>
-            </aside>
+      {% endflag %}
+
+      <div data-controller="tooltip">
+          <button data-action="click->tf-modal#open"
+                  data-modal-id="dashboard:settings"
+                  data-modal-classes="tf-modal--auto tf-modal--wide tf-modal--tall"
+                  data-modal-src="{% url "project_dashboards:settings" project.id object.id %}?category=general"
+                  data-modal-target="_top"
+                  class="button button--sm button--tertiary">
+              <i class="fas fa-fw fa-paint-brush"></i> Theme and Layout
+          </button>
+          <span data-tooltip-target="body">Customize dimensions, grid spacing and color palette</span>
+      </div>
+    {% endif %}
+
+    <div data-controller="tooltip">
+        {% if not request.GET.mode or request.GET.mode == "edit" %}
+            <a href="?mode=view&dashboardPage={{ page.position }}"
+                class="button button--sm button--tertiary">
+                <i class="fas fa-fw fa-eye"></i> Preview
+            </a>
+        {% else %}
+            <a href="?mode=edit&dashboardPage={{ page.position }}"
+                class="button button--sm">
+                <i class="fas fa-fw fa-pen"></i> Edit
+            </a>
         {% endif %}
+        <span data-tooltip-target="body">Click to change view mode</span>
     </div>
+    <button id="dashboard-share-{{ object.id }}"
+            class="button button--sm button--success"
+            data-controller="tooltip"
+            data-action="click->tf-modal#open"
+            data-modal-src="{% url "dashboards:share" object.id %}"
+            data-modal-id="dashboard-share">
+        <i class="fas fa-fw fa-share"></i> Share
+        <span data-tooltip-target="body">Share a public or password-protected link</span>
+    </button>
+  </div>
+  
+  <div class="w-full flex flex-row overflow-hidden">
+    <div class="dashboard">
+      {% include "dashboards/canvas.html" %}
+      {% include "dashboards/page_controls.html" %}
+    </div>
+
+    {% if request.GET.mode != "view" %}
+      <aside class="dashboard-sidebar">
+        {% for category_id, category in categories %}
+            <div class="active pad" data-controller="collapsable">
+                <h3 class="cursor-pointer" data-action="click->collapsable#toggle">{{ category }}</h3>
+                <div class="collapsable flex flex-col max-h-0 overflow-hidden"
+                      data-collapsable-target="body">
+                    <div class="flex flex-col gap-3 pt-4">
+                        {% for id, txt, icon, choice_category, verbose_name in choices %}
+                            {% if choice_category|lower == category_id|lower %}
+                                <div id="widget-{{ id }}"
+                                      class="dashboard-sidebar__item w-full cursor-draggable"
+                                      ondragstart="event.dataTransfer.setData('application/gydashboard', '{{ id }}'); event.dataTransfer.effectAllowed = 'move';"
+                                      draggable="true">
+                                    <i class="dashboard-sidebar__icon fas fa-fw fa-lg {{ icon }}"></i>
+                                    <p class="dashboard-sidebar__name">
+                                        {{ verbose_name }}
+                                    </p>
+                                    <i class="fas fa-fw fa-grip-vertical fa-sm text-black-10"></i>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <hr>
+        {% endfor %}
+
+        <div class="active pad" data-controller="collapsable">
+          <h3 data-action="click->collapsable#toggle">
+            Controls
+          </h3>
+
+          {% include 'controls/create.html' %}
+        </div>
+      </aside>
+    {% endif %}
+  </div>
 {% endblock %}
 
 {% block body.javascript %}
   <!-- Include the Quill library -->
   <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
   <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+
   {% include "components/fusionchart_scripts.html" %}
 {% endblock body.javascript %}
