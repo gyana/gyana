@@ -137,6 +137,5 @@ class DashboardVersionSave(ProjectMixin, TurboFrameUpdateView):
     turbo_frame_dom_id = "dashboard:save"
 
     def form_valid(self, form):
-        most_recent_history = form.instance.history.latest()
-        DashboardVersion(historical_dashboard=most_recent_history).save()
+        DashboardVersion(dashboard=form.instance).save()
         return super().form_valid(form)

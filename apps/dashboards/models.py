@@ -9,6 +9,7 @@ from django.contrib.auth.hashers import (
 )
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
+from django.db.models import Q
 from django.urls import reverse
 from django.utils.translation import gettext_lazy
 from simple_history.models import HistoricalRecords
@@ -176,48 +177,50 @@ class Page(BaseModel):
         return f'{reverse("project_dashboards:detail", args=(self.dashboard.project.id, self.dashboard.id))}?dashboardPage={self.position}'
 
 
+# The DashboardVersion linsk to the dashboard model and we will be using the creation date
+# For the other models. Hopefully, this is robust even in the event of children not
+# propagating their update to their parents.
 class DashboardVersion(BaseModel):
-    historical_dashboard = models.OneToOneField(
-        Dashboard.history.model, on_delete=models.CASCADE, related_name="version"
+    dashboard = models.OneToOneField(
+        Dashboard, on_delete=models.CASCADE, related_name="version"
     )
 
     def restore(self):
         from apps.controls.models import Control, ControlWidget
         from apps.widgets.models import Widget
 
-        dashboard = self.historical_dashboard.instance
-        history_date = self.historical_dashboard.history_date
         restore_pages = (
-            Page.history.as_of(history_date).filter(dashboard=dashboard).all()
+            Page.history.as_of(self.created).filter(dashboard=self.dashboard).all()
         )
 
         for page in restore_pages:
             page.save()
 
-        for page in dashboard.pages.exclude(
+        for page in self.dashboard.pages.exclude(
             id__in=restore_pages.values_list("id")
         ).all():
             page.delete()
 
         restore_widgets = (
-            Widget.history.as_of(history_date)
+            Widget.history.as_of(self.created)
             .filter(
-                page__dashboard=dashboard,
+                page__dashboard=self.dashboard,
             )
             .all()
         )
 
         for widget in restore_widgets:
-            widget.restore_as_of(history_date)
-        for widget in dashboard.widgets.exclude(
+            widget.restore_as_of(self.created)
+        for widget in self.dashboard.widgets.exclude(
             id__in=restore_widgets.values_list("id")
         ).all():
             widget.delete()
 
         restore_controls = (
-            Control.history.as_of(history_date)
+            Control.history.as_of(self.created)
             .filter(
-                page__dashboard=dashboard,
+                Q(page__dashboard=self.dashboard)
+                | Q(widget__page__dashboard=self.dashboard)
             )
             .all()
         )
@@ -226,16 +229,16 @@ class DashboardVersion(BaseModel):
             control.save()
 
         for control in (
-            Control.objects.filter(page__dashboard=dashboard)
+            Control.objects.filter(page__dashboard=self.dashboard)
             .exclude(id__in=restore_controls.values_list("id"))
             .all()
         ):
             control.delete()
 
         restore_control_widgets = (
-            ControlWidget.history.as_of(history_date)
+            ControlWidget.history.as_of(self.created)
             .filter(
-                page__dashboard=dashboard,
+                page__dashboard=self.dashboard,
             )
             .all()
         )
@@ -244,11 +247,13 @@ class DashboardVersion(BaseModel):
             control_widget.save()
 
         for control_widget in (
-            ControlWidget.objects.filter(page__dashboard=dashboard)
+            ControlWidget.objects.filter(page__dashboard=self.dashboard)
             .exclude(id__in=restore_control_widgets.values_list("id"))
             .all()
         ):
             control_widget.delete()
+
+        self.dashboard.history.as_of(self.created).save()
 
 
 DASHBOARD_SETTING_TO_CATEGORY = {

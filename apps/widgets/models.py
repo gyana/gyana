@@ -246,10 +246,6 @@ class Widget(WidgetStyle, BaseModel):
             if self.page.has_control:
                 return "page_controlled"
 
-    def save(self, **kwargs):
-        self.page.dashboard.save()
-        return super().save(**kwargs)
-
     def restore_as_of(self, history_date):
         from apps.columns.models import AggregationColumn, Column
         from apps.filters.models import Filter
