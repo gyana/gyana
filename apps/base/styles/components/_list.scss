@@ -1,3 +1,5 @@
+@use 'utilities' as u;
+
 .list {
   display: flex;
   flex-direction: column;
@@ -26,17 +28,25 @@
       }
     }
 
+    &--br {
+      font-weight: bold;
+      text-align: right;
+      border-bottom: 1px solid var(--c-gray);
+    }
+
     &.disabled {
       color: var(--c-black-20);
     }
 
-    &[data-controller*='popover']::after {
+    &[data-controller*='popover']::after,
+    [data-controller*='popover'] > &::after {
       color: var(--c-black-50);
       content: '\f054';
       display: inline;
       font-family: 'Font Awesome 5 Pro';
       font-size: 1.2rem;
       font-weight: normal;
+      padding: 0 0 0 u.size('sm');
       margin-left: auto;
     }
   }
