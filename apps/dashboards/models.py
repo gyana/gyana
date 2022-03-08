@@ -151,7 +151,7 @@ class Dashboard(DashboardSettings, BaseModel):
 
 class Page(BaseModel):
     class Meta:
-        ordering = ("position", )
+        ordering = ("position",)
         constraints = [
             UniqueConstraint(
                 name="dashboards_page_dashboard_id_position",

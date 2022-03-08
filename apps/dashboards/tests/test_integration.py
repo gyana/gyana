@@ -218,6 +218,7 @@ def test_dashboard_duplication(
     assert filter_ != new_filter
     assert filter_.column == new_filter.column
 
+
 def test_dashboard_page_move(
     client,
     dashboard_factory,

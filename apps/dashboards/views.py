@@ -300,20 +300,28 @@ class PageMove(DashboardMixin, TurboUpdateView):
             return HttpResponseRedirect(self.get_success_url())
 
         if page.position < int(destination):
-            following_pages = list(self.dashboard.pages.filter(position__gt=page.position, position__lte=destination))
+            following_pages = list(
+                self.dashboard.pages.filter(
+                    position__gt=page.position, position__lte=destination
+                )
+            )
 
             for dashboard_page in following_pages:
                 dashboard_page.position = dashboard_page.position - 1
-            
+
             page.position = destination
             Page.objects.bulk_update(following_pages + [page], ["position"])
 
         if page.position > int(destination):
-            preceding_pages = list(self.dashboard.pages.filter(position__gte=destination, position__lt=page.position))
+            preceding_pages = list(
+                self.dashboard.pages.filter(
+                    position__gte=destination, position__lt=page.position
+                )
+            )
 
             for dashboard_page in preceding_pages:
                 dashboard_page.position = dashboard_page.position + 1
-            
+
             page.position = destination
             Page.objects.bulk_update(preceding_pages + [page], ["position"])
 
