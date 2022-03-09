@@ -26,6 +26,7 @@ class BaseModel(CloneMixin, models.Model):
 class SaveParentModel(DirtyFieldsMixin, BaseModel):
     class Meta:
         abstract = True
+        ordering = ("created",)
 
     _clone_excluded_m2o_or_o2m_fields = ["widget", "node"]
 
