@@ -37,6 +37,8 @@
     <span class="
       {% if change < 0 and not widget.positive_decrease %}
         text-red
+      {% elif change > 0 and widget.positive_decrease %}
+        text-red
       {% elif change == 0%}
         text-black-50
       {% else %}
