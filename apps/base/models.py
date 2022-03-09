@@ -41,19 +41,22 @@ class HistoryModel(BaseModel):
                     .filter(**{f.remote_field.name: self})
                     .all()
                 )
+
                 for instance in to_restore:
                     instance.restore_as_of(as_of)
                 for instance in (
                     getattr(self, f.get_accessor_name())
-                    .exclude(**{f.remote_field.name: self})
+                    .exclude(id__in=to_restore.values_list("id"))
                     .all()
                 ):
                     instance.delete()
-
-            # if f.one_to_many:
-            #     for item in getattr(self, f.get_accessor_name()).all():
-            #         if hasattr(item, "restore_as_of"):
-            #             item.restore_as_of(as_of)
+            if f.one_to_one and hasattr(f.related_model, "history"):
+                if instance := (
+                    f.related_model.history.as_of(as_of)
+                    .filter(**{f.remote_field.name: self})
+                    .first()
+                ):
+                    instance.restore_as_of(as_of)
 
             # TODO: Many to many
 

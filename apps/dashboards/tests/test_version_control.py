@@ -47,7 +47,7 @@ def test_restore_dashboard_version(
     assert ControlWidget.objects.count() == 0
     assert AggregationColumn.objects.count() == 0
 
-    version_1.restore()
+    version_1.dashboard.restore_as_of(version_1.created)
     dashboard.refresh_from_db()
     assert dashboard.width == Dashboard._meta.get_field("width").get_default()
     assert dashboard.widgets.first() == bar_chart
@@ -56,7 +56,7 @@ def test_restore_dashboard_version(
     assert ControlWidget.objects.first() == control_widget
     assert Filter.objects.first() == filter_
 
-    version_2.restore()
+    version_2.dashboard.restore_as_of(version_2.created)
     dashboard.refresh_from_db()
     assert dashboard.width == 500
     assert dashboard.widgets.first() == table_widget

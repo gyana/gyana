@@ -175,63 +175,6 @@ class DashboardVersion(BaseModel):
         Dashboard, on_delete=models.CASCADE, related_name="versions"
     )
 
-    def restore(self):
-        """Restores a dashboard at the creation of the version.
-
-        Loops through related and nested children models and restores them as well.
-        Widgets restore their own relationships notably columns and filters.
-        The other models are restored here in a "flatter" approach."""
-
-        from apps.controls.models import Control, ControlWidget
-        from apps.widgets.models import Widget
-
-        self.dashboard.history.as_of(self.created).save()
-
-        to_restore_pages = (
-            Page.history.as_of(self.created).filter(dashboard=self.dashboard).all()
-        )
-
-        restore_and_delete(to_restore_pages, self.dashboard.pages)
-
-        to_restore_widgets = (
-            Widget.history.as_of(self.created)
-            .filter(
-                page__dashboard=self.dashboard,
-            )
-            .all()
-        )
-
-        for widget in to_restore_widgets:
-            widget.restore_as_of(self.created)
-        for widget in self.dashboard.widgets.exclude(
-            id__in=to_restore_widgets.values_list("id")
-        ).all():
-            widget.delete()
-
-        to_restore_controls = (
-            Control.history.as_of(self.created)
-            .filter(
-                Q(page__dashboard=self.dashboard)
-                | Q(widget__page__dashboard=self.dashboard)
-            )
-            .all()
-        )
-        restore_and_delete(
-            to_restore_controls, Control.objects.filter(page__dashboard=self.dashboard)
-        )
-
-        to_restore_control_widgets = (
-            ControlWidget.history.as_of(self.created)
-            .filter(
-                page__dashboard=self.dashboard,
-            )
-            .all()
-        )
-        restore_and_delete(
-            to_restore_control_widgets,
-            ControlWidget.objects.filter(page__dashboard=self.dashboard),
-        )
-
 
 DASHBOARD_SETTING_TO_CATEGORY = {
     "grid_size": Dashboard.Category.CANVAS,

@@ -244,30 +244,6 @@ class Widget(WidgetStyle, HistoryModel):
             if self.page.has_control:
                 return "page_controlled"
 
-    def restore_as_of(self, history_date):
-        from apps.columns.models import AggregationColumn, Column
-        from apps.filters.models import Filter
-
-        self.save()
-
-        to_restore_columns = (
-            Column.history.as_of(history_date).filter(widget=self).all()
-        )
-        restore_and_delete(to_restore_columns, self.columns)
-
-        to_restore_aggregations = (
-            AggregationColumn.history.as_of(history_date).filter(widget=self).all()
-        )
-        restore_and_delete(to_restore_aggregations, self.aggregations)
-
-        to_restore_filters = (
-            Filter.history.as_of(history_date).filter(widget=self).all()
-        )
-        restore_and_delete(to_restore_filters, self.filters)
-
-        # TODO: add control
-        # to_restore_control = self.control.history.as_of(history_date)
-
 
 NO_DIMENSION_WIDGETS = [
     Widget.Kind.RADAR,
