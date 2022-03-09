@@ -97,6 +97,10 @@ def test_aggregation_form_with_formatting(aggregation_column_factory, node_facto
         "function",
         "name",
         "formatting_unfolded",
+        "currency",
+        "rounding",
+        "formatting_unfolded",
+        "is_percentage",
     }
 
 
