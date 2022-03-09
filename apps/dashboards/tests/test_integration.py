@@ -235,8 +235,11 @@ def test_dashboard_page_move(
     assertSelectorLength(r, "option", 3)
 
     r = client.post(url, data={"position": 3})
-    assert r.status_code == 303
+    assert r.status_code == 302
     assert r.url == f"/projects/{project.id}/dashboards/{dashboard.id}?dashboardPage=3"
+    page_1.refresh_from_db()
+    page_2.refresh_from_db()
+    page_3.refresh_from_db()
 
     assert page_1.position == 3
     assert page_2.position == 1
