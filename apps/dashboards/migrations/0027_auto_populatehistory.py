@@ -5,7 +5,9 @@ from django.db import migrations
 
 
 def forward(apps, schema_editor):
-    call_command("populate_history --auto")
+    Widget = apps.get_model("widgets", "Widget")
+    Widget.history.model.objects.all().delete()
+    call_command("populate_history", "--auto")
 
 
 class Migration(migrations.Migration):
