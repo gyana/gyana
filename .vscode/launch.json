@@ -13,6 +13,14 @@
       "django": true
     },
     {
+      "name": "Gyana-Migration",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/manage.py",
+      "args": ["migrate"],
+      "django": true
+    },
+    {
       "name": "Gyana-Cypress",
       "type": "python",
       "request": "launch",
