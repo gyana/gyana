@@ -52,7 +52,7 @@ def test_site_links(client):
     assertLink(r, "/integrations", "Learn about integrations")
 
     # footer links
-    assertLink(r, "/about", "About", total=2)
+    assertLink(r, "/about", "About", total=3)
     assertLink(r, "/about#careers", "Careers")
     assertLink(
         r,

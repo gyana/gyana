@@ -23,6 +23,11 @@
     .list__item {
       border-radius: 0;
     }
+
+    select.list__item {
+      border: 0;
+      border-radius: 5px;
+    }
   }
 }
 

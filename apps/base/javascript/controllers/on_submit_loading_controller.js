@@ -9,9 +9,20 @@ export default class extends Controller {
 
     // event fires twice for top level forms with data-turbo="true" (default)
     if (submitter && !submitter.disabled && !(submitter.getAttribute('data-loading-false') == '')) {
-      submitter.innerHTML =
-        '<i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>' +
-        (submitter.dataset.loadingMessage || '')
+      const placeholder = document.createElement('template')
+      placeholder.innerHTML = `
+        <div class="placeholder-scr--inline">
+          <i
+            class="fad fa-spinner-third fa-spin"
+            style="color: ${window.getComputedStyle(submitter).getPropertyValue('color')};"
+          ></i>
+        </div>
+      `.trim()
+
+      submitter.style.position = 'relative'
+      submitter.style.color = 'transparent'
+      submitter.appendChild(placeholder.content.firstChild)
+
       for (const el of event.target.querySelectorAll('button[type=submit]')) el.disabled = true
     }
   }

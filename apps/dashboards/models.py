@@ -9,7 +9,7 @@ from django.contrib.auth.hashers import (
 )
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
-from django.db.models import Q
+from django.db.models import Deferrable, Q, UniqueConstraint
 from django.urls import reverse
 from django.utils.translation import gettext_lazy
 
@@ -151,8 +151,16 @@ class Dashboard(DashboardSettings, HistoryModel):
 
 class Page(HistoryModel):
     class Meta:
-        unique_together = ("dashboard", "position")
+        ordering = ("position",)
+        constraints = [
+            UniqueConstraint(
+                name="dashboards_page_dashboard_id_position",
+                fields=["dashboard", "position"],
+                deferrable=Deferrable.DEFERRED,
+            )
+        ]
 
+    name = models.CharField(max_length=255, null=True)
     dashboard = models.ForeignKey(
         Dashboard, on_delete=models.CASCADE, related_name="pages"
     )

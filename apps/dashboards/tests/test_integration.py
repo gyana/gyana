@@ -217,3 +217,27 @@ def test_dashboard_duplication(
     assert new_filter is not None
     assert filter_ != new_filter
     assert filter_.column == new_filter.column
+
+
+def test_dashboard_page_move(
+    client,
+    dashboard_factory,
+    project,
+):
+    dashboard = dashboard_factory(project=project)
+    page_1 = dashboard.pages.create()
+    page_2 = dashboard.pages.create(position=2)
+    page_3 = dashboard.pages.create(position=3)
+
+    url = f"/projects/{project.id}/dashboards/{dashboard.id}/pages/{page_1.id}/move"
+    r = client.get(url)
+    assertOK(r)
+    assertSelectorLength(r, "option", 3)
+
+    r = client.post(url, data={"position": 3})
+    assert r.status_code == 303
+    assert r.url == f"/projects/{project.id}/dashboards/{dashboard.id}?dashboardPage=3"
+
+    assert page_1.position == 3
+    assert page_2.position == 1
+    assert page_3.position == 2
