@@ -292,10 +292,12 @@ class DashboardRestore(TurboUpdateView):
     fields = []
 
     def form_valid(self, form):
-        form.instance.restore()
-        dashboard = self.object.dashboard
+        version = form.instance
+        version.dashboard.restore_as_of(version.created)
+
         return redirect(
             reverse(
-                "project_dashboards:detail", args=(dashboard.project.id, dashboard.id)
+                "project_dashboards:detail",
+                args=(version.dashboard.project.id, version.dashboard.id),
             )
         )

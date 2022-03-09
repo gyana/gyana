@@ -1,7 +1,6 @@
 from django.db import models
-from simple_history.models import HistoricalRecords
 
-from apps.base.models import BaseModel
+from apps.base.models import HistoryModel
 
 
 class DateRange(models.TextChoices):
@@ -37,11 +36,9 @@ class CustomChoice(models.TextChoices):
     CUSTOM = "custom", "Custom"
 
 
-class Control(BaseModel):
+class Control(HistoryModel):
     class Kind(models.TextChoices):
         DATE_RANGE = "date_range", "Date range"
-
-    history = HistoricalRecords()
 
     kind = models.CharField(max_length=16, default=Kind.DATE_RANGE)
     start = models.DateTimeField(
@@ -63,8 +60,7 @@ class Control(BaseModel):
         return self.pk
 
 
-class ControlWidget(BaseModel):
-    history = HistoricalRecords()
+class ControlWidget(HistoryModel):
 
     page = models.ForeignKey(
         "dashboards.Page", on_delete=models.CASCADE, related_name="control_widgets"

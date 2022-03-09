@@ -12,10 +12,9 @@ from django.db import models
 from django.db.models import Q
 from django.urls import reverse
 from django.utils.translation import gettext_lazy
-from simple_history.models import HistoricalRecords
 
 from apps.base.core.utils import restore_and_delete
-from apps.base.models import BaseModel
+from apps.base.models import BaseModel, HistoryModel
 from apps.projects.models import Project
 
 from .utils import getFusionThemePalette
@@ -64,13 +63,11 @@ class DashboardSettings(models.Model):
     widget_border_thickness = models.IntegerField(default=1)
 
 
-class Dashboard(DashboardSettings, BaseModel):
+class Dashboard(DashboardSettings, HistoryModel):
     class SharedStatus(models.TextChoices):
         PRIVATE = "private", "Private"
         PUBLIC = "public", "Public"
         PASSWORD_PROTECTED = "password_protected", "Password Protected"
-
-    history = HistoricalRecords()
 
     name = models.CharField(max_length=255, default="Untitled")
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
@@ -153,11 +150,9 @@ class Dashboard(DashboardSettings, BaseModel):
         return super().make_clone(attrs, sub_clone, using)
 
 
-class Page(BaseModel):
+class Page(HistoryModel):
     class Meta:
         unique_together = ("dashboard", "position")
-
-    history = HistoricalRecords()
 
     dashboard = models.ForeignKey(
         Dashboard, on_delete=models.CASCADE, related_name="pages"

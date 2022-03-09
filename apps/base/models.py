@@ -24,12 +24,45 @@ class BaseModel(CloneMixin, models.Model):
         return f"{self._meta.db_table}-{self.id}"
 
 
-class SaveParentModel(DirtyFieldsMixin, BaseModel):
+class HistoryModel(BaseModel):
+    class Meta:
+        abstract = True
+
+    history = HistoricalRecords(inherit=True)
+
+    def restore_as_of(self, as_of):
+        """Restores historic version as existed at `as_of` and it's downstream relations."""
+        self.history.as_of(as_of).save()
+
+        for f in self._meta.related_objects:
+            if f.one_to_many and hasattr(f.related_model, "history"):
+                to_restore = (
+                    f.related_model.history.as_of(as_of)
+                    .filter(**{f.remote_field.name: self})
+                    .all()
+                )
+                for instance in to_restore:
+                    instance.restore_as_of(as_of)
+                for instance in (
+                    getattr(self, f.get_accessor_name())
+                    .exclude(**{f.remote_field.name: self})
+                    .all()
+                ):
+                    instance.delete()
+
+            # if f.one_to_many:
+            #     for item in getattr(self, f.get_accessor_name()).all():
+            #         if hasattr(item, "restore_as_of"):
+            #             item.restore_as_of(as_of)
+
+            # TODO: Many to many
+
+
+class SaveParentModel(DirtyFieldsMixin, HistoryModel):
     class Meta:
         abstract = True
 
     _clone_excluded_m2o_or_o2m_fields = ["widget", "node"]
-    history = HistoricalRecords(inherit=True)
 
     def save(self, *args, **kwargs) -> None:
         if self.is_dirty():
