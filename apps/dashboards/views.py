@@ -299,7 +299,7 @@ class PageMove(DashboardMixin, TurboUpdateView):
         if page.position == destination:
             return HttpResponseRedirect(self.get_success_url())
 
-        if page.position < int(destination):
+        if page.position < destination:
             following_pages = list(
                 self.dashboard.pages.filter(
                     position__gt=page.position, position__lte=destination
@@ -312,7 +312,7 @@ class PageMove(DashboardMixin, TurboUpdateView):
             page.position = destination
             Page.objects.bulk_update(following_pages + [page], ["position"])
 
-        if page.position > int(destination):
+        elif page.position > destination:
             preceding_pages = list(
                 self.dashboard.pages.filter(
                     position__gte=destination, position__lt=page.position
