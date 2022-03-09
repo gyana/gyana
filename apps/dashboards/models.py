@@ -13,7 +13,6 @@ from django.db.models import Q
 from django.urls import reverse
 from django.utils.translation import gettext_lazy
 
-from apps.base.core.utils import restore_and_delete
 from apps.base.models import BaseModel, HistoryModel
 from apps.projects.models import Project
 

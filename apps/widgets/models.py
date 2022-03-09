@@ -5,7 +5,6 @@ from django.urls import reverse
 
 from apps.base.clients import SLUG
 from apps.base.core.aggregations import AggregationFunctions
-from apps.base.core.utils import restore_and_delete
 from apps.base.models import HistoryModel, SaveParentModel
 from apps.columns.bigquery import DatePeriod
 from apps.columns.currency_symbols import CurrencySymbols
