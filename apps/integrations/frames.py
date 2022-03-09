@@ -1,3 +1,4 @@
+from django_tables2.tables import Table
 from django_tables2.views import SingleTableMixin
 
 from apps.base.core.bigquery import get_humanize_from_bigquery_type
@@ -47,6 +48,8 @@ class IntegrationGrid(TableInstanceMixin, SingleTableMixin, TurboFrameDetailView
     turbo_frame_dom_id = "integrations:grid"
 
     def get_table(self, **kwargs):
+        if not self.table_instance:
+            return type("DynamicTable", (Table,), {})(data=[])
         query = get_query_from_table(self.table_instance)
         table = get_table(query.schema(), query, None, **kwargs)
 
@@ -63,7 +66,8 @@ class IntegrationSchema(TableInstanceMixin, SingleTableMixin, TurboFrameDetailVi
     table_class = StructureTable
 
     def get_table_data(self, **kwargs):
-
+        if not self.table_instance:
+            return []
         return [
             {"type": get_humanize_from_bigquery_type(t.field_type), "name": str(t.name)}
             for t in get_bq_table_schema_from_table(self.table_instance)
