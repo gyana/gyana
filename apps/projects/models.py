@@ -19,6 +19,7 @@ class Project(DirtyFieldsMixin, BaseModel):
 
     _clone_excluded_m2o_or_o2m_fields = ["runs", "table_set"]
     _clone_excluded_m2m_fields = ["members"]
+    _clone_excluded_o2o_fields = ["periodic_task"]
 
     name = models.CharField(max_length=255)
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
@@ -141,6 +142,11 @@ class Project(DirtyFieldsMixin, BaseModel):
     @property
     def latest_run(self):
         return self.runs.order_by("-created").first()
+
+    def make_clone(self, attrs=None, sub_clone=False, using=None):
+        clone = super().make_clone(attrs, sub_clone, using)
+        clone.update_schedule()
+        return clone
 
 
 class ProjectMembership(BaseModel):
