@@ -338,5 +338,6 @@ class PageName(DashboardMixin, TurboUpdateView):
 
     def get_success_url(self) -> str:
         return reverse(
-            "project_dashboards:page-name", args=(self.project.id, self.dashboard.id, self.page.id)
+            "project_dashboards:page-name",
+            args=(self.project.id, self.dashboard.id, self.page.id),
         )

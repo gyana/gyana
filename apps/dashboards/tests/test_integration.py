@@ -237,10 +237,36 @@ def test_dashboard_page_move(
     r = client.post(url, data={"position": 3})
     assert r.status_code == 302
     assert r.url == f"/projects/{project.id}/dashboards/{dashboard.id}?dashboardPage=3"
+
     page_1.refresh_from_db()
     page_2.refresh_from_db()
     page_3.refresh_from_db()
-
     assert page_1.position == 3
     assert page_2.position == 1
     assert page_3.position == 2
+
+
+def test_dashboard_page_name(
+    client,
+    dashboard_factory,
+    project,
+):
+    dashboard = dashboard_factory(project=project)
+    page_1 = dashboard.pages.create()
+    page_2 = dashboard.pages.create(position=2)
+
+    assert page_1.name == None
+    assert page_2.name == None
+
+    url = f"/projects/{project.id}/dashboards/{dashboard.id}/pages/{page_1.id}/name"
+    r = client.get(url)
+    assertOK(r)
+
+    r = client.post(url, data={"name": "Test Page Name"})
+    assert r.status_code == 303
+    assert r.url == f"/projects/{project.id}/dashboards/{dashboard.id}/pages/{page_1.id}/name"
+
+    page_1.refresh_from_db()
+    page_2.refresh_from_db()
+    assert page_1.name == "Test Page Name"
+    assert page_2.name == None
