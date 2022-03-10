@@ -94,6 +94,7 @@
           >
             Delete
           </a>
+          {% flag 'alpha' %}
           <turbo-frame id="dashboard:save"></turbo-frame>
           <form method="post"
                 action="{% url "project_dashboards:save" project.id object.id %}"
@@ -106,6 +107,7 @@
                       Save current version
               </button>
           </form>
+          {% endflag %}
             <p
               class="list__item list__item--br w-full"
             >
@@ -121,7 +123,7 @@
 
               <button
                 type="submit"
-                class="list__item list__item--interactive w-full"
+                class="list__item list__item--interactive w-full beta"
                 id="dashboards-add-page-{{ object.id }}"
                 data-loading-false
               >
