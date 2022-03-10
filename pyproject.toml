@@ -90,7 +90,7 @@ django-celery-results = "^2.2.0"
 jsonpath-ng = "^1.5.3"
 django-cryptography = "^1.0"
 django-heroicons = {git = "https://github.com/geoffbeier/django-heroicons"}
-wagtail = "^2.15.1"
+wagtail = "2.15.1"
 readtime = "^1.1.1"
 wagtailmenus = "^3.0.2"
 PyYAML = "^6.0"
