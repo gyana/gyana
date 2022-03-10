@@ -133,7 +133,8 @@ def test_adding_more_control_widgets(
 
     control_url = f"/projects/{project.id}/dashboards/{dashboard.id}/controls/"
     # create 2nd widget doesnt create new control
-    r = client.post(control_url + "new-widget", data={"page": page.id, "x": 0, "y": 0})
+    r = client.post(f"{control_url}new-widget", data={"page": page.id, "x": 0, "y": 0})
+
     assertOK(r)
     assert ControlWidget.objects.count() == 2
     assert Control.objects.count() == 1
@@ -144,7 +145,7 @@ def test_adding_more_control_widgets(
     assert ControlWidget.objects.count() == 1
     assert Control.objects.first() is not None
 
-    r = client.delete(f"{control_url}{control_widget.id}/delete-widget")
+    r = client.delete(f"{control_url}{ControlWidget.objects.first().id}/delete-widget")
     assertOK(r)
     assert ControlWidget.objects.first() is None
     assert Control.objects.first() is None
