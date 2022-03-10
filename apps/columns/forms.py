@@ -144,10 +144,9 @@ class AggregationFormWithFormatting(AggregationColumnForm):
                 and self.parent_instance.kind == Widget.Kind.METRIC
             ):
                 fields += ["name"]
-            fields += ["formatting_unfolded"]
+            # For aggregation column the numeric type of the output is guaranteed
+            fields += ["formatting_unfolded", "rounding", "currency", "is_percentage"]
 
-        if isinstance(self.column_type, (Floating, Integer)):
-            fields += ["rounding", "currency", "is_percentage"]
         return fields
 
 

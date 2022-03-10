@@ -64,6 +64,7 @@ class HistoryModel(BaseModel):
 class SaveParentModel(DirtyFieldsMixin, HistoryModel):
     class Meta:
         abstract = True
+        ordering = ("created",)
 
     _clone_excluded_m2o_or_o2m_fields = ["widget", "node"]
 

@@ -1,3 +1,12 @@
 {% load render_table from django_tables2 %}
 
-{% render_table table %}
+{% if table_instance %}
+  {% render_table table %}
+{% else %}
+  <p class="pad">We did not find any data for this integration. 
+  If this problem persists reach out to 
+    <a class='link' href='mailto: support@gyana.com'>
+      support@gyana.com
+    </a> 
+  </p>
+{% endif %}
