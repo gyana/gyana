@@ -329,3 +329,14 @@ class PageMove(DashboardMixin, TurboUpdateView):
 
     def get_success_url(self) -> str:
         return f"{reverse('project_dashboards:detail', args=(self.project.id, self.dashboard.id),)}?dashboardPage={self.get_object().position}"
+
+
+class PageName(DashboardMixin, TurboUpdateView):
+    model = Page
+    fields = ["name"]
+    template_name = "dashboards/forms/name_page.html"
+
+    def get_success_url(self) -> str:
+        return reverse(
+            "project_dashboards:page-name", args=(self.project.id, self.dashboard.id, self.page.id)
+        )

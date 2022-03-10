@@ -97,6 +97,11 @@ project_urlpatterns = (
             login_and_project_required(views.PageMove.as_view()),
             name="page-move",
         ),
+        path(
+            "<hashid:dashboard_id>/pages/<hashid:pk>/name",
+            login_and_project_required(views.PageName.as_view()),
+            name="page-name",
+        ),
         # Turbo frames
         path(
             "<hashid:pk>/settings",

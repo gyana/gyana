@@ -27,29 +27,37 @@
       font-family: "{{ font_family }}";
     }
     {% endfor %}
-  </style>
+    </style>
   {% endif %}
 {% endblock head.extra %}
 {% block app %}
   <div class="dashboard__header">
-    <turbo-frame id="dashboard-name" class="flex-1 mr-auto">
-      <form
-        method="POST"
-        action="{% url "project_dashboards:detail" project.id object.id %}"
-        class="form--no-layout w-full"
-      >
-        {% csrf_token %}
+    <div class="flex items-center gap-2 mr-auto">
+      <turbo-frame id="dashboard-name">
+        <form
+          method="POST"
+          action="{% url "project_dashboards:detail" project.id object.id %}"
+          class="form--no-layout w-full"
+        >
+          {% csrf_token %}
+  
+          <input
+            class="input__inline mr-auto"
+            id="name"
+            type="text"
+            name="name"
+            value="{{ object.name }}"
+            size="{{ object.name|length }}"
+            onblur="this.form.requestSubmit();"
+            oninput="this.size = this.value.length"
+          />
+        </form>
+      </turbo-frame>
 
-        <input
-          class="input__inline mr-auto"
-          id="name"
-          type="text"
-          name="name"
-          value="{{ object.name }}"
-          onBlur="this.form.requestSubmit();"
-        />
-      </form>
-    </turbo-frame>
+      <span class="bold">-</span>
+      
+      {% include "dashboards/forms/name_page.html" %}
+    </div>
 
     {% if not request.GET.mode or request.GET.mode == "edit" %}
       <div

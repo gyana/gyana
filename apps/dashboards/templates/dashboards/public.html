@@ -50,7 +50,13 @@
 
         <div class="flex flex-col">
           <p>{{ project.team.name }}</p>
-          <h1>{{ dashboard.name }}</h1>
+          <div class="flex items-center gap-4">
+            <h1>{{ dashboard.name }}</h1> 
+
+            {% if page.name %}
+              - <p class="h1">{{ page.name }}</p>
+            {% endif %}
+          </div>
 
           {% if page_count > 1 %}
 
@@ -145,7 +151,7 @@
 
     <footer class="widget__public-footer">
       <p class="small">
-        Dashboard updated <abbr>{% include "columns/natural_datetime.html" with datetime=dashboard.updated %}</abbr>
+        Last updated <abbr>{% include "columns/natural_datetime.html" with datetime=dashboard.updated %}</abbr>
       </p>
 
       {% if dashboard.shared_status == 'password_protected' %}

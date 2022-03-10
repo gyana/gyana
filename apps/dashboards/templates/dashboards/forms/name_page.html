@@ -1,0 +1,23 @@
+<turbo-frame id="dashboard-page-name">
+  <form
+    method="POST"
+    action="{% url "project_dashboards:page-name" project.id dashboard.id page.id %}"
+    class="form--no-layout w-full"
+  >
+    {% csrf_token %}
+
+    <input
+      class="input__inline mr-auto"
+      id="name"
+      type="text"
+      name="name"
+      placeholder="Untitled Page"
+      value="{{ page.name }}"
+      {% if page.name %}
+      size="{{ page.name|length }}"
+      {% endif %}
+      onblur="this.form.requestSubmit();"
+      oninput="this.size = this.value.length"
+    />
+  </form>
+</turbo-frame>

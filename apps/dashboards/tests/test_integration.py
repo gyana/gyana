@@ -241,9 +241,6 @@ def test_dashboard_page_move(
     page_2.refresh_from_db()
     page_3.refresh_from_db()
 
-    page_1.refresh_from_db()
-    page_2.refresh_from_db()
-    page_3.refresh_from_db()
     assert page_1.position == 3
     assert page_2.position == 1
     assert page_3.position == 2
