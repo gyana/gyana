@@ -166,7 +166,8 @@ PART_MAP = {
 }
 
 
-def _get_groups(query, instance):
+def get_groups(query, instance):
+    """Fetches the groups of an instance (e.g. widget or node)"""
     groups = []
     for column in instance.columns.all():
         group = query[column.column]
@@ -176,9 +177,8 @@ def _get_groups(query, instance):
     return groups
 
 
-def aggregate_columns(query, instance):
+def aggregate_columns(query, instance, groups):
     """Aggregates over multiple aggregations and resolves name conflicts"""
-    groups = _get_groups(query, instance)
     aggregations = instance.aggregations.all()
     column_names = [agg.column for agg in aggregations]
     aggregations = [

@@ -2,7 +2,12 @@ import ibis_bigquery
 import pytest
 
 from apps.base.tests.mock_data import TABLE
-from apps.columns.bigquery import DatePeriod, aggregate_columns, compile_function
+from apps.columns.bigquery import (
+    DatePeriod,
+    aggregate_columns,
+    compile_function,
+    get_groups,
+)
 from apps.columns.models import EditColumn
 
 pytestmark = pytest.mark.django_db
@@ -289,7 +294,8 @@ PARAMS = [
 def test_column_part_group(name, part, expected_sql, column_factory, node_factory):
     node = node_factory()
     column_factory(column=name, part=part, node=node)
-    sql = ibis_bigquery.compile(aggregate_columns(TABLE, node))
+    groups = get_groups(TABLE, node)
+    sql = ibis_bigquery.compile(aggregate_columns(TABLE, node, groups))
     assert sql == expected_sql
 
 

@@ -15,6 +15,7 @@ from apps.columns.bigquery import (
     compile_function,
     convert_column,
     get_aggregate_expr,
+    get_groups,
 )
 from apps.filters.bigquery import get_query_from_filters
 from apps.tables.bigquery import get_query_from_table
@@ -145,7 +146,8 @@ def get_join_query(node, left, right, *queries):
 
 
 def get_aggregation_query(node, query):
-    return aggregate_columns(query, node)
+    groups = get_groups(query, node)
+    return aggregate_columns(query, node, groups)
 
 
 def get_union_query(node, query, *queries):
