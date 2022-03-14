@@ -16,11 +16,11 @@ class ControlWidgetCreate(UpdateWidgetsMixin, TurboCreateView):
     fields = ["x", "y", "page"]
 
     def form_valid(self, form):
-        if not form.instance.page.has_control:
-            form.instance.control = Control(page=form.instance.page)
+        if not self.page.has_control:
+            form.instance.control = Control(page=self.page)
 
         else:
-            form.instance.control = form.instance.page.control
+            form.instance.control = self.page.control
 
         with transaction.atomic():
             form.instance.control.save()
@@ -28,9 +28,7 @@ class ControlWidgetCreate(UpdateWidgetsMixin, TurboCreateView):
 
         return TurboStreamResponse(
             [
-                *self.get_widget_stream_responses(
-                    form.instance.control, form.instance.page
-                ),
+                *self.get_widget_stream_responses(form.instance.control),
                 TurboStream("dashboard-widget-placeholder").remove.render(),
                 TurboStream("dashboard-widget-container")
                 .append.template(
@@ -40,7 +38,7 @@ class ControlWidgetCreate(UpdateWidgetsMixin, TurboCreateView):
                         "control": form.instance.control,
                         "project": self.dashboard.project,
                         "dashboard": self.dashboard,
-                        "page": form.instance.page,
+                        "page": self.page,
                     },
                 )
                 .render(request=self.request),
@@ -62,17 +60,15 @@ class ControlWidgetDelete(UpdateWidgetsMixin, TurboStreamDeleteView):
     model = ControlWidget
 
     def delete(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        self.object_id = self.object.id
-        page = self.object.page
-        if self.object.page.control_widgets.count() != 1:
+        self.object_id = self.get_object().id
+        if self.page.control_widgets.count() != 1:
             return super().delete(request, *args, **kwargs)
 
-        self.object.page.control.delete()
+        self.page.control.delete()
 
         return TurboStreamResponse(
             [
-                *self.get_widget_stream_responses(None, page),
+                *self.get_widget_stream_responses(None),
                 TurboStream(f"control-widget-{self.object_id}").remove.render(),
             ]
         )

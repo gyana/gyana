@@ -18,8 +18,6 @@ class DashboardMixin(ProjectMixin):
 
     @cached_property
     def page(self):
-        """Make sure that the the dashboardPage argument is provided everytime
-        a frame uses this property."""
         return self.dashboard.pages.get(
             position=self.request.GET.get("dashboardPage", 1)
         )
