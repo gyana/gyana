@@ -162,7 +162,7 @@ class WidgetUpdate(DashboardMixin, TurboFrameUpdateView):
                 context,
                 self.object,
                 self.request,
-                self.page.control if self.page.has_control else None,
+                self.object.page.control if self.object.page.has_control else None,
                 url=self.get_success_url()
                 if self.is_preview_request
                 else reverse(
@@ -231,7 +231,7 @@ class WidgetUpdate(DashboardMixin, TurboFrameUpdateView):
                     context,
                     self.object,
                     self.request,
-                    self.page.control if self.page.has_control else None,
+                    self.object.page.control if self.object.page.has_control else None,
                 )
                 if self.object.error:
                     self.object.error = None
@@ -290,7 +290,7 @@ class WidgetStyle(DashboardMixin, TurboFrameUpdateView):
                 context,
                 self.object,
                 self.request,
-                self.page.control if self.page.has_control else None,
+                self.object.page.control if self.object.page.has_control else None,
                 url=self.get_success_url()
                 if self.is_preview_request
                 else reverse(
@@ -386,13 +386,13 @@ class WidgetOutput(DashboardMixin, SingleTableMixin, TurboFrameDetailView):
                 context,
                 self.object,
                 self.request,
-                self.page.control if self.page.has_control else None,
+                self.object.page.control if self.object.page.has_control else None,
             )
         except Exception as e:
             if context is None:
                 context = {
                     "dashboard": self.dashboard,
-                    "page": self.page,
+                    "page": self.object.page,
                     "project": self.dashboard.project,
                     "object": self.object,
                     "widget": self.object,
@@ -409,7 +409,7 @@ class WidgetOutput(DashboardMixin, SingleTableMixin, TurboFrameDetailView):
         if self.object.is_valid and self.object.kind == Widget.Kind.TABLE:
             table = table_to_output(
                 self.object,
-                self.page.control if self.page.has_control else None,
+                self.object.page.control if self.object.page.has_control else None,
             )
             return RequestConfig(
                 self.request, paginate=self.get_table_pagination(table)
