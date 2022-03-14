@@ -2,7 +2,7 @@ from typing import Any, Dict
 
 from apps.base import clients
 from apps.base.core.table_data import get_table
-from apps.columns.bigquery import aggregate_columns, resolve_colname
+from apps.columns.bigquery import aggregate_columns, get_groups, resolve_colname
 from apps.columns.currency_symbols import CURRENCY_SYMBOLS_MAP
 from apps.controls.bigquery import slice_query
 from apps.filters.bigquery import get_query_from_filters
@@ -53,22 +53,10 @@ def get_summary_row(query, widget):
     # Only naming the first group column
     group = widget.columns.first()
     columns = widget.aggregations.all()
-    column_names = [agg.column for agg in columns]
-    aggregations = [
-        getattr(query[agg.column], agg.function)().name(
-            resolve_colname(agg.column, agg.function, column_names)
-        )
-        for agg in columns
-    ]
-    query = query.aggregate(aggregations)
+    query = aggregate_columns(query, widget, None)
     summary = clients.bigquery().get_query_results(query.compile()).rows_dict[0]
-    column_map = {
-        resolve_colname(col.column, col.function, column_names): col for col in columns
-    }
-    return {
-        **{key: value for key, value in summary.items()},
-        group.column: "Total",
-    }
+
+    return {**dict(summary.items()), group.column: "Total"}
 
 
 def table_to_output(widget: Widget, control, url=None) -> Dict[str, Any]:
@@ -78,7 +66,8 @@ def table_to_output(widget: Widget, control, url=None) -> Dict[str, Any]:
         if widget.show_summary_row:
             # TODO: add sorting and limit
             summary = get_summary_row(query, widget)
-        query = aggregate_columns(query, widget)
+        groups = get_groups(query, widget)
+        query = aggregate_columns(query, widget, groups)
 
     settings = {
         col.column: {
