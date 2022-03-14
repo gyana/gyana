@@ -13,13 +13,17 @@ class DashboardMixin(ProjectMixin):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["dashboard"] = self.dashboard
-        context["page"] = self.page
         return context
 
+
+class PageMixin(DashboardMixin):
     @cached_property
     def page(self):
-        """Make sure that the the dashboardPage argument is provided everytime
-        a frame uses this property."""
         return self.dashboard.pages.get(
             position=self.request.GET.get("dashboardPage", 1)
         )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["page"] = self.page
+        return context
