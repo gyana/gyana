@@ -181,6 +181,7 @@ class DashboardVersion(BaseModel):
     dashboard = models.ForeignKey(
         Dashboard, on_delete=models.CASCADE, related_name="versions"
     )
+    name = models.CharField(max_length=255, null=True, blank=True)
 
 
 DASHBOARD_SETTING_TO_CATEGORY = {

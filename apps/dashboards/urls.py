@@ -52,6 +52,11 @@ urlpatterns = [
         login_and_dashboardversion_required(views.DashboardRestore.as_view()),
         name="restore",
     ),
+    path(
+        "version/<hashid:pk>/rename",
+        login_and_dashboardversion_required(frames.DashboardVersionRename.as_view()),
+        name="version-rename",
+    ),
 ]
 
 router = routers.DefaultRouter()

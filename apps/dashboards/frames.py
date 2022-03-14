@@ -139,3 +139,15 @@ class DashboardVersionSave(ProjectMixin, TurboFrameUpdateView):
     def form_valid(self, form):
         DashboardVersion(dashboard=form.instance).save()
         return super().form_valid(form)
+
+
+class DashboardVersionRename(TurboFrameUpdateView):
+    model = DashboardVersion
+    fields = ("name",)
+    template_name = "dashboards/version_name.html"
+
+    def get_turbo_frame_dom_id(self):
+        return f"version-name-{self.object.id}"
+
+    def get_success_url(self) -> str:
+        return reverse("dashboards:version-rename", args=(self.object.id,))

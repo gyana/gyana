@@ -44,16 +44,22 @@ class DashboardTable(tables.Table):
 class DashboardHistoryTable(tables.Table):
     class Meta:
         model = DashboardVersion
-        fields = ("created",)
+        fields = ("created", "name")
         attrs = {"class": "table"}
         order_by = ("created",)
 
     created = NaturalDatetimeColumn()
-    version = tables.Column(empty_values=(), orderable=False)
+    name = tables.Column(empty_values=(), orderable=False)
     action = TemplateColumn(
         template_name="dashboards/_restore_cell.html", orderable=False
     )
 
-    def render_version(self):
+    def render_name(self, record, table, **kwargs):
         self.row_counter = getattr(self, "row_counter", itertools.count())
-        return next(self.row_counter) + 1
+
+        context = getattr(table, "context", Context())
+        context["object"] = record
+        context["placeholder"] = f"Version {next(self.row_counter)+1}"
+        return get_template("dashboards/columns/name_cell.html").render(
+            context.flatten()
+        )

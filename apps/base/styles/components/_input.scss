@@ -219,6 +219,11 @@ input.input,
     }
   }
 
+  &__font-inherit {
+    font-size: inherit;
+    font-weight: inherit;
+  }
+
   &__contenteditable {
     background-color: transparent;
     border: none;
