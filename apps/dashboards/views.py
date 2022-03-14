@@ -19,7 +19,7 @@ from apps.base.analytics import (
     DASHBOARD_DUPLICATED_EVENT,
 )
 from apps.base.views import TurboCreateView, TurboUpdateView
-from apps.dashboards.mixins import DashboardMixin
+from apps.dashboards.mixins import DashboardMixin, PageMixin
 from apps.dashboards.tables import DashboardTable
 from apps.integrations.models import Integration
 from apps.projects.mixins import ProjectMixin
@@ -244,7 +244,7 @@ class DashboardLogout(TemplateView):
         )
 
 
-class PageCreate(DashboardMixin, CreateView):
+class PageCreate(PageMixin, CreateView):
     model = Page
     fields = []
     # Not used
@@ -259,7 +259,7 @@ class PageCreate(DashboardMixin, CreateView):
         return f"{reverse('project_dashboards:detail', args=(self.project.id, self.dashboard.id))}?dashboardPage={self.object.position}"
 
 
-class PageDelete(DashboardMixin, DeleteView):
+class PageDelete(PageMixin, DeleteView):
     model = Page
     fields = []
     # Not used
@@ -303,7 +303,7 @@ class DashboardRestore(TurboUpdateView):
         )
 
 
-class PageMove(DashboardMixin, TurboUpdateView):
+class PageMove(PageMixin, TurboUpdateView):
     model = Page
     fields = []
     template_name = "dashboards/forms/move_page.html"
@@ -347,7 +347,7 @@ class PageMove(DashboardMixin, TurboUpdateView):
         return f"{reverse('project_dashboards:detail', args=(self.project.id, self.dashboard.id),)}?dashboardPage={self.get_object().position}"
 
 
-class PageName(DashboardMixin, TurboUpdateView):
+class PageName(PageMixin, TurboUpdateView):
     model = Page
     fields = ["name"]
     template_name = "dashboards/forms/name_page.html"

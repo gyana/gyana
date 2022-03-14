@@ -17,9 +17,9 @@ class ControlUpdate(UpdateWidgetsMixin, TurboFrameUpdateView):
     turbo_frame_dom_id = "controls:update-widget"
 
     def get_stream_response(self, form):
-        streams = self.get_widget_stream_responses(form.instance)
+        streams = self.get_widget_stream_responses(form.instance, form.instance.page)
         current_context = self.get_context_data()
-        for control_widget in self.page.control_widgets.iterator():
+        for control_widget in form.instance.page.control_widgets.iterator():
             context = {
                 "object": control_widget,
                 "control": form.instance,
