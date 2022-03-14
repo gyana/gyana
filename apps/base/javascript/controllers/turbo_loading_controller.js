@@ -18,7 +18,7 @@ export default class extends Controller {
     if (event.target.dataset.turboLoading || event.target.dataset.turboLoading == '') {
       const frame = document.querySelector(`turbo-frame[src*="${event.detail.url}"]`)
 
-      frame.style = "position: relative;"
+      frame.style.position = "relative"
       frame.appendChild(this.createPlaceholder())
     }
   }
