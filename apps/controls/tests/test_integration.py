@@ -64,7 +64,7 @@ def test_control_crudl(
     assert control is not None
     assert control_widget is not None
     assertContains(r, "dashboard-widget-container")
-    assertContains(r, f"widgets-output-{widget.id}-stream")
+    assertContains(r, f"widgets-output-{widget.id}")
 
     # update
     r = client.get(control_url + f"{control.id}/update-widget")
@@ -85,10 +85,10 @@ def test_control_crudl(
     assertOK(r)
     control.refresh_from_db()
     assert isinstance(r, TurboStreamResponse)
-    assertContains(r, "controls:update-widget-stream")
+    assertContains(r, "controls:update-widget")
 
     # is sending the widget output
-    assertContains(r, f"widgets-output-{widget.id}-stream")
+    assertContains(r, f"widgets-output-{widget.id}")
     assert control.date_range == CustomChoice.CUSTOM
 
     # delete
@@ -97,7 +97,7 @@ def test_control_crudl(
     assert isinstance(r, TurboStreamResponse)
     assert Control.objects.first() is None
     assert ControlWidget.objects.first() is None
-    assertContains(r, f"widgets-output-{widget.id}-stream")
+    assertContains(r, f"widgets-output-{widget.id}")
 
 
 def test_public_date_slice_not_updating(
