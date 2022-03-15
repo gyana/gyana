@@ -109,6 +109,10 @@
     tr:hover {
       background-color: var(--c-gray-10);
     }
+
+    tr:last-of-type td {
+      border-bottom: 0;
+    }
   }
 
   tfoot {
@@ -264,4 +268,22 @@
   line-height: 1.4rem;
   padding: 1.2rem 1.6rem;
   text-align: left;
+}
+
+.table__action {
+  background-color: var(--c-transparent);
+  border: 1px solid var(--c-blue-10);
+  border-radius: 100%;
+  color: var(--c-blue);
+  font-weight: bold;
+  height: u.size('lg');
+  margin-right: auto;
+  width: u.size('lg');
+
+  &:hover,
+  &:focus {
+    border: 1px solid var(--c-transparent);
+    background-color: var(--c-blue);
+    color: var(--c-white);
+  }
 }
