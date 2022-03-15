@@ -1,6 +1,5 @@
 import logging
 
-from django.conf import settings
 from django.views.generic import DetailView, ListView
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import DeleteView
@@ -14,8 +13,6 @@ from apps.base.views import TurboCreateView, TurboUpdateView
 
 class TurboFrame500Mixin:
     def dispatch(self, request, *args, **kwargs):
-        if settings.TEST:
-            return super().dispatch(request, *args, **kwargs)
         try:
             return super().dispatch(request, *args, **kwargs)
         except Exception as exc:
