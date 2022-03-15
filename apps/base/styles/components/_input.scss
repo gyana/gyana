@@ -219,6 +219,11 @@ input.input,
     }
   }
 
+  &__ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
   &__font-inherit {
     font-size: inherit;
     font-weight: inherit;

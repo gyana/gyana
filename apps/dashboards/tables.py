@@ -44,12 +44,14 @@ class DashboardTable(tables.Table):
 class DashboardHistoryTable(tables.Table):
     class Meta:
         model = DashboardVersion
-        fields = ("created", "name")
+        fields = ("name", "created")
         attrs = {"class": "table"}
         order_by = ("created",)
 
     created = NaturalDatetimeColumn()
-    name = tables.Column(empty_values=(), orderable=False)
+    name = tables.Column(
+        empty_values=(), orderable=False, attrs={"th": {"style": "min-width: 50%;"}}
+    )
     action = TemplateColumn(
         template_name="dashboards/_restore_cell.html", orderable=False
     )

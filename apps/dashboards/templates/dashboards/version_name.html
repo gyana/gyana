@@ -4,19 +4,16 @@
   action="{% url 'dashboards:version-rename' object.id %}"
 >
   {% csrf_token %}
+
   <input
-    class="input__inline input__font-inherit"
+    class="input__inline input__font-inherit input__ellipsis"
     id="name"
     type="text"
     name="name"
     {% if object.name != None %}
       value="{{ object.name }}"
-      size="{{ object.name|length }}"
-    {% else %}
-      size="{{ placeholder|length }}"
     {% endif %}
     onblur="this.form.requestSubmit();"
-    placeholder="{{placeholder}}"
-    oninput="this.size = this.value.length"
+    placeholder="{{ placeholder }}"
   />
 </form>
