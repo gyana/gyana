@@ -108,7 +108,10 @@ def to_chart(df: pd.DataFrame, widget: Widget) -> FusionCharts:
                 else {}
             ),
             **(
-                {"lowerLimit": "0", "upperLimit": "100"}
+                {
+                    "lowerLimit": str(widget.lower_limit),
+                    "upperLimit": str(widget.upper_limit),
+                }
                 if widget.kind == Widget.Kind.GAUGE
                 else {}
             ),
@@ -329,12 +332,32 @@ def to_combo_chart(widget, df):
 
 def to_gauge(widget, df):
     value = df[widget.aggregations.first().column][0]
+    min_val, first_quarter, second_quarter, third_quarter, max_val = [
+        int(x) for x in np.linspace(widget.lower_limit, widget.upper_limit, 5)
+    ]
     return {
         "colorRange": {
             "color": [
-                {"minValue": "0", "maxValue": "50", "code": "#e30303"},
-                {"minValue": "50", "maxValue": "75", "code": "#facc15"},
-                {"minValue": "75", "maxValue": "100", "code": "#0db145"},
+                {
+                    "minValue": str(min_val),
+                    "maxValue": str(first_quarter),
+                    "code": "#e30303",
+                },
+                {
+                    "minValue": str(first_quarter),
+                    "maxValue": str(second_quarter),
+                    "code": "#f38e4f",
+                },
+                {
+                    "minValue": str(second_quarter),
+                    "maxValue": str(third_quarter),
+                    "code": "#facc15",
+                },
+                {
+                    "minValue": str(third_quarter),
+                    "maxValue": str(max_val),
+                    "code": "#0db145",
+                },
             ]
         },
         "dials": {"dial": [{"value": str(value)}]},

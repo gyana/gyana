@@ -47,6 +47,10 @@ class WidgetStyle(models.Model):
     metric_comparison_font_size = models.IntegerField(null=True)
     metric_comparison_font_color = models.CharField(null=True, max_length=7)
 
+    # Gauge specific configuration
+    lower_limit = models.IntegerField(default=0)
+    upper_limit = models.IntegerField(default=100)
+
     @property
     def computed_background_color(self):
         if self.background_color:

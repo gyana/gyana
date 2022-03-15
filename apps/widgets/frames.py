@@ -24,7 +24,7 @@ from apps.tables.bigquery import get_query_from_table
 from apps.tables.models import Table
 from apps.widgets.visuals import chart_to_output, metric_to_output, table_to_output
 
-from .forms import FORMS, MetricStyleForm, WidgetStyleForm
+from .forms import FORMS, STYLE_FORMS, DefaultStyleForm
 from .models import Widget
 
 
@@ -184,10 +184,9 @@ class WidgetUpdate(WidgetUpdateMixin, TurboFrameUpdateView):
             context["show_date_column"] = bool(
                 context["form"].get_live_field("date_column")
             )
-            context["styleForm"] = WidgetStyleForm(instance=self.object)
-
-        if self.object.kind == Widget.Kind.METRIC:
-            context["styleForm"] = MetricStyleForm(instance=self.object)
+            context["styleForm"] = STYLE_FORMS.get(self.object.kind, DefaultStyleForm)(
+                instance=self.object
+            )
 
         return context
 
@@ -245,10 +244,7 @@ class WidgetStyle(WidgetUpdateMixin, TurboFrameUpdateView):
     turbo_frame_dom_id = "widget-modal-style"
 
     def get_form_class(self):
-        if self.object.kind == Widget.Kind.METRIC:
-            return MetricStyleForm
-        else:
-            return WidgetStyleForm
+        return STYLE_FORMS.get(self.object.kind, DefaultStyleForm)
 
     def form_valid(self, form):
         r = super().form_valid(form)
