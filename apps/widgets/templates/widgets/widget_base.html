@@ -5,7 +5,7 @@ IMPORTANT: Any style/layout changs here should also be made to
 apps/dashboards/templates/dashboards/preview.html to reflect the changes in
 preview mode.
 {% endcomment %}
-<gy-widget id="widget-{{ object.id }}">
+<gy-widget id="{% block widget.id %}widget-{{ object.id }}{% endblock widget.id %}">
   <div
     class="h-full w-full"
     data-id="{{ object.id }}"
@@ -21,6 +21,7 @@ preview mode.
     {% if object.kind == "image" %}
     data-min-width="15"
     {% endif %}
+    {% block widget.attrs %}{% endblock widget.attrs %}
   >
     <div class="widget-card h-full">
       <div
@@ -154,5 +155,7 @@ preview mode.
       </div>
       {% endif %}
     </div>
+
+    {% block widget.extra %}{% endblock widget.extra %}
   </div>
 </gy-widget>

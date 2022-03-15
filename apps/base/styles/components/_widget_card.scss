@@ -19,6 +19,11 @@
     &--border {
       border: 1px solid var(--c-gray);
     }
+
+    &--center {
+      justify-content: center;
+      align-items: center;
+    }
   }
 
   &__commands {
