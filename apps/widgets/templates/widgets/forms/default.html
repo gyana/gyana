@@ -33,7 +33,7 @@
   >
     {% csrf_token %}
 
-    <div class="flex flex-col flex-1 w-full pad">
+    <div class="widget-update__body">
       {% include "django/forms/default_form.html" with form=styleForm optional=False only %}
     </div>
 
@@ -92,7 +92,7 @@
       {{ hidden_field }}
     {% endfor %}
 
-    <div class="flex flex-1 flex-col gap-5 w-full pad overflow-y-auto">
+    <div class="widget-update__body">
       <span data-live-update-target="loading" hidden>
         <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-2x"></i>
       </span>

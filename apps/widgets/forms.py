@@ -96,8 +96,7 @@ class GenericWidgetForm(LiveFormsetForm):
                     for form in formsets["Aggregations"].forms
                     if not form.deleted and form.data.get(f"{form.prefix}-column")
                 ]
-                columns = group_columns + aggregations
-                if columns:
+                if columns := group_columns + aggregations:
                     if not aggregations:
                         columns += [COUNT_COLUMN_NAME]
                     self.fields["sort_column"].choices = [
@@ -185,9 +184,7 @@ class OneDimensionForm(GenericWidgetForm):
 
     def get_live_fields(self):
         fields = super().get_live_fields()
-        table = self.get_live_field("table")
-
-        if table:
+        if table := self.get_live_field("table"):
             fields += ["dimension"]
             if self.get_live_field("kind") != Widget.Kind.COMBO:
                 fields += ["sort_by", "sort_ascending"]
@@ -226,9 +223,7 @@ class TwoDimensionForm(GenericWidgetForm):
 
     def get_live_fields(self):
         fields = super().get_live_fields()
-        table = self.get_live_field("table")
-
-        if table:
+        if table := self.get_live_field("table"):
             fields += ["dimension", "second_dimension"]
 
             schema = (
@@ -267,9 +262,7 @@ class StackedChartForm(GenericWidgetForm):
 
     def get_live_fields(self):
         fields = super().get_live_fields()
-        table = self.get_live_field("table")
-
-        if table:
+        if table := self.get_live_field("table"):
             fields += [
                 "dimension",
                 "second_dimension",
@@ -359,6 +352,7 @@ FORMS = {
     Widget.Kind.COMBO: OneDimensionForm,
     Widget.Kind.IFRAME: IframeWidgetForm,
     Widget.Kind.IMAGE: ImageWidgetForm,
+    Widget.Kind.GAUGE: GenericWidgetForm,
 }
 
 
@@ -368,7 +362,22 @@ class WidgetDuplicateForm(BaseModelForm):
         fields = ()
 
 
-class WidgetStyleForm(BaseModelForm):
+class StyleMixin:
+    def get_initial_for_field(self, field, field_name):
+        """If widget has no value set for a setting, default to dashboard settings."""
+        if getattr(self.instance, field_name) is not None:
+            return super().get_initial_for_field(field, field_name)
+
+        if hasattr(self.instance.page.dashboard, field_name):
+            return getattr(self.instance.page.dashboard, field_name)
+
+        if field.initial:
+            return field.initial
+
+        return super().get_initial_for_field(field, field_name)
+
+
+class DefaultStyleForm(StyleMixin, BaseModelForm):
     palette_colors = PaletteColorsField(required=False)
     background_color = forms.CharField(
         required=False,
@@ -389,33 +398,28 @@ class WidgetStyleForm(BaseModelForm):
             "currency": Datalist(attrs={"data-live-update-ignore": ""}),
         }
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
-        if self.instance.kind == Widget.Kind.TABLE:
-            self.fields = copy.deepcopy(
-                {
-                    key: field
-                    for key, field in self.base_fields.items()
-                    if key not in ["palette_colors", "font_size", "show_tooltips"]
-                }
-            )
+class TableStyleForm(StyleMixin, BaseModelForm):
+    background_color = forms.CharField(
+        required=False,
+        initial="#ffffff",
+        widget=forms.TextInput(attrs={"type": "color"}),
+    )
 
-    # If widget has no value set for a setting, default to dashboard settings.
-    def get_initial_for_field(self, field, field_name):
-        if getattr(self.instance, field_name) is not None:
-            return super().get_initial_for_field(field, field_name)
-
-        if hasattr(self.instance.page.dashboard, field_name):
-            return getattr(self.instance.page.dashboard, field_name)
-
-        if field.initial:
-            return field.initial
-
-        return super().get_initial_for_field(field, field_name)
+    class Meta:
+        model = Widget
+        fields = [
+            "background_color",
+        ]
 
 
-class MetricStyleForm(WidgetStyleForm):
+class MetricStyleForm(StyleMixin, BaseModelForm):
+    background_color = forms.CharField(
+        required=False,
+        initial="#ffffff",
+        widget=forms.TextInput(attrs={"type": "color"}),
+    )
+
     metric_header_font_size = forms.IntegerField(
         required=False,
         initial=16,
@@ -465,12 +469,51 @@ class MetricStyleForm(WidgetStyleForm):
             "metric_comparison_font_color",
         ]
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields = copy.deepcopy(
-            {
-                key: field
-                for key, field in self.base_fields.items()
-                if key not in ["palette_colors", "font_size", "show_tooltips"]
-            }
-        )
+
+class GaugeStyleForm(StyleMixin, BaseModelForm):
+    background_color = forms.CharField(
+        required=False,
+        initial="#ffffff",
+        widget=forms.TextInput(attrs={"type": "color"}),
+    )
+    first_segment_color = forms.CharField(
+        required=False,
+        initial="#e30303",
+        widget=forms.TextInput(attrs={"type": "color"}),
+    )
+    second_segment_color = forms.CharField(
+        required=False,
+        initial="#f38e4f",
+        widget=forms.TextInput(attrs={"type": "color"}),
+    )
+    third_segment_color = forms.CharField(
+        required=False,
+        initial="#facc15",
+        widget=forms.TextInput(attrs={"type": "color"}),
+    )
+    fourth_segment_color = forms.CharField(
+        required=False,
+        initial="#0db145",
+        widget=forms.TextInput(attrs={"type": "color"}),
+    )
+
+    class Meta:
+        model = Widget
+        fields = [
+            "background_color",
+            "lower_limit",
+            "upper_limit",
+            "show_tooltips",
+            "currency",
+            "first_segment_color",
+            "second_segment_color",
+            "third_segment_color",
+            "fourth_segment_color",
+        ]
+
+
+STYLE_FORMS = {
+    Widget.Kind.METRIC: MetricStyleForm,
+    Widget.Kind.TABLE: TableStyleForm,
+    Widget.Kind.GAUGE: GaugeStyleForm,
+}

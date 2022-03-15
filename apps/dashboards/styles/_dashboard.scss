@@ -24,48 +24,6 @@
   }
 }
 
-.widget-update-sidebar {
-  border-right: 1px solid var(--c-gray);
-  display: flex;
-  flex-direction: column;
-  flex: 1 1 0%;
-  overflow: hidden;
-  position: relative;
-
-  &__form {
-    flex: 1 1 0%;
-    overflow: hidden;
-  }
-
-  #widget-editable-name {
-    padding: 1.6rem;
-    border-bottom: 1px solid var(--c-gray);
-  }
-
-  .widget-update__footer {
-    display: flex;
-    gap: 1.6rem;
-    padding: 1.6rem;
-    width: 100%;
-    background: var(--c-white);
-    margin-top: auto;
-    border-top: 1px solid var(--c-gray);
-  }
-
-  [data-live-update-target='loading'] {
-    align-items: center;
-    background-color: rgba(0, 0, 0, 0.08);
-    display: flex;
-    height: 100%;
-    justify-content: center;
-    left: 0;
-    position: absolute;
-    top: 0;
-    width: 100%;
-    z-index: var(--z-ui);
-  }
-}
-
 .palette-colors {
   display: grid;
   flex: 1 1 100%;
