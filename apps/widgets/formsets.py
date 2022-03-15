@@ -164,6 +164,7 @@ FORMSETS = {
     Widget.Kind.PYRAMID: [Min2Formset],
     Widget.Kind.FUNNEL: [Min2Formset],
     Widget.Kind.METRIC: [SingleMetricFormset],
+    Widget.Kind.GAUGE: [SingleMetricFormset],
     Widget.Kind.COMBO: [CombinationChartFormset],
     Widget.Kind.TABLE: [ColumnFormset, AggregationWithFormattingFormset],
 }

@@ -107,6 +107,11 @@ def to_chart(df: pd.DataFrame, widget: Widget) -> FusionCharts:
                 if widget.currency
                 else {}
             ),
+            **(
+                {"lowerLimit": "0", "upperLimit": "100"}
+                if widget.kind == Widget.Kind.GAUGE
+                else {}
+            ),
             **axis_names,
         },
         **data,
@@ -322,6 +327,20 @@ def to_combo_chart(widget, df):
     }
 
 
+def to_gauge(widget, df):
+    value = df[widget.aggregations.first().column][0]
+    return {
+        "colorRange": {
+            "color": [
+                {"minValue": "0", "maxValue": "50", "code": "#e30303"},
+                {"minValue": "50", "maxValue": "75", "code": "#facc15"},
+                {"minValue": "75", "maxValue": "100", "code": "#0db145"},
+            ]
+        },
+        "dials": {"dial": [{"value": str(value)}]},
+    }
+
+
 CHART_DATA = {
     Widget.Kind.BUBBLE: to_bubble,
     Widget.Kind.HEATMAP: to_heatmap,
@@ -339,4 +358,5 @@ CHART_DATA = {
     Widget.Kind.LINE: to_multi_value_data,
     Widget.Kind.STACKED_LINE: to_stack,
     Widget.Kind.COMBO: to_combo_chart,
+    Widget.Kind.GAUGE: to_gauge,
 }

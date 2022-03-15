@@ -97,13 +97,7 @@ class Widget(WidgetStyle, HistoryModel):
         TIMESERIES_AREA = "timeseries-area", "Area Timeseries"
         COMBO = "mscombidy2d", "Combination chart"
         IFRAME = "iframe", "iframe"
-
-    class Aggregator(models.TextChoices):
-        # These aggregators should reflect the names described in the ibis api, none is an exception
-        # https://ibis-project.org/docs/api.html#id2
-        NONE = "none", "None"
-        SUM = "sum", "Sum"
-        MEAN = "mean", "Average"
+        GAUGE = "angulargauge", "Gauge"
 
     _clone_excluded_m2o_or_o2m_fields = ["table"]
 
@@ -126,7 +120,6 @@ class Widget(WidgetStyle, HistoryModel):
 
     # Chart attributes
     kind = models.CharField(max_length=32, choices=Kind.choices, default=Kind.COLUMN)
-    aggregator = models.CharField(max_length=32, choices=Aggregator.choices)
     dimension = models.CharField(
         # maximum length of bigquery column name
         max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
@@ -205,7 +198,7 @@ class Widget(WidgetStyle, HistoryModel):
             return False
         if self.kind == self.Kind.TABLE:
             return True
-        if self.kind == self.Kind.METRIC:
+        if self.kind in [self.Kind.METRIC, self.Kind.GAUGE]:
             return self.aggregations.count() == 1
         if self.kind == self.Kind.RADAR:
             return self.aggregations.count() >= 3
@@ -249,6 +242,7 @@ NO_DIMENSION_WIDGETS = [
     Widget.Kind.FUNNEL,
     Widget.Kind.PYRAMID,
     Widget.Kind.METRIC,
+    Widget.Kind.GAUGE,
 ]
 
 # widget = (icon, category, verbose_name)
@@ -319,10 +313,11 @@ WIDGET_KIND_TO_WEB = {
         "Area",
     ),
     Widget.Kind.COMBO.value: (
-        f"fa-analytics",
+        "fa-analytics",
         Widget.Category.COMBO,
         "Combination chart",
     ),
+    Widget.Kind.GAUGE.value: ("fa-tachometer-fast", Widget.Category.SIMPLE, "Gauge"),
 }
 
 

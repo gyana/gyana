@@ -359,6 +359,7 @@ FORMS = {
     Widget.Kind.COMBO: OneDimensionForm,
     Widget.Kind.IFRAME: IframeWidgetForm,
     Widget.Kind.IMAGE: ImageWidgetForm,
+    Widget.Kind.GAUGE: GenericWidgetForm,
 }
 
 
