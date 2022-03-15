@@ -5,7 +5,7 @@ from django.urls import reverse
 from django_tables2.tables import Table as DjangoTable
 from django_tables2.views import SingleTableMixin
 from honeybadger import honeybadger
-from turbo_response import TurboStream
+from turbo_response import TurboFrame, TurboStream
 from turbo_response.response import TurboStreamResponse
 
 from apps.base.analytics import (
@@ -82,7 +82,58 @@ class WidgetName(TurboFrameUpdateView):
         )
 
 
-class WidgetUpdate(DashboardMixin, TurboFrameUpdateView):
+class WidgetUpdateMixin(DashboardMixin):
+    def get_turbo_stream_response(self, context):
+        return TurboStreamResponse(
+            [
+                TurboStream(f"widgets-output-{self.object.id}").replace.render(
+                    TurboFrame(f"widgets-output-{self.object.id}")
+                    .template("widgets/output.html", context)
+                    .render(request=self.request),
+                    is_safe=True,
+                ),
+                TurboStream(f"widget-name-{self.object.id}")
+                .replace.template("widgets/_widget_title.html", {"object": self.object})
+                .render(),
+            ]
+        )
+
+    def get_output_context(self):
+        context = {
+            "widget": self.object,
+            "project": self.project,
+            "dashboard": self.dashboard,
+        }
+        try:
+            add_output_context(
+                context,
+                self.object,
+                self.request,
+                self.object.page.control if self.object.page.has_control else None,
+                url=self.get_success_url()
+                if self.is_preview_request
+                else reverse(
+                    "dashboard_widgets:output",
+                    args=(
+                        self.project.id,
+                        self.dashboard.id,
+                        self.object.id,
+                    ),
+                ),
+            )
+            if self.object.error:
+                self.object.error = None
+        except Exception as e:
+            error = error_name_to_snake(e)
+            self.object.error = error
+            if not template_exists(f"widgets/errors/{error}.html"):
+                logging.warning(e, exc_info=e)
+                honeybadger.notify(e)
+
+        return context
+
+
+class WidgetUpdate(WidgetUpdateMixin, TurboFrameUpdateView):
     model = Widget
     turbo_frame_dom_id = "widget-modal"
 
@@ -152,36 +203,7 @@ class WidgetUpdate(DashboardMixin, TurboFrameUpdateView):
                 "type": form.instance.kind,
             },
         )
-        context = {
-            "widget": self.object,
-            "project": self.project,
-            "dashboard": self.dashboard,
-        }
-        try:
-            add_output_context(
-                context,
-                self.object,
-                self.request,
-                self.object.page.control if self.object.page.has_control else None,
-                url=self.get_success_url()
-                if self.is_preview_request
-                else reverse(
-                    "dashboard_widgets:output",
-                    args=(
-                        self.project.id,
-                        self.dashboard.id,
-                        self.object.id,
-                    ),
-                ),
-            )
-            if self.object.error:
-                self.object.error = None
-        except Exception as e:
-            error = error_name_to_snake(e)
-            self.object.error = error
-            if not template_exists(f"widgets/errors/{error}.html"):
-                logging.warning(e, exc_info=e)
-                honeybadger.notify(e)
+        context = self.get_output_context()
 
         if self.is_preview_request:
             analytics.track(
@@ -205,59 +227,19 @@ class WidgetUpdate(DashboardMixin, TurboFrameUpdateView):
             },
         )
 
-        return TurboStreamResponse(
-            [
-                TurboStream(f"widgets-output-{self.object.id}-stream")
-                .replace.template("widgets/output.html", context)
-                .render(request=self.request),
-                TurboStream(f"widget-name-{self.object.id}-stream")
-                .replace.template(
-                    "widgets/_widget_title.html", {"object": self.get_object}
-                )
-                .render(),
-            ]
-        )
+        return self.get_turbo_stream_response(context)
 
     def form_invalid(self, form):
         r = super().form_invalid(form)
         if self.request.POST.get("close"):
-            context = {
-                "widget": self.object,
-                "project": self.project,
-                "dashboard": self.dashboard,
-            }
-            try:
-                add_output_context(
-                    context,
-                    self.object,
-                    self.request,
-                    self.object.page.control if self.object.page.has_control else None,
-                )
-                if self.object.error:
-                    self.object.error = None
-            except Exception as e:
-                error = error_name_to_snake(e)
-                self.object.error = error
-                if not template_exists(f"widgets/errors/{error}.html"):
-                    logging.warning(e, exc_info=e)
-                    honeybadger.notify(e)
+            # This is called when the x/close button is clicked
+            context = self.get_output_context()
 
-            return TurboStreamResponse(
-                [
-                    TurboStream(f"widgets-output-{self.object.id}-stream")
-                    .replace.template("widgets/output.html", context)
-                    .render(request=self.request),
-                    TurboStream(f"widget-name-{self.object.id}-stream")
-                    .replace.template(
-                        "widgets/_widget_title.html", {"object": self.get_object}
-                    )
-                    .render(),
-                ]
-            )
+            return self.get_turbo_stream_response(context)
         return r
 
 
-class WidgetStyle(DashboardMixin, TurboFrameUpdateView):
+class WidgetStyle(WidgetUpdateMixin, TurboFrameUpdateView):
     template_name = "widgets/update.html"
     model = Widget
     turbo_frame_dom_id = "widget-modal-style"
@@ -280,36 +262,7 @@ class WidgetStyle(DashboardMixin, TurboFrameUpdateView):
                 "type": form.instance.kind,
             },
         )
-        context = {
-            "widget": self.object,
-            "project": self.project,
-            "dashboard": self.dashboard,
-        }
-        try:
-            add_output_context(
-                context,
-                self.object,
-                self.request,
-                self.object.page.control if self.object.page.has_control else None,
-                url=self.get_success_url()
-                if self.is_preview_request
-                else reverse(
-                    "dashboard_widgets:output",
-                    args=(
-                        self.project.id,
-                        self.dashboard.id,
-                        self.object.id,
-                    ),
-                ),
-            )
-            if self.object.error:
-                self.object.error = None
-        except Exception as e:
-            error = error_name_to_snake(e)
-            self.object.error = error
-            if not template_exists(f"widgets/errors/{error}.html"):
-                logging.warning(e, exc_info=e)
-                honeybadger.notify(e)
+        context = self.get_output_context()
 
         if self.is_preview_request:
             analytics.track(
@@ -333,18 +286,7 @@ class WidgetStyle(DashboardMixin, TurboFrameUpdateView):
             },
         )
 
-        return TurboStreamResponse(
-            [
-                TurboStream(f"widgets-output-{self.object.id}-stream")
-                .replace.template("widgets/output.html", context)
-                .render(request=self.request),
-                TurboStream(f"widget-name-{self.object.id}-stream")
-                .replace.template(
-                    "widgets/_widget_title.html", {"object": self.get_object}
-                )
-                .render(),
-            ]
-        )
+        return self.get_turbo_stream_response(context)
 
     def get_success_url(self) -> str:
         if self.is_preview_request:

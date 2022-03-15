@@ -342,4 +342,5 @@ def test_duplicate_project_disabled(client, project, project_factory):
     assertSelectorHasAttribute(r, "button", "disabled")
 
     r = client.post(f"/projects/{project.id}/duplicate")
-    assert r.status_code == 404
+    assertOK(r)
+    assertSelectorText(r, "p", "Something went wrong!")

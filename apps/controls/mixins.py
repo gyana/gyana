@@ -22,7 +22,7 @@ class UpdateWidgetsMixin(DashboardMixin):
                     control,
                 )
                 streams.append(
-                    TurboStream(f"widgets-output-{widget.id}-stream")
+                    TurboStream(f"widgets-output-{widget.id}")
                     .replace.template("widgets/output.html", context)
                     .render(request=self.request)
                 )

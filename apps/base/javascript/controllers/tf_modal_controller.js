@@ -65,16 +65,27 @@ export default class extends Controller {
     `
 
     this.turboFrameTarget.removeAttribute('src')
-    this.turboFrameTarget.setAttribute('id', event.currentTarget.dataset.modalId)
-    this.turboFrameTarget.setAttribute('src', event.currentTarget.dataset.modalSrc)
+    this.turboFrameTarget.setAttribute(
+      'id',
+      event.currentTarget.dataset.modalId
+    )
+    this.turboFrameTarget.setAttribute(
+      'src',
+      event.currentTarget.dataset.modalSrc
+    )
 
     if (event.currentTarget.dataset.modalTarget) {
-      this.turboFrameTarget.setAttribute('target', event.currentTarget.dataset.modalTarget)
+      this.turboFrameTarget.setAttribute(
+        'target',
+        event.currentTarget.dataset.modalTarget
+      )
     }
 
     this.modalTarget.className = 'tf-modal'
     if (event.currentTarget.dataset.modalClasses) {
-      this.modalTarget.classList.add(...event.currentTarget.dataset.modalClasses.split(' '))
+      this.modalTarget.classList.add(
+        ...event.currentTarget.dataset.modalClasses.split(' ')
+      )
     }
 
     if (event.currentTarget.dataset.modalItem) {
@@ -87,7 +98,8 @@ export default class extends Controller {
   }
 
   async submit(e) {
-    for (const el of this.formTarget.querySelectorAll('button[type=submit]')) el.disabled = true
+    for (const el of this.formTarget.querySelectorAll('button[type=submit]'))
+      el.disabled = true
     // e.target.innerHTML = '<i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>'
 
     e.preventDefault()
@@ -112,10 +124,15 @@ export default class extends Controller {
     if ([200, 201].includes(result.status)) {
       // For nodes, we need to dispatch events
       // that are usually triggered on the default submit event
-      const nodeUpdateElement = this.element.querySelector('[data-controller=node-update]')
+      const nodeUpdateElement = this.element.querySelector(
+        '[data-controller=node-update]'
+      )
       if (nodeUpdateElement) {
         this.application
-          .getControllerForElementAndIdentifier(nodeUpdateElement, 'node-update')
+          .getControllerForElementAndIdentifier(
+            nodeUpdateElement,
+            'node-update'
+          )
           .sendNodeEvents()
       }
 
@@ -136,8 +153,13 @@ export default class extends Controller {
     if (this.hasClosingWarningTarget && this.changed) {
       this.closingWarningTarget.removeAttribute('hidden')
     } else {
-      if (this.hasFormTarget && this.formTarget.dataset.tfModalSubmitOnClose != undefined) {
-        this.formTarget.requestSubmit(this.formTarget.querySelector("button[value*='close']"))
+      if (
+        this.hasFormTarget &&
+        this.formTarget.dataset.tfModalSubmitOnClose != undefined
+      ) {
+        this.formTarget.requestSubmit(
+          this.formTarget.querySelector("button[value*='close']")
+        )
       }
 
       this.forceClose()
@@ -165,7 +187,9 @@ export default class extends Controller {
   preview(e) {
     e.preventDefault()
     this.changed = false
-    this.formTarget.requestSubmit(this.formTarget.querySelector("button[value*='Save & Preview']"))
+    this.formTarget.requestSubmit(
+      this.formTarget.querySelector("button[value*='Save & Preview']")
+    )
   }
 
   save() {
@@ -174,7 +198,10 @@ export default class extends Controller {
 
   search(event) {
     if (this.debounce) clearTimeout(this.debounce)
-    this.debounce = setTimeout(this.handleSearch.bind(this, event), debounceTime)
+    this.debounce = setTimeout(
+      this.handleSearch.bind(this, event),
+      debounceTime
+    )
   }
 
   handleSearch(event) {
@@ -188,12 +215,18 @@ export default class extends Controller {
   }
 
   handleClick(event) {
-    if (this.hasTurboFrameTarget && !this.turboFrameTarget.contains(event.target)) {
+    if (
+      this.hasTurboFrameTarget &&
+      !this.turboFrameTarget.contains(event.target)
+    ) {
       this.close(event)
     }
   }
 
   get liveUpdateController() {
-    return this.application.getControllerForElementAndIdentifier(this.formTarget, "live-update")
+    return this.application.getControllerForElementAndIdentifier(
+      this.formTarget,
+      'live-update'
+    )
   }
 }
