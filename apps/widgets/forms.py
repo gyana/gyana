@@ -476,6 +476,26 @@ class GaugeStyleForm(StyleMixin, BaseModelForm):
         initial="#ffffff",
         widget=forms.TextInput(attrs={"type": "color"}),
     )
+    first_segment_color = forms.CharField(
+        required=False,
+        initial="#e30303",
+        widget=forms.TextInput(attrs={"type": "color"}),
+    )
+    second_segment_color = forms.CharField(
+        required=False,
+        initial="#f38e4f",
+        widget=forms.TextInput(attrs={"type": "color"}),
+    )
+    third_segment_color = forms.CharField(
+        required=False,
+        initial="#facc15",
+        widget=forms.TextInput(attrs={"type": "color"}),
+    )
+    fourth_segment_color = forms.CharField(
+        required=False,
+        initial="#0db145",
+        widget=forms.TextInput(attrs={"type": "color"}),
+    )
 
     class Meta:
         model = Widget
@@ -484,8 +504,11 @@ class GaugeStyleForm(StyleMixin, BaseModelForm):
             "lower_limit",
             "upper_limit",
             "show_tooltips",
-            "font_size",
             "currency",
+            "first_segment_color",
+            "second_segment_color",
+            "third_segment_color",
+            "fourth_segment_color",
         ]
 
 

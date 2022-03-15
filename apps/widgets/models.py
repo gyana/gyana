@@ -50,6 +50,10 @@ class WidgetStyle(models.Model):
     # Gauge specific configuration
     lower_limit = models.IntegerField(default=0)
     upper_limit = models.IntegerField(default=100)
+    first_segment_color = models.CharField(null=True, max_length=7)
+    second_segment_color = models.CharField(null=True, max_length=7)
+    third_segment_color = models.CharField(null=True, max_length=7)
+    fourth_segment_color = models.CharField(null=True, max_length=7)
 
     @property
     def computed_background_color(self):
