@@ -24,13 +24,6 @@ from apps.teams.models import OutOfCreditsException
 from ._sentiment_utils import CreditException, get_gcp_sentiment
 from ._utils import create_or_replace_intermediate_table, get_parent_updated
 
-JOINS = {
-    "inner": "inner_join",
-    "outer": "outer_join",
-    "left": "left_join",
-    "right": "right_join",
-}
-
 
 def _get_duplicate_names(left, right):
     left_names = {col.lower() for col in left.schema()}
@@ -126,15 +119,12 @@ def get_join_query(node, left, right, *queries):
     for idx, join in enumerate(node.join_columns.all()[: len(renamed_queries) - 1]):
         left = renamed_queries[join.left_index]
         right = renamed_queries[idx + 1]
-        to_join = getattr(query, JOINS[join.how])
+
         left_col = duplicate_map[join.left_index].get(
             join.left_column, join.left_column
         )
         right_col = duplicate_map[idx + 1].get(join.right_column, join.right_column)
-        query = to_join(
-            right,
-            left[left_col] == right[right_col],
-        )
+        query = query.join(right, left[left_col] == right[right_col], how=join.how)
         if join.how == "inner":
             drops.add(right_col)
             relabels[left_col] = join.left_column
