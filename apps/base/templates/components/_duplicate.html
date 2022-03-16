@@ -1,16 +1,17 @@
 <form 
-  method='post'
+  method="POST"
+  class="form--no-layout"
   action="{% url object_name|add:"s:duplicate" object.id %}"
 >
   {% csrf_token %}
 
   <button
-    type='submit'
+    class="table__action"
+    type="submit"
     id="{{ object_name }}-duplicate-{{object.id}}"
     data-controller="tooltip"
+    data-tooltip-content="Duplicate"
   >
     <i class="fas fa-fw fa-copy"></i>
-
-    <span data-tooltip-target="body">Duplicate</span>
   </button>
 </form>

@@ -38,6 +38,7 @@ class DashboardList(ProjectMixin, SingleTableView):
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
 
+        context_data["object_name"] = "dashboard"
         context_data["dashboard_count"] = Dashboard.objects.filter(
             project=self.project
         ).count()

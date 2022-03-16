@@ -30,7 +30,6 @@ class WorkflowTable(tables.Table):
             "last_success_run",
             "created",
             "updated",
-            "duplicate",
         )
         attrs = {"class": "table"}
 
@@ -43,9 +42,8 @@ class WorkflowTable(tables.Table):
     updated = NaturalDatetimeColumn()
     # TODO: Fix orderable for status column.
     status = StatusColumn(template_name="columns/status.html", orderable=False)
-    duplicate = TemplateColumn(
-        template_name="components/_duplicate.html",
-        verbose_name="Actions",
+    actions = TemplateColumn(
+        template_name="components/_actions.html",
         orderable=False,
     )
 

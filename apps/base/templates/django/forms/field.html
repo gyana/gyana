@@ -1,6 +1,8 @@
 <div class="label {{ field.field.widget.attrs.class }}">
   <label for="{{ field.id_for_label }}">
-    {{ field.label }}
+    <span class="block">
+      {{ field.label }}
+    </span>
 
     {% if field.help_text %}
     <p class="input__help-text">
@@ -8,8 +10,9 @@
       {% if not field.field.required %} - optional{% endif %}
     </p>
     {% endif %}
-  
-
-    {{ field }}
   </label>
+
+
+
+  {{ field }}
 </div>

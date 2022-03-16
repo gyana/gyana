@@ -6,6 +6,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.forms.widgets import HiddenInput, PasswordInput
 from django.utils import timezone
 
+from apps.base.fields import ColorField, ColorInput
 from apps.base.forms import BaseModelForm, LiveModelForm
 
 from .models import DASHBOARD_SETTING_TO_CATEGORY, Dashboard
@@ -15,13 +16,13 @@ class PaletteColorsWidget(forms.MultiWidget):
     def __init__(self, *args, **kwargs):
         super(PaletteColorsWidget, self).__init__(
             [
-                forms.TextInput(attrs={"type": "color"}),
-                forms.TextInput(attrs={"type": "color"}),
-                forms.TextInput(attrs={"type": "color"}),
-                forms.TextInput(attrs={"type": "color"}),
-                forms.TextInput(attrs={"type": "color"}),
-                forms.TextInput(attrs={"type": "color"}),
-                forms.TextInput(attrs={"type": "color"}),
+                ColorInput,
+                ColorInput,
+                ColorInput,
+                ColorInput,
+                ColorInput,
+                ColorInput,
+                ColorInput,
             ],
             *args,
             **kwargs
@@ -88,16 +89,8 @@ class DashboardForm(BaseModelForm):
         widget=forms.NumberInput(attrs={"unit_suffix": "pixels"}),
     )
     palette_colors = PaletteColorsField(required=False)
-    background_color = forms.CharField(
-        required=False,
-        initial="#ffffff",
-        widget=forms.TextInput(attrs={"type": "color"}),
-    )
-    font_color = forms.CharField(
-        required=False,
-        initial="#6a6b77",
-        widget=forms.TextInput(attrs={"type": "color"}),
-    )
+    background_color = ColorField(required=False, initial="#ffffff")
+    font_color = ColorField(required=False, initial="#6a6b77")
     font_size = forms.IntegerField(
         required=False,
         initial=14,
@@ -107,27 +100,23 @@ class DashboardForm(BaseModelForm):
     )
     widget_header_font_size = forms.IntegerField(
         required=False,
+        initial=18,
         widget=forms.NumberInput(
             attrs={"class": "label--third", "unit_suffix": "pixels"}
         ),
     )
-    widget_background_color = forms.CharField(
-        required=False,
-        initial="#ffffff",
-        widget=forms.TextInput(attrs={"type": "color"}),
-    )
-    widget_border_color = forms.CharField(
-        required=False,
-        widget=forms.TextInput(attrs={"type": "color"}),
-    )
+    widget_background_color = ColorField(required=False, initial="#ffffff")
+    widget_border_color = ColorField(required=False, initial="#e6e6e6")
     widget_border_radius = forms.IntegerField(
         required=False,
+        initial=5,
         widget=forms.NumberInput(
             attrs={"class": "label--third", "unit_suffix": "pixels"}
         ),
     )
     widget_border_thickness = forms.IntegerField(
         required=False,
+        initial=1,
         widget=forms.NumberInput(
             attrs={"class": "label--third", "unit_suffix": "pixels"}
         ),

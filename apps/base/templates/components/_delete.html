@@ -1,0 +1,11 @@
+{% firstof object.pk object.id as object_id  %}
+
+<a 
+  href="{% url "project_"|add:object_name|add:"s:delete" project.id object_id %}"
+  class="table__action"
+  id="{{ object_name }}-delete-{{ object_id }}"
+  data-controller="tooltip"
+  data-tooltip-content="Delete"
+>
+  <i class="fas fa-fw fa-trash"></i>
+</a>
