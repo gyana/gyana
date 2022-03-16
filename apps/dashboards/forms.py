@@ -13,20 +13,18 @@ from .models import DASHBOARD_SETTING_TO_CATEGORY, Dashboard
 
 
 class PaletteColorsWidget(forms.MultiWidget):
+    widgets = [
+        ColorInput(),
+        ColorInput(),
+        ColorInput(),
+        ColorInput(),
+        ColorInput(),
+        ColorInput(),
+        ColorInput(),
+    ]
+
     def __init__(self, *args, **kwargs):
-        super(PaletteColorsWidget, self).__init__(
-            [
-                ColorInput,
-                ColorInput,
-                ColorInput,
-                ColorInput,
-                ColorInput,
-                ColorInput,
-                ColorInput,
-            ],
-            *args,
-            **kwargs
-        )
+        super().__init__(widgets=self.widgets, *args, **kwargs)
 
     def decompress(self, value):
         if value:
@@ -37,20 +35,21 @@ class PaletteColorsWidget(forms.MultiWidget):
 
 class PaletteColorsField(forms.MultiValueField):
     widget = PaletteColorsWidget
+    fields = (
+        ColorField(),
+        ColorField(),
+        ColorField(),
+        ColorField(),
+        ColorField(),
+        ColorField(),
+        ColorField(),
+    )
 
     def __init__(self, *args, **kwargs):
-        super(PaletteColorsField, self).__init__(
-            (
-                forms.CharField(),
-                forms.CharField(),
-                forms.CharField(),
-                forms.CharField(),
-                forms.CharField(),
-                forms.CharField(),
-                forms.CharField(),
-            ),
+        super().__init__(
+            fields=self.fields,
             *args,
-            **kwargs
+            **kwargs,
         )
 
     def compress(self, data_list):
