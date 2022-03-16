@@ -10,6 +10,7 @@ const GyWidget_: React.FC<{ children: React.ReactElement; root: HTMLElement }> =
   children,
   root,
 }) => {
+  const isControl = !!children.props['data-is-control'] || false
   const mode: 'view' | 'edit' | 'public' =
     (new URLSearchParams(window.location.search).get('mode') as 'view' | 'edit') ||
     (window.location.href.includes('projects') ? 'edit' : 'public')
@@ -79,7 +80,7 @@ const GyWidget_: React.FC<{ children: React.ReactElement; root: HTMLElement }> =
         setWidth(width)
         setHeight(height)
 
-        client.action(window.schema, ['widgets', 'api', 'partial_update'], {
+        client.action(window.schema, [isControl ? 'controls' : 'widgets', 'api', 'partial_update'], {
           id,
           x: Math.floor(x),
           y: Math.floor(y),
@@ -102,7 +103,7 @@ const GyWidget_: React.FC<{ children: React.ReactElement; root: HTMLElement }> =
         setX(newX)
         setY(newY)
 
-        client.action(window.schema, ['widgets', 'api', 'partial_update'], {
+        client.action(window.schema, [isControl ? 'controls' : 'widgets', 'api', 'partial_update'], {
           id,
           x: Math.floor(newX),
           y: Math.floor(newY),
