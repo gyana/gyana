@@ -107,6 +107,14 @@ def to_chart(df: pd.DataFrame, widget: Widget) -> FusionCharts:
                 if widget.currency
                 else {}
             ),
+            **(
+                {
+                    "lowerLimit": str(widget.lower_limit),
+                    "upperLimit": str(widget.upper_limit),
+                }
+                if widget.kind == Widget.Kind.GAUGE
+                else {}
+            ),
             **axis_names,
         },
         **data,
@@ -322,6 +330,40 @@ def to_combo_chart(widget, df):
     }
 
 
+def to_gauge(widget, df):
+    value = df[widget.aggregations.first().column][0]
+    min_val, first_quarter, second_quarter, third_quarter, max_val = [
+        int(x) for x in np.linspace(widget.lower_limit, widget.upper_limit, 5)
+    ]
+    return {
+        "colorRange": {
+            "color": [
+                {
+                    "minValue": str(min_val),
+                    "maxValue": str(first_quarter),
+                    "code": widget.first_segment_color or "#e30303",
+                },
+                {
+                    "minValue": str(first_quarter),
+                    "maxValue": str(second_quarter),
+                    "code": widget.second_segment_color or "#f38e4f",
+                },
+                {
+                    "minValue": str(second_quarter),
+                    "maxValue": str(third_quarter),
+                    "code": widget.third_segment_color or "#facc15",
+                },
+                {
+                    "minValue": str(third_quarter),
+                    "maxValue": str(max_val),
+                    "code": widget.fourth_segment_color or "#0db145",
+                },
+            ]
+        },
+        "dials": {"dial": [{"value": str(value)}]},
+    }
+
+
 CHART_DATA = {
     Widget.Kind.BUBBLE: to_bubble,
     Widget.Kind.HEATMAP: to_heatmap,
@@ -339,4 +381,5 @@ CHART_DATA = {
     Widget.Kind.LINE: to_multi_value_data,
     Widget.Kind.STACKED_LINE: to_stack,
     Widget.Kind.COMBO: to_combo_chart,
+    Widget.Kind.GAUGE: to_gauge,
 }

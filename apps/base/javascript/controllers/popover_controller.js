@@ -35,7 +35,7 @@ export default class extends Controller {
       theme: this.element.dataset.theme || 'popover',
       trigger: this.element.dataset.trigger || 'click focus',
       triggerTarget: this.hasTriggerTarget ? this.triggerTarget : this.element,
-      zIndex: 'var(--z-ui)',
+      zIndex: 'calc(var(--z-ui) + 1)',
     })
   }
 

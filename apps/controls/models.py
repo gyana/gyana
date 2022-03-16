@@ -2,6 +2,10 @@ from django.db import models
 
 from apps.base.models import HistoryModel
 
+# Need to be a multiple of GRID_SIZE found in GyWidget.tsx
+DEFAULT_WIDTH = 270
+DEFAULT_HEIGHT = 60
+
 
 class DateRange(models.TextChoices):
     TODAY = "today", "today"
@@ -68,6 +72,7 @@ class ControlWidget(HistoryModel):
     control = models.ForeignKey(
         Control, on_delete=models.CASCADE, related_name="widgets"
     )
+
     x = models.IntegerField(
         default=0,
         help_text="The x field is in absolute pixel value.",
@@ -75,4 +80,12 @@ class ControlWidget(HistoryModel):
     y = models.IntegerField(
         default=0,
         help_text="The y field is in absolute pixel value.",
+    )
+    width = models.IntegerField(
+        default=DEFAULT_WIDTH,
+        help_text="The width is in absolute pixel value.",
+    )
+    height = models.IntegerField(
+        default=DEFAULT_HEIGHT,
+        help_text="The height is in absolute pixel value.",
     )

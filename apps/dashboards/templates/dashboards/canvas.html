@@ -34,7 +34,7 @@
 
       <input name='x' id="id_x" value="" />
       <input name='y' id="id_y" value="" />
-      <input name='page' id="id_page" value="{{page.id}}"/>
+      <input name='page' id="id_page" value="{{ page.id }}"/>
 
       <button type="submit"></button>
     </form>
@@ -47,51 +47,48 @@
         --grid-size:{{ dashboard.grid_size }}px;
       "
     >
+      {% for object in page.control_widgets.all %}
+        {% include 'controls/control-widget.html' with object=object control=object.control %}
+      {% endfor %}
+
       {% for object in page.widgets.all %}
         {% include 'widgets/widget_component.html' %}
-      {% empty %}
-        {% if request.GET.mode != 'view' %}
-          <div
-            id="dashboard-widget-placeholder"
-            class="placeholder-scr placeholder-scr--fillscreen"
-          >
-            <div class="flex items-center max-w-lg gap-7">
-              <i class="fas fa-fw fa-chart-bar text-blue fa-2x"></i>
-              <p>
-                Start building your dashboard by dragging in a <strong>widget</strong>
-              </p>
-            </div>
+      {% endfor %}
 
-            <div class="flex items-center max-w-lg gap-7">
-              <i class="fas fa-fw fa-edit text-black-50 fa-2x"></i>
-              <p>
-                <strong>Edit</strong> to customize data sources, dimensions, metrics and filters
-              </p>
-            </div>
-
-            <div class="flex items-center max-w-lg gap-7">
-              <i class="fas fa-fw fa-paint-brush text-pink fa-2x"></i>
-              <p>
-                Make your dashboard unique with <strong>theme and layout</strong> settings
-              </p>
-            </div>
-
-            <div class="flex items-center max-w-lg gap-7">
-              <i class="fas fa-fw fa-share text-green fa-2x"></i>
-              <p>
-                <strong>Share</strong> your dashboard as a public or password-protected link
-              </p>
-            </div>
+      {% if page.widgets.all|length == 0 and page.control_widgets.all|length == 0 and request.GET.mode != 'view' %}
+        <div
+          id="dashboard-widget-placeholder"
+          class="placeholder-scr placeholder-scr--fillscreen"
+        >
+          <div class="flex items-center max-w-lg gap-7">
+            <i class="fas fa-fw fa-chart-bar text-blue fa-2x"></i>
+            <p>
+              Start building your dashboard by dragging in a <strong>widget</strong>
+            </p>
           </div>
-        {% endif %}
-      {% endfor %}
 
-      {% for object in page.control_widgets.all %}
-          
-          {% include 'controls/control-widget.html' with object=object control=object.control %}
-          
-      {% endfor %}
+          <div class="flex items-center max-w-lg gap-7">
+            <i class="fas fa-fw fa-edit text-black-50 fa-2x"></i>
+            <p>
+              <strong>Edit</strong> to customize data sources, dimensions, metrics and filters
+            </p>
+          </div>
 
+          <div class="flex items-center max-w-lg gap-7">
+            <i class="fas fa-fw fa-paint-brush text-pink fa-2x"></i>
+            <p>
+              Make your dashboard unique with <strong>theme and layout</strong> settings
+            </p>
+          </div>
+
+          <div class="flex items-center max-w-lg gap-7">
+            <i class="fas fa-fw fa-share text-green fa-2x"></i>
+            <p>
+              <strong>Share</strong> your dashboard as a public or password-protected link
+            </p>
+          </div>
+        </div>
+      {% endif %}
     </div>
   </div>
   {% comment %}

@@ -119,7 +119,9 @@ export default class extends Controller {
     const doc = parser.parseFromString(text, 'text/html')
     const newForm = doc.querySelector(`#${this.formTarget.id}`)
 
-    this.formTarget.outerHTML = newForm.outerHTML
+    if (newForm) {
+      this.formTarget.outerHTML = newForm.outerHTML
+    }
 
     if ([200, 201].includes(result.status)) {
       // For nodes, we need to dispatch events

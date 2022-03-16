@@ -1,68 +1,66 @@
+{% extends 'widgets/widget_base.html' %}
 
-<gy-control-widget id="control-widget-{{ object.id }}">
-  <div
-    class="h-full w-full"
-    data-id="{{ object.id }}"
-    data-x="{{ object.x }}"
-    data-y="{{ object.y }}"
-    data-grid-size="{{ dashboard.grid_size }}"
-    data-controller='popover'
-    data-placement='top-left'
-    data-theme='popover-control'
-  >
-    <div class="widget-card h-full">
-      <div
-        class="widget-card__visual p-2 {% if object.page.dashboard.show_widget_border %}widget-card__visual--border{% endif %}"
-        style="
-          {% if object.page.dashboard.widget_border_thickness %}border-width:{{ object.page.dashboard.widget_border_thickness }};{% endif %}
-          {% if object.page.dashboard.widget_border_radius %}border-radius:{{ object.page.dashboard.widget_border_radius }};{% endif %}
-          {% if object.page.dashboard.widget_border_color %}border-color:{{ object.page.dashboard.widget_border_color }};{% endif %}
-        "
-      >
-        
-          <span><i class="fa fa-calendar mr-2"></i>{{ control.get_date_range_display }}</span>
-          {% if control.date_range == "custom" %}
+{% block widget.id %}control-widget-{{ object.id }}{% endblock widget.id %}
 
-            {% if control.start %}Start <strong>{{control.start}}</strong>{% endif %}
-            {% if control.end %}End <strong>{{control.end}}</strong>{% endif %}
+{% block widget.attrs %}
+  data-is-control="true"
+  data-controller="popover"
+  data-placement="top-start"
+  data-theme="popover-control"
+{% endblock widget.attrs %}
 
-          {% endif %}
-        
-      </div>
-      <div class="widget-card__commands">
-        <button  data-controller="tooltip" data-popover-target="trigger">
-          <i class="fas fa-fw fa-edit"></i>
-          <span data-tooltip-target="body">Edit</span>
-        </button>
+{% block widget %}
+  <div class="flex flex-1 justify-center items-center">
+    <span>
+      <i class="fa fa-calendar text-black-50 mr-2"></i>
+      {{ control.get_date_range_display }}
+    </span>
 
-        {% if not is_public  and request.GET.mode != 'view' %}
-          <form
-            data-controller="tooltip"
-            method="post"
-            action="
-            {% url 'dashboard_controls:delete-widget' project.id dashboard.id object.id %}">
-            {% csrf_token %}
-      
-            <button id="control-widget-delete-{{ object.id }}" type='submit'>
-              <i class="fas fa-fw fa-trash cursor-pointer"></i>
-            </button>
-            <span data-tooltip-target="body">Delete</span>
-          </form>
-        {% endif %}
-
-      </div>
-    </div>
-    
-    <div class='control-popover' data-popover-target="body">
-      <turbo-frame id="controls:update-widget"
-        src="
-        {% if is_public  %}
-          {% url 'dashboard_controls:update-public' project.id dashboard.id control.id %}
-        {% else %}
-          {% url 'dashboard_controls:update-widget' project.id dashboard.id control.id %}?mode={{request.GET.mode}}
-        {% endif %}"
-      ></turbo-frame>
-    </div>
+    {% if control.date_range == "custom" %}
+      {% if control.start %}Start <strong>{{ control.start }}</strong>{% endif %}
+      {% if control.end %}End <strong>{{ control.end }}</strong>{% endif %}
+    {% endif %}
   </div>
-  
-</gy-control-widget>
+{% endblock widget %}
+
+{% block widget.commands %}
+  <button
+    class="widget-card__button"
+    data-controller="tooltip"
+    data-tooltip-content="Edit"
+    data-popover-target="trigger"
+  >
+    <i class="fas fa-fw fa-edit"></i>
+  </button>
+
+  {% if not is_public and request.GET.mode != 'view' %}
+    <form
+      data-controller="tooltip"
+      data-tooltip-content="Delete"
+      method="POST"
+      action="{% url 'dashboard_controls:delete-widget' project.id dashboard.id object.id %}"
+    >
+      {% csrf_token %}
+
+      <button
+        class="widget-card__button"
+        id="control-widget-delete-{{ object.id }}"
+      >
+        <i class="fas fa-fw fa-trash cursor-pointer"></i>
+      </button>
+    </form>
+  {% endif %}
+{% endblock widget.commands %}
+
+{% block widget.extra %}
+  <div class="control-popover" data-popover-target="body">
+    <turbo-frame id="controls:update-widget"
+      src="
+      {% if is_public  %}
+        {% url 'dashboard_controls:update-public' project.id dashboard.id control.id %}
+      {% else %}
+        {% url 'dashboard_controls:update-widget' project.id dashboard.id control.id %}?mode={{ request.GET.mode }}
+      {% endif %}"
+    ></turbo-frame>
+  </div>
+{% endblock widget.extra %}
