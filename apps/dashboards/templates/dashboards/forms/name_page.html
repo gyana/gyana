@@ -12,8 +12,8 @@
       type="text"
       name="name"
       placeholder="Untitled Page"
-      value="{{ page.name }}"
       {% if page.name %}
+      value="{{ page.name }}"
       size="{{ page.name|length }}"
       {% endif %}
       onblur="this.form.requestSubmit();"
