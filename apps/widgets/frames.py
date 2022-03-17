@@ -86,12 +86,9 @@ class WidgetUpdateMixin(DashboardMixin):
     def get_turbo_stream_response(self, context):
         return TurboStreamResponse(
             [
-                TurboStream(f"widgets-output-{self.object.id}").replace.render(
-                    TurboFrame(f"widgets-output-{self.object.id}")
-                    .template("widgets/output.html", context)
-                    .render(request=self.request),
-                    is_safe=True,
-                ),
+                TurboStream(f"widgets-output-{self.object.id}")
+                .update.template("widgets/output.html", context)
+                .render(request=self.request),
                 TurboStream(f"widget-name-{self.object.id}")
                 .replace.template("widgets/_widget_title.html", {"object": self.object})
                 .render(),
