@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboards', '0027_auto_populatehistory'),
+        ("dashboards", "0026_auto_20220309_1346"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='dashboardversion',
-            name='name',
+            model_name="dashboardversion",
+            name="name",
             field=models.CharField(blank=True, max_length=255, null=True),
         ),
     ]
