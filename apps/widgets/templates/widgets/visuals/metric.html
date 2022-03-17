@@ -6,7 +6,7 @@
     --metric-title-color: {% firstof widget.metric_header_font_color "var(--c-black-50)" %};
     --metric-title-size: {% firstof widget.metric_header_font_size "16" %}px;
 
-    --metric-value-color: {% firstof widget.metric_font_color "var(--c-black)" %};
+    --metric-value-color: {% firstof widget.metric_font_color  widget.page.dashboard.font_color "var(--c-black)" %};
     --metric-value-size: {% firstof widget.metric_font_size "60" %}px;
 
     --metric-comparison-color: {% firstof widget.metric_comparison_font_color "var(--c-black-50)" %};
