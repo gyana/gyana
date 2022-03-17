@@ -684,7 +684,6 @@
       "url": null,
       "image": "",
       "kind": "msline",
-      "aggregator": "",
       "dimension": "date",
       "part": null,
       "second_dimension": null,
@@ -728,7 +727,6 @@
       "url": null,
       "image": "",
       "kind": "mscolumn2d",
-      "aggregator": "",
       "dimension": "Owner",
       "part": null,
       "second_dimension": null,
@@ -772,7 +770,6 @@
       "url": null,
       "image": "",
       "kind": "table",
-      "aggregator": "",
       "dimension": null,
       "part": null,
       "second_dimension": null,
@@ -2792,9 +2789,17 @@
       "sync_state": "rescheduled",
       "update_state": "delayed",
       "is_historical_sync": false,
-      "tasks": [{ "code": "change_in_tls_detected", "message": "Revalidate TLS Certificate" }],
+      "tasks": [
+        {
+          "code": "change_in_tls_detected",
+          "message": "Revalidate TLS Certificate"
+        }
+      ],
       "warnings": [
-        { "code": "long_term_broken_connector", "message": "Connector broken for over 7 days" }
+        {
+          "code": "long_term_broken_connector",
+          "message": "Connector broken for over 7 days"
+        }
       ],
       "config": {
         "host": "ec2-52-50-171-4.eu-west-1.compute.amazonaws.com",
@@ -2843,7 +2848,11 @@
       "is_historical_sync": false,
       "tasks": [],
       "warnings": [],
-      "config": { "sync_mode": "AllAccounts", "sync_metadata": true, "timeframe_months": "SIX" },
+      "config": {
+        "sync_mode": "AllAccounts",
+        "sync_metadata": true,
+        "timeframe_months": "SIX"
+      },
       "source_sync_details": { "account_ids": ["act_78363492"] },
       "schema_config": null,
       "sync_task_id": null,
@@ -3096,7 +3105,10 @@
       "is_historical_sync": true,
       "tasks": [{ "code": "reconnect", "message": "Reconnect" }],
       "warnings": [
-        { "code": "long_term_broken_connector", "message": "Connector broken for over 7 days" }
+        {
+          "code": "long_term_broken_connector",
+          "message": "Connector broken for over 7 days"
+        }
       ],
       "config": { "shop": "gyanalimited" },
       "source_sync_details": null,
@@ -3184,7 +3196,11 @@
             "config_type": "Prebuilt",
             "prebuilt_report": "SOCIAL_MEDIA_ACQUISITIONS"
           },
-          { "table": "traffic", "config_type": "Prebuilt", "prebuilt_report": "TRAFFIC" }
+          {
+            "table": "traffic",
+            "config_type": "Prebuilt",
+            "prebuilt_report": "TRAFFIC"
+          }
         ],
         "sync_mode": "AllAccounts",
         "timeframe_months": "ALL_TIME"
@@ -3455,17 +3471,32 @@
   {
     "model": "account.emailaddress",
     "pk": 1,
-    "fields": { "user": ["test"], "email": "test@gyana.com", "verified": true, "primary": true }
+    "fields": {
+      "user": ["test"],
+      "email": "test@gyana.com",
+      "verified": true,
+      "primary": true
+    }
   },
   {
     "model": "account.emailaddress",
     "pk": 2,
-    "fields": { "user": ["alone"], "email": "alone@gyana.com", "verified": true, "primary": true }
+    "fields": {
+      "user": ["alone"],
+      "email": "alone@gyana.com",
+      "verified": true,
+      "primary": true
+    }
   },
   {
     "model": "account.emailaddress",
     "pk": 3,
-    "fields": { "user": ["admin"], "email": "admin@gyana.com", "verified": true, "primary": true }
+    "fields": {
+      "user": ["admin"],
+      "email": "admin@gyana.com",
+      "verified": true,
+      "primary": true
+    }
   },
   {
     "model": "socialaccount.socialapp",
@@ -3836,7 +3867,11 @@
     "pk": 1,
     "fields": { "path": "0001", "depth": 1, "numchild": 0, "name": "Root" }
   },
-  { "model": "wagtailcore.locale", "pk": 1, "fields": { "language_code": "en" } },
+  {
+    "model": "wagtailcore.locale",
+    "pk": 1,
+    "fields": { "language_code": "en" }
+  },
   {
     "model": "wagtailcore.page",
     "pk": 1,
@@ -4283,7 +4318,11 @@
     "pk": 1,
     "fields": { "name": "Moderators approval", "active": true }
   },
-  { "model": "wagtailcore.groupapprovaltask", "pk": 1, "fields": { "groups": [["Moderators"]] } },
+  {
+    "model": "wagtailcore.groupapprovaltask",
+    "pk": 1,
+    "fields": { "groups": [["Moderators"]] }
+  },
   {
     "model": "wagtailcore.pagesubscription",
     "pk": 1,

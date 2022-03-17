@@ -21,14 +21,19 @@ describe('dashboards', () => {
 
   it('dashboard editor', () => {
     cy.get('[data-cy=dashboard-create]').click()
-    cy.get('input[id=name]').clear().type('Magical dashboard{enter}')
+    cy.get('#dashboard-name input[id=name]')
+      .clear()
+      .type('Magical dashboard{enter}')
 
     // create a table widget and view in the dashboard
     createWidget('table', 0, 0)
     cy.contains('Save & Preview').should('not.be.disabled').click()
     cy.contains('Edinburgh')
 
-    cy.get('button[class*=tf-modal__close]').click({ force: true, turbo: false })
+    cy.get('button[class*=tf-modal__close]').click({
+      force: true,
+      turbo: false,
+    })
     cy.get('input[value="Save & Preview"]').should('not.exist')
     cy.get(`#widget-${widgetStartId}`).contains('London')
 
@@ -36,11 +41,15 @@ describe('dashboards', () => {
     createWidget('msbar2d', 0, 400)
     cy.get('select[name=dimension]').select('Owner')
     cy.get('[data-formset-prefix-value=aggregations]').within((el) => {
-      cy.wrap(el).get('button').should('not.be.disabled').click({ turbo: false })
+      cy.wrap(el)
+        .get('button')
+        .should('not.be.disabled')
+        .click({ turbo: false })
     })
     cy.get('select[name=aggregations-0-column]').select('Employees')
     cy.get('select[name=aggregations-0-function]').select('SUM')
-    cy.contains('Save & Close').click()
+    cy.contains('Save & Close').click({ turbo: false })
+
     cy.get(`#widget-${widgetStartId + 1}`).within((el) => {
       // TODO: check for visibility
       cy.wrap(el).contains('text', 'David')
