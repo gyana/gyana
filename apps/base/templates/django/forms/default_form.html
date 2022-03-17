@@ -8,17 +8,19 @@
 {% comment %} Ignore these fields because they are going to be rendered in an extendable manner further down {% endcomment %}
   {% if form.formatting_unfolded and bound_field.label in 'Currency, Rounding, Name, Formatting unfolded, Show in %'%}
   {% elif bound_field.widget_type == "palettecolors" %}
-    <label>
-      <span>
-        {{ bound_field.label }}
+    <div class="label">
+      <label>
+        <span class="block">
+          {{ bound_field.label }}
 
-        {% if bound_field.help_text %}
-        <p class="input__help-text">{{ bound_field.help_text }}</p>
-        {% endif %}
-      </span>
-    </label>
+          {% if bound_field.help_text %}
+          <p class="input__help-text">{{ bound_field.help_text }}</p>
+          {% endif %}
+        </span>
+      </label>
 
-    <div class="palette-colors">{{ bound_field }}</div>
+      <div class="palette-colors">{{ bound_field }}</div>
+    </div>
   {% elif bound_field.widget_type == "connecprschemamultiselect" %}
     <div
       data-controller="multi-select"
@@ -125,7 +127,6 @@
   {% else %}
     {% include 'django/forms/field.html' with field=bound_field%}
   {% endif %}
-
 
   {{ bound_field.errors }}
   {% endfor %}

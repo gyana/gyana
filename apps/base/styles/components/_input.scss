@@ -106,7 +106,17 @@ input[type='color'] {
   padding: 0;
   width: 100%;
 
-  &::-webkit-color-swatch,
+  &::-webkit-color-swatch-wrapper {
+    padding: 0;
+  }
+
+  // Note for some reason SCSS is not playing well with nested pseudo-elements,
+  // do not nest/merge these or the styling breaks!
+  &::-webkit-color-swatch {
+    border: none;
+    border-radius: 5px;
+  }
+
   &::-moz-color-swatch {
     border: none;
     border-radius: 5px;
@@ -181,10 +191,10 @@ select {
 .label__unit {
   align-items: center;
   background-color: var(--c-gray-20);
-  border-bottom-right-radius: 5px;
-  border-left: 0;
-  border-top-right-radius: 5px;
   border: 1px solid var(--c-gray);
+  border-bottom-right-radius: 5px;
+  border-top-right-radius: 5px;
+  border-left: 0;
   color: var(--c-black-50);
   display: flex;
   font-weight: 400;

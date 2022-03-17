@@ -5,6 +5,7 @@ from django import forms
 from ibis.expr.datatypes import Date, Time, Timestamp
 
 from apps.base.core.utils import create_column_choices
+from apps.base.fields import ColorField
 from apps.base.forms import BaseModelForm, LiveFormsetForm, LiveFormsetMixin
 from apps.base.widgets import Datalist, SelectWithDisable
 from apps.dashboards.forms import PaletteColorsField
@@ -379,11 +380,7 @@ class StyleMixin:
 
 class DefaultStyleForm(StyleMixin, BaseModelForm):
     palette_colors = PaletteColorsField(required=False)
-    background_color = forms.CharField(
-        required=False,
-        initial="#ffffff",
-        widget=forms.TextInput(attrs={"type": "color"}),
-    )
+    background_color = ColorField(required=False, initial="#ffffff")
 
     class Meta:
         model = Widget
@@ -400,11 +397,7 @@ class DefaultStyleForm(StyleMixin, BaseModelForm):
 
 
 class TableStyleForm(StyleMixin, BaseModelForm):
-    background_color = forms.CharField(
-        required=False,
-        initial="#ffffff",
-        widget=forms.TextInput(attrs={"type": "color"}),
-    )
+    background_color = ColorField(required=False, initial="#ffffff")
 
     class Meta:
         model = Widget
@@ -414,11 +407,7 @@ class TableStyleForm(StyleMixin, BaseModelForm):
 
 
 class MetricStyleForm(StyleMixin, BaseModelForm):
-    background_color = forms.CharField(
-        required=False,
-        initial="#ffffff",
-        widget=forms.TextInput(attrs={"type": "color"}),
-    )
+    background_color = ColorField(required=False, initial="#ffffff")
 
     metric_header_font_size = forms.IntegerField(
         required=False,
@@ -471,31 +460,11 @@ class MetricStyleForm(StyleMixin, BaseModelForm):
 
 
 class GaugeStyleForm(StyleMixin, BaseModelForm):
-    background_color = forms.CharField(
-        required=False,
-        initial="#ffffff",
-        widget=forms.TextInput(attrs={"type": "color"}),
-    )
-    first_segment_color = forms.CharField(
-        required=False,
-        initial="#e30303",
-        widget=forms.TextInput(attrs={"type": "color"}),
-    )
-    second_segment_color = forms.CharField(
-        required=False,
-        initial="#f38e4f",
-        widget=forms.TextInput(attrs={"type": "color"}),
-    )
-    third_segment_color = forms.CharField(
-        required=False,
-        initial="#facc15",
-        widget=forms.TextInput(attrs={"type": "color"}),
-    )
-    fourth_segment_color = forms.CharField(
-        required=False,
-        initial="#0db145",
-        widget=forms.TextInput(attrs={"type": "color"}),
-    )
+    background_color = ColorField(required=False, initial="#ffffff")
+    first_segment_color = ColorField(required=False, initial="#e30303")
+    second_segment_color = ColorField(required=False, initial="#f38e4f")
+    third_segment_color = ColorField(required=False, initial="#facc15")
+    fourth_segment_color = ColorField(required=False, initial="#0db145")
 
     class Meta:
         model = Widget

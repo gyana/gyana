@@ -109,6 +109,10 @@
     tr:hover {
       background-color: var(--c-gray-10);
     }
+
+    tr:last-of-type td {
+      border-bottom: 0;
+    }
   }
 
   tfoot {
@@ -125,7 +129,7 @@
     }
   }
 
-  td a[href]:not(.button) {
+  td a {
     color: var(--c-blue);
     padding: 1.2rem 0;
 
@@ -264,4 +268,26 @@
   line-height: 1.4rem;
   padding: 1.2rem 1.6rem;
   text-align: left;
+}
+.table .table__action,
+.table__action {
+  align-items: center;
+  background-color: var(--c-transparent);
+  border: 1px solid var(--c-gray);
+  border-radius: 100%;
+  color: var(--c-black-50);
+  display: flex;
+  font-weight: bold;
+  height: u.size('lg');
+  justify-content: center;
+  margin-right: auto;
+  padding: 0;
+  width: u.size('lg');
+
+  &:hover,
+  &:focus {
+    background-color: var(--c-blue);
+    border: 1px solid var(--c-transparent);
+    color: var(--c-white);
+  }
 }

@@ -27,7 +27,7 @@
     action="{% url 'dashboard_widgets:update-style' project.id dashboard.id object.id %}" 
     method="POST"
     data-controller="live-update" 
-    data-action="change->tf-modal#change submit->tf-modal#save"
+    data-action="change->tf-modal#change turbo:submit-end->tf-modal#save"
     data-tf-modal-target="form"
     data-tf-modal-submit-on-close
   >
@@ -67,7 +67,7 @@
     data-controller="live-update" 
     data-action="
       change->tf-modal#change 
-      submit->tf-modal#save 
+      turbo:submit-end->tf-modal#save 
       formset:remove->live-update#updateForm 
       formset:add->live-update#updateForm 
       formset:remove->tf-modal#change 
@@ -288,7 +288,6 @@
         name="submit"
         value="Save & Close"
         class="button button--success flex-1"
-        data-action="click->tf-modal#submit"
       >
         Save & Close
       </button>

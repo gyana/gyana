@@ -194,8 +194,16 @@ export default class extends Controller {
     )
   }
 
-  save() {
+  save(e) {
     this.changed = false
+
+    if (
+      e.detail &&
+      e.detail.success &&
+      e.detail.formSubmission.submitter.value == 'Save & Close'
+    ) {
+      this.forceClose()
+    }
   }
 
   search(event) {

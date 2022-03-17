@@ -34,10 +34,9 @@ class DashboardTable(tables.Table):
     status = StatusColumn(template_name="columns/status.html", orderable=False)
     created = NaturalDatetimeColumn()
     updated = NaturalDatetimeColumn()
-    duplicate = TemplateColumn(
-        template_name="components/_duplicate.html",
+    actions = TemplateColumn(
+        template_name="components/_actions.html",
         orderable=False,
-        verbose_name="Actions",
     )
 
 
