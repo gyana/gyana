@@ -365,13 +365,15 @@ class WidgetDuplicateForm(BaseModelForm):
 
 class StyleMixin:
     def get_initial_for_field(self, field, field_name):
-        """If widget has no value set for a setting, default to dashboard settings."""
+        # Field already has a value, we use it.
         if getattr(self.instance, field_name) is not None:
-            return super().get_initial_for_field(field, field_name)
+            return getattr(self.instance, field_name)
 
+        # Field has no value but dashboard has set a value.
         if hasattr(self.instance.page.dashboard, field_name):
             return getattr(self.instance.page.dashboard, field_name)
 
+        # Field has no value, dashboard hasn't set but we have an initial set.
         if field.initial:
             return field.initial
 

@@ -1,6 +1,7 @@
 import logging
 
 import analytics
+from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django_tables2.tables import Table as DjangoTable
 from django_tables2.views import SingleTableMixin
@@ -244,6 +245,9 @@ class WidgetStyle(WidgetUpdateMixin, TurboFrameUpdateView):
         return STYLE_FORMS.get(self.object.kind, DefaultStyleForm)
 
     def form_valid(self, form):
+        if not form.has_changed():
+            return HttpResponseRedirect(self.get_success_url())
+
         r = super().form_valid(form)
 
         analytics.track(
