@@ -1,5 +1,6 @@
 import json
 from datetime import timedelta
+from re import A
 from uuid import uuid4
 
 import pytest
@@ -194,7 +195,7 @@ def test_account_limit_warning_and_disabled(client, project_factory):
 
     r = client.get(f"/teams/{team.id}")
     assertOK(r)
-    assertContains(r, "You're exceeding your row count limit.")
+    assertContains(r, "You've exceeded your row count limit.")
 
     team.row_count = 15
     team.save()
@@ -238,7 +239,13 @@ def test_team_subscriptions(client, logged_in_user, settings, paddle):
 
     r = client.get(f"/teams/{team.id}/account")
     assertOK(r)
-    assertLink(r, f"/teams/{team.id}/plans", "Upgrade")
+    assertLink(r, f"/teams/{team.id}/pricing", "Upgrade")
+
+    r = client.get(f"/teams/{team.id}/pricing")
+    assertOK(r)
+
+    # paddle flow removed from app for now
+    # assertLink(r, f"/teams/{team.id}/plans", "Upgrade")
 
     r = client.get(f"/teams/{team.id}/plans")
     assertOK(r)
