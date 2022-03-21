@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime
 
 from dirtyfields import DirtyFieldsMixin
@@ -32,6 +33,7 @@ class Connector(DirtyFieldsMixin, BaseModel):
 
     class SetupState(models.TextChoices):
         BROKEN = "broken", "Broken - the connector setup config is broken"
+        NOT_FOUND = "not-found", "Fivetran couldn't find this connector"
         INCOMPLETE = (
             "incomplete",
             "Incomplete - the setup config is incomplete, the setup tests never succeeded",
@@ -293,9 +295,19 @@ class Connector(DirtyFieldsMixin, BaseModel):
                 connector.sync_updates_from_fivetran(data)
 
     def sync_updates_from_fivetran(self, data=None):
+        from apps.connectors.fivetran.client import FivetranConnectorNotFound
         from apps.connectors.sync import end_connector_sync
 
-        data = data or clients.fivetran().get(self)
+        try:
+            data = data or clients.fivetran().get(self)
+        except FivetranConnectorNotFound as err:
+            # It's not clear how this can happen but it happens
+            self.integration.state = Integration.State.ERROR
+            self.integration.save()
+            self.setup_state = self.SetupState.NOT_FOUND
+            self.save()
+            logging.error(err, exc_info=err)
+            return
         self.update_kwargs_from_fivetran(data)
 
         # update fivetran sync time if user has updated timezone/daily sync time
