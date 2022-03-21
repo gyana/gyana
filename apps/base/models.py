@@ -32,7 +32,7 @@ class HistoryModel(BaseModel):
 
     def restore_as_of(self, as_of):
         """Restores historic version as existed at `as_of` and it's downstream relations."""
-        self.history.as_of(as_of).save()
+        self.history.as_of(as_of).save(skip_dashboard_update=True)
 
         for f in self._meta.related_objects:
             if f.one_to_many and hasattr(f.related_model, "history"):
@@ -75,7 +75,10 @@ class SaveParentModel(DirtyFieldsMixin, HistoryModel):
                 self.parent.save_without_historical_record()
             else:
                 self.parent.save()
-        return super().save(*args, **kwargs)
+        skip_dashboard_update = kwargs.pop("skip_dashboard_update", False)
+        super().save(*args, **kwargs)
+        if hasattr(self, "widget") and not skip_dashboard_update:
+            self.widget.page.dashboard.updates.create(content_object=self)
 
     def delete(self, *args, **kwargs):
         self.parent.data_updated = timezone.now()

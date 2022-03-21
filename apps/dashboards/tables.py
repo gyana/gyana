@@ -6,7 +6,7 @@ from django.template.loader import get_template
 
 from apps.base.tables import ICONS, NaturalDatetimeColumn, TemplateColumn
 
-from .models import Dashboard, DashboardVersion
+from .models import Dashboard, DashboardUpdate, DashboardVersion
 
 
 class StatusColumn(tables.TemplateColumn):
@@ -52,7 +52,9 @@ class DashboardHistoryTable(tables.Table):
         empty_values=(), orderable=False, attrs={"th": {"style": "min-width: 50%;"}}
     )
     action = TemplateColumn(
-        template_name="dashboards/_restore_cell.html", orderable=False
+        template_name="dashboards/_restore_cell.html",
+        orderable=False,
+        extra_context={"href": "dashboards:restore"},
     )
 
     def render_name(self, record, table, **kwargs):
@@ -64,3 +66,24 @@ class DashboardHistoryTable(tables.Table):
         return get_template("dashboards/columns/name_cell.html").render(
             context.flatten()
         )
+
+
+class DashboardUpdateTable(tables.Table):
+    class Meta:
+        model = DashboardUpdate
+        fields = ("created", "content_object")
+        attrs = {"class": "table"}
+        order_by = ("created",)
+
+    created = NaturalDatetimeColumn()
+    content_object = tables.Column(
+        verbose_name="Changed",
+        linkify=lambda value: value.get_absolute_url() if value else None,
+        empty_values=(),
+        orderable=False,
+    )
+    action = TemplateColumn(
+        template_name="dashboards/_restore_cell.html",
+        orderable=False,
+        extra_context={"href": "dashboards:restore-update"},
+    )

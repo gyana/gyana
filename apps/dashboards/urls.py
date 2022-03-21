@@ -9,6 +9,7 @@ from .access import (
     dashboard_is_password_protected,
     dashboard_is_public,
     login_and_dashboard_required,
+    login_and_dashboardupdate_required,
     login_and_dashboardversion_required,
 )
 
@@ -51,6 +52,11 @@ urlpatterns = [
         "restore/<hashid:pk>",
         login_and_dashboardversion_required(views.DashboardRestore.as_view()),
         name="restore",
+    ),
+    path(
+        "restore_update/<hashid:pk>",
+        login_and_dashboardupdate_required(views.DashboardUpdateRestore.as_view()),
+        name="restore-update",
     ),
     path(
         "version/<hashid:pk>/rename",

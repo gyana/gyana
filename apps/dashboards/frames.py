@@ -10,7 +10,7 @@ from apps.base.frames import (
     TurboFrameUpdateView,
 )
 from apps.dashboards.forms import DashboardShareForm
-from apps.dashboards.tables import DashboardHistoryTable
+from apps.dashboards.tables import DashboardHistoryTable, DashboardUpdateTable
 from apps.projects.mixins import ProjectMixin
 from apps.widgets.models import Widget
 from apps.widgets.tables import WidgetHistory
@@ -127,7 +127,14 @@ class DashboardHistory(ProjectMixin, SingleTableMixin, TurboFrameDetailView):
     turbo_frame_dom_id = "dashboard:history"
 
     def get_table_data(self):
+        if self.request.GET.get("tab") == "history":
+            return self.object.updates
         return self.object.versions
+
+    def get_table_class(self):
+        if self.request.GET.get("tab") == "history":
+            return DashboardUpdateTable
+        return super().get_table_class()
 
 
 class DashboardVersionSave(ProjectMixin, TurboFrameUpdateView):

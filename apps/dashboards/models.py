@@ -91,10 +91,12 @@ class Dashboard(DashboardSettings, HistoryModel):
 
     def save(self, *args, **kwargs):
         is_creation = self.id is None
-
+        skip_dashboard_update = kwargs.pop("skip_dashboard_update", False)
         super().save(*args, **kwargs)
-        if is_creation:
-            self.updates.add(content_object=self)
+        if is_creation and not skip_dashboard_update:
+            # Create page and first update entry
+            self.pages.create()
+            self.updates.create(content_object=self)
         if self._password is not None:
             password_validation.password_changed(self._password, self)
             self._password = None
@@ -180,11 +182,17 @@ class Page(HistoryModel):
         return f'{reverse("project_dashboards:detail", args=(self.dashboard.project.id, self.dashboard.id))}?dashboardPage={self.position}'
 
     def save(self, **kwargs) -> None:
-        self.dashboard.updates.add(content_object=self)
-        return super().save(**kwargs)
+        is_creation = self.id is None
+        skip_dashboard_update = kwargs.pop("skip_dashboard_update", False)
+        super().save(**kwargs)
+        if not is_creation and not skip_dashboard_update:
+            self.dashboard.updates.create(content_object=self)
+
+    def __str__(self) -> str:
+        return f"Page {self.position}{f': {self.name}' if self.name else ''}"
 
 
-# The DashboardVersion linsk to the dashboard model and we will be using the creation date
+# The DashboardVersion links to the dashboard model and we will be using the creation date
 # For the other models. Hopefully, this is robust even in the event of children not
 # propagating their update to their parents.
 class DashboardVersion(BaseModel):

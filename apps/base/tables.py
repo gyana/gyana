@@ -32,6 +32,7 @@ class TemplateColumn(tables.TemplateColumn):
     def render(self, record, table, **kwargs):
         context = getattr(table, "context", Context())
         context["object"] = record
+        context.update(self.extra_context)
         return get_template(self.template_name).render(context.flatten())
 
 

@@ -26,7 +26,7 @@ from apps.projects.mixins import ProjectMixin
 from apps.widgets.models import WIDGET_CHOICES_ARRAY, Widget
 
 from .forms import DashboardCreateForm, DashboardLoginForm, DashboardNameForm
-from .models import Dashboard, DashboardVersion, Page
+from .models import Dashboard, DashboardUpdate, DashboardVersion, Page
 
 
 class DashboardList(ProjectMixin, SingleTableView):
@@ -67,8 +67,6 @@ class DashboardCreate(ProjectMixin, TurboCreateView):
 
     def form_valid(self, form):
         r = super().form_valid(form)
-        # Create page
-        form.instance.pages.create()
 
         analytics.track(
             self.request.user.id,
@@ -293,15 +291,19 @@ class DashboardRestore(TurboUpdateView):
     fields = []
 
     def form_valid(self, form):
-        version = form.instance
-        version.dashboard.restore_as_of(version.created)
+        instance = form.instance
+        instance.dashboard.restore_as_of(instance.created)
 
         return redirect(
             reverse(
                 "project_dashboards:detail",
-                args=(version.dashboard.project.id, version.dashboard.id),
+                args=(instance.dashboard.project.id, instance.dashboard.id),
             )
         )
+
+
+class DashboardUpdateRestore(DashboardRestore):
+    model = DashboardUpdate
 
 
 class PageMove(PageMixin, TurboUpdateView):

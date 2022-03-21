@@ -8,7 +8,7 @@ from django.urls import reverse
 from apps.base.access import login_and_permission_to_access
 from apps.projects.access import user_can_access_project
 
-from .models import Dashboard, DashboardVersion
+from .models import Dashboard, DashboardUpdate, DashboardVersion
 
 
 def dashboard_of_team(user, pk, *args, **kwargs):
@@ -24,8 +24,17 @@ def dashboard_version_of_team(user, pk, *args, **kwargs):
     return user_can_access_project(user, dashboard_version.dashboard.project)
 
 
+def dashboard_update_of_team(user, pk, *args, **kwargs):
+    dashboard_update = get_object_or_404(DashboardUpdate, pk=pk)
+    return user_can_access_project(user, dashboard_update.dashboard.project)
+
+
 login_and_dashboardversion_required = login_and_permission_to_access(
     dashboard_version_of_team
+)
+
+login_and_dashboardupdate_required = login_and_permission_to_access(
+    dashboard_update_of_team
 )
 
 

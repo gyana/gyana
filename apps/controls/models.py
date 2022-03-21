@@ -64,9 +64,10 @@ class Control(HistoryModel):
         return self.pk
 
     def save(self, **kwargs):
-        if self.widget:
-            self.widget.page.dashboard.updates.add(content_object=self.widget)
-        return super().save(**kwargs)
+        skip_dashboard_update = kwargs.pop("skip_dashboard_update", False)
+        super().save(**kwargs)
+        if self.widget and not skip_dashboard_update:
+            self.widget.page.dashboard.updates.create(content_object=self.widget)
 
 
 class ControlWidget(HistoryModel):
@@ -96,5 +97,7 @@ class ControlWidget(HistoryModel):
     )
 
     def save(self, **kwargs):
-        self.page.dashboard.updates.add(content_object=self)
-        return super().save(**kwargs)
+        skip_dashboard_update = kwargs.pop("skip_dashboard_update", False)
+        super().save(**kwargs)
+        if not skip_dashboard_update:
+            self.page.dashboard.updates.create(content_object=self)
