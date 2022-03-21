@@ -63,6 +63,11 @@ class Control(HistoryModel):
     def __str__(self):
         return self.pk
 
+    def save(self, **kwargs):
+        if self.widget:
+            self.widget.page.dashboard.updates.add(content_object=self.widget)
+        return super().save(**kwargs)
+
 
 class ControlWidget(HistoryModel):
 
@@ -89,3 +94,7 @@ class ControlWidget(HistoryModel):
         default=DEFAULT_HEIGHT,
         help_text="The height is in absolute pixel value.",
     )
+
+    def save(self, **kwargs):
+        self.page.dashboard.updates.add(content_object=self)
+        return super().save(**kwargs)

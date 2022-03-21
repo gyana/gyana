@@ -7,6 +7,8 @@ from django.contrib.auth.hashers import (
     is_password_usable,
     make_password,
 )
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.db.models import Deferrable, Q, UniqueConstraint
@@ -88,7 +90,11 @@ class Dashboard(DashboardSettings, HistoryModel):
         return reverse("project_dashboards:detail", args=(self.project.id, self.id))
 
     def save(self, *args, **kwargs):
+        is_creation = self.id is None
+
         super().save(*args, **kwargs)
+        if is_creation:
+            self.updates.add(content_object=self)
         if self._password is not None:
             password_validation.password_changed(self._password, self)
             self._password = None
@@ -173,6 +179,10 @@ class Page(HistoryModel):
     def get_absolute_url(self):
         return f'{reverse("project_dashboards:detail", args=(self.dashboard.project.id, self.dashboard.id))}?dashboardPage={self.position}'
 
+    def save(self, **kwargs) -> None:
+        self.dashboard.updates.add(content_object=self)
+        return super().save(**kwargs)
+
 
 # The DashboardVersion linsk to the dashboard model and we will be using the creation date
 # For the other models. Hopefully, this is robust even in the event of children not
@@ -182,6 +192,15 @@ class DashboardVersion(BaseModel):
         Dashboard, on_delete=models.CASCADE, related_name="versions"
     )
     name = models.CharField(max_length=255, null=True, blank=True)
+
+
+class DashboardUpdate(BaseModel):
+    dashboard = models.ForeignKey(
+        Dashboard, on_delete=models.CASCADE, related_name="updates"
+    )
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    object_id = models.PositiveIntegerField()
+    content_object = GenericForeignKey("content_type", "object_id")
 
 
 DASHBOARD_SETTING_TO_CATEGORY = {
