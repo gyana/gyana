@@ -1,6 +1,5 @@
 import json
 from datetime import timedelta
-from re import A
 from uuid import uuid4
 
 import pytest
