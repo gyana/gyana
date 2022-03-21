@@ -51,6 +51,13 @@
         </a>
       {% else %}
         <a
+          href="{% url 'account_signup' %}"
+          id="CTA_header"
+          class="button button--secondary"
+        >
+          Sign Up
+        </a>
+        <a
           href="{% external_url 'request_demo' %}"
           id="CTA_header"
           class="button"
