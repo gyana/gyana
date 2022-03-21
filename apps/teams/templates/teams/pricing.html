@@ -1,0 +1,6 @@
+{% extends "teams/base.html" %}
+
+{% block app %}
+  <iframe class="h-full w-full" src="{% url 'web:pricing' %}?iframe=true"></iframe>
+
+{% endblock %}

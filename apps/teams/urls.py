@@ -82,4 +82,9 @@ urlpatterns = [
         login_and_admin_required(views.TeamAccount.as_view()),
         name="account",
     ),
+    path(
+        "<hashid:team_id>/pricing",
+        login_and_admin_required(views.TeamPricing.as_view()),
+        name="pricing",
+    ),
 ]

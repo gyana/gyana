@@ -3,7 +3,7 @@ from urllib.parse import urlparse
 
 from django.urls import Resolver404, resolve
 
-ALLOWLIST = ["web:home"]
+ALLOWLIST = ["web:home", "teams:pricing"]
 
 
 def xframe_options_sameorigin_allowlist(view_func):
