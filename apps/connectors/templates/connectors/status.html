@@ -2,7 +2,13 @@
 {% load static %}
 
 last synced at <strong>{% include 'columns/natural_datetime.html' with datetime=object.succeeded_at %}</strong>
-{% if object.requires_authorization %}
+{% if object.setup_state == 'not-found' %}
+  <span data-controller='tooltip' 
+    data-tooltip-content="Fivetran can't find this connector please contact the support."
+  >
+    <i class="fa fa-times text-red"></i> Connector not found
+  </span>
+{% elif object.requires_authorization %}
   • <a class="link text-red" href="{{ object.fivetran_authorization_url }}" data-turbo-frame="_top">
       needs attention
     </a>

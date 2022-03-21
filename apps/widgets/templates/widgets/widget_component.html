@@ -1,21 +1,18 @@
 {% extends "widgets/widget_base.html" %}
 
 {% block widget %}
+  {% include 'widgets/_date_range_indicator.html' %}
 
-{% include 'widgets/_date_range_indicator.html' %}
-
-{% if object.page.dashboard.show_widget_headers %}
   {% include 'widgets/_widget_title.html' %}
-{% endif %}
 
-<turbo-frame 
-  id="widgets-output-{{ object.id }}"
-  src="{% url 'dashboard_widgets:output' project.id dashboard.id object.id %}?mode={{ request.GET.mode|default:"edit" }}"
-  style="display: flex; flex: 1 1 0%; min-height: 0;overflow: auto;"
->
-  <div class='placeholder-scr placeholder-scr--fillscreen'>
-    <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
-    <p class='placeholder-scr__title'>Loading widget...</p>
-  </div>
-</turbo-frame>
+  <turbo-frame 
+    id="widgets-output-{{ object.id }}"
+    src="{% url 'dashboard_widgets:output' project.id dashboard.id object.id %}?mode={{ request.GET.mode|default:"edit" }}"
+    style="display: flex;flex: 1 1 0%;min-height: 0;overflow: auto;height: 100%;"
+  >
+    <div class='placeholder-scr placeholder-scr--fillscreen'>
+      <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+      <p class='placeholder-scr__title'>Loading widget...</p>
+    </div>
+  </turbo-frame>
 {% endblock widget %}

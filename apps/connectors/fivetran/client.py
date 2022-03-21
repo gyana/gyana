@@ -23,6 +23,10 @@ class FivetranClientError(Exception):
         super().__init__(message)
 
 
+class FivetranConnectorNotFound(FivetranClientError):
+    pass
+
+
 def create_schema(team_id, service):
     return f"team_{team_id:06}_{service}_{uuid.uuid4().hex}"
 
@@ -79,6 +83,8 @@ class FivetranClient:
             headers=settings.FIVETRAN_HEADERS,
         ).json()
 
+        if res["code"] == "NotFound_Connector":
+            raise FivetranConnectorNotFound(res)
         if res["code"] != "Success":
             raise FivetranClientError(res)
 

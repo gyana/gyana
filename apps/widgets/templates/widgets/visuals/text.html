@@ -6,5 +6,8 @@
     {% if request.GET.mode != "edit" %}
     data-widget-visuals-text-read-only-value="true"
     {% endif %}
+    {% if widget.page.dashboard.font_color %}
+    style="color: {{ widget.page.dashboard.font_color }};"
+    {% endif %}
   ></div>
 </div>

@@ -127,11 +127,19 @@ class Integration(BaseModel):
 
     @property
     def state_icon(self):
-        return ICONS["success"] if self.ready else self.STATE_TO_ICON[self.state]
+        return (
+            ICONS["success"]
+            if self.ready and self.state == self.State.DONE
+            else self.STATE_TO_ICON[self.state]
+        )
 
     @property
     def state_text(self):
-        return "Success" if self.ready else self.STATE_TO_MESSAGE[self.state]
+        return (
+            "Success"
+            if self.ready and self.state == self.State.DONE
+            else self.STATE_TO_MESSAGE[self.state]
+        )
 
     @property
     def source_obj(self):

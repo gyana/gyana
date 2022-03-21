@@ -58,6 +58,9 @@ def _create_axis_names(widget):
 def to_chart(df: pd.DataFrame, widget: Widget) -> FusionCharts:
     """Render a chart from a table."""
     pallete_colors = widget.palette_colors or widget.page.dashboard.palette_colors
+    font_color = (
+        widget.font_color if widget.font_color else widget.page.dashboard.font_color
+    )
 
     data = json.loads(
         json.dumps(CHART_DATA[widget.kind](widget, df), default=default_json_encoder)
@@ -85,12 +88,14 @@ def to_chart(df: pd.DataFrame, widget: Widget) -> FusionCharts:
             else True,
             "baseFont": widget.page.dashboard.font_family,
             "baseFontSize": widget.page.dashboard.font_size,
-            "baseFontColor": widget.font_color
-            if widget.font_color
-            else widget.page.dashboard.font_color,
-            "outCnvBaseFontColor": widget.font_color
-            if widget.font_color
-            else widget.page.dashboard.font_color,
+            "baseFontColor": font_color,
+            "xAxisNameFontColor": font_color,
+            "xAxisValueFontColor": font_color,
+            "yAxisNameFontColor": font_color,
+            "yAxisValueFontColor": font_color,
+            "outCnvBaseFontColor": font_color,
+            "legendItemFontColor": font_color,
+            "labelFontColor": font_color,
             # Fusioncharts client-side export feature
             # TODO: If True we need to add an explicit import for
             # fusionchart.excelexport.js to our fusionchart scripts
