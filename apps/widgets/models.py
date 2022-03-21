@@ -197,11 +197,11 @@ class Widget(WidgetStyle, HistoryModel):
         """Returns bool stating whether this Widget is ready to be displayed"""
         # TODO: right now you also need to update the query in DashboardOverview dashboards/frames
         if self.kind == self.Kind.IMAGE:
-            return True
+            return self.image
         if self.kind == self.Kind.TEXT:
-            return True
+            return self.text_content
         if self.kind == self.Kind.IFRAME:
-            return True
+            return self.url
         if not self.table:
             return False
         if self.kind == self.Kind.TABLE:
