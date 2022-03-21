@@ -1,6 +1,6 @@
 <form 
+  method="POST"
   id="control-update-form"
-  method="post" 
   action="{% if is_public %}
     {% url 'dashboard_controls:update-public' project.id dashboard.id object.id %}
   {% else %}
