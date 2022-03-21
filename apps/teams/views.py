@@ -12,7 +12,6 @@ from djpaddle.views import PaddlePostCheckoutApiView as BasePaddlePostCheckoutAp
 
 from apps.base.analytics import CHECKOUT_COMPLETED_EVENT, CHECKOUT_OPENED_EVENT
 from apps.base.views import TurboCreateView, TurboUpdateView
-from apps.web.content import get_content
 
 from .forms import (
     MembershipUpdateForm,
@@ -67,7 +66,6 @@ class TeamPlans(TurboUpdateView):
         )
         context["DJPADDLE_VENDOR_ID"] = settings.DJPADDLE_VENDOR_ID
         context["DJPADDLE_SANDBOX"] = settings.DJPADDLE_SANDBOX
-        context["content"] = get_content("pricing.yaml")
         return context
 
     def get_success_url(self) -> str:
