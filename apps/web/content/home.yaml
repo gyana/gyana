@@ -29,9 +29,9 @@ quotes:
   - My dream No Code Analytics
   - you've got an amazing product
 support:
-  - heading: Request Demo
-    description: Discuss your use case with us
-    icon: video-camera
+  - heading: Sign up
+    description: Get started for free
+    icon: login
     note: It only takes a minute
   - heading: Visit help center # Attend Gyana University
     description: Go through the fundamentals
@@ -51,10 +51,14 @@ support:
     description: Chat with us in app
     icon: chat-alt-2
     note: We'll get to the bottom of it
-  # - heading: Get a demo
-  #   description: Discuss your use case with us
-  #   icon: video-camera
-  #   note: It's free
+  - heading: Customized onboarding
+    description: Discuss your use case with us
+    icon: video-camera
+    note: It's free
+  - heading: Hire an expert
+    description: Get your custom report built by a Gyana architect
+    icon: video-camera
+    note: If you can imagine it, we can build it
   - heading: Follow our development
     description: We release changes every week
     icon: clipboard-list
