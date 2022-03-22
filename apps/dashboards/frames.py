@@ -1,4 +1,5 @@
 from django.db.models import Count, Q
+from django.shortcuts import redirect
 from django.urls.base import reverse
 from django_tables2 import SingleTableMixin, SingleTableView
 from turbo_response import TurboStream
@@ -13,7 +14,6 @@ from apps.dashboards.forms import DashboardShareForm
 from apps.dashboards.tables import DashboardHistoryTable, DashboardUpdateTable
 from apps.projects.mixins import ProjectMixin
 from apps.widgets.models import Widget
-from apps.widgets.tables import WidgetHistory
 
 from .forms import DashboardForm
 from .models import Dashboard, DashboardVersion
@@ -150,9 +150,18 @@ class DashboardVersionSave(ProjectMixin, TurboFrameUpdateView):
     template_name = "dashboards/save.html"
     turbo_frame_dom_id = "dashboard:save"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["show_alert"] = True
+        return context
+
     def form_valid(self, form):
         DashboardVersion(dashboard=form.instance).save()
-        return super().form_valid(form)
+        return redirect(
+            reverse(
+                "project_dashboards:save", args=(self.object.project.id, self.object.id)
+            )
+        )
 
 
 class DashboardVersionRename(TurboFrameUpdateView):

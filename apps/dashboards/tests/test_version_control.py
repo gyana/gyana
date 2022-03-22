@@ -10,11 +10,12 @@ from apps.widgets.models import Widget
 pytestmark = pytest.mark.django_db
 
 
-def test_restore_dashboard_version(
-    widget_factory, control_factory, control_widget_factory
-):
+@pytest.fixture
+def setup(widget_factory, control_factory, control_widget_factory, dashboard_factory):
+    dashboard = dashboard_factory()
+    first_page = dashboard.pages.first()
     bar_chart = widget_factory(
-        kind=Widget.Kind.BAR, dimension="country", date_column="date"
+        kind=Widget.Kind.BAR, dimension="country", date_column="date", page=first_page
     )
     filter_ = bar_chart.filters.create(
         column="stars", numeric_predicate="greaterthan", float_value=2.3
@@ -24,9 +25,12 @@ def test_restore_dashboard_version(
     )
     control_factory(widget=bar_chart, page=None)
 
-    first_page = bar_chart.page
-    dashboard = first_page.dashboard
     control_widget = control_widget_factory(page=first_page, control__page=first_page)
+    return dashboard, first_page, bar_chart, filter_, aggregation, control_widget
+
+
+def test_restore_dashboard_version(setup):
+    dashboard, first_page, bar_chart, filter_, aggregation, control_widget = setup
 
     version_1 = DashboardVersion(dashboard=dashboard)
     version_1.save()
@@ -64,3 +68,16 @@ def test_restore_dashboard_version(
     assert Control.objects.count() == 0
     assert ControlWidget.objects.count() == 0
     assert AggregationColumn.objects.count() == 0
+
+
+def test_restore_dashboard_update(setup):
+    dashboard, first_page, bar_chart, filter_, aggregation, control_widget = setup
+
+    # should have create 6 updates
+    assert dashboard.updates.count() == 6
+
+    widget_creation = dashboard.updates.order_by("created")[1]
+    widget_creation.dashboard.restore_as_of(widget_creation.created)
+
+    assert bar_chart.aggregations.count() == 0
+    assert bar_chart.filters.count() == 0

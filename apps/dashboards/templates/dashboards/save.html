@@ -1,3 +1,18 @@
+
+{% if show_alert %}
 <script type="text/javascript">
   alert("Current dashboard was saved successfully.")
   </script>
+  {% endif %}
+<form method="post"
+      action="{% url "project_dashboards:save" project.id object.id %}"
+      class="form--no-layout"
+>
+    {% csrf_token %}
+    <button type="submit"
+            class="list__item list__item--interactive w-full"
+            id="dashboards-duplicate-{{ object.id }}"
+            data-loading-false>
+            Save current version
+    </button>
+</form>

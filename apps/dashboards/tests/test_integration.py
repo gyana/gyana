@@ -1,13 +1,18 @@
 import pytest
 from pytest_django.asserts import assertContains, assertFormError, assertRedirects
 
+from apps.base.core.aggregations import AggregationFunctions
 from apps.base.tests.asserts import (
     assertFormRenders,
     assertLink,
     assertOK,
     assertSelectorLength,
 )
-from apps.dashboards.models import Dashboard
+from apps.columns.models import AggregationColumn
+from apps.controls.models import Control, ControlWidget
+from apps.dashboards.models import Dashboard, DashboardVersion
+from apps.filters.models import Filter
+from apps.widgets.models import Widget
 
 pytestmark = pytest.mark.django_db
 
@@ -255,8 +260,8 @@ def test_dashboard_page_name(
     page_1 = dashboard.pages.create()
     page_2 = dashboard.pages.create(position=2)
 
-    assert page_1.name == None
-    assert page_2.name == None
+    assert page_1.name is None
+    assert page_2.name is None
 
     url = f"/projects/{project.id}/dashboards/{dashboard.id}/pages/{page_1.id}/name"
     r = client.get(url)
@@ -264,9 +269,63 @@ def test_dashboard_page_name(
 
     r = client.post(url, data={"name": "Test Page Name"})
     assert r.status_code == 303
-    assert r.url == f"/projects/{project.id}/dashboards/{dashboard.id}/pages/{page_1.id}/name"
+    assert (
+        r.url
+        == f"/projects/{project.id}/dashboards/{dashboard.id}/pages/{page_1.id}/name"
+    )
 
     page_1.refresh_from_db()
     page_2.refresh_from_db()
     assert page_1.name == "Test Page Name"
-    assert page_2.name == None
+    assert page_2.name is None
+
+
+def test_dashboard_history(
+    client,
+    dashboard_factory,
+    project,
+):
+    dashboard = dashboard_factory(project=project)
+    project_dashboard_url = f"/projects/{project.id}/dashboards/{dashboard.id}"
+
+    r = client.post(f"{project_dashboard_url}/save")
+    assert r.status_code == 302
+
+    version_1 = dashboard.versions.first()
+    assert version_1 is not None
+    assert dashboard.updates.count() == 1
+
+    r = client.get(f"{project_dashboard_url}/history")
+    assertOK(r)
+    assertSelectorLength(r, "tbody tr", 1)
+    assertContains(r, "Version 1")
+
+    r = client.post(
+        f"/dashboards/version/{dashboard.versions.first().id}/rename",
+        data={"name": "Empty dashboard"},
+    )
+    assert r.status_code == 303
+    version_1.refresh_from_db()
+    assert version_1.name == "Empty dashboard"
+
+    r = client.get(f"{project_dashboard_url}/history?tab=history")
+    assertOK(r)
+    assertSelectorLength(r, "tbody tr", 1)
+    assertContains(r, "Untitled")
+
+    dashboard.pages.create(position=2)
+    assert dashboard.updates.count() == 2
+    r = client.get(f"{project_dashboard_url}/history?tab=history")
+    assertOK(r)
+    assertSelectorLength(r, "tbody tr", 2)
+    assertContains(r, "Page 2")
+
+    r = client.post(f"/dashboards/version/{version_1.id}/restore")
+    assert r.status_code == 302
+    assert r.url == project_dashboard_url
+    assert dashboard.pages.count() == 1
+
+    r = client.post(f"/dashboards/update/{dashboard.updates.first().id}/restore")
+    assert r.status_code == 302
+    assert r.url == project_dashboard_url
+    assert dashboard.pages.count() == 2

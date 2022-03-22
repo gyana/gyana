@@ -75,10 +75,8 @@ class SaveParentModel(DirtyFieldsMixin, HistoryModel):
                 self.parent.save_without_historical_record()
             else:
                 self.parent.save()
-        skip_dashboard_update = kwargs.pop("skip_dashboard_update", False)
+        kwargs.pop("skip_dashboard_update", False)
         super().save(*args, **kwargs)
-        if hasattr(self, "widget") and not skip_dashboard_update:
-            self.widget.page.dashboard.updates.create(content_object=self.widget)
 
     def delete(self, *args, **kwargs):
         skip_dashboard_update = kwargs.pop("skip_dashboard_update", False)

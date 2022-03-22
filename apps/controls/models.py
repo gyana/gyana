@@ -108,7 +108,7 @@ class ControlWidget(HistoryModel):
         if not skip_dashboard_update:
             self.page.dashboard.updates.create(content_object=self)
 
-    def delete(self, using, keep_parents, skip_dashboard_update=False):
+    def delete(self, using=None, keep_parents=False, skip_dashboard_update=False):
         if not skip_dashboard_update:
             self.page.dashboard.updates.create(content_object=self)
         return super().delete(using, keep_parents)
