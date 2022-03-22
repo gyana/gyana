@@ -10,15 +10,22 @@
 {% endblock widget.attrs %}
 
 {% block widget %}
-  <div class="flex flex-1 justify-center items-center">
+  <div class="flex flex-col flex-1 gap-5 justify-center items-center">
     <span>
       <i class="fa fa-calendar text-black-50 mr-2"></i>
       {{ control.get_date_range_display }}
     </span>
 
     {% if control.date_range == "custom" %}
-      {% if control.start %}Start <strong>{{ control.start }}</strong>{% endif %}
-      {% if control.end %}End <strong>{{ control.end }}</strong>{% endif %}
+    <div class="flex gap-8">
+      <span class="flex flex-col">
+        {% if control.start %}Start <strong>{{ control.start }}</strong>{% endif %}
+      </span>
+
+      <span class="flex flex-col">
+        {% if control.end %}End <strong>{{ control.end }}</strong>{% endif %}
+      </span>
+      </div>
     {% endif %}
   </div>
 {% endblock widget %}
