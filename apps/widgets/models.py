@@ -196,12 +196,8 @@ class Widget(WidgetStyle, HistoryModel):
     def is_valid(self) -> bool:
         """Returns bool stating whether this Widget is ready to be displayed"""
         # TODO: right now you also need to update the query in DashboardOverview dashboards/frames
-        if self.kind == self.Kind.IMAGE:
-            return self.image
-        if self.kind == self.Kind.TEXT:
+        if self.kind in [self.Kind.IMAGE, self.Kind.IFRAME, self.Kind.TEXT]:
             return True
-        if self.kind == self.Kind.IFRAME:
-            return self.url
         if not self.table:
             return False
         if self.kind == self.Kind.TABLE:
