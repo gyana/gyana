@@ -81,9 +81,9 @@ class DashboardUpdateTable(tables.Table):
     content_object = tables.Column(
         verbose_name="Changed",
         linkify=lambda value: value.get_absolute_url() if value else None,
-        empty_values=(),
         orderable=False,
         attrs={"a": {"target": "_top"}},
+        default="Deleted",
     )
     action = TemplateColumn(
         template_name="dashboards/_restore_cell.html",

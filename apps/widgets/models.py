@@ -246,6 +246,12 @@ class Widget(WidgetStyle, HistoryModel):
         if not skip_dashboard_update:
             self.page.dashboard.updates.create(content_object=self)
 
+    def delete(self, **kwargs):
+        skip_dashboard_update = kwargs.pop("skip_dashboard_update", False)
+        if not skip_dashboard_update:
+            self.page.dashboard.updates.create(content_object=self)
+        return super().delete(**kwargs)
+
 
 NO_DIMENSION_WIDGETS = [
     Widget.Kind.RADAR,

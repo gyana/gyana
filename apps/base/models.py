@@ -49,7 +49,7 @@ class HistoryModel(BaseModel):
                     .exclude(id__in=to_restore.values_list("id"))
                     .all()
                 ):
-                    instance.delete()
+                    instance.delete(skip_dashboard_update=True)
             if f.one_to_one and hasattr(f.related_model, "history"):
                 if instance := (
                     f.related_model.history.as_of(as_of)
@@ -78,11 +78,15 @@ class SaveParentModel(DirtyFieldsMixin, HistoryModel):
         skip_dashboard_update = kwargs.pop("skip_dashboard_update", False)
         super().save(*args, **kwargs)
         if hasattr(self, "widget") and not skip_dashboard_update:
-            self.widget.page.dashboard.updates.create(content_object=self)
+            self.widget.page.dashboard.updates.create(content_object=self.widget)
 
     def delete(self, *args, **kwargs):
+        skip_dashboard_update = kwargs.pop("skip_dashboard_update", False)
         self.parent.data_updated = timezone.now()
-        self.parent.save()
+        if hasattr(self, "widget"):
+            self.parent.save(skip_dashboard_update=skip_dashboard_update)
+        else:
+            self.parent.save()
         return super().delete(*args, **kwargs)
 
     @property

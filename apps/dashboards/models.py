@@ -188,6 +188,12 @@ class Page(HistoryModel):
         if not is_creation and not skip_dashboard_update:
             self.dashboard.updates.create(content_object=self)
 
+    def delete(self, **kwargs):
+        skip_dashboard_update = kwargs.pop("skip_dashboard_update", False)
+        if not skip_dashboard_update:
+            self.dashboard.updates.create(content_object=self)
+        return super().delete(**kwargs)
+
     def __str__(self) -> str:
         return f"Page {self.position}{f': {self.name}' if self.name else ''}"
 
