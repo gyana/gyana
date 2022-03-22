@@ -46,7 +46,7 @@ def test_site_links(client):
     assertLink(r, "/integrations", "Integrations", total=3)
     assertLink(r, "/pricing", "Pricing", total=3)
     assertLink(r, "/blog", "Blog", total=3)
-    assertLink(r, "https://intercom.help/gyana", "Help Center", total=3)
+    assertLink(r, "https://support.gyana.com", "Help Center", total=3)
     assertLink(r, "https://feedback.gyana.com", "Feedback", total=3)
 
     assertLink(r, "/integrations", "Learn about integrations")

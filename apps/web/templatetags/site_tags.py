@@ -3,7 +3,7 @@ from django import template
 EXTERNAL_URLS = {
     "status": "https://c6df0725-5be1-435b-a2d7-1a90649a7bc5.site.hbuptime.com/",
     "feedback": "https://feedback.gyana.com",
-    "help": "https://intercom.help/gyana",
+    "help": "https://support.gyana.com",
     "newsletter": "http://eepurl.com/gAi94b",
     "onboarding": "https://calendly.com/lorraine-chabeda/30min",
     "sales": "mailto:joyeeta.das@gyana.com",
