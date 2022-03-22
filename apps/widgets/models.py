@@ -199,7 +199,7 @@ class Widget(WidgetStyle, HistoryModel):
         if self.kind == self.Kind.IMAGE:
             return self.image
         if self.kind == self.Kind.TEXT:
-            return self.text_content
+            return True
         if self.kind == self.Kind.IFRAME:
             return self.url
         if not self.table:
