@@ -3,7 +3,7 @@
 {% load render_table from django_tables2 %}
 {% load waffle_tags %}
 
-{% block app-class %}overflow-hidden{% endblock app-class %}
+{% block app-class %}overflow-auto{% endblock app-class %}
 
 {% block app %}
 {% if show_zero_state %}
@@ -38,10 +38,12 @@
     </a>
   </div>
 
-  <p class="alert mt-7">
+  <p class="alert my-7">
    We recommend you start with a Google Sheet or CSV to get going fast. Connectors
    take up to an hour for the initial data sync.
   </p>
+
+  <hr>
 
   <div class="flex gap-8 mt-7">
     <a
@@ -49,6 +51,14 @@
       class="button button--tertiary flex-1"
     >
       Add a connector
+    </a>
+  </div>
+  <div class="flex gap-8 mt-4">
+    <a
+      href="{% url 'project_integrations_customapis:create' project.id %}"
+      class="button button--tertiary flex-1"
+    >
+      Use a Custom API
     </a>
   </div>
 </div>
@@ -83,12 +93,9 @@
           <i class="fas fa-fw fa-plus mr-4"></i> New Connector
         </a>
 
-        {% flag 'beta' %}
         <a class="list__item list__item--interactive" href="{% url 'project_integrations_customapis:create' project.id %}">
-          <i class="fas fa-fw fa-brackets-curly mr-4"></i>
-          <span class="beta">Custom API</span>
+          <i class="fas fa-fw fa-brackets-curly mr-4"></i> Custom API
         </a>
-        {% endflag %}
       </div>
     </div>
     {% else %}
