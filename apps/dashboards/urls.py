@@ -49,12 +49,12 @@ urlpatterns = [
         name="preview",
     ),
     path(
-        "restore/<hashid:pk>",
+        "version/<hashid:pk>/restore",
         login_and_dashboardversion_required(views.DashboardRestore.as_view()),
         name="restore",
     ),
     path(
-        "restore_update/<hashid:pk>",
+        "update/<hashid:pk>/restore",
         login_and_dashboardupdate_required(views.DashboardUpdateRestore.as_view()),
         name="restore-update",
     ),
