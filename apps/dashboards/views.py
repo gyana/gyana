@@ -289,6 +289,7 @@ class PageDelete(PageMixin, DeleteView):
 class DashboardRestore(TurboUpdateView):
     model = DashboardVersion
     fields = []
+    template_name = "components/dummy.html"
 
     def form_valid(self, form):
         instance = form.instance
