@@ -48,7 +48,7 @@ def test_team_crudl(client, logged_in_user, bigquery, flag_factory, settings):
     r = client.post("/teams/new", data={"name": "Neera"})
     assert logged_in_user.teams.count() == 2
     new_team = logged_in_user.teams.first()
-    assertRedirects(r, f"/teams/{new_team.id}/plans", status_code=303)
+    assertRedirects(r, f"/teams/{new_team.id}", status_code=303)
 
     assert bigquery.create_dataset.call_count == 1
     assert bigquery.create_dataset.call_args.args == (new_team.tables_dataset_id,)
@@ -194,7 +194,7 @@ def test_account_limit_warning_and_disabled(client, project_factory):
 
     r = client.get(f"/teams/{team.id}")
     assertOK(r)
-    assertContains(r, "You're exceeding your row count limit.")
+    assertContains(r, "You've exceeded your row count limit.")
 
     team.row_count = 15
     team.save()
@@ -238,7 +238,13 @@ def test_team_subscriptions(client, logged_in_user, settings, paddle):
 
     r = client.get(f"/teams/{team.id}/account")
     assertOK(r)
-    assertLink(r, f"/teams/{team.id}/plans", "Upgrade")
+    assertLink(r, f"/teams/{team.id}/pricing", "Upgrade")
+
+    r = client.get(f"/teams/{team.id}/pricing")
+    assertOK(r)
+
+    # paddle flow removed from app for now
+    # assertLink(r, f"/teams/{team.id}/plans", "Upgrade")
 
     r = client.get(f"/teams/{team.id}/plans")
     assertOK(r)

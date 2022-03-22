@@ -49,7 +49,9 @@ class DashboardHistoryTable(tables.Table):
 
     created = NaturalDatetimeColumn()
     name = tables.Column(
-        empty_values=(), orderable=False, attrs={"th": {"style": "min-width: 50%;"}}
+        empty_values=(),
+        orderable=False,
+        attrs={"th": {"style": "min-width: 50%; width: 50%;"}},
     )
     action = TemplateColumn(
         template_name="dashboards/_restore_cell.html",

@@ -5,10 +5,24 @@
 <meta name="description" content="Custom reports for any source. Start building for free, then add a paid plan to scale your data volume." /> 
 {% endblock %}
 
+{% block body.header %}
+  {% if not request.GET.iframe  %}
+    {% include "web/site/header.html" %}
+  {% endif %}
+{% endblock body.header %}
+
+{% block body.footer %}
+  {% if not request.GET.iframe  %}
+    {% include "web/site/footer.html" %}
+  {% endif %}
+{% endblock body.footer %}
+
 {% block body.content %}
   {% include "web/site/pricing/hero.html" %}
   {% include "web/site/pricing/plans.html" %}
   {% include "web/site/home/testimonial.html" with testimonial=content.testimonial %}
   {% include "web/site/pricing/faqs.html" %}
-  {% include "web/site/home/cta.html" %}
+  {% if not request.GET.iframe %}
+    {% include "web/site/home/cta.html" %}
+  {% endif %}
 {% endblock %}

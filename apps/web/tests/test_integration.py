@@ -63,9 +63,8 @@ def test_site_links(client):
     assertLink(r, "/terms-of-use", "Terms")
 
     # app links
-    assertLink(
-        r, "https://gyana-data.typeform.com/to/RaCDiQ93", "Request Demo", total=4
-    )
+    assertLink(r, "/signup/", "Sign up", total=4)
+    assertLink(r, "https://gyana-data.typeform.com/to/RaCDiQ93", "Book a demo", total=4)
     assertLink(r, "/login/", "Sign in", total=2)
 
     user = CustomUser.objects.create_user("test", email="test@gyana.com")

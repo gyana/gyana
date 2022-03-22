@@ -36,7 +36,7 @@ class TeamCreate(TurboCreateView):
         return kwargs
 
     def get_success_url(self) -> str:
-        return reverse("teams:plans", args=(self.object.id,))
+        return reverse("teams:detail", args=(self.object.id,))
 
 
 class TeamPlans(TurboUpdateView):
@@ -70,6 +70,12 @@ class TeamPlans(TurboUpdateView):
 
     def get_success_url(self) -> str:
         return reverse("teams:detail", args=(self.object.id,))
+
+
+class TeamPricing(DetailView):
+    model = Team
+    template_name = "teams/pricing.html"
+    pk_url_kwarg = "team_id"
 
 
 class TeamCheckout(DetailView):

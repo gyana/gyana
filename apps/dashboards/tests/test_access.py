@@ -111,40 +111,26 @@ def test_dashboard_viewset(client, dashboard_factory, user):
     assertOK(r)
 
 
-def test_dashboard_version_restore(client, dashboard_factory, user):
+@pytest.mark.parametrize(
+    "url",
+    [
+        pytest.param("/dashboards/version/{version_id}/rename"),
+        pytest.param("/dashboards/version/{version_id}/restore"),
+    ],
+)
+def test_dashboard_version_rename(client, dashboard_factory, user, url):
     team = user.teams.first()
     dashboard = dashboard_factory()
     version = DashboardVersion(dashboard=dashboard)
     version.save()
-
-    url = f"/dashboards/version/{version.id}/restore"
+    url = url.format(version_id=version.id)
     assertLoginRedirect(client, url)
 
     client.force_login(user)
-    r = client.post(url)
+    r = client.get(url)
     assert r.status_code == 404
 
     dashboard.project.team = team
     dashboard.project.save()
-    r = client.post(url)
-    assert r.status_code == 302
-    assert r.url == f"/projects/{dashboard.project.id}/dashboards/{dashboard.id}"
-
-
-def test_dashboard_update_restore(client, dashboard_factory, user):
-    team = user.teams.first()
-    dashboard = dashboard_factory()
-    update = dashboard.updates.first()
-
-    url = f"/dashboards/update/{update.id}/restore"
-    assertLoginRedirect(client, url)
-
-    client.force_login(user)
-    r = client.post(url)
-    assert r.status_code == 404
-
-    dashboard.project.team = team
-    dashboard.project.save()
-
-    r = client.post(url)
-    assert r.status_code == 302
+    r = client.get(url)
+    assertOK(r)

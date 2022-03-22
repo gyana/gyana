@@ -30,9 +30,16 @@ class DashboardOverview(ProjectMixin, TurboFrameTemplateView):
         widgets = Widget.objects.filter(page__dashboard__project=self.project)
         # equivalent to is_valid, but efficient query
         incomplete = widgets.annotate(agg_count=Count("aggregations")).exclude(
-            Q(kind=Widget.Kind.TEXT)
+            (Q(kind=Widget.Kind.TEXT) & ~Q(text_content=None))
+            | (Q(kind=Widget.Kind.IMAGE) & ~Q(image=None))
+            | (Q(kind=Widget.Kind.IFRAME) & ~Q(url=None))
             | (Q(kind=Widget.Kind.TABLE) & ~Q(table=None))
-            | (Q(kind=Widget.Kind.RADAR) & ~Q(agg_count__lte=3))
+            | (Q(kind__in=[Widget.Kind.METRIC, Widget.Kind.GAUGE]) & Q(agg_count=1))
+            | (Q(kind=Widget.Kind.RADAR) & Q(agg_count__gte=3))
+            | (
+                Q(kind__in=[Widget.Kind.FUNNEL, Widget.Kind.PYRAMID])
+                & Q(agg_count__gte=2)
+            )
             | (~Q(table=None) & ~Q(dimension=None) & ~Q(aggregations__column=None))
         )
         dashboards_incomplete = (

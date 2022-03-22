@@ -27,7 +27,7 @@
         </button>
       </div>
 
-      <nav class="hidden md:flex gap-x-10 text-indigo-500 lg:flex-1">
+      <nav class="hidden md:flex gap-x-10 text-indigo-500 lg:flex-2">
         <a
           href="{% url 'web:integrations' %}"
           class="text-gray-600 font-normal hover:text-gray-900"
@@ -108,12 +108,19 @@
         <a href="{% url 'account_login' %}" class="button button--transparent">
           Sign in
         </a>
+        <a 
+          id="CTA_header"
+          class="button button--secondary"
+          href="{% url 'account_signup' %}"
+        >
+          Sign up
+        </a>
         <a
           id="CTA_header"
           class="ml-4 button"
           href="{% external_url 'request_demo' %}"
         >
-          Request Demo
+          Book a demo
         </a>
         {% endif %}
       </div>

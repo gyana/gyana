@@ -39,9 +39,7 @@
 {% include "web/components/intercom-visitors.html" %}
 {% endblock head %}
 
-{% block body.attrs %}
-data-controller="tf-modal"
-{% endblock body.attrs %}
+{% block body.attrs %}{% endblock body.attrs %}
 
 {% block body %}
   {% block body.header %}
@@ -53,24 +51,6 @@ data-controller="tf-modal"
   {% block body.footer %}
     {% include "web/site/footer.html" %}
   {% endblock body.footer %}
-
-  {% block termly %}
-  <script
-    type="text/javascript"
-    src="//app.termly.io/embed.min.js"
-    data-auto-block="on"
-    data-website-uuid="20dd078f-264a-4111-8007-320b21ee3234"
-  ></script>
-
-  <button
-    class="termly-cookie-preference-button"
-    type="button"
-    style="background: white; width: 165px; height: 30px; border-radius: 3px; border: 1px solid #5f7d9c; font-family: Roboto, Arial; font-size: 10px; color: #5f7d9c; font-weight: 600; box-sizing: border-box; cursor: pointer; padding: 0; outline: none;"
-    onclick="displayPreferenceModal()"
-  >
-    Manage Cookie Preferences
-  </button>
-  {% endblock termly %}
 
   {% if WEBSITE_GTM_ID %}
   {% include "web/components/gtm_body.html" %}

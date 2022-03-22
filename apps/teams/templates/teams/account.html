@@ -20,10 +20,18 @@
 
     <div class="account__billing">
       <header class="account__title">
-        <h2>Gyana - <span>{{ team.plan.name }}</span></h2>
+        <div class="flex items-center mb-4">
+          <h2>Gyana - <span>{{ team.plan.name }}</span></h2>
 
+          {% if team.is_free %}
+          <a href="{% url 'teams:pricing' team.id %}" class="button button--sm button--success">Upgrade your plan</a>
+          {% endif %}
+        </div>
         {% if team.is_free %}
-        <a href="{% url 'teams:plans' team.id %}" class="button button--sm button--success">Upgrade your plan</a>
+          <p class="alert">
+            Upgrade to a paid plan for custom row volume, dedicated support to build your report and 
+            <a href="{% url 'teams:pricing' team.id %}" class="link">more...</a>
+          </p>
         {% endif %}
       </header>
 
@@ -80,13 +88,6 @@
           {% endif %}
         </footer>
       </div>
-
-      {% if team.is_free %}
-      <p>
-        Upgrade to the Pro plan or Business plan and get access to more rows, advanced security features and 
-        <a href="https://gyana.com/pricing" class="link">more...</a>
-      </p>
-      {% endif %}
 
       {% if team.has_subscription %}
       <h2>Billing</h2>

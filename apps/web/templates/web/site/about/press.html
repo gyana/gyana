@@ -8,7 +8,7 @@
     <div class="grid gap-4 pt-6 lg:grid-cols-3">
       {% for item in content.press %}
         <a href="{{ item.url }}" class="bg-gray-20 border border-gray p-4 rounded-xl">
-          <p class="text-gray-900">
+          <p class="text-gray-900 text-base">
             {% if item.logo %}
               <img class="h-8 mb-1 p-1 rounded inline-block bg-white border border-gray"
                 src="{% static 'images/site/press/'|add:item.logo %}"

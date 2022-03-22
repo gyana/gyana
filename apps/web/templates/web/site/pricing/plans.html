@@ -1,8 +1,8 @@
 {% load heroicons site_tags %}
 
 <div class="bg-white">
-  <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8">
-    <div class="space-y-4 lg:space-y-0 lg:grid lg:grid-cols-3 lg:gap-6 lg:max-w-4xl lg:mx-auto xl:max-w-none xl:mx-0">
+  <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 md:py-16 md:px-8">
+    <div class="space-y-4 md:space-y-0 md:grid md:grid-cols-3 md:gap-6 md:mx-auto xl:mx-0">
       {% for tier in content.tiers %}
         <div class="card card--none">
           <div class="p-6 border-b border-gray-200">
@@ -10,12 +10,21 @@
               {{ tier.name }}
             </h2>
             <p class="mt-4 text-base text-gray-600">{{ tier.description }}</p>
-            <a
-              href="{% external_url 'request_demo' %}"
-              class="mt-8 button {{ tier.button }}"
-            >
-              Request Demo
-            </a>
+            {% if request.GET.iframe %}
+              <a
+                href="{% external_url 'hubspot_meeting' %}"
+                class="mt-8 button {{ tier.button }}"
+              >
+                Talk to Sales
+              </a>
+            {% else %}
+              <a
+                href="{% external_url 'request_demo' %}"
+                class="mt-8 button {{ tier.button }}"
+              >
+                Book a demo
+              </a>
+            {% endif %}
           </div>
           <div class="pt-6 pb-8 px-6">
             <h3 class="text-xs font-normal text-gray-900 tracking-wide uppercase">

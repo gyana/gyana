@@ -55,8 +55,10 @@
                   </div>
                   <div class="absolute w-full h-full">
                     {% if step == 0 %}
-                      {% comment %} Request Demo Typeform {% endcomment %}
-                      <div data-tf-widget="RaCDiQ93" data-tf-iframe-props="title=Request Demo" data-tf-medium="snippet" style="width:100%;height:100%;"></div><script src="//embed.typeform.com/next/embed.js"></script>
+                      {% comment %} Signup page: link clicks and form submit will happen at parent level {% endcomment %}
+                      <iframe width="100%" height="100%" loading="lazy" sandbox="allow-same-origin allow-top-navigation allow-forms" src="{% url 'account_signup' %}?iframe=true"></iframe>
+                      {% comment %} Book a demo Typeform {% endcomment %}
+                      {% comment %} <div data-tf-widget="RaCDiQ93" data-tf-iframe-props="title=Book a demo" data-tf-medium="snippet" style="width:100%;height:100%;"></div><script src="//embed.typeform.com/next/embed.js"></script> {% endcomment %}
                     {% elif step == 1 %}
                       {% comment %} Gyana University {% endcomment %}
                       <iframe width="100%" height="100%" src="{% url 'web:intercom-demo' %}?demo=help"></iframe>
@@ -65,14 +67,15 @@
                     {% elif step == 3 %}
                       {% comment %} Intercom widget {% endcomment %}
                       <iframe width="100%" height="100%" src="{% url 'web:intercom-demo' %}?demo=chat"></iframe>
-                    {% comment %}
-                      {% elif step == 4 %}
+                    {% elif step == 4 %}
                       <!-- Calendly inline widget begin -->
                       <div class="calendly-inline-widget" data-url="https://calendly.com/lorraine-chabeda/30min?hide_gdpr_banner=1" style="min-width:320px;height:100%;"></div>
                       <script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js" async></script>
                       <!-- Calendly inline widget end -->
-                    {% endcomment %}
-                    {% elif step == 4 %}
+                    {% elif step == 5 %}
+                      {% comment %} Book a demo Typeform {% endcomment %}
+                      <div data-tf-widget="RaCDiQ93" data-tf-iframe-props="title=Book a demo" data-tf-medium="snippet" style="width:100%;height:100%;"></div><script src="//embed.typeform.com/next/embed.js"></script>
+                    {% elif step == 6 %}
                       {% comment %} HelloNext changelog {% endcomment %}
                       <iframe style='border:0px; height:100%; width:100%;' src='https://feedback.gyana.com/embed/c?no_header=true'></iframe>
                     {% endif %}
