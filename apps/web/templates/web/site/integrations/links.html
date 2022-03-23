@@ -1,0 +1,5 @@
+<div class="hidden" >
+  {% for id, service in services.items %}
+    <a href="{% url 'web:integration' id %}">{{ service.name }}</a>
+  {% endfor %}
+</div>

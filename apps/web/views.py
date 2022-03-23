@@ -77,6 +77,14 @@ class Integrations(TemplateView):
         return context
 
 
+class Integration(TemplateView):
+    template_name = "web/integration.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        return context
+
+
 class About(TemplateView):
     template_name = "web/about.html"
 
