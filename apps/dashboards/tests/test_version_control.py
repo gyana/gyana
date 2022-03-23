@@ -13,7 +13,7 @@ pytestmark = pytest.mark.django_db
 @pytest.fixture
 def setup(widget_factory, control_factory, control_widget_factory, dashboard_factory):
     dashboard = dashboard_factory()
-    first_page = dashboard.pages.first()
+    first_page = dashboard.pages.create()
     bar_chart = widget_factory(
         kind=Widget.Kind.BAR, dimension="country", date_column="date", page=first_page
     )

@@ -286,6 +286,7 @@ def test_dashboard_history(
     project,
 ):
     dashboard = dashboard_factory(project=project)
+    dashboard.pages.create()
     project_dashboard_url = f"/projects/{project.id}/dashboards/{dashboard.id}"
 
     r = client.post(f"{project_dashboard_url}/save")

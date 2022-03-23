@@ -139,6 +139,7 @@ def test_dashboard_version(client, dashboard_factory, user, url):
 def test_dashboard_update_restore(client, dashboard_factory, user):
     team = user.teams.first()
     dashboard = dashboard_factory()
+    dashboard.pages.create()
     update = dashboard.updates.first()
 
     url = f"/dashboards/update/{update.id}/restore"

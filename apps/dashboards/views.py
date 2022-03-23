@@ -67,6 +67,8 @@ class DashboardCreate(ProjectMixin, TurboCreateView):
 
     def form_valid(self, form):
         r = super().form_valid(form)
+        # Create page and first update entry
+        form.instance.pages.create()
 
         analytics.track(
             self.request.user.id,

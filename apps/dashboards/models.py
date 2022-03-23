@@ -93,10 +93,8 @@ class Dashboard(DashboardSettings, HistoryModel):
         is_creation = self.id is None
         skip_dashboard_update = kwargs.pop("skip_dashboard_update", False)
         super().save(*args, **kwargs)
-        if is_creation:
-            # Create page and first update entry
-            self.pages.create()
-        if not skip_dashboard_update:
+
+        if not is_creation and not skip_dashboard_update:
             self.updates.create(content_object=self)
         if self._password is not None:
             password_validation.password_changed(self._password, self)
@@ -186,8 +184,11 @@ class Page(HistoryModel):
         is_first_page = self.id is None and self.dashboard.pages.count() == 0
         skip_dashboard_update = kwargs.pop("skip_dashboard_update", False)
         super().save(**kwargs)
-        if not is_first_page and not skip_dashboard_update:
-            self.dashboard.updates.create(content_object=self)
+        if not skip_dashboard_update:
+            # for the first page of a dashboard we want it to reflect the dashboard creation
+            self.dashboard.updates.create(
+                content_object=self if not is_first_page else self.dashboard
+            )
 
     def delete(self, **kwargs):
         skip_dashboard_update = kwargs.pop("skip_dashboard_update", False)
