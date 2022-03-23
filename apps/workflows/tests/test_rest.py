@@ -27,7 +27,7 @@ def test_workflow_run(
     # check is out_of_date returns out_of_date has not been run
     r = client.get(f"/workflows/{workflow.id}/out_of_date")
     assertOK(r)
-    assert r.data["isOutOfDate"]
+    assert not r.data["isOutOfDate"] # New workflows shouldn't be out of date.
     assert not r.data["hasBeenRun"]
     output_node = node_factory(
         kind=Node.Kind.OUTPUT, name="The answer", workflow=workflow
