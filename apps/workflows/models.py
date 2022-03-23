@@ -157,7 +157,7 @@ class Workflow(BaseModel):
             using=using,
             cloned_references=cloned_references,
         )
-        clone_nodes(self, clone)
+        clone_nodes(self, clone, cloned_references)
         return clone
 
     @property
@@ -190,15 +190,3 @@ class Workflow(BaseModel):
     @property
     def used_in(self):
         return list(chain(self.used_in_nodes, self.used_in_widgets))
-
-    def make_clone(
-        self, attrs=None, sub_clone=False, using=None, cloned_references=None
-    ):
-        clone = super().make_clone(
-            attrs=attrs,
-            sub_clone=sub_clone,
-            using=using,
-            cloned_references=cloned_references,
-        )
-        clone_nodes(self, clone)
-        return clone

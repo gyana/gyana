@@ -1,13 +1,15 @@
 from django.utils import timezone
 
 
-def clone_nodes(workflow, clone):
+def clone_nodes(workflow, clone, cloned_references):
     node_map = {}
 
     nodes = workflow.nodes.all()
     # First create the mapping between original and cloned nodes
     for node in nodes:
-        node_clone = node.make_clone({"workflow": clone})
+        node_clone = node.make_clone(
+            {"workflow": clone}, cloned_references=cloned_references
+        )
         node_clone.data_updated = timezone.now()
         # TODO: replace with bulkupdate
         node_clone.save()

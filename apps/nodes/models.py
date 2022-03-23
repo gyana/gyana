@@ -305,7 +305,7 @@ class Node(DirtyFieldsMixin, BaseModel):
             using=using,
             cloned_references=cloned_references,
         )
-        clone_tables(self, clone, using)
+        clone_tables(self, clone, using, cloned_references)
         return clone
 
 

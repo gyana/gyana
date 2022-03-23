@@ -263,5 +263,5 @@ class Integration(BaseModel):
             using=using,
             cloned_references=cloned_references,
         )
-        clone_connector(self, clone, using)
+        clone_connector(self, clone, using, cloned_references)
         return clone
