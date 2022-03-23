@@ -1,38 +1,4 @@
-{% load static heroicons site_tags random_utils %}
-
-<style>
-
-  {% for i in '0123456789'|make_list %}
-    .animate-logo-{{ i }} {
-      animation: float {% random_int 6 12 %}s ease-in-out {% random_int -3 3 %}s infinite;
-    }
-  {% endfor %}
-
-  {% for i in '0123456789'|make_list %}
-    .animate-number-{{ i }} {
-      animation: float {% random_int 6 12 %}s ease-in-out {% random_int -3 3 %}s infinite;
-    }
-  {% endfor %}
-
-  {% comment %} {% for i in '0123456789'|make_list %}
-    .animate-chart-{{ i }} {
-      animation: float {% random_int 6 12 %}s ease-in-out {% random_int -3 3 %}s infinite;
-    }
-  {% endfor %} {% endcomment %}
-
-  .animate-report {
-    animation: float 6s ease-in-out infinite;
-  }
-
-  @keyframes float {
-    0%, 100% {
-      transform: translatey(0);
-    }
-    50% {
-      transform: translatey(5px);
-    }
-  }
-</style>
+{% load static heroicons site_tags %}
 
 <div class="py-8 lg:relative lg:py-32 xl:py-36 overflow-hidden bg-gray-20">
   <div class="mx-auto max-w-md px-4 sm:max-w-3xl sm:px-6 lg:px-8 lg:max-w-7xl lg:grid lg:grid-cols-2 lg:gap-24">
@@ -78,8 +44,8 @@
   <div class="sm:mx-auto sm:max-w-3xl">
     <div class="sm:relative lg:absolute lg:inset-y-0 lg:right-16 lg:w-1/2" style="z-index: 2;">
       <div class="relative my-4 sm:mx-auto sm:max-w-2xl sm:px-0 lg:-mx-8 lg:py-8 lg:h-full xl:max-w-3xl" >
-        {% include 'web/site/home/landing.svg' %}
+        {% include 'web/components/landing_animation.html' %}
       </div>
-   </div>
+    </div>
   </div>
 </div>
