@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 
 from apps.base.models import HistoryModel
 
@@ -112,3 +113,6 @@ class ControlWidget(HistoryModel):
         if not skip_dashboard_update:
             self.page.dashboard.updates.create(content_object=self)
         return super().delete(using, keep_parents)
+
+    def get_absolute_url(self):
+        return f'reverse("project_dashboards:detail", args=(self.page.dashboard.project.id, self.page.dashboard.id))?page={self.page.position}'
