@@ -2,11 +2,13 @@
 {% load static %}
 
 {% block head %}
-<title>Gyana | Custom reports for any source</title>
-<meta
-  name="description"
-  content="Gyana delivers the power of business intelligence and data analytics in a web interface. Build repeatable workflows and dashboards with all your online data."
-/>
+  {% block meta %}
+    <title>Gyana | Custom reports for any source</title>
+    <meta
+      name="description"
+      content="Gyana delivers the power of business intelligence and data analytics in a web interface. Build repeatable workflows and dashboards with all your online data."
+    />
+  {% endblock %}
 
 {% include "web/components/favicon.html" %}
 
