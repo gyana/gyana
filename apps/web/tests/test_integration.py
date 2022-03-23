@@ -88,12 +88,17 @@ def test_integrations_page(client):
     r = client.get("/demo/search-integrations?query=google")
     assertOK(r)
     assertContains(r, "Google Ads")
+    assertLink(r, "/integrations/adwords", "Google Ads")
     assertNotContains(r, "Facebook Pages")
 
     r = client.get("/demo/search-integrations?category=Organic")
     assertOK(r)
     assertContains(r, "Facebook Pages")
+    assertLink(r, "/integrations/facebook_pages", "Facebook Pages")
     assertNotContains(r, "Google Ads")
+
+    r = client.get("/integrations/adwords")
+    assertOK(r)
 
 
 def test_sitemap(client):

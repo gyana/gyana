@@ -17,11 +17,6 @@ sitmap_urlpatterns = [
         name="pricing",
     ),
     path("integrations", cache_site(views.Integrations.as_view()), name="integrations"),
-    path(
-        "integrations/<str:id>",
-        cache_site(views.Integration.as_view()),
-        name="integration",
-    ),
     path("about", cache_site(views.About.as_view()), name="about"),
     path(
         "privacy-policy",
@@ -32,6 +27,12 @@ sitmap_urlpatterns = [
 ]
 
 urlpatterns = sitmap_urlpatterns + [
+    # manually added to sitemap
+    path(
+        "integrations/<str:id>",
+        cache_site(views.Integration.as_view()),
+        name="integration",
+    ),
     path("toggle-sidebar", views.toggle_sidebar),
     # frames
     path(

@@ -48,7 +48,7 @@ from apps.teams import urls as team_urls
 from apps.templates import urls as template_urls
 from apps.uploads import urls as upload_urls
 from apps.users import urls as users_urls
-from apps.web.sitemaps import WebSitemap
+from apps.web.sitemaps import IntegrationsSitemap, WebSitemap
 from apps.widgets import urls as widget_urls
 from apps.workflows import urls as workflow_urls
 
@@ -141,7 +141,13 @@ urlpatterns = [
     path(
         "sitemap.xml",
         sitemap,
-        {"sitemaps": {"web": WebSitemap, "wagtail": WagtailSitemap}},
+        {
+            "sitemaps": {
+                "web": WebSitemap,
+                "integrations": IntegrationsSitemap,
+                "wagtail": WagtailSitemap,
+            }
+        },
         name="django.contrib.sitemaps.views.sitemap",
     ),
 ]
