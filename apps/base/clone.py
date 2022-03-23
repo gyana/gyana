@@ -11,7 +11,7 @@ class CloneMixin(CloneMixin):
     _clone_excluded_m2o_or_o2m_fields = [""]
     _clone_excluded_o2o_fields = [""]
 
-    def __duplicate_m2o_fields(self, duplicate, using=None):
+    def __duplicate_m2o_fields(self, duplicate, using=None, cloned_references=None):
         """Overwrites original duplicate function.
 
         We dont clone m2o since our data model is a downward tree."""
