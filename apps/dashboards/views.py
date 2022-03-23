@@ -294,6 +294,7 @@ class DashboardRestore(TurboUpdateView):
     def form_valid(self, form):
         instance = form.instance
         instance.dashboard.restore_as_of(instance.created)
+        instance.dashboard.updates.create(content_object=instance.dashboard)
 
         return redirect(
             reverse(

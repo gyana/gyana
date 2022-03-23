@@ -324,8 +324,9 @@ def test_dashboard_history(
     assert r.status_code == 302
     assert r.url == project_dashboard_url
     assert dashboard.pages.count() == 1
+    assert dashboard.updates.count() == 3
 
-    r = client.post(f"/dashboards/update/{dashboard.updates.first().id}/restore")
+    r = client.post(f"/dashboards/update/{dashboard.updates.all()[1].id}/restore")
     assert r.status_code == 302
     assert r.url == project_dashboard_url
     assert dashboard.pages.count() == 2
