@@ -1,0 +1,16 @@
+benefits:
+  - h3: Break Free From Data Silos
+    p:
+    - We live in a world of data silos.
+    - With potentially dozens of data sources to track, analyze, and report on - things can quickly turn into a reporting nightmare.
+    - It’s time to set your {{ service.name }} data free.
+  - h3: Your Data Can Finally Live Together
+    p:
+    - Step into a new world of true data harmony.
+    - In just minutes, you can bring your data sources together. And easily extract new, high value insights from combined data sets.
+    - Now your analysis is only limited by your imagination.
+  - h3: Build Reports That Wow Stakeholders
+    p:
+    - Build reports that will actually make an impact.
+    - Transform your new insights into beautiful, easy to understand reports in just a few clicks.
+    - Or create dashboards with live data feeds that never break. 

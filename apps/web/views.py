@@ -83,6 +83,7 @@ class Integration(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["service"] = get_services_obj()[kwargs["id"]]
+        context["content"] = get_content("integration.yaml", context)
         return context
 
 
