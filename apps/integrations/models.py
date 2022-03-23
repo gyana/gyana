@@ -13,7 +13,7 @@ from apps.runs.models import JobRun
 from apps.users.models import CustomUser
 from apps.widgets.models import Widget
 
-from .clone import clone_connector_and_tables
+from .clone import clone_connector
 
 PENDING_DELETE_AFTER_DAYS = 7
 
@@ -78,7 +78,7 @@ class Integration(BaseModel):
         ERROR = "error", "Error"
         DONE = "done", "Done"
 
-    _clone_excluded_m2o_or_o2m_fields = ["runs", "table_set"]
+    _clone_excluded_m2o_or_o2m_fields = ["runs"]
     _clone_excluded_o2o_fields = ["connector"]
 
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
@@ -254,7 +254,14 @@ class Integration(BaseModel):
         )
         self.save()
 
-    def make_clone(self, attrs=None, sub_clone=False, using=None):
-        clone = super().make_clone(attrs=attrs, sub_clone=sub_clone, using=using)
-        clone_connector_and_tables(self, clone, using)
+    def make_clone(
+        self, attrs=None, sub_clone=False, using=None, cloned_references=None
+    ):
+        clone = super().make_clone(
+            attrs=attrs,
+            sub_clone=sub_clone,
+            using=using,
+            cloned_references=cloned_references,
+        )
+        clone_connector(self, clone, using)
         return clone

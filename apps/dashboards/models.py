@@ -150,10 +150,12 @@ class Dashboard(DashboardSettings, HistoryModel):
 
         return Widget.history.filter(page__dashboard=self).all()
 
-    def make_clone(self, attrs=None, sub_clone=False, using=None):
+    def make_clone(
+        self, attrs=None, sub_clone=False, using=None, cloned_references=None
+    ):
         if self.shared_id:
             attrs["shared_id"] = uuid4()
-        return super().make_clone(attrs, sub_clone, using)
+        return super().make_clone(attrs, sub_clone, using, cloned_references)
 
 
 class Page(HistoryModel):

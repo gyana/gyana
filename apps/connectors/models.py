@@ -378,9 +378,16 @@ class Connector(DirtyFieldsMixin, BaseModel):
     def latest_sync_validated(self):
         return self.succeeded_at == self.bigquery_succeeded_at
 
-    def make_clone(self, attrs=None, sub_clone=False, using=None):
+    def make_clone(
+        self, attrs=None, sub_clone=False, using=None, cloned_references=None
+    ):
         attrs = update_schema(attrs, self)
-        clone = super().make_clone(attrs=attrs, sub_clone=sub_clone, using=using)
+        clone = super().make_clone(
+            attrs=attrs,
+            sub_clone=sub_clone,
+            using=using,
+            cloned_references=cloned_references,
+        )
         create_fivetran(clone)
 
         return clone

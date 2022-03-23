@@ -143,8 +143,10 @@ class Project(DirtyFieldsMixin, BaseModel):
     def latest_run(self):
         return self.runs.order_by("-created").first()
 
-    def make_clone(self, attrs=None, sub_clone=False, using=None):
-        clone = super().make_clone(attrs, sub_clone, using)
+    def make_clone(
+        self, attrs=None, sub_clone=False, using=None, cloned_references=None
+    ):
+        clone = super().make_clone(attrs, sub_clone, using, cloned_references)
         clone.update_schedule()
         return clone
 
