@@ -54,9 +54,9 @@ describe('uploads', () => {
     // wait for entire process to happen successfully
     cy.get('button[type=submit]').click()
     cy.contains('Confirm', { timeout: BIGQUERY_TIMEOUT }).click()
-    cy.contains('Overview')
+    cy.get('#tabbar').contains('Overview')
     // 2250 lines of CSV including header
-    cy.contains(2249)
+    cy.contains('2,249')
   })
   it('upload failures', () => {
     // invalid format - better way to test this?
