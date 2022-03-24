@@ -1,0 +1,12 @@
+{% load static %}
+
+<a class="card card--sm"
+  href="{% url 'project_integrations_connectors:create' project.id %}?service={{ service.id }}">
+  <div class="flex items-center gap-7">
+    <img style="height:2.4rem;"
+      src="{% static 'images/integrations/fivetran/'|add:service.icon_path %}"
+      alt="{{ service.name }}"
+    />
+    <h4 {% if service.is_beta %}class="beta"{% endif %}>{{ service.name }}</h4>
+  </div>
+</a>
