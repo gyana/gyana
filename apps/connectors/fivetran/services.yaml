@@ -155,6 +155,7 @@ google_analytics:
       - table: traffic
         config_type: Prebuilt
         prebuilt_report: TRAFFIC
+google_analytics_4: {}
 google_cloud_postgresql:
   service_type: database
 google_cloud_mysql:

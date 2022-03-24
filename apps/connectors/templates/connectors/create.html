@@ -51,9 +51,9 @@
             <div class="flex items-center gap-7">
               <img style="height:2.4rem;"
                 src="{% static 'images/integrations/fivetran/'|add:service.icon_path %}"
-                  alt="{{ service.name }}"
+                alt="{{ service.name }}"
               />
-              <h4>{{ service.name }}</h4>
+              <h4 {% if service.is_beta %}class="beta"{% endif %}>{{ service.name }}</h4>
             </div>
           </a>
         {% endfor %}
@@ -75,7 +75,7 @@
       <div class="card mb-4">
         <div class="flex flex-col items-start gap-4">
           <img class="h-40 object-contain mb-2" src="{% static 'images/integrations/fivetran/'|add:service.icon_path %}" alt="{{ service.name }}" />
-          <h1>{{ service.name }}</h1>
+          <h1 {% if service.is_beta %}class="beta"{% endif %}>{{ service.name }}</h1>
           <p class="max-w-xl">{{ service.description }}</p>
         </div>
       </div>

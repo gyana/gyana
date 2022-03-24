@@ -66,9 +66,11 @@ def get_bq_tables_for_connector(connector):
 
     # one dataset, multiple fixed tables determined by schema
     if service_type == ServiceTypeEnum.API_CLOUD:
+        if not (schemas := connector.schema_obj.schemas):
+            return set()
         return _get_bq_tables_from_dataset_safe(
             connector.schema,
-            enabled_table_ids=connector.schema_obj.schemas[0].enabled_table_ids,
+            enabled_table_ids=schemas[0].enabled_table_ids,
         )
 
     # multiple datasets, multiple fixed tables determined by schema

@@ -577,6 +577,17 @@ google_analytics:
   link_to_erd: https://fivetran.com/docs/applications/google-analytics#schemainformation
   name: Google Analytics
   type: Marketing
+google_analytics_4:
+  description: Google Analytics 4 lets you analyze data about customer engagement with
+    your website or application.
+  icon_path: google_analytics.svg
+  icon_url: https://fivetran.com/integrations/google_analytics/resources/google_analytics.svg
+  id: google_analytics_4
+  link_to_docs: https://fivetran.com/docs/applications/google-analytics-4
+  link_to_erd: https://fivetran.com/docs/applications/google-analytics-4#schemainformation
+  name: Google Analytics 4
+  type: Marketing
+  is_beta: true
 google_analytics_360:
   description: Google Analytics 360 provides the tools and support that enterprise
     teams need to get actionable insights from their data. You can export session
