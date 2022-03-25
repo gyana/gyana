@@ -51,8 +51,8 @@ features:
     - |
       In addition to {{ service.name }}, Gyana has hundreds of pre-built integrations to choose from.
       And custom integrations are easy to build in just a few minutes with our no code tools (no Zapier required). 
-  - h2: Go Beyond {{ service.name }} Analytics and Become a Reporting Pro
-    h3: Power up your {{ service.name }} analytics and reporting with Gyana
+  - h2: Go Beyond {{ service.name }} and Become a Reporting Pro
+    h3: Power up your {{ service.name }} and reporting with Gyana
     p:
     - Pull and combine data from any source (we’ll even build the integration if we don’t already have it). 
     - Uncover new segments and find high value insights others miss with powerful data analysis tools. 
