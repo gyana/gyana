@@ -224,7 +224,11 @@ def last_year(query, column):
 
 
 def filter_boolean(query, column, value):
-    return query[query[column] == value]
+    # If filtering for TRUE we do not include Null fields.
+    if value:
+        return query[(query[column] == value)]
+    else:
+        return query[(query[column] == value) | (query[column].isnull())]
 
 
 FILTER_MAP = {
