@@ -343,4 +343,4 @@ def test_duplicate_project_disabled(client, project, project_factory):
 
     r = client.post(f"/projects/{project.id}/duplicate")
     assertOK(r)
-    assertSelectorText(r, "p", "Something went wrong!")
+    assertSelectorText(r, "p", "Something went wrong")
