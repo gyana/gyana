@@ -13,17 +13,21 @@ def update_schema(attrs, connector):
     return attrs
 
 
-def clone_fivetran_instance(clone):
+def clone_fivetran_instance(original, clone):
     client = clients.fivetran()
-    data = client.create(
-        clone.service,
-        clone.integration.project.team.id,
-        clone.daily_sync_time,
-        clone.schema,
-    )
-    clone.update_kwargs_from_fivetran(data)
+    original_config = client.get(original)
+    clone_config = {
+        "group_id": original_config["group_id"],
+        "schema": clone.schema,
+        "trust_certificates": True,
+        "run_setup_tests": True,
+        "service": original_config["service"],
+        "config": {"schema": clone.schema, **original_config["config"]},
+    }
+    res = client.new(clone_config)
+    clone.update_kwargs_from_fivetran(res["data"])
     clone.save()
 
 
-def create_fivetran(clone):
-    transaction.on_commit(lambda: clone_fivetran_instance(clone))
+def create_fivetran(original, clone):
+    transaction.on_commit(lambda: clone_fivetran_instance(original, clone))

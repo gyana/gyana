@@ -381,6 +381,6 @@ class Connector(DirtyFieldsMixin, BaseModel):
     def make_clone(self, attrs=None, sub_clone=False, using=None):
         attrs = update_schema(attrs, self)
         clone = super().make_clone(attrs=attrs, sub_clone=sub_clone, using=using)
-        create_fivetran(clone)
+        create_fivetran(self, clone)
 
         return clone

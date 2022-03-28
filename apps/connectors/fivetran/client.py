@@ -54,9 +54,8 @@ class FivetranClient:
             else "schema"
         ] = schema
 
-        res = requests.post(
-            f"{settings.FIVETRAN_URL}/connectors",
-            json={
+        res = self.new(
+            {
                 "service": service,
                 "group_id": settings.FIVETRAN_GROUP,
                 # no access credentials yet
@@ -65,14 +64,20 @@ class FivetranClient:
                 "sync_frequency": 1440,
                 "daily_sync_time": daily_sync_time,
                 "config": config,
-            },
-            headers=settings.FIVETRAN_HEADERS,
-        ).json()
+            }
+        )
 
         if res["code"] != "Success":
             raise FivetranClientError(res)
 
         return res["data"]
+
+    def new(self, config):
+        return requests.post(
+            f"{settings.FIVETRAN_URL}/connectors",
+            json=config,
+            headers=settings.FIVETRAN_HEADERS,
+        ).json()
 
     def get(self, connector: Connector):
 
