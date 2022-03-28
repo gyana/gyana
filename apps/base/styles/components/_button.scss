@@ -40,7 +40,8 @@ $button-colors: (
 
   &[type='submit'],
   &[href],
-  &[data-action] {
+  &[data-action],
+  &[onclick] {
     cursor: pointer;
 
     &:hover {
