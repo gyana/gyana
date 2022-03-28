@@ -554,7 +554,7 @@ python-versions = "*"
 
 [[package]]
 name = "django-allauth"
-version = "0.50.0"
+version = "0.44.0"
 description = "Integrated set of Django applications addressing authentication, registration, account management as well as 3rd party (social) account authentication."
 category = "main"
 optional = false
@@ -2685,7 +2685,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "3.9.*"
-content-hash = "dbbac91521943db144b875d8ae6bbb8d56735e4a622eff3dcaae006589ffa471"
+content-hash = "6d66a30c51414c14c979f7b0c76c901bd41af068132cd4cef7cb17cb23e71399"
 
 [metadata.files]
 amqp = [
@@ -2987,7 +2987,7 @@ django-admin-tools = [
     {file = "django_admin_tools-0.9.2-py2.py3-none-any.whl", hash = "sha256:f0f3eaa47deb917f13f6ebac93abecb270ae8c47c927ca7022aa198d9b1424df"},
 ]
 django-allauth = [
-    {file = "django-allauth-0.50.0.tar.gz", hash = "sha256:ee3a174e249771caeb1d037e64b2704dd3c56cfec44f2058fae2214b224d35e8"},
+    {file = "django-allauth-0.44.0.tar.gz", hash = "sha256:e51af457466022f52154d74c8523ac69375120fad2acce6e239635d85e610b25"},
 ]
 django-anymail = [
     {file = "django-anymail-8.5.tar.gz", hash = "sha256:677e937dc9e2671ca7631abb1d94ddc6b840beb3d53c0fbf699e866a6a9ba92f"},
