@@ -25,7 +25,6 @@ pytestmark = pytest.mark.django_db
 def test_control_widget_project_required(
     client, user, control_widget_factory, url, dashboard_factory
 ):
-
     dashboard = dashboard_factory()
     page = dashboard.pages.create()
     control_widget = control_widget_factory(control__page=page, page=page)
@@ -38,13 +37,12 @@ def test_control_widget_project_required(
     assertLoginRedirect(client, url)
 
     client.force_login(user)
-    call = client.delete if "delete" in url else client.get
-    r = call(url)
+    r = client.get(url)
     assert r.status_code == 404
 
     dashboard.project.team = user.teams.first()
     dashboard.project.save()
-    r = call(url)
+    r = client.get(url)
     assertOK(r)
 
 
