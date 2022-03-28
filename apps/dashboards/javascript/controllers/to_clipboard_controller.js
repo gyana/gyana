@@ -1,8 +1,5 @@
 import { Controller } from '@hotwired/stimulus'
 
-/**
- * Copies the text contents of a target element to the users clipboard.
- */
 export default class extends Controller {
   static targets = ['target']
 
@@ -17,21 +14,16 @@ export default class extends Controller {
       document.getSelection().empty()
     } else {
       // Not IE
-      if (navigator.clipboard) {
-        navigator.clipboard.writeText(this.targetTarget.innerText.trim())
-      } else {
-        const range = document.createRange()
-        range.selectNode(this.targetTarget)
-        window.getSelection().addRange(range)
-        console.log(window.getSelection())
-        document.execCommand('copy')
-        if (window.getSelection().empty) {
-          // Chrome
-          window.getSelection().empty()
-        } else if (window.getSelection().removeAllRanges) {
-          // Firefox
-          window.getSelection().removeAllRanges()
-        }
+      const range = document.createRange()
+      range.selectNode(this.targetTarget)
+      window.getSelection().addRange(range)
+      document.execCommand('copy')
+      if (window.getSelection().empty) {
+        // Chrome
+        window.getSelection().empty()
+      } else if (window.getSelection().removeAllRanges) {
+        // Firefox
+        window.getSelection().removeAllRanges()
       }
     }
   }
