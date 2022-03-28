@@ -81,7 +81,7 @@ class SaveParentModel(DirtyFieldsMixin, HistoryModel):
     def delete(self, *args, **kwargs):
         skip_dashboard_update = kwargs.pop("skip_dashboard_update", False)
         self.parent.data_updated = timezone.now()
-        if hasattr(self, "widget"):
+        if hasattr(self.parent, "history"):
             self.parent.save(skip_dashboard_update=skip_dashboard_update)
         else:
             self.parent.save()

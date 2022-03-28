@@ -63,12 +63,13 @@ def test_widget_project_required(client, url, user, widget_factory, bigquery):
     assertLoginRedirect(client, url)
 
     client.force_login(user)
-    r = client.get(url)
+    call = client.delete if "delete" in url else client.get
+    r = call(url)
     assertNotFound(r)
 
     project.team = user.teams.first()
     project.save()
-    r = client.get(url)
+    r = call(url)
     assertOK(r)
 
 
