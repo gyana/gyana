@@ -22,9 +22,10 @@ def clone_fivetran_instance(original, clone):
         "group_id": original_config["group_id"],
         "schema": clone.schema,
         "trust_certificates": True,
-        "run_setup_tests": True,
+        "run_setup_tests": False,
         "sync_frequency": SYNC_FREQUENCY,
         "service": original_config["service"],
+        "daily_sync_time": original_config["daily_sync_time"],
         "config": {"schema": clone.schema, **original_config["config"]},
     }
     res = client.new(clone_config)

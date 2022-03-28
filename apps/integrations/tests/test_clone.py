@@ -58,6 +58,7 @@ def test_integration_connector_clone(
         "group_id": connector.group_id,
         "service": connector.service,
         "config": connector.config,
+        "daily_sync_time": "00:00",
     }
     fivetran.get.return_value = config
     fivetran.new.return_value = {"data": config}
