@@ -173,11 +173,11 @@ def _reconcile_gcp_scores(
 
 def _compute_values(client, query):
     values = [row[TEXT_COLUMN_NAME] for row in client.query(query).result()]
-    values = [_remove_unicode(value) for value in values]
+    cleaned_values = [_remove_unicode(value) for value in values]
 
     # clip each row of text so that GPC doesn't charge us more than 1 credit
     # (there are still plenty of characters to infer sentiment for that row)
-    clipped_values = [v[:CHARS_PER_CREDIT].strip() for v in values]
+    clipped_values = [v[:CHARS_PER_CREDIT].strip() for v in cleaned_values]
     return values, clipped_values
 
 
