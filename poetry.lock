@@ -554,7 +554,7 @@ python-versions = "*"
 
 [[package]]
 name = "django-allauth"
-version = "0.44.0"
+version = "0.50.0"
 description = "Integrated set of Django applications addressing authentication, registration, account management as well as 3rd party (social) account authentication."
 category = "main"
 optional = false
@@ -815,7 +815,7 @@ resolved_reference = "21a4058c2a758fac687f837cb523175c64c567c3"
 
 [[package]]
 name = "django-simple-history"
-version = "3.0.0.post104+gab6c6e3"
+version = "3.0.0.post110+g9a61286"
 description = "Store model history and view/revert changes from admin site."
 category = "main"
 optional = false
@@ -826,7 +826,7 @@ develop = false
 type = "git"
 url = "https://github.com/jazzband/django-simple-history"
 reference = "master"
-resolved_reference = "ab6c6e36cf82611eb97cbc2079028048f42a7b53"
+resolved_reference = "9a612869e52832448feb38683d21609191ec8099"
 
 [[package]]
 name = "django-storages"
@@ -901,7 +901,7 @@ Django = ">=2.2"
 
 [[package]]
 name = "django-turbo-allauth"
-version = "0.0.9"
+version = "0.0.10"
 description = "Hotwired/Turbo subclasses for allauth views"
 category = "main"
 optional = false
@@ -910,11 +910,11 @@ python-versions = ">=3.8"
 [package.dependencies]
 django = ">=3.0"
 django-allauth = "*"
-django-turbo-response = ">=0.0.47"
+django-turbo-response = ">=0.0.49"
 
 [[package]]
 name = "django-turbo-response"
-version = "0.0.48"
+version = "0.0.52"
 description = "Hotwired/Turbo response helpers for Django"
 category = "main"
 optional = false
@@ -2685,7 +2685,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "3.9.*"
-content-hash = "3ea2ae75991d1a380ee480dddca6c14feef78b0268e1e1f3285529ea1a141d96"
+content-hash = "99452a6f24fede24fedc612109869b90e6a6048afd2237bb4091acebb991434c"
 
 [metadata.files]
 amqp = [
@@ -2987,7 +2987,7 @@ django-admin-tools = [
     {file = "django_admin_tools-0.9.2-py2.py3-none-any.whl", hash = "sha256:f0f3eaa47deb917f13f6ebac93abecb270ae8c47c927ca7022aa198d9b1424df"},
 ]
 django-allauth = [
-    {file = "django-allauth-0.44.0.tar.gz", hash = "sha256:e51af457466022f52154d74c8523ac69375120fad2acce6e239635d85e610b25"},
+    {file = "django-allauth-0.50.0.tar.gz", hash = "sha256:ee3a174e249771caeb1d037e64b2704dd3c56cfec44f2058fae2214b224d35e8"},
 ]
 django-anymail = [
     {file = "django-anymail-8.5.tar.gz", hash = "sha256:677e937dc9e2671ca7631abb1d94ddc6b840beb3d53c0fbf699e866a6a9ba92f"},
@@ -3076,12 +3076,12 @@ django-treebeard = [
     {file = "django_treebeard-4.5.1-py3-none-any.whl", hash = "sha256:7c2b1cdb1e9b46d595825186064a1228bc4d00dbbc186db5b0b9412357fba91c"},
 ]
 django-turbo-allauth = [
-    {file = "django-turbo-allauth-0.0.9.tar.gz", hash = "sha256:4bb666e81b2f3e035e40e5a63cb5843778e9236dcdd078e354a7b7aa164851db"},
-    {file = "django_turbo_allauth-0.0.9-py3-none-any.whl", hash = "sha256:834d072978aa877ea6b876a023ef2d2ebcfcb5db4e16e76786fdea20ea707569"},
+    {file = "django-turbo-allauth-0.0.10.tar.gz", hash = "sha256:6506424b5c068f8b5753e6a288e5c0bc0defef01a45a5cf9372aa401560ca1e7"},
+    {file = "django_turbo_allauth-0.0.10-py3-none-any.whl", hash = "sha256:b6a151fd9b5ba67aa5b309cc7e4f2d1982a328e1e43f645f3dff8c73f5710f03"},
 ]
 django-turbo-response = [
-    {file = "django-turbo-response-0.0.48.tar.gz", hash = "sha256:925662787df80a8a92471d3c0461d789af0890e03cc2ff7ed5a6353f8c326b02"},
-    {file = "django_turbo_response-0.0.48-py3-none-any.whl", hash = "sha256:9711e03d8df0a0a3e2fd106f7a713478cc60a9804f12fce37e05fa8ac12faee1"},
+    {file = "django-turbo-response-0.0.52.tar.gz", hash = "sha256:3080658a1630f8bada03fa3a9c42866615ea347dab225b0b30d9e947a1ca8a9b"},
+    {file = "django_turbo_response-0.0.52-py3-none-any.whl", hash = "sha256:1b033d765e5df2dc3a6eaa09ef152a0a17b6d72902c76e815805dcb4698411d3"},
 ]
 django-waffle = [
     {file = "django-waffle-2.3.0.tar.gz", hash = "sha256:8f457523859f39f77b785dfeb18d57d8c80d97ba05698aed7fa587bb86539476"},
