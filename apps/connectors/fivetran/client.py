@@ -10,7 +10,7 @@ from .config import ServiceTypeEnum, get_services_obj
 # certain connectors (e.g. azure_sql_db) will block /schemas/reload for >2 mins
 # before failing due to authentication error
 RELOAD_SCHEMAS_TIMEOUT = 10
-
+SYNC_FREQUENCY = 1440
 # wrapper for the Fivetran connectors REST API, documented here
 # https://fivetran.com/docs/rest-api/connectors
 # on error, raise a FivetranClientError and it will be managed in
@@ -61,7 +61,7 @@ class FivetranClient:
                 # no access credentials yet
                 "run_setup_tests": False,
                 "paused": True,
-                "sync_frequency": 1440,
+                "sync_frequency": SYNC_FREQUENCY,
                 "daily_sync_time": daily_sync_time,
                 "config": config,
             }

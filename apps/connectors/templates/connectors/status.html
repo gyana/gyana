@@ -1,7 +1,11 @@
 {% load humanize %}
 {% load static %}
 
-last synced at <strong>{% include 'columns/natural_datetime.html' with datetime=object.succeeded_at %}</strong>
+{% if object.succeeded_at %}
+  last synced at <strong>{% include 'columns/natural_datetime.html' with datetime=object.succeeded_at %}</strong>
+{% else %}  
+  never synced
+{% endif %}
 {% if object.setup_state == 'not-found' %}
   <span data-controller='tooltip' 
     data-tooltip-content="Fivetran can't find this connector please contact the support."

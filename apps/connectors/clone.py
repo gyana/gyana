@@ -14,6 +14,8 @@ def update_schema(attrs, connector):
 
 
 def clone_fivetran_instance(original, clone):
+    from apps.connectors.fivetran.client import SYNC_FREQUENCY
+
     client = clients.fivetran()
     original_config = client.get(original)
     clone_config = {
@@ -21,6 +23,7 @@ def clone_fivetran_instance(original, clone):
         "schema": clone.schema,
         "trust_certificates": True,
         "run_setup_tests": True,
+        "sync_frequency": SYNC_FREQUENCY,
         "service": original_config["service"],
         "config": {"schema": clone.schema, **original_config["config"]},
     }

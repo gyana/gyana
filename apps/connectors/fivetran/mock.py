@@ -90,6 +90,9 @@ class MockFivetranClient:
         )
         return get_connector_json(connector, is_historical_sync=True)
 
+    def new(self, config):
+        return {"data": {}}
+
     def get(self, connector):
         started = self._started.get(connector.id)
         is_historical_sync = (
