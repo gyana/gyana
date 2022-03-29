@@ -35,19 +35,21 @@ jobs:
     - uses: Gr1N/setup-poetry@v7
     - name: Install dependencies with poetry
       run: poetry install
+    - name: Find the files
+      run: find . -name "djpaddle_paddlejs.html"
       # required for collectstatic
-    - uses: actions/setup-node@v2
-      with:
-        node-version: '14'
-    - name: Install Node Dependencies
-      run: yarn
-    - name: Build assets
-      run: yarn build
-    - name: Collect static
-      run: poetry run just collectstatic
-    - name: Pytest run
-      run: poetry run just test-ci
-    - uses: codecov/codecov-action@v2
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
-        files: ./coverage.xml
+    # - uses: actions/setup-node@v2
+    #   with:
+    #     node-version: '14'
+    # - name: Install Node Dependencies
+    #   run: yarn
+    # - name: Build assets
+    #   run: yarn build
+    # - name: Collect static
+    #   run: poetry run just collectstatic
+    # - name: Pytest run
+    #   run: poetry run just test-ci
+    # - uses: codecov/codecov-action@v2
+    #   with:
+    #     token: ${{ secrets.CODECOV_TOKEN }}
+    #     files: ./coverage.xml
