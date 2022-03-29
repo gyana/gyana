@@ -30,13 +30,7 @@ jobs:
     - uses: actions/checkout@v2
     - uses: extractions/setup-just@v1
     - uses: actions/setup-python@v2
-      with:
-        python-version: 3.9.4
-    - name: downgrade pip
-      run: pip install pip==22.0.3
     - uses: Gr1N/setup-poetry@v7
-      with:
-        poetry-version: 1.1.6
     - name: Install dependencies with poetry
       run: poetry install
       # required for collectstatic
@@ -49,15 +43,14 @@ jobs:
       run: yarn build
     - name: Collect static
       run: poetry run just collectstatic
-    - name: Find the files
-      run: find . -name "djpaddle_paddlejs.html"
-    - name: Python version
-      run: poetry run python --version
-    - name: Show venv
-      run: ls .venv/lib/python3.9/site-packages/djpaddle
-    # - name: Pytest run
-    #   run: poetry run just test-ci
-    # - uses: codecov/codecov-action@v2
-    #   with:
-    #     token: ${{ secrets.CODECOV_TOKEN }}
-    #     files: ./coverage.xml
+    - name: Copy folders
+      run: |
+        cp -R .venv/src/dj-paddle/djpaddle/templates .venv/lib/python3.9/site-packages/djpaddle/templates
+        cp -R .venv/src/dj-paddle/djpaddle/migrations .venv/lib/python3.9/site-packages/djpaddle/migrations
+        cp -R .venv/src/dj-paddle/djpaddle/management .venv/lib/python3.9/site-packages/djpaddle/management
+    - name: Pytest run
+      run: poetry run just test-ci
+    - uses: codecov/codecov-action@v2
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        files: ./coverage.xml
