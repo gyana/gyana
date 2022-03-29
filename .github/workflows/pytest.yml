@@ -37,6 +37,8 @@ jobs:
       run: poetry install
     - name: Find the files
       run: find . -name "djpaddle_paddlejs.html"
+    - name: Python version
+      run: poetry run python --version
       # required for collectstatic
     # - uses: actions/setup-node@v2
     #   with:
