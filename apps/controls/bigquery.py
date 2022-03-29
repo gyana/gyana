@@ -171,8 +171,9 @@ def previous_week(query, column):
 
 def previous_month(query, column):
     date = get_date(query[column])
-    one_month_ago = dt.date.today() - relativedelta(months=1)
-    two_months_ago = one_month_ago - relativedelta(months=1)
+    today = dt.date.today()
+    one_month_ago = today - relativedelta(months=1)
+    two_months_ago = today - relativedelta(months=2)
     return query[date.between(two_months_ago, one_month_ago)]
 
 
