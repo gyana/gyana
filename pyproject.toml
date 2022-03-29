@@ -38,7 +38,7 @@ source = [ "apps" ]
 omit = [ "*/migrations/*", "apps/cookiecutter-app/*" ]
 
 [tool.poetry.dependencies]
-python = "3.9.4"
+python = "3.9.*"
 attrs = "^20.3.0"
 Django = "^3.1.7"
 django-allauth = "^0.50.0"
