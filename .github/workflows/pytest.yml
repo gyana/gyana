@@ -45,6 +45,11 @@ jobs:
       run: yarn build
     - name: Collect static
       run: poetry run just collectstatic
+    - name: Copy folders
+      run: |
+        cp -R .venv/src/dj-paddle/djpaddle/templates .venv/lib/python3.9/site-packages/djpaddle/templates
+        cp -R .venv/src/dj-paddle/djpaddle/migrations .venv/lib/python3.9/site-packages/djpaddle/migrations
+        cp -R .venv/src/dj-paddle/djpaddle/management .venv/lib/python3.9/site-packages/djpaddle/management
     - name: Pytest run
       run: poetry run just test-ci
     - uses: codecov/codecov-action@v2
