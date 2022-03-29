@@ -33,7 +33,7 @@ jobs:
       with:
         python-version: 3.9.4
     - name: downgrade pip
-      run: pip install pip=22.0.3
+      run: pip install pip==22.0.3
     - uses: Gr1N/setup-poetry@v7
       with:
         poetry-version: 1.1.6
