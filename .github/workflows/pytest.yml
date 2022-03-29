@@ -39,6 +39,8 @@ jobs:
       run: find . -name "djpaddle_paddlejs.html"
     - name: Python version
       run: poetry run python --version
+    - name: Show venv
+      run: ls .venv
       # required for collectstatic
     # - uses: actions/setup-node@v2
     #   with:
