@@ -40,7 +40,7 @@ jobs:
     - name: Python version
       run: poetry run python --version
     - name: Show venv
-      run: ls .venv
+      run: ls .venv/lib/python3.9/site-packages
       # required for collectstatic
     # - uses: actions/setup-node@v2
     #   with:
