@@ -13,6 +13,7 @@ from ibis.expr.types import (
     ColumnExpr,
     DateValue,
     StringValue,
+    StructValue,
     TimestampValue,
     TimeValue,
 )
@@ -310,3 +311,22 @@ DateValue.date = date
 def _date(t, expr):
     d = expr.op().args[0]
     return t.translate(d)
+
+
+class ToJsonString(ValueOp):
+    struct = Arg(rlz.struct)
+    output_type = rlz.shape_like("struct", dt.string)
+
+
+def to_json_string(struct):
+    return ToJsonString(struct).to_expr()
+
+
+StructValue.to_json_string = to_json_string
+
+
+@compiles(ToJsonString)
+def _to_json_string(t, expr):
+    struct = t.translate(expr.op().args[0])
+
+    return f"TO_JSON_STRING({struct})"
