@@ -15,6 +15,7 @@ class Filter(SaveParentModel):
         TIME = "TIME", "Time"
         DATE = "DATE", "Date"
         DATETIME = "DATETIME", "Datetime"
+        STRUCT = "STRUCT", "Dictionary"
 
     class NumericPredicate(models.TextChoices):
         EQUAL = "equal", "is equal to"
@@ -52,6 +53,10 @@ class Filter(SaveParentModel):
         BEFOREON = "lessthanequal", "is on or before"
         AFTER = "greaterthan", "is after"
         AFTERON = "greaterthanequal", "is on or after"
+        ISNULL = "isnull", "is empty"
+        NOTNULL = "notnull", "is not empty"
+
+    class StructPredicate(models.TextChoices):
         ISNULL = "isnull", "is empty"
         NOTNULL = "notnull", "is not empty"
 
@@ -108,6 +113,13 @@ class Filter(SaveParentModel):
 
     bool_value = models.BooleanField(default=True, verbose_name="Value")
 
+    struct_predicate = models.CharField(
+        max_length=16,
+        choices=StructPredicate.choices,
+        null=True,
+        verbose_name="Condition",
+    )
+
     def __str__(self):
         return self.column
 
@@ -123,6 +135,7 @@ PREDICATE_MAP = {
     Filter.Type.STRING: "string_predicate",
     Filter.Type.FLOAT: "numeric_predicate",
     Filter.Type.INTEGER: "numeric_predicate",
+    Filter.Type.STRUCT: "struct_predicate",
 }
 
 NO_VALUE = [

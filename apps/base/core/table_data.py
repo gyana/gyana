@@ -103,6 +103,8 @@ def get_type_name(type_):
         return "Boolean"
     if isinstance(type_, (dt.Date, dt.Time, dt.Timestamp)):
         return "Time"
+    if isinstance(type_, dt.Struct):
+        return "Dictionary"
 
 
 def get_type_class(type_):
@@ -114,6 +116,8 @@ def get_type_class(type_):
         return "column column--boolean"
     if isinstance(type_, (dt.Date, dt.Time, dt.Timestamp)):
         return "column column--time"
+    if isinstance(type_, dt.Struct):
+        return "column column--dict"
 
 
 class BigQueryColumn(Column):

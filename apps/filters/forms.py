@@ -19,6 +19,7 @@ IBIS_TO_TYPE = {
     "Float64": Filter.Type.FLOAT,
     "Decimal": Filter.Type.FLOAT,
     "Boolean": Filter.Type.BOOL,
+    "Struct": Filter.Type.STRUCT,
 }
 
 
@@ -39,6 +40,7 @@ class FilterForm(BaseLiveSchemaForm):
             "numeric_predicate",
             "time_predicate",
             "datetime_predicate",
+            "struct_predicate",
             "time_value",
             "date_value",
             "datetime_value",
