@@ -100,11 +100,6 @@ project_urlpatterns = (
             name="delete",
         ),
         path(
-            "<hashid:pk>/save",
-            login_and_project_required(frames.DashboardVersionSave.as_view()),
-            name="save",
-        ),
-        path(
             "<hashid:dashboard_id>/pages/new",
             login_and_project_required(views.PageCreate.as_view()),
             name="page-create",
