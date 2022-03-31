@@ -216,7 +216,7 @@ class DashboardLoginForm(forms.Form):
 
 class DashboardVersionSaveForm(BaseModelForm):
 
-    version_name = forms.CharField()
+    version_name = forms.CharField(required=False)
 
     class Meta:
         model = Dashboard

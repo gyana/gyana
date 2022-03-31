@@ -289,8 +289,8 @@ def test_dashboard_history(
     dashboard.pages.create()
     project_dashboard_url = f"/projects/{project.id}/dashboards/{dashboard.id}"
 
-    r = client.post(f"{project_dashboard_url}/save")
-    assert r.status_code == 302
+    r = client.post(f"{project_dashboard_url}/history", data={"name": ""})
+    assert r.status_code == 303
 
     version_1 = dashboard.versions.first()
     assert version_1 is not None
