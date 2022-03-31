@@ -35,15 +35,6 @@ adroll:
   link_to_erd: https://fivetran.com/docs/applications/adroll#schemainformation
   name: AdRoll
   type: Marketing
-adwords:
-  description: Google Ads Reporting syncs Google search ad aggregate results
-  icon_path: adwords.png
-  icon_url: https://fivetran.com/integrations/adwords/resources/google_ads.png
-  id: adwords
-  link_to_docs: https://fivetran.com/docs/applications/google-ads
-  link_to_erd: https://fivetran.com/docs/applications/google-ads#schemainformation
-  name: Google Ads
-  type: Marketing
 airtable:
   description: Airtable works like a spreadsheet but gives you the power of a database
     to organize anything
@@ -567,6 +558,15 @@ github:
   link_to_erd: https://fivetran.com/docs/applications/github#schemainformation
   name: GitHub
   type: Engineering
+google_ads:
+  description: Google Ads Reporting syncs Google search ad aggregate results
+  icon_path: google_ads.png
+  icon_url: https://fivetran.com/integrations/adwords/resources/google_ads.png
+  id: adwords
+  link_to_docs: https://fivetran.com/docs/applications/google-ads
+  link_to_erd: https://fivetran.com/docs/applications/google-ads#schemainformation
+  name: Google Ads
+  type: Marketing
 google_analytics:
   description: Google Analytics lets you analyze data about customer engagement with
     your website or application.
