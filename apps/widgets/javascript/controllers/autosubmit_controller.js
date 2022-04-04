@@ -4,7 +4,9 @@ export default class extends Controller {
   static targets = ['selected']
 
   connect() {
-    this.selectedTarget.setAttribute('selected', '')
+    if (this.hasSelectedtarged) {
+      this.selectedTarget.setAttribute('selected', '')
+    }
   }
 
   onchange() {

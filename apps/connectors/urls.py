@@ -21,6 +21,11 @@ urlpatterns = [
         login_and_connector_required(frames.ConnectorStatus.as_view()),
         name="status",
     ),
+    path(
+        "<hashid:pk>/pause",
+        login_and_connector_required(frames.ConnectorPause.as_view()),
+        name="pause",
+    ),
 ]
 
 if settings.DEBUG:

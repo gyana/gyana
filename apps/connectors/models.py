@@ -6,6 +6,7 @@ from django import forms
 from django.conf import settings
 from django.db import models
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.functional import cached_property
 
 from apps.base import clients
@@ -298,8 +299,9 @@ class Connector(DirtyFieldsMixin, BaseModel):
         from apps.connectors.fivetran.client import FivetranConnectorNotFound
         from apps.connectors.sync import end_connector_sync
 
+        client = clients.fivetran()
         try:
-            data = data or clients.fivetran().get(self)
+            data = data or client.get(self)
         except FivetranConnectorNotFound as err:
             # It's not clear how this can happen but it happens
             self.integration.state = Integration.State.ERROR
@@ -308,6 +310,17 @@ class Connector(DirtyFieldsMixin, BaseModel):
             self.save()
             logging.error(err, exc_info=err)
             return
+
+        if (
+            data["succeeded_at"]
+            and (
+                timezone.now()
+                - datetime.fromisoformat(data["succeeded_at"].replace("Z", ""))
+            ).days
+            > 7
+        ):
+            client.update(self, paused=True)
+            data["paused"] = True
         self.update_kwargs_from_fivetran(data)
 
         # update fivetran sync time if user has updated timezone/daily sync time
