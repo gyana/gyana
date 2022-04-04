@@ -321,6 +321,9 @@ class Connector(DirtyFieldsMixin, BaseModel):
         ):
             client.update(self, paused=True)
             data["paused"] = True
+            self.paused = True
+            self.sync_state = self.SyncState.PAUSED
+
         self.update_kwargs_from_fivetran(data)
 
         # update fivetran sync time if user has updated timezone/daily sync time
