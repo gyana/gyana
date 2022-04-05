@@ -315,7 +315,7 @@ class Connector(DirtyFieldsMixin, BaseModel):
             data["succeeded_at"]
             and (
                 timezone.now()
-                - datetime.fromisoformat(data["succeeded_at"].replace("Z", ""))
+                - datetime.fromisoformat(data["succeeded_at"].replace("Z", "+00:00"))
             ).days
             > 7
         ):
