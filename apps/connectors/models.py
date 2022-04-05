@@ -1,4 +1,5 @@
 import logging
+import uuid
 from datetime import datetime
 
 from dirtyfields import DirtyFieldsMixin
@@ -81,6 +82,7 @@ class Connector(DirtyFieldsMixin, BaseModel):
         # TODO: right now this needs to be falsely copied
         # otherwise the integration won't be shown on the overview page.
         # "fivetran_authorized",
+        "fivetran_id",
         "fivetran_sync_started",
         "bigquery_succeeded_at",
         # TODO: should this be added later or do we need to replace the schema during duplication
@@ -103,7 +105,7 @@ class Connector(DirtyFieldsMixin, BaseModel):
     # https://fivetran.com/docs/rest-api/connectors#fields
 
     # unique identifier for API requests in fivetran
-    fivetran_id = models.TextField()
+    fivetran_id = models.TextField(unique=True, default=uuid.uuid4)
     group_id = models.TextField()
     # service name, see services.yaml
     service = models.TextField(max_length=255)
