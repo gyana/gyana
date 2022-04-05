@@ -109,7 +109,7 @@ class Connector(DirtyFieldsMixin, BaseModel):
     service = models.TextField(max_length=255)
     service_version = models.IntegerField()
     # schema or schema_prefix for storage in bigquery
-    schema = models.TextField()
+    schema = models.TextField(unique=True)
     paused = models.BooleanField()
     pause_after_trial = models.BooleanField()
     connected_by = models.TextField()
