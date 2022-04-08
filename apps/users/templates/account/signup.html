@@ -2,6 +2,13 @@
 {% load static %}
 {% load socialaccount %}
 
+{% comment %} Hubspot automatically captures conversion to signup {% endcomment %}
+{% block head.extra %}
+  {% if WEBSITE_GTM_ID %}
+    {% include "web/components/gtm_head.html" %}
+  {% endif %}
+{% endblock %}
+
 {% block content %}
 <section>
   <a class="button button--primary button--outline button--google w-full" href="{% provider_login_url 'google' %}">
