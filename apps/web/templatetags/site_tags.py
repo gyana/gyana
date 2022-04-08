@@ -1,4 +1,5 @@
 from django import template
+from django.urls import reverse_lazy
 
 EXTERNAL_URLS = {
     "status": "https://c6df0725-5be1-435b-a2d7-1a90649a7bc5.site.hbuptime.com/",
@@ -7,7 +8,7 @@ EXTERNAL_URLS = {
     "newsletter": "http://eepurl.com/gAi94b",
     "onboarding": "https://calendly.com/lorraine-chabeda/30min",
     "sales": "mailto:joyeeta.das@gyana.com",
-    "request_demo": "https://gyana-data.typeform.com/to/RaCDiQ93",
+    "request_demo": reverse_lazy("web:book-a-demo"),
     "hubspot_meeting": "https://meetings-eu1.hubspot.com/david-kell",
     "facebook_group": "https://www.facebook.com/groups/891928461364849/",
     "slack_community": "https://join.slack.com/t/gyanacommunity/shared_invite/zt-vly76dna-dxv12CkXdanlwqMam5zDPQ",

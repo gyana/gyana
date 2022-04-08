@@ -1,0 +1,77 @@
+{% extends 'web/site_base.html' %}
+{% load static site_tags heroicons %}
+
+{% block meta %}
+  <title>Book A Demo | Gyana</title>
+  <meta name="description" content="Work with our team of report builders to get your perfect report. We've done it for hundreds of organisations." /> 
+{% endblock %}
+
+
+{% block body.content %}
+
+<div class="py-8 lg:relative lg:py-32 xl:py-36 overflow-hidden bg-gray-20 border-b border-gray-200">
+  <div class="mx-auto max-w-md px-4 sm:max-w-3xl sm:px-6 lg:px-8 lg:max-w-7xl lg:grid lg:grid-cols-2">
+    <div class="relative flex flex-col justify-center">
+      <div class="text-center sm:text-left my-6 sm:max-w-lg">
+        <h1 class="text-2xl lg:text-5xl text-caveat text-indigo-600 mb-4">
+          Book a demo
+        </h1>
+        <h2 class="text-3xl font-extrabold text-gray-900 mb-4">
+          See how Gyana can unlock the insights in your data
+        </h2>
+        <p class="mb-6 text-lg text-gray-600 max-w-3xl">
+          Book a free personalised demo today and one of our team will get back to you shortly.
+        </p>
+        <ul class="mb-6 space-y-4">
+          <li class="flex items-center space-x-3 text-indigo-600">
+            {% heroicon 'check-circle' class="flex-shrink-0 h-5 w-5" %}
+            <span class="text-base text-gray-600">
+              Build a overview of your business data, without manual work or engineering time.
+            </span>
+          </li>
+          <li class="flex items-center space-x-3 text-indigo-600">
+            {% heroicon 'check-circle' class="flex-shrink-0 h-5 w-5" %}
+            <span class="text-base text-gray-600">
+              Empower anyone in your team to make use of data in their daily workflows.
+            </span>
+          </li>
+          <li class="flex items-center space-x-3 text-indigo-600">
+            {% heroicon 'check-circle' class="flex-shrink-0 h-5 w-5" %}
+            <span class="text-base text-gray-600">
+              Work with our team of data experts, who've built reports for hundreds of organisations.
+            </span>
+          </li>
+        </ul>
+        <p class="text-lg text-gray-600">
+          You'll be in good company:
+        </p>
+        <div class="max-w-7xl mx-auto py-12 px-8 sm:px-6 lg:px-0">
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-y-8">
+            {% with logos="ey bcg nasa barclays mckinsey pret" %}
+              {% for logo in logos.split %}
+                <div class="flex justify-center">
+                  <img class="logo w-full" src="{% static 'images/site/logos/'|add:logo|add:'.svg' %}" />
+                </div>
+              {% endfor %}
+            {% endwith %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="relative flex items-center mt-12 lg:mt-0">
+      <div class="card w-full">
+        <script charset="utf-8" type="text/javascript" src="//js-eu1.hsforms.net/forms/v2.js"></script>
+        <script>
+          hbspt.forms.create({
+          region: "eu1",
+          portalId: "25534240",
+          formId: "ba345893-d3d5-4569-99ea-2f44274c927a"
+        });
+        </script>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

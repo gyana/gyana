@@ -101,6 +101,10 @@ class TermsOfUse(TemplateView):
     template_name = "web/terms_of_use.html"
 
 
+class BookADemo(TemplateView):
+    template_name = "web/book_a_demo.html"
+
+
 @api_view(["POST"])
 def toggle_sidebar(request):
     request.session["sidebar_collapsed"] = not request.session.get(
