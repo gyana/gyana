@@ -474,9 +474,6 @@ MIGRATION_MODULES = {"djpaddle": "apps.teams.migrate.djpaddle"}
 
 WAFFLE_FLAG_MODEL = "teams.Flag"
 
-# TODO: Remove once the website is enabled
-ENABLE_WEBSITE = os.getenv("ENABLE_WEBSITE", default="False") == "True"
-
 WAGTAIL_SITE_NAME = "Gyana CMS"
 WAGTAILSEARCH_BACKENDS = {
     "default": {
