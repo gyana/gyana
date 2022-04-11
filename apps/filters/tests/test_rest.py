@@ -23,7 +23,7 @@ def test_filter_autocomplete(
     client, project, node_factory, integration_table_factory, bigquery
 ):
     mock_bq_client_with_schema(
-        bigquery, [(name, type_.name) for name, type_ in TABLE.schema().items()]
+        bigquery, [(name, str(type_)) for name, type_ in TABLE.schema().items()]
     )
     mock_bq_client_with_records(bigquery, [{"athlete": x} for x in SOURCE_DATA])
 

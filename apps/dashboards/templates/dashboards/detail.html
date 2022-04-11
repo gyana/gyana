@@ -103,10 +103,21 @@
             Delete
           </a>
           {% flag 'beta' %}
-          <turbo-frame id="dashboard:save">
-            {% include 'dashboards/save.html' %}
-          </turbo-frame>
+          
+            <button
+              data-controller="tooltip"
+              data-tooltip-content="Show dashboard history"
+              data-action="click->tf-modal#open"
+              data-modal-id="dashboard:history"
+              data-modal-classes="tf-modal--auto tf-modal--wide tf-modal--tall"
+              data-modal-src="{% url "project_dashboards:history" project.id object.id %}?category=general"
+              class="list__item list__item--interactive w-full"
+            >
+              <span class='beta mr-4'>History</span>
+            </button>
+
           {% endflag %}
+
             <p
               class="list__item list__item--br w-full"
             >
@@ -167,22 +178,6 @@
         </template>
       </div>
 
-      {% flag 'beta' %}
-        <div
-          data-controller="tooltip"
-          data-tooltip-content="Show dashboard history"
-        >
-          <button
-            data-action="click->tf-modal#open"
-            data-modal-id="dashboard:history"
-            data-modal-classes="tf-modal--auto tf-modal--wide tf-modal--tall"
-            data-modal-src="{% url "project_dashboards:history" project.id object.id %}?category=general"
-            class="button button--sm button--tertiary"
-          >
-            <i class="fas fa-fw fa-history"></i><span class='beta mr-4'>History</span>
-          </button>
-        </div>
-      {% endflag %}
 
       <div data-controller="tooltip">
           <button data-action="click->tf-modal#open"

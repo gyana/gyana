@@ -3,7 +3,9 @@
     "id": "abs",
     "name": "abs",
     "categories": ["math"],
-    "arguments": [{ "name": "number", "description": "a numeric scalar or column" }],
+    "arguments": [
+      { "name": "number", "description": "a numeric scalar or column" }
+    ],
     "keywords": ["absolute", "modulus", "sign", "positive"],
     "description": "Calculate the absolute value of a numeric value.",
     "intercom_id": "h_264a9d933f"
@@ -25,7 +27,11 @@
     "name": "and",
     "categories": ["generic"],
     "arguments": [
-      { "name": "value", "description": "boolean scalars or columns", "repeatable": true }
+      {
+        "name": "value",
+        "description": "boolean scalars or columns",
+        "repeatable": true
+      }
     ],
     "keywords": ["and", "logic"],
     "description": "Logical and operaion",
@@ -38,8 +44,14 @@
     "categories": ["generic"],
     "arguments": [
       { "name": "value", "description": "a scalar or column" },
-      { "name": "lower", "description": "a scalar or column representing the lower bound" },
-      { "name": "upper", "description": "a scalar or column representing the upper bound" }
+      {
+        "name": "lower",
+        "description": "a scalar or column representing the lower bound"
+      },
+      {
+        "name": "upper",
+        "description": "a scalar or column representing the upper bound"
+      }
     ],
     "keywords": ["in", "range"],
     "description": "Check if value falls between the lower/upper bounds."
@@ -64,7 +76,9 @@
     "intercom_id": "h_218a142af3",
     "name": "ceiling",
     "categories": ["math"],
-    "arguments": [{ "name": "number", "description": "a numeric scalar or column" }],
+    "arguments": [
+      { "name": "number", "description": "a numeric scalar or column" }
+    ],
     "keywords": ["round", "upper", "decimal"],
     "description": "Round a numeric value up to the nearest integer value greater than or equal to this value."
   },
@@ -89,8 +103,14 @@
     "name": "contains",
     "categories": ["text"],
     "arguments": [
-      { "name": "text", "description": "a text scalar or column that should contain pattern" },
-      { "name": "pattern", "description": "a text scalar or column that should be in text" }
+      {
+        "name": "text",
+        "description": "a text scalar or column that should contain pattern"
+      },
+      {
+        "name": "pattern",
+        "description": "a text scalar or column that should be in text"
+      }
     ],
     "keywords": ["in"],
     "description": "Determine if text exactly contains the given pattern."
@@ -101,9 +121,18 @@
     "name": "date",
     "categories": ["time & date"],
     "arguments": [
-      { "name": "year", "description": "a integer scalar or column providing the year" },
-      { "name": "month", "description": "a integer scalar or column providing the month" },
-      { "name": "day", "description": "a integer scalar or column providing the day" }
+      {
+        "name": "year",
+        "description": "a integer scalar or column providing the year"
+      },
+      {
+        "name": "month",
+        "description": "a integer scalar or column providing the month"
+      },
+      {
+        "name": "day",
+        "description": "a integer scalar or column providing the day"
+      }
     ],
     "keywords": [],
     "description": "Create a date from year, month and day"
@@ -114,9 +143,18 @@
     "name": "time",
     "categories": ["time & date"],
     "arguments": [
-      { "name": "hour", "description": "a integer scalar or column providing the hour" },
-      { "name": "minute", "description": "a integer scalar or column providing the minute" },
-      { "name": "second", "description": "a integer scalar or column providing the second" }
+      {
+        "name": "hour",
+        "description": "a integer scalar or column providing the hour"
+      },
+      {
+        "name": "minute",
+        "description": "a integer scalar or column providing the minute"
+      },
+      {
+        "name": "second",
+        "description": "a integer scalar or column providing the second"
+      }
     ],
     "keywords": [],
     "description": "Create a time from hour, minute and second"
@@ -126,7 +164,9 @@
     "intercom_id": "h_d4a52205ef",
     "name": "extract_date",
     "categories": ["time & date"],
-    "arguments": [{ "name": "date", "description": "a timestamp scalar or column" }],
+    "arguments": [
+      { "name": "date", "description": "a timestamp scalar or column" }
+    ],
     "keywords": [],
     "description": "Get date part from a timestamp value"
   },
@@ -135,7 +175,9 @@
     "intercom_id": "h_ecd043956a",
     "name": "day",
     "categories": ["time & date"],
-    "arguments": [{ "name": "date", "description": "a timestamp scalar or column" }],
+    "arguments": [
+      { "name": "date", "description": "a timestamp scalar or column" }
+    ],
     "keywords": [],
     "description": "Get the day of month from a date or timestamp value"
   },
@@ -144,7 +186,9 @@
     "intercom_id": "h_f6fbea587b",
     "name": "day_of_week",
     "categories": ["time & date"],
-    "arguments": [{ "name": "date", "description": "a timestamp scalar or column" }],
+    "arguments": [
+      { "name": "date", "description": "a timestamp scalar or column" }
+    ],
     "keywords": [],
     "description": "Get day of the week from date or timestamp, starting from 1 Sunday to 7 Saturday"
   },
@@ -165,7 +209,9 @@
     "intercom_id": "h_2c996ea737",
     "name": "epoch_seconds",
     "categories": ["time & date"],
-    "arguments": [{ "name": "timestamp", "description": "a timestamp scalar or column" }],
+    "arguments": [
+      { "name": "timestamp", "description": "a timestamp scalar or column" }
+    ],
     "keywords": ["unix", "since"],
     "description": "Seconds passed since 00:00:00 UTC on 1 January 1970 also called UNIX time"
   },
@@ -195,7 +241,9 @@
     "intercom_id": "h_df5f7f5059",
     "name": "floor",
     "categories": ["math"],
-    "arguments": [{ "name": "number", "description": "a numeric scalar or column" }],
+    "arguments": [
+      { "name": "number", "description": "a numeric scalar or column" }
+    ],
     "keywords": ["round", "down"],
     "description": "Rounding down a numeric value to the greatest integer less or eqqual"
   },
@@ -270,7 +318,11 @@
         "name": "delimiter",
         "description": "a value that is used to separate the following arguments"
       },
-      { "name": "text", "description": "a text scalar or column", "repeatable": true }
+      {
+        "name": "text",
+        "description": "a text scalar or column",
+        "repeatable": true
+      }
     ],
     "keywords": ["merge", "concatenate"],
     "description": "Concatenate text with the delimiter"
@@ -285,7 +337,10 @@
         "name": "json",
         "description": "a text value in JSON format"
       },
-      { "name": "path", "description": "path to the desired item in the format e.g. `$.a.b[0]`" }
+      {
+        "name": "path",
+        "description": "path to the desired item in the format e.g. `$.a.b[0]`"
+      }
     ],
     "keywords": ["json"],
     "description": "Extract a field inside JSON, returns text"
@@ -331,7 +386,9 @@
     "intercom_id": "h_3c84e9fd9b",
     "name": "ln",
     "categories": ["math"],
-    "arguments": [{ "name": "number", "description": "a numeric scalar or column" }],
+    "arguments": [
+      { "name": "number", "description": "a numeric scalar or column" }
+    ],
     "keywords": ["logarithm"],
     "description": "Returns the natural logarithm of number"
   },
@@ -352,7 +409,9 @@
     "intercom_id": "h_248a774ec0",
     "name": "log2",
     "categories": ["math"],
-    "arguments": [{ "name": "number", "description": "a number scalar or column" }],
+    "arguments": [
+      { "name": "number", "description": "a number scalar or column" }
+    ],
     "keywords": ["logarithm"],
     "description": "Returns the logarithm with base 2 of number"
   },
@@ -361,7 +420,9 @@
     "intercom_id": "h_d67c30672e",
     "name": "log10",
     "categories": ["math"],
-    "arguments": [{ "name": "number", "description": "a numeric scalar or column" }],
+    "arguments": [
+      { "name": "number", "description": "a numeric scalar or column" }
+    ],
     "keywords": ["logarithm"],
     "description": "Returns the logarithm with base 10 of number"
   },
@@ -385,7 +446,11 @@
         "name": "length",
         "description": "a numeric scalar or column indicating the length of the resulting text"
       },
-      { "name": "fillchar", "description": "a text scalar or column", "optional": true }
+      {
+        "name": "fillchar",
+        "description": "a text scalar or column",
+        "optional": true
+      }
     ],
     "keywords": [],
     "description": "Returns string of given length by truncating (on left) or padding (on left) original string"
@@ -422,7 +487,9 @@
     "intercom_id": "h_e51b2b6d85",
     "name": "month",
     "categories": ["time & date"],
-    "arguments": [{ "name": "date", "description": "a timestamp scalar or column" }],
+    "arguments": [
+      { "name": "date", "description": "a timestamp scalar or column" }
+    ],
     "keywords": [],
     "description": "Get the month from date or timestamp"
   },
@@ -473,7 +540,11 @@
     "name": "or",
     "categories": ["generic"],
     "arguments": [
-      { "name": "value", "description": "boolean scalars or columns", "repeatable": true }
+      {
+        "name": "value",
+        "description": "boolean scalars or columns",
+        "repeatable": true
+      }
     ],
     "keywords": ["or", "logic"],
     "description": "Logical or operaion",
@@ -565,7 +636,10 @@
     "categories": ["text"],
     "arguments": [
       { "name": "text", "description": "a text scalar or column" },
-      { "name": "pattern", "description": "a text scalar or column that is being replaced by " },
+      {
+        "name": "pattern",
+        "description": "a text scalar or column that is being replaced by "
+      },
       {
         "name": "replace",
         "description": "a text scalar or column that replaces the pattern in text"
@@ -658,7 +732,11 @@
     "arguments": [
       { "name": "text", "description": "a text scalar or column" },
       { "name": "length", "description": "a numeric scalar or column" },
-      { "name": "fillchar", "description": "a numeric scalar or column", "optional": true }
+      {
+        "name": "fillchar",
+        "description": "a numeric scalar or column",
+        "optional": true
+      }
     ],
     "keywords": [],
     "description": "Returns string of given length by truncating (on right) or padding (on right) original string"
@@ -686,7 +764,9 @@
     "intercom_id": "h_5658fd9ed4",
     "name": "sqrt",
     "categories": ["math"],
-    "arguments": [{ "name": "number", "description": "a numeric scalar or column" }],
+    "arguments": [
+      { "name": "number", "description": "a numeric scalar or column" }
+    ],
     "keywords": ["root"],
     "description": "Calculate the square root"
   },
@@ -697,7 +777,10 @@
     "categories": ["time & date"],
     "arguments": [
       { "name": "datetime", "description": "a datetime scalar or column" },
-      { "name": "format", "description": "determines how the resulting text is formatted" }
+      {
+        "name": "format",
+        "description": "determines how the resulting text is formatted"
+      }
     ],
     "keywords": ["strftime"],
     "description": "Format timestamp into string with given format"
@@ -730,7 +813,10 @@
     "categories": ["time & date"],
     "arguments": [
       { "name": "date", "description": "a date scalar or column" },
-      { "name": "days", "description": "an integer scalar or column of days to subtract" }
+      {
+        "name": "days",
+        "description": "an integer scalar or column of days to subtract"
+      }
     ],
     "keywords": ["minus"],
     "description": "Substract days from date"
@@ -743,8 +829,16 @@
     "arguments": [
       { "name": "text", "description": "a text scalar or column" },
       { "name": "pattern", "description": "a text scalar or column" },
-      { "name": "replace", "description": "a text scalar or column", "optional": true },
-      { "name": "else", "description": "a text scalar or column", "optional": true }
+      {
+        "name": "replace",
+        "description": "a text scalar or column",
+        "optional": true
+      },
+      {
+        "name": "else",
+        "description": "a text scalar or column",
+        "optional": true
+      }
     ],
     "keywords": ["replace"],
     "description": "Replace text if with replace if pattern is equal to text optional replace with else"
@@ -754,7 +848,9 @@
     "intercom_id": "h_e881b3e3c5",
     "name": "extract_time",
     "categories": ["time & date"],
-    "arguments": [{ "name": "datetime", "description": "a datetime scalar or column" }],
+    "arguments": [
+      { "name": "datetime", "description": "a datetime scalar or column" }
+    ],
     "keywords": [],
     "description": "Get the time from a timestamp"
   },
@@ -774,6 +870,17 @@
     "description": "Create a datetime from an integer as the number of unit since from January 1st, 1970 UTC (unix time)"
   },
   {
+    "id": "to_json_string",
+    "intercom_id": "h_72054072d1",
+    "name": "to_json_string",
+    "categories": ["text"],
+    "arguments": [
+      { "name": "dictionary", "description": "a dictionary column or scalar" }
+    ],
+    "keywords": ["dictionary", "struct"],
+    "description": "Transform a dictionary to a JSON string"
+  },
+  {
     "id": "today",
     "intercom_id": "h_ddaa026eeb",
     "name": "today",
@@ -790,7 +897,10 @@
     "arguments": [
       { "name": "minuend", "description": "a datetime scalar or column" },
       { "name": "subtrahend", "description": "a datetime scalar or column" },
-      { "name": "unit", "description": "unit of the difference e.g. \"s\" for seconds" }
+      {
+        "name": "unit",
+        "description": "unit of the difference e.g. \"s\" for seconds"
+      }
     ],
     "keywords": [],
     "description": "Get the difference between minuend and subtrahend in the given unit"
@@ -821,7 +931,9 @@
     "intercom_id": "h_1a22b06677",
     "name": "weekday",
     "categories": ["time & date"],
-    "arguments": [{ "name": "date", "description": "a timestamp scalar or column" }],
+    "arguments": [
+      { "name": "date", "description": "a timestamp scalar or column" }
+    ],
     "keywords": [],
     "description": "Gets weekday from a date"
   },
@@ -830,7 +942,9 @@
     "intercom_id": "h_c5181a0592",
     "name": "year",
     "categories": ["time & date"],
-    "arguments": [{ "name": "date", "description": "a timestamp scalar or column" }],
+    "arguments": [
+      { "name": "date", "description": "a timestamp scalar or column" }
+    ],
     "keywords": [],
     "description": "Get the year from date"
   }

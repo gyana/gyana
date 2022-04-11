@@ -25,6 +25,9 @@ def test_site_pages(client):
     r = client.get("/terms-of-use")
     assertOK(r)
 
+    r = client.get("/book-a-demo")
+    assertOK(r)
+
     r = client.get("/demo/integrations")
     assertOK(r)
     r = client.get("/demo/workflows")
@@ -64,7 +67,7 @@ def test_site_links(client):
 
     # app links
     assertLink(r, "/signup/", "Sign up", total=4)
-    assertLink(r, "https://gyana-data.typeform.com/to/RaCDiQ93", "Book a demo", total=4)
+    assertLink(r, "/book-a-demo", "Book a demo", total=4)
     assertLink(r, "/login/", "Sign in", total=2)
 
     user = CustomUser.objects.create_user("test", email="test@gyana.com")
@@ -79,7 +82,7 @@ def test_integrations_page(client):
     r = client.get("/integrations")
     assertOK(r)
 
-    assertLink(r, "https://gyana-data.typeform.com/to/RaCDiQ93", "Talk to us", total=2)
+    assertLink(r, "/book-a-demo", "Talk to us", total=2)
 
     # integration search
     r = client.get("/demo/search-integrations")

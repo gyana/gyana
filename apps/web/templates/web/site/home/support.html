@@ -1,5 +1,7 @@
 {% load heroicons site_tags static %}
 
+{% comment %} For the embedded hubspot form {% endcomment %}
+<script charset="utf-8" type="text/javascript" src="//js-eu1.hsforms.net/forms/v2.js"></script>
 
 <div class="bg-white">
   <div class="relative max-w-7xl mx-auto py-24 px-4 sm:px-6 lg:px-8">
@@ -57,8 +59,6 @@
                     {% if step == 0 %}
                       {% comment %} Signup page: link clicks and form submit will happen at parent level {% endcomment %}
                       <iframe width="100%" height="100%" loading="lazy" sandbox="allow-same-origin allow-top-navigation allow-forms" src="{% url 'account_signup' %}?iframe=true"></iframe>
-                      {% comment %} Book a demo Typeform {% endcomment %}
-                      {% comment %} <div data-tf-widget="RaCDiQ93" data-tf-iframe-props="title=Book a demo" data-tf-medium="snippet" style="width:100%;height:100%;"></div><script src="//embed.typeform.com/next/embed.js"></script> {% endcomment %}
                     {% elif step == 1 %}
                       {% comment %} Gyana University {% endcomment %}
                       <iframe width="100%" height="100%" src="{% url 'web:intercom-demo' %}?demo=help"></iframe>
@@ -74,7 +74,23 @@
                       <!-- Calendly inline widget end -->
                     {% elif step == 5 %}
                       {% comment %} Book a demo Typeform {% endcomment %}
-                      <div data-tf-widget="RaCDiQ93" data-tf-iframe-props="title=Book a demo" data-tf-medium="snippet" style="width:100%;height:100%;"></div><script src="//embed.typeform.com/next/embed.js"></script>
+                      <div class="p-10 bg-white">
+                        <div class="sm:flex sm:flex-col sm:align-center mb-6">
+                          <h2 class="text-3xl font-extrabold text-gray-900">
+                            Talk to us
+                          </h2>
+                          <p class="mt-4 max-w-lg text-base text-gray-800">
+                            We'll work with you to build your ideal reports.
+                          </p>
+                        </div>
+                        <script>
+                          hbspt.forms.create({
+                          region: "eu1",
+                          portalId: "25534240",
+                          formId: "ba345893-d3d5-4569-99ea-2f44274c927a"
+                        });
+                        </script>
+                      </div>
                     {% elif step == 6 %}
                       {% comment %} HelloNext changelog {% endcomment %}
                       <iframe style='border:0px; height:100%; width:100%;' src='https://feedback.gyana.com/embed/c?no_header=true'></iframe>

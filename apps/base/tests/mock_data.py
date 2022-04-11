@@ -10,6 +10,7 @@ TABLE = ibis.table(
         ("medals", "int32"),
         ("stars", "double"),
         ("is_nice", "boolean"),
+        ("biography", "struct<a:int32>"),
     ],
     name="olympians",
 )

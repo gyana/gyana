@@ -54,6 +54,9 @@
       &--boolean a::before {
         content: '\f058';
       }
+      &--dict a::before {
+        content: '\f7ea';
+      }
     }
 
     .orderable {

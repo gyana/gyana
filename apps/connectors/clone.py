@@ -25,7 +25,9 @@ def clone_fivetran_instance(original, clone):
         "run_setup_tests": False,
         "sync_frequency": SYNC_FREQUENCY,
         "service": original_config["service"],
-        "daily_sync_time": original_config["daily_sync_time"],
+        "daily_sync_time": original_config.get(
+            "daily_sync_time", original.daily_sync_time
+        ),
         "config": {"schema": clone.schema, **original_config["config"]},
     }
     res = client.new(clone_config)

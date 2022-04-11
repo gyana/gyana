@@ -103,12 +103,6 @@ def dashboard_is_in_template(view_func):
             return HttpResponseRedirect(
                 "{}?next={}".format(reverse("account_login"), request.path)
             )
-        dashboard = Dashboard.objects.get(pk=kwargs["pk"])
-        if (
-            user_can_access_project(request.user, dashboard.project)
-            and dashboard.project.is_template
-        ):
-            return view_func(request, *args, **kwargs)
         return render(request, "404.html", status=404)
 
     return decorator

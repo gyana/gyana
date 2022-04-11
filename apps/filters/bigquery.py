@@ -7,7 +7,7 @@ from dateutil.relativedelta import relativedelta
 from ibis.expr.types import TimestampValue
 
 from apps.controls.bigquery import DATETIME_FILTERS
-from apps.filters.models import Filter, PREDICATE_MAP
+from apps.filters.models import PREDICATE_MAP, Filter
 
 
 def eq(query, column, value):
@@ -261,11 +261,12 @@ def get_query_from_filter(query, filter: Filter):
         else None
     )
     func = FILTER_MAP[predicate or filter.type]
-    value_str = "values" if predicate in ["isin", "notin"] else "value"
-    value = getattr(filter, f"{filter.type.lower()}_{value_str}")
     func_params = signature(func).parameters
     if "value" not in func_params and "values" not in func_params:
         return func(query, column)
+
+    value_str = "values" if predicate in ["isin", "notin"] else "value"
+    value = getattr(filter, f"{filter.type.lower()}_{value_str}")
     return func(query, column, value)
 
 

@@ -59,7 +59,7 @@
 
 {% if integration.ready %}
   <div class="workflow-detail__header flex items-center space-x-2 p-4 pl-8 bg-white border-b border-gray">
-    <div class="flex items-center">
+    <div class="flex items-center w-full">
       <p>
         <strong>{{ integration.num_rows|intcomma }}</strong> row{{ integration.num_rows|pluralize }} •
         <strong>{{ integration.num_tables|intcomma }}</strong> table{{ integration.num_tables|pluralize }} •
@@ -87,6 +87,11 @@
           </turbo-frame>
         {% endif %}
       </p>
+      {% if object.kind == 'connector' %}
+        <turbo-frame id="connectors:pause" class='ml-auto'>
+          {% include "connectors/pause.html" with object=object.connector %}
+        </turbo-frame>
+      {% endif %}
     </div>
   </div>
 {% endif %}

@@ -1,4 +1,7 @@
-from apps.base.frames import TurboFrameDetailView
+from django.urls import reverse
+
+from apps.base import clients
+from apps.base.frames import TurboFrameDetailView, TurboFrameUpdateView
 
 from .models import Connector
 
@@ -29,3 +32,18 @@ class ConnectorStatus(TurboFrameDetailView):
     def get_context_data(self, **kwargs):
         self.object.sync_updates_from_fivetran()
         return super().get_context_data(**kwargs)
+
+
+class ConnectorPause(TurboFrameUpdateView):
+    template_name = "connectors/pause.html"
+    model = Connector
+    fields = ["paused"]
+    turbo_frame_dom_id = "connectors:pause"
+
+    def form_valid(self, form):
+        client = clients.fivetran()
+        client.update(form.instance, paused=form.instance.paused)
+        return super().form_valid(form)
+
+    def get_success_url(self) -> str:
+        return reverse("connectors:pause", args=(self.object.id,))

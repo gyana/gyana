@@ -1,4 +1,5 @@
 import logging
+import uuid
 from datetime import datetime
 
 from dirtyfields import DirtyFieldsMixin
@@ -6,6 +7,7 @@ from django import forms
 from django.conf import settings
 from django.db import models
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.functional import cached_property
 
 from apps.base import clients
@@ -80,6 +82,7 @@ class Connector(DirtyFieldsMixin, BaseModel):
         # TODO: right now this needs to be falsely copied
         # otherwise the integration won't be shown on the overview page.
         # "fivetran_authorized",
+        "fivetran_id",
         "fivetran_sync_started",
         "bigquery_succeeded_at",
         # TODO: should this be added later or do we need to replace the schema during duplication
@@ -102,13 +105,13 @@ class Connector(DirtyFieldsMixin, BaseModel):
     # https://fivetran.com/docs/rest-api/connectors#fields
 
     # unique identifier for API requests in fivetran
-    fivetran_id = models.TextField()
+    fivetran_id = models.TextField(unique=True, default=uuid.uuid4)
     group_id = models.TextField()
     # service name, see services.yaml
     service = models.TextField(max_length=255)
     service_version = models.IntegerField()
     # schema or schema_prefix for storage in bigquery
-    schema = models.TextField()
+    schema = models.TextField(unique=True)
     paused = models.BooleanField()
     pause_after_trial = models.BooleanField()
     connected_by = models.TextField()
@@ -298,8 +301,9 @@ class Connector(DirtyFieldsMixin, BaseModel):
         from apps.connectors.fivetran.client import FivetranConnectorNotFound
         from apps.connectors.sync import end_connector_sync
 
+        client = clients.fivetran()
         try:
-            data = data or clients.fivetran().get(self)
+            data = data or client.get(self)
         except FivetranConnectorNotFound as err:
             # It's not clear how this can happen but it happens
             self.integration.state = Integration.State.ERROR
@@ -308,6 +312,20 @@ class Connector(DirtyFieldsMixin, BaseModel):
             self.save()
             logging.error(err, exc_info=err)
             return
+
+        if (
+            data["succeeded_at"]
+            and (
+                timezone.now()
+                - datetime.fromisoformat(data["succeeded_at"].replace("Z", "+00:00"))
+            ).days
+            > 7
+        ):
+            client.update(self, paused=True)
+            data["paused"] = True
+            self.paused = True
+            self.sync_state = self.SyncState.PAUSED
+
         self.update_kwargs_from_fivetran(data)
 
         # update fivetran sync time if user has updated timezone/daily sync time

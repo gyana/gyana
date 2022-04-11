@@ -212,3 +212,16 @@ class DashboardLoginForm(forms.Form):
             raise ValidationError("Wrong password")
 
         return password
+
+
+class DashboardVersionSaveForm(BaseModelForm):
+
+    version_name = forms.CharField(required=False)
+
+    class Meta:
+        model = Dashboard
+        fields = []
+
+    def save(self, commit=True):
+        self.instance.versions.create(name=self.cleaned_data["version_name"])
+        return self.instance

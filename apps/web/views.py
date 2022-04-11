@@ -38,9 +38,6 @@ class Home(TemplateView):
 
             return HttpResponseRedirect(reverse("teams:create"))
 
-        if not settings.ENABLE_WEBSITE:
-            return redirect("account_login")
-
         return cache_site(super().get)(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -102,6 +99,10 @@ class PrivacyPolicy(TemplateView):
 
 class TermsOfUse(TemplateView):
     template_name = "web/terms_of_use.html"
+
+
+class BookADemo(TemplateView):
+    template_name = "web/book_a_demo.html"
 
 
 @api_view(["POST"])

@@ -15,7 +15,7 @@ from apps.dashboards.tables import DashboardHistoryTable, DashboardUpdateTable
 from apps.projects.mixins import ProjectMixin
 from apps.widgets.models import Widget
 
-from .forms import DashboardForm
+from .forms import DashboardForm, DashboardVersionSaveForm
 from .models import Dashboard, DashboardVersion
 
 
@@ -126,12 +126,13 @@ class DashboardSettings(ProjectMixin, TurboFrameUpdateView):
         )
 
 
-class DashboardHistory(ProjectMixin, SingleTableMixin, TurboFrameDetailView):
+class DashboardHistory(ProjectMixin, SingleTableMixin, TurboFrameUpdateView):
     template_name = "dashboards/history.html"
     model = Dashboard
     table_class = DashboardHistoryTable
     paginate_by = 20
     turbo_frame_dom_id = "dashboard:history"
+    form_class = DashboardVersionSaveForm
 
     def get_table_data(self):
         if self.request.GET.get("tab") == "history":
@@ -143,24 +144,9 @@ class DashboardHistory(ProjectMixin, SingleTableMixin, TurboFrameDetailView):
             return DashboardUpdateTable
         return super().get_table_class()
 
-
-class DashboardVersionSave(ProjectMixin, TurboFrameUpdateView):
-    model = Dashboard
-    fields = []
-    template_name = "dashboards/save.html"
-    turbo_frame_dom_id = "dashboard:save"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["show_alert"] = True
-        return context
-
-    def form_valid(self, form):
-        DashboardVersion(dashboard=form.instance).save()
-        return redirect(
-            reverse(
-                "project_dashboards:save", args=(self.object.project.id, self.object.id)
-            )
+    def get_success_url(self) -> str:
+        return reverse(
+            "project_dashboards:history", args=(self.project.id, self.object.id)
         )
 
 

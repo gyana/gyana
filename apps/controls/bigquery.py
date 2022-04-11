@@ -10,9 +10,7 @@ from .models import CustomChoice
 
 
 def get_date(column):
-    if isinstance(column, TimestampValue):
-        return column.date()
-    return column
+    return column.date() if isinstance(column, TimestampValue) else column
 
 
 def today(query, column):
@@ -414,10 +412,16 @@ def slice_query(query, column, control, use_previous_period):
     if control.date_range != CustomChoice.CUSTOM:
         func = DATETIME_FILTERS[control.date_range]
         range_filter = (
-            func["function"] if not use_previous_period else func["previous_function"]
+            func["previous_function"] if use_previous_period else func["function"]
         )
+
         return range_filter(query, column)
 
+    if (
+        isinstance(query[column], TimestampValue)
+        and query[column].type().timezone is None
+    ):
+        query = query.mutate(**{column: query[column].to_timestamp()})
     if control.start:
         query = query[query[column] > control.start]
 

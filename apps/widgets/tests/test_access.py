@@ -50,7 +50,7 @@ pytestmark = pytest.mark.django_db
 )
 def test_widget_project_required(client, url, user, widget_factory, bigquery):
     mock_bq_client_with_schema(
-        bigquery, [(name, type_.name) for name, type_ in TABLE.schema().items()]
+        bigquery, [(name, str(type_)) for name, type_ in TABLE.schema().items()]
     )
     mock_bq_client_with_records(bigquery, [{"athlete": ["Usain", "Alex"]}])
     widget = widget_factory()

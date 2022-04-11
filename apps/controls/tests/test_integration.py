@@ -41,7 +41,7 @@ def test_control_crudl(
     client, project, dashboard_factory, bigquery, integration_table_factory
 ):
     mock_bq_client_with_schema(
-        bigquery, [(name, type_.name) for name, type_ in TABLE.schema().items()]
+        bigquery, [(name, str(type_)) for name, type_ in TABLE.schema().items()]
     )
     mock_bq_client_data(bigquery)
     # add a widget with a dateslice column so it's picked up when creating the output stream

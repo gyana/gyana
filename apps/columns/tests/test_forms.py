@@ -21,13 +21,15 @@ from apps.nodes.models import Node
 pytestmark = pytest.mark.django_db
 from apps.columns.models import EditColumn
 
+COLUMNS_LENGTH = 10
+
 
 def test_column_form_with_formatting(column_factory, node_factory):
     column = column_factory(node=node_factory())
     form = ColumnFormWithFormatting(instance=column, schema=TABLE.schema())
 
     assert set(form.fields.keys()) == {"column"}
-    assertFormChoicesLength(form, "column", 9)
+    assertFormChoicesLength(form, "column", COLUMNS_LENGTH)
 
     data = QueryDict(mutable=True)
     data["column"] = "id"
@@ -55,7 +57,7 @@ def test_aggregation_form(aggregation_column_factory, node_factory):
     form = AggregationColumnForm(instance=column, schema=TABLE.schema())
 
     assert set(form.fields.keys()) == {"column"}
-    assertFormChoicesLength(form, "column", 9)
+    assertFormChoicesLength(form, "column", COLUMNS_LENGTH)
 
     data = QueryDict(mutable=True)
     data["column"] = "id"
@@ -71,7 +73,7 @@ def test_aggregation_form_with_formatting(aggregation_column_factory, node_facto
     form = AggregationFormWithFormatting(instance=column, schema=TABLE.schema())
 
     assert set(form.fields.keys()) == {"column"}
-    assertFormChoicesLength(form, "column", 9)
+    assertFormChoicesLength(form, "column", COLUMNS_LENGTH)
 
     data = QueryDict(mutable=True)
     data["column"] = "id"
@@ -109,7 +111,7 @@ def test_operation_column_form(edit_column_factory):
     form = OperationColumnForm(instance=column, schema=TABLE.schema())
 
     assert set(form.fields.keys()) == {"column"}
-    assertFormChoicesLength(form, "column", 9)
+    assertFormChoicesLength(form, "column", COLUMNS_LENGTH)
 
     # Adding a column changes the function field
     data = QueryDict(mutable=True)
@@ -130,7 +132,7 @@ def test_add_column_form(add_column_factory):
     form = AddColumnForm(instance=column, schema=TABLE.schema())
 
     assert set(form.fields.keys()) == {"column"}
-    assertFormChoicesLength(form, "column", 9)
+    assertFormChoicesLength(form, "column", COLUMNS_LENGTH)
 
     # Adding a column changes the function field
     data = QueryDict(mutable=True)
@@ -163,7 +165,7 @@ def test_window_form(window_column_factory):
     form = WindowColumnForm(instance=column, schema=TABLE.schema())
 
     assert set(form.fields.keys()) == {"column"}
-    assertFormChoicesLength(form, "column", 9)
+    assertFormChoicesLength(form, "column", COLUMNS_LENGTH)
 
     data = QueryDict(mutable=True)
     data["column"] = "medals"
@@ -177,8 +179,8 @@ def test_window_form(window_column_factory):
         "label",
     }
     assertFormChoicesLength(form, "function", 7)
-    assertFormChoicesLength(form, "group_by", 9)
-    assertFormChoicesLength(form, "order_by", 9)
+    assertFormChoicesLength(form, "group_by", COLUMNS_LENGTH)
+    assertFormChoicesLength(form, "order_by", COLUMNS_LENGTH)
 
 
 def test_convert_form(convert_column_factory):
@@ -186,7 +188,7 @@ def test_convert_form(convert_column_factory):
     form = ConvertColumnForm(instance=column, schema=TABLE.schema())
 
     assert set(form.fields.keys()) == {"column", "target_type"}
-    assertFormChoicesLength(form, "column", 9)
+    assertFormChoicesLength(form, "column", COLUMNS_LENGTH)
     assertFormChoicesLength(form, "target_type", 8)
 
 
@@ -194,7 +196,7 @@ def test_join_form(
     join_column_factory, node_factory, bigquery, integration_table_factory
 ):
     mock_bq_client_with_schema(
-        bigquery, [(name, type_.name) for name, type_ in TABLE.schema().items()]
+        bigquery, [(name, str(type_)) for name, type_ in TABLE.schema().items()]
     )
     table = integration_table_factory()
     input_node = node_factory(kind=Node.Kind.INPUT, input_table=table)
@@ -217,7 +219,7 @@ def test_join_form(
         "how",
     }
     assertFormChoicesLength(form, "left_column", 2)
-    assertFormChoicesLength(form, "right_column", 9)
+    assertFormChoicesLength(form, "right_column", COLUMNS_LENGTH)
     assertFormChoicesLength(form, "how", 4)
 
 

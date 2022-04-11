@@ -430,6 +430,11 @@ PARAMS = [
         'SELECT REGEXP_EXTRACT_ALL(\'{"id": "1234", "name": "John"}\', r\'{"id": "(.*?)",\')[SAFE_OFFSET(0)] AS `tmp`',
         id="regex_extract with quote nesting",
     ),
+    pytest.param(
+        "to_json_string(biography)",
+        QUERY.format("TO_JSON_STRING(`biography`)"),
+        id="to_json_string",
+    ),
 ]
 
 

@@ -8,7 +8,7 @@ from apps.filters.models import DateRange, Filter
 
 pytestmark = pytest.mark.django_db
 
-COLUMN_LENGTH = 9
+COLUMN_LENGTH = 10
 NUMERIC_LENGTH = 11
 STRING_LENGTH = 13
 TIME_LENGTH = 9

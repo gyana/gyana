@@ -21,6 +21,9 @@ from apps.widgets.models import Widget
 
 pytestmark = pytest.mark.django_db
 
+# Number is columns plus unselected option
+NUM_COLUMN_OPTIONS = len(TABLE.schema()) + 1
+
 
 @pytest.fixture
 def setup(
@@ -30,7 +33,7 @@ def setup(
     integration_table_factory,
 ):
     mock_bq_client_with_schema(
-        bigquery, [(name, type_.name) for name, type_ in TABLE.schema().items()]
+        bigquery, [(name, str(type_)) for name, type_ in TABLE.schema().items()]
     )
     return dashboard_factory(project=project), integration_table_factory(
         project=project
@@ -131,7 +134,7 @@ def test_one_dimension_form(kind, formset_classes, setup, widget_factory):
             "date_column",
         }
     assert set(form.get_live_formsets()) == formset_classes
-    assertFormChoicesLength(form, "dimension", 9)
+    assertFormChoicesLength(form, "dimension", NUM_COLUMN_OPTIONS)
 
 
 @pytest.mark.parametrize(
@@ -178,5 +181,5 @@ def test_two_dimension_form(kind, formset_classes, setup, widget_factory):
 
     assert set(form.get_live_fields()) == fields
     assert set(form.get_live_formsets()) == formset_classes
-    assertFormChoicesLength(form, "dimension", 9)
-    assertFormChoicesLength(form, "second_dimension", 9)
+    assertFormChoicesLength(form, "dimension", NUM_COLUMN_OPTIONS)
+    assertFormChoicesLength(form, "second_dimension", NUM_COLUMN_OPTIONS)
