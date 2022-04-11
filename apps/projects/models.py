@@ -23,7 +23,7 @@ class Project(DirtyFieldsMixin, BaseModel):
 
     name = models.CharField(max_length=255)
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
-    # False if created from a template
+
     ready = models.BooleanField(default=True)
     access = models.CharField(
         max_length=8, choices=Access.choices, default=Access.EVERYONE
@@ -83,14 +83,6 @@ class Project(DirtyFieldsMixin, BaseModel):
     @property
     def dashboard_count(self):
         return self.dashboard_set.count()
-
-    @property
-    def is_template(self):
-        return hasattr(self, "template")
-
-    @property
-    def has_pending_templates(self):
-        return self.templateinstance_set.filter(completed=False).count() != 0
 
     @cached_property
     def num_rows(self):

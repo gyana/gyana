@@ -45,7 +45,6 @@ from apps.oauth2 import urls as oauth2_urls
 from apps.projects import urls as project_urls
 from apps.sheets import urls as sheet_urls
 from apps.teams import urls as team_urls
-from apps.templates import urls as template_urls
 from apps.uploads import urls as upload_urls
 from apps.users import urls as users_urls
 from apps.web.sitemaps import IntegrationsSitemap, WebSitemap
@@ -84,7 +83,6 @@ project_urlpatterns = [
         "<hashid:project_id>/dashboards/<hashid:dashboard_id>/widgets/",
         include(widget_urls.dashboard_urlpatterns),
     ),
-    path("<hashid:project_id>/templates/", include(template_urls.project_urlpatterns)),
     path(
         "<hashid:project_id>/dashboards/<hashid:dashboard_id>/controls/",
         include(control_urls.dashboard_urlpatterns),
@@ -98,7 +96,6 @@ teams_urlpatterns = [
     path("<hashid:team_id>/projects/", include(project_urls.team_urlpatterns)),
     path("<hashid:team_id>/members/", include(team_urls.membership_urlpatterns)),
     path("<hashid:team_id>/appsumo/", include(appsumo_urls.team_urlpatterns)),
-    path("<hashid:team_id>/templates/", include(template_urls.team_urlpatterns)),
     path("<hashid:team_id>/cnames/", include(cname_urls.team_urlpatterns)),
 ]
 
@@ -123,7 +120,6 @@ urlpatterns = [
     path("sheets/", include("apps.sheets.urls")),
     path("connectors/", include(connector_urlpatterns)),
     path("appsumo/", include("apps.appsumo.urls")),
-    path("templates/", include("apps.templates.urls")),
     path("cnames/", include("apps.cnames.urls")),
     path("oauth2/", include("apps.oauth2.urls")),
     path("learn/", include("apps.learn.urls")),

@@ -120,7 +120,6 @@ PROJECT_APPS = [
     "apps.sheets",
     "apps.connectors.apps.ConnectorsConfig",
     "apps.appsumo",
-    "apps.templates",
     "apps.cnames.apps.CNamesConfig",
     "apps.exports",
     "apps.controls",
