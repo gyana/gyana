@@ -108,7 +108,7 @@ def test_select_node(client, node_factory, setup):
         client, Node.Kind.SELECT, node_factory, table, workflow
     )
     assertFormRenders(r, ["name", "select_mode", "select_columns"])
-    assertSelectorLength(r, "input[name=select_columns]", 8)
+    assertSelectorLength(r, "input[name=select_columns]", 9)
     assertSelectorText(r, "label.checkbox[for=id_select_columns_0]", "id")
     assertSelectorText(r, "label.checkbox[for=id_select_columns_4]", "lunch")
 
