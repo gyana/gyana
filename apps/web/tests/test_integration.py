@@ -28,6 +28,13 @@ def test_site_pages(client):
     r = client.get("/book-a-demo")
     assertOK(r)
 
+    r = client.get("/use-case/ecommerce")
+    assertOK(r)
+    r = client.get("/use-case/b2b-saas")
+    assertOK(r)
+    r = client.get("/use-case/marketing-agency")
+    assertOK(r)
+
     r = client.get("/demo/integrations")
     assertOK(r)
     r = client.get("/demo/workflows")
@@ -51,6 +58,10 @@ def test_site_links(client):
     assertLink(r, "/blog", "Blog", total=3)
     assertLink(r, "https://support.gyana.com", "Help Center", total=3)
     assertLink(r, "https://feedback.gyana.com", "Feedback", total=3)
+
+    assertLink(r, "/use-case/ecommerce", "Ecommerce", total=3)
+    assertLink(r, "/use-case/b2b-saas", "B2B Saas", total=3)
+    assertLink(r, "/use-case/marketing-agency", "Marketing Agency", total=3)
 
     assertLink(r, "/integrations", "Learn about integrations")
 

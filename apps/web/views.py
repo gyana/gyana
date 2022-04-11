@@ -15,6 +15,8 @@ from apps.widgets.models import WIDGET_KIND_TO_WEB
 from .cache import cache_site
 from .content import get_content
 
+USE_CASES = ["ecommerce", "b2b-saas", "marketing-agency"]
+
 
 class Home(TemplateView):
     template_name = "web/home.html"
@@ -119,7 +121,7 @@ class UseCase(TemplateView):
 
     def get(self, request, *args, **kwargs):
 
-        if kwargs["id"] not in ["ecommerce", "b2b_saas", "marketing_agency"]:
+        if kwargs["id"] not in USE_CASES:
             return HttpResponseNotFound()
 
         return super().get(request, *args, **kwargs)

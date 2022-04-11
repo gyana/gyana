@@ -48,7 +48,7 @@ from apps.teams import urls as team_urls
 from apps.templates import urls as template_urls
 from apps.uploads import urls as upload_urls
 from apps.users import urls as users_urls
-from apps.web.sitemaps import IntegrationsSitemap, WebSitemap
+from apps.web.sitemaps import IntegrationsSitemap, UseCaseSitemap, WebSitemap
 from apps.widgets import urls as widget_urls
 from apps.workflows import urls as workflow_urls
 
@@ -145,6 +145,7 @@ urlpatterns = [
             "sitemaps": {
                 "web": WebSitemap,
                 "integrations": IntegrationsSitemap,
+                "use_cases": UseCaseSitemap,
                 "wagtail": WagtailSitemap,
             }
         },
