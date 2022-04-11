@@ -4,15 +4,14 @@
   <div>
     <div class="max-w-7xl mx-auto text-center px-4 sm:px-6 lg:px-8 flex flex-col items-center">
       <h2 class="text-3xl font-extrabold text-gray-900">
-        Build your report
+        {{ content.report.title }}
       </h2>
       <p class="mt-4 text-lg text-gray-600 max-w-3xl">
-        <span class="block lg:inline">
-          Combine data sources to understand CAC, LTV and advertising ROI.
-        </span>
-        <span class="block lg:inline mt-4">
-          Gyana is a like a spreadsheet, where everything is automated.
-        </span>
+        {% for summary in content.report.summary %}
+          <span class="block lg:inline {% if forloop.counter0 > 0 %}mt-4{% endif %}">
+            {{ summary }}
+          </span>
+        {% endfor %}
       </p>
     </div>
   </div>

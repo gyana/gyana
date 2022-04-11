@@ -26,9 +26,9 @@ sitmap_urlpatterns = [
     path("terms-of-use", cache_site(views.TermsOfUse.as_view()), name="terms-of-use"),
     path("book-a-demo", cache_site(views.BookADemo.as_view()), name="book-a-demo"),
     path(
-        "use-case/ecommerce",
-        cache_site(views.ECommerce.as_view()),
-        name="ecommerce",
+        "use-case/<str:id>",
+        cache_site(views.UseCase.as_view()),
+        name="use_case",
     ),
 ]
 
