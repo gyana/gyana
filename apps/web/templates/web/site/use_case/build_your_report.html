@@ -1,0 +1,123 @@
+{% load static heroicons %}
+
+<div class="bg-white pt-16 pb-32 overflow-hidden">
+  <div>
+    <div class="max-w-7xl mx-auto text-left px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl font-extrabold text-gray-900">
+        Build your report
+      </h2>
+      <p class="mt-4 text-lg text-gray-600 max-w-3xl">
+        <span class="block lg:inline">
+          Gyana is as easy to use as a marketing automation tool or spreadsheet.
+        </span>
+        <span class="block lg:inline mt-4">
+          You'll have access to the raw data, from products to coupons to shipping addresses.
+        </span>
+      </p>
+    </div>
+  </div>
+  <div class="mt-24">
+    <div class="lg:mx-auto lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-2 lg:grid-flow-col-dense lg:gap-24">
+      <div class="px-4 max-w-xl mx-auto sm:px-6 lg:py-16 lg:max-w-none lg:mx-0 lg:px-0 lg:col-start-2">
+        <div>
+          <div>
+            <span class="flex-shrink-0">
+              <span class="w-12 h-12 flex items-center justify-center bg-indigo-600 rounded-lg">
+                <span class="text-white text-3xl font-extrabold">1</span>
+              </span>
+            </span>
+          </div>
+          <div class="mt-6 flex flex-col gap-y-4">
+            <h2 class="text-3xl font-extrabold text-gray-900">
+              Prepare your data
+            </h2>
+            <p class="text-lg text-gray-600">
+              Our visual editor makes it easy. Connect data processing steps like
+              <span class="inline-flex items-center px-2 py-1 rounded-md text-sm font-normal bg-indigo-100 text-gray-800">
+                <i class="fa fa-filter mr-2"> </i>Filter
+              </span>
+              <span class="inline-flex items-center px-2 py-1 rounded-md text-sm font-normal bg-indigo-100 text-gray-800">
+                <i class="fa fa-link mr-2"> </i>Join
+              </span>
+              <span class="inline-flex items-center px-2 py-1 rounded-md text-sm font-normal bg-indigo-100 text-gray-800">
+                <i class="fa fa-function mr-2"> </i>Formula
+              </span>
+              and watch as automation does all the heavy lifting for you. Your workflows
+              can be as simple or as complex as you design them.
+            </p>
+            <div class="inline-flex items-center text-sm leading-4 font-medium text-gray-700">
+              <span class="mr-2 block lg:hidden">{% heroicon 'arrow-down' class="w-5 h-5" style="solid" %}</span>
+              <span class="mr-2 hidden lg:block">{% heroicon 'arrow-left' class="w-5 h-5" style="solid" %}</span>
+              <span>Explore our workflow nodes</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="mt-12 sm:mt-16 lg:mt-0 lg:col-start-1 p-4 lg:p-0 workflow-demo">
+        <turbo-frame id="web:workflows-demo" src="{% url 'web:workflows-demo' %}" data-turbo="true">
+          <img src="{% static 'images/site/home/workflows-fallback.jpg' %}" alt="Workflows"/>
+        </turbo-frame>
+      </div>
+    </div>
+  </div>
+  <div class="mt-24">
+    <div class="lg:mx-auto lg:max-w-7xl lg:px-8 lg:grid lg:grid-cols-2 lg:grid-flow-col-dense lg:gap-24">
+      <div class="relative px-4 max-w-xl mx-auto sm:px-6 lg:py-16 lg:max-w-none lg:mx-0 lg:px-0">
+        <div>
+          <div>
+            <span class="flex-shrink-0">
+              <span class="w-12 h-12 flex items-center justify-center bg-indigo-600 rounded-lg">
+                <span class="text-white text-3xl font-extrabold">2</span>
+              </span>
+            </span>
+          </div>
+          <div class="mt-6 flex flex-col gap-y-4">
+            <h2 class="text-3xl font-extrabold text-gray-900">
+              Build your report
+            </h2>
+            <p class="text-lg text-gray-600">
+              It's like making a presentation, but with live data sources that never break. Drag and drop widgets like
+              <span class="inline-flex items-center px-2 py-1 rounded-md text-sm font-normal bg-indigo-100 text-gray-800">
+                <i class="fa fa-chart-pie mr-2"> </i>Pie
+              </span>
+              <span class="inline-flex items-center px-2 py-1 rounded-md text-sm font-normal bg-indigo-100 text-gray-800">
+                <i class="fa fa-filter mr-2"> </i>Funnel
+              </span>
+              <span class="inline-flex items-center px-2 py-1 rounded-md text-sm font-normal bg-indigo-100 text-gray-800">
+                <i class="fa fa-browser mr-2"> </i>Embed
+              </span>, customize your theme and share branded links.
+            </p>
+            <div class="inline-flex items-center text-sm leading-4 font-medium text-gray-700">
+              <span class="mr-2 block lg:hidden">{% heroicon 'arrow-down' class="w-5 h-5" style="solid" %}</span>
+              <span>Customize your report</span>
+              <span class="ml-2 hidden lg:block">{% heroicon 'arrow-right' class="w-5 h-5" style="solid" %}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="mt-12 sm:mt-16 lg:mt-0 dashboard-demo">
+        <turbo-frame id="web:dashboards-demo" src="{% url 'web:dashboards-demo' %}" data-turbo="true">
+          <img src="{% static 'images/site/home/dashboards-fallback.jpg' %}" alt="Dashboards"/>
+        </turbo-frame>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  window.__demo_store__ = {
+    integrations: [
+      {
+        id: 'shopify',
+        name: 'Shopify',
+        icon_path: 'shopify.svg',
+      },
+      {
+        id: 'google_ads_account',
+        name: 'Google Ads',
+        icon_path: 'google_ads_account.png'
+      },
+    ],
+    node: null
+  }
+</script>
