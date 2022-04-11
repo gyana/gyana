@@ -52,7 +52,9 @@ def add_output_context(context, widget, request, control, url=None):
             and widget.compare_previous_period
             and (used_control := widget.control if widget.has_control else control)
         ):
-            if previous_metric := metric_to_output(widget, control, True):
+            if DATETIME_FILTERS.get(used_control.date_range) and (
+                previous_metric := metric_to_output(widget, control, True)
+            ):
                 context["change"] = (metric - previous_metric) / previous_metric * 100
                 context["period"] = DATETIME_FILTERS[used_control.date_range][
                     "previous_label"
