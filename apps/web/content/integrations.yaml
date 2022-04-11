@@ -53,7 +53,7 @@ apps:
   - postgres
   - sql_server
   - mongo
-  - aurora
+  # - aurora
   - maria
   - dynamodb
 - name: CRM

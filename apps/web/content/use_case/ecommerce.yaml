@@ -2,8 +2,7 @@ seo:
   title: Gyana for Ecommerce
   description: Build a single view of your customer journey. Shopify, Google Analytics, Facebook Ads and more, in custom reports designed around your store.
 hero:
-  title: A single view of your
-  highlight: customer journey
+  title: A single view of your <span class="text-indigo-600">customer journey</span>
   summary: Gyana is the reporting tool you've been looking for. All your integrations, flexible and affordable.
   cta: Connect your store
   icon: shopping-cart
@@ -23,3 +22,10 @@ report:
   summary:
   - Combine data sources to understand CAC, LTV and advertising ROI.
   - Gyana is a like a spreadsheet, where everything is automated.
+  sources:
+  - id: shopify
+    name: Shopify
+    icon_path: shopify.svg
+  - id: google_ads_account
+    name: Google Ads
+    icon_path: google_ads_account.png

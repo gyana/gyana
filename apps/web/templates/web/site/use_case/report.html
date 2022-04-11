@@ -122,16 +122,13 @@
 <script>
   window.__demo_store__ = {
     integrations: [
-      {
-        id: 'shopify',
-        name: 'Shopify',
-        icon_path: 'shopify.svg',
-      },
-      {
-        id: 'google_ads_account',
-        name: 'Google Ads',
-        icon_path: 'google_ads_account.png'
-      },
+     {% for source in content.report.sources %}
+        {
+          id: '{{ source.id }}',
+          name: '{{ source.name }}',
+          icon_path: '{{ source.icon_path }}',
+        },
+      {% endfor %}
     ],
     node: null
   }

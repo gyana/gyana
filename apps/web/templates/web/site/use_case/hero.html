@@ -17,7 +17,7 @@
       <div class="relative flex flex-col justify-center lg:col-span-2">
         <div class="text-center sm:text-left my-6 sm:max-w-xl">
           <h1 class="text-3xl font-bold text-gray-900 sm:text-4xl lg:text-5xl">
-            {{ hero.title }} <span class="text-indigo-600">{{ hero.highlight }}</span>
+            {{ hero.title|safe }}
           </h1>
           <h2 class="text-base font-normal mt-4 sm:text-lg text-gray-600">
             {{ hero.summary }}
