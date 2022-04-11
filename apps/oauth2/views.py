@@ -48,7 +48,11 @@ class OAuth2Login(DetailView):
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
 
-        session = OAuth2Session(self.object.client_id, scope=self.object.scope)
+        session = OAuth2Session(
+            self.object.client_id,
+            scope=self.object.scope,
+            redirect_uri=self.object.callback_url,
+        )
         authorization_url, state = session.authorization_url(
             self.object.authorization_base_url
         )
@@ -66,8 +70,12 @@ class OAuth2Callback(DetailView):
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
 
-        github = OAuth2Session(self.object.client_id, state=self.object.state)
-        self.object.token = github.fetch_token(
+        session = OAuth2Session(
+            self.object.client_id,
+            state=self.object.state,
+            redirect_uri=self.object.callback_url,
+        )
+        self.object.token = session.fetch_token(
             self.object.token_url,
             client_secret=self.object.client_secret,
             authorization_response=request.build_absolute_uri(),

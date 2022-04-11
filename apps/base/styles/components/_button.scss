@@ -88,6 +88,10 @@ $button-colors: (
     color: var(--button-color);
   }
 
+  &--end {
+    align-self: end;
+  }
+
   img {
     width: 1.9rem;
     border-radius: 10px;

@@ -16,7 +16,7 @@ MOCK_SCHEMA_DIR = os.path.abspath(".mock/.schema")
 def get_connector_json(connector, is_historical_sync=False, succeeded_at=None):
 
     if succeeded_at is not None:
-        succeeded_at = datetime.strftime(succeeded_at, "%Y-%m-%dT%H:%M:%S.%f%z")
+        succeeded_at = succeeded_at.isoformat()
 
     return {
         "id": connector.fivetran_id,

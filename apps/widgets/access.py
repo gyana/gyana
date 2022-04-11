@@ -31,8 +31,6 @@ def login_and_project_required_or_public_or_in_template(view_func):
         user = request.user
         if not user.is_authenticated:
             return render(request, "404.html", status=404)
-        if widget.page.dashboard.project.is_template:
-            return view_func(request, *args, **kwargs)
         project = widget.page.dashboard.project
         if user_can_access_project(user, project):
             return view_func(request, *args, **kwargs)

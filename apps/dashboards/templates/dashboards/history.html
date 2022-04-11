@@ -15,7 +15,7 @@
         class="tabbar__link {% if not request.GET.tab or request.GET.tab == 'version' %}tabbar__link--active{% endif %}"
         href="{{ request.path }}?tab=version"
       >
-        Versions
+        Named Versions
       </a>
       <a
         class="tabbar__link {% if request.GET.tab == 'history' %}tabbar__link--active{% endif %}"
@@ -34,6 +34,16 @@
         This can lead to the dashboard looking different compared to when it was saved or widgets
         breaking if datasources have been changed or removed.
       </p>
+      <form method="post"
+        action="{% url 'project_dashboards:history' object.project.id object.id %}"
+        class='mb-2 flex flex-row'
+      >
+
+        {% csrf_token %}
+        {% include "django/forms/default_form.html" %}
+        <button type='submit' class='button button--success button--end flex-1'>Save</button>
+
+      </form>
       <div class="card card--none">
         {% render_table table %}
       </div>

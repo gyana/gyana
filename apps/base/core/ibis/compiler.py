@@ -330,3 +330,22 @@ def _to_json_string(t, expr):
     struct = t.translate(expr.op().args[0])
 
     return f"TO_JSON_STRING({struct})"
+
+
+# Converts bigquery DATETIME to TIMESTAMP in UTC timezone
+class ToTimesamp(ValueOp):
+    datetime = Arg(rlz.timestamp)
+    output_type = rlz.shape_like("datetime", dt.timestamp)
+
+
+def to_timestamp(d):
+    return ToTimesamp(d).to_expr()
+
+
+TimestampValue.to_timestamp = to_timestamp
+
+
+@compiles(ToTimesamp)
+def _to_timestamp(t, expr):
+    d = expr.op().args[0]
+    return f"TIMESTAMP({t.translate(d)})"

@@ -1,3 +1,5 @@
+from urllib import parse
+
 import pytest
 from pytest_django.asserts import assertRedirects
 
@@ -67,7 +69,7 @@ def test_oauth2_crudl(client, logged_in_user, project_factory, mocker):
     # oauth2 login
     r = client.get(f"/oauth2/{oauth2.id}/login")
     oauth2.refresh_from_db()
-    authorization_url = f"https://authorize.url?response_type=code&client_id=client_id&scope=repo&state={oauth2.state}"
+    authorization_url = f"https://authorize.url?response_type=code&client_id=client_id&redirect_uri={parse.quote(oauth2.callback_url)}&scope=repo&state={oauth2.state}"
     assertRedirects(
         r, authorization_url, status_code=302, fetch_redirect_response=False
     )

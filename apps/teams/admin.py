@@ -39,7 +39,7 @@ class TeamAdmin(SafeDeleteAdmin):
     search_fields = ("name", "members__email")
 
     readonly_fields = [
-        "name",
+        highlight_deleted,
         "plan_rows",
         "usage",
         "percent",

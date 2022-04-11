@@ -45,7 +45,7 @@ class DashboardHistoryTable(tables.Table):
         model = DashboardVersion
         fields = ("name", "created")
         attrs = {"class": "table"}
-        order_by = ("created",)
+        order_by = ("-created",)
 
     created = NaturalDatetimeColumn()
     name = tables.Column(
@@ -75,7 +75,7 @@ class DashboardUpdateTable(tables.Table):
         model = DashboardUpdate
         fields = ("created", "content_object")
         attrs = {"class": "table"}
-        order_by = ("created",)
+        order_by = ("-created",)
 
     created = NaturalDatetimeColumn()
     content_object = tables.Column(

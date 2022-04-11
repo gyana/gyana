@@ -53,7 +53,9 @@ def test_integration_connector_clone(
     mock_update_kwargs_from_fivetran,
 ):
     connector = connector_factory()
-    table = integration_table_factory(integration=connector.integration)
+    table = integration_table_factory(
+        integration=connector.integration, bq_dataset=connector.schema
+    )
     config = {
         "group_id": connector.group_id,
         "service": connector.service,

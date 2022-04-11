@@ -54,7 +54,7 @@ django-turbo-response = "^0.0.52"
 django-turbo-allauth = "^0.0.10"
 pandas = "^1.2.4"
 pyarrow = "^4.0.0"
-ibis-bigquery = "^2.0.0"
+ibis-bigquery = "^2.1.1"
 django-storages = {extras = ["google"], version = "^1.11.1"}
 django-filter = "^2.4.0"
 backoff = "^1.10.0"
