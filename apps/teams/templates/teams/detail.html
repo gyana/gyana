@@ -8,23 +8,6 @@
 
 {% block app %}
 <div class="pad">
-  {% flag 'templates' %}
-  <div class="mb-7">
-    <h2 class="flex gap-3 items-center">Create a new project {% link_article 'overview' 'templates' %}</h2>
-    <p class="mb-3">Use a blank project or choose a template to get you started.</p>
-
-    <turbo-frame
-      id="templates:list"
-      src="{% url 'team_templates:list' team.id %}"
-      target="_top"
-    >
-      <div class='placeholder-scr placeholder-scr--fillscreen'>
-        <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
-        <p class='placeholder-scr__title'>Loading templates...</p>
-      </div>
-    </turbo-frame>
-  </div>
-  {% endflag %}
 
   {% if project_count > 0 %}
   <div class="flex mb-3 gap-3">
