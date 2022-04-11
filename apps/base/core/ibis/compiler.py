@@ -310,3 +310,22 @@ DateValue.date = date
 def _date(t, expr):
     d = expr.op().args[0]
     return t.translate(d)
+
+
+# Converts bigquery DATETIME to TIMESTAMP in UTC timezone
+class ToTimesamp(ValueOp):
+    datetime = Arg(rlz.timestamp)
+    output_type = rlz.shape_like("datetime", dt.timestamp)
+
+
+def to_timestamp(d):
+    return ToTimesamp(d).to_expr()
+
+
+TimestampValue.to_timestamp = to_timestamp
+
+
+@compiles(ToTimesamp)
+def _to_timestamp(t, expr):
+    d = expr.op().args[0]
+    return f"TIMESTAMP({t.translate(d)})"
