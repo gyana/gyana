@@ -23,7 +23,7 @@ def mock_bigquery_functions(mocker, bigquery):
     bigquery.query.return_value.destination = TEMPORARY_TABLE
     bigquery.extract_table = MagicMock()
     mock_bq_client_with_schema(
-        bigquery, [(name, type_.name) for name, type_ in TABLE.schema().items()]
+        bigquery, [(name, str(type_)) for name, type_ in TABLE.schema().items()]
     )
 
     bucket = MagicMock()

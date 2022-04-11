@@ -101,7 +101,7 @@ def mock_bq_client_schema(bigquery):
             ]
         else:
             schema = [
-                SchemaField(column, type_.name)
+                SchemaField(column, str(type_))
                 for column, type_ in TABLE.schema().items()
             ][:3]
         return BqTable(

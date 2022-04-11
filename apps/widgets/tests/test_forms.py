@@ -33,7 +33,7 @@ def setup(
     integration_table_factory,
 ):
     mock_bq_client_with_schema(
-        bigquery, [(name, type_.name) for name, type_ in TABLE.schema().items()]
+        bigquery, [(name, str(type_)) for name, type_ in TABLE.schema().items()]
     )
     return dashboard_factory(project=project), integration_table_factory(
         project=project

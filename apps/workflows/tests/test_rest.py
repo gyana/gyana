@@ -20,14 +20,14 @@ def test_workflow_run(
 ):
     """Also tests last_run and out_of_date"""
     mock_bq_client_with_schema(
-        bigquery, [(name, type_.name) for name, type_ in TABLE.schema().items()]
+        bigquery, [(name, str(type_)) for name, type_ in TABLE.schema().items()]
     )
     workflow = workflow_factory(project=project)
 
     # check is out_of_date returns out_of_date has not been run
     r = client.get(f"/workflows/{workflow.id}/out_of_date")
     assertOK(r)
-    assert not r.data["isOutOfDate"] # New workflows shouldn't be out of date.
+    assert not r.data["isOutOfDate"]  # New workflows shouldn't be out of date.
     assert not r.data["hasBeenRun"]
     output_node = node_factory(
         kind=Node.Kind.OUTPUT, name="The answer", workflow=workflow
