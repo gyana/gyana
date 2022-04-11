@@ -25,6 +25,21 @@ report:
   summary:
   - Combine data sources to understand retention, churn and product-market fit.
   - Gyana is a like a spreadsheet, where everything is automated.
+  workflow:
+    metrics:
+    - Unify analytics and user data
+    - Track user journey
+    - Export segments
+  dashboard:
+    metrics:
+    - CPA
+    - LTV
+    - Churn
+    - MRR
+    - NRR
+    - AAARR
+    - TTV
+    - PQLs
   sources:
   - id: postgres
     name: Postgres

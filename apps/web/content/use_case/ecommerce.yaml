@@ -22,6 +22,19 @@ report:
   summary:
   - Combine data sources to understand CAC, LTV and advertising ROI.
   - Gyana is a like a spreadsheet, where everything is automated.
+  workflow:
+    metrics:
+    - Segment customers
+    - Unify ad channels
+    - Track repeat purchases
+  dashboard:
+    metrics:
+    - LTV
+    - CPA
+    - Churn
+    - Profitability
+    - Inventory
+    - ROAS
   sources:
   - id: shopify
     name: Shopify

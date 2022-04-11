@@ -44,6 +44,12 @@
               and watch as automation does all the heavy lifting for you. Your workflows
               can be as simple or as complex as you design them.
             </p>
+            <p class="text-sm text-gray-600">
+              {% for metric in content.report.workflow.metrics %}
+                {% if forloop.counter0 > 0 %} • {% endif %}
+                {{ metric }} 
+              {% endfor %}
+            </p>
             <div class="inline-flex items-center text-sm leading-4 font-medium text-gray-700">
               <span class="mr-2 block lg:hidden">{% heroicon 'arrow-down' class="w-5 h-5" style="solid" %}</span>
               <span class="mr-2 hidden lg:block">{% heroicon 'arrow-left' class="w-5 h-5" style="solid" %}</span>
@@ -85,6 +91,12 @@
               <span class="inline-flex items-center px-2 py-1 rounded-md text-sm font-normal bg-indigo-100 text-gray-800">
                 <i class="fa fa-browser mr-2"> </i>Embed
               </span>, customize your theme and share branded links.
+            </p>
+            <p class="text-sm text-gray-600">
+              {% for metric in content.report.dashboard.metrics %}
+                {% if forloop.counter0 > 0 %} • {% endif %}
+                {{ metric }} 
+              {% endfor %}
             </p>
             <div class="inline-flex items-center text-sm leading-4 font-medium text-gray-700">
               <span class="mr-2 block lg:hidden">{% heroicon 'arrow-down' class="w-5 h-5" style="solid" %}</span>

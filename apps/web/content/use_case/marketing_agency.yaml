@@ -24,6 +24,21 @@ report:
   summary:
   - Combine data sources to multi-channel CPM, CPC and ROI.
   - Gyana is a like a spreadsheet, where everything is automated.
+  workflow:
+    metrics:
+    - Unify ad channels
+    - Multi-channel metrics
+    - Automate for all clients
+  dashboard:
+    metrics:
+    - CPM
+    - CPC
+    - CPA
+    - LTV
+    - ROAS
+    - ROI
+    - Revenue
+    - Spend
   sources:
   - id: google_ads_account
     name: Google Ads
