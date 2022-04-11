@@ -24,7 +24,12 @@ sitmap_urlpatterns = [
         name="privacy-policy",
     ),
     path("terms-of-use", cache_site(views.TermsOfUse.as_view()), name="terms-of-use"),
-    path("book-a-demo", cache_site(views.BookADemo.as_view()), name="book-a-demo")
+    path("book-a-demo", cache_site(views.BookADemo.as_view()), name="book-a-demo"),
+    path(
+        "use-case/ecommerce",
+        cache_site(views.ECommerce.as_view()),
+        name="ecommerce",
+    ),
 ]
 
 urlpatterns = sitmap_urlpatterns + [

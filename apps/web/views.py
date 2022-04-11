@@ -112,3 +112,12 @@ def toggle_sidebar(request):
     )
 
     return HttpResponse(200)
+
+
+class ECommerce(TemplateView):
+    template_name = "web/use_case/ecommerce.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["content"] = get_content("use_case/ecommerce.yaml")
+        return context
