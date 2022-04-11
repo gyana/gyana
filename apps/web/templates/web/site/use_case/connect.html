@@ -17,7 +17,7 @@
         <div class="mt-12 flex-1 grid grid-cols-2 sm:grid-cols-4 xl:grid-cols-8 gap-8 xl:gap-4"> 
           {% for category in content.apps %}
             {% if connect.category == category.name %}
-              {% for id in category.connectors %}
+              {% for id in category.connectors|slice:":7" %}
                 {% with connector=services|get_item:id %}
                   <a href="{% url 'web:integration' id %}" data-turbo-frame="_top" class="card card--none">
                     <div class="flex flex-col h-full">
@@ -31,7 +31,7 @@
               {% endfor %}  
             {% endif %}
           {% endfor %}
-          <a href="{% url 'web:integrations' %}#custom" data-turbo-frame="_top" class="card card--none">
+          <a href="{% url 'web:integrations' %}#build" data-turbo-frame="_top" class="card card--none">
             <div class="flex flex-col h-full">
               <div class='flex items-center flex-grow p-4'>
                 <div class='text-gray-600 text-center'>We'll build a custom integration for you.</div>
