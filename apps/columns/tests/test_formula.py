@@ -431,7 +431,9 @@ PARAMS = [
         id="regex_extract with quote nesting",
     ),
     pytest.param(
-        "to_json_string(biography)", "TO_JSON_STRING(`biography`)", id="to_json_string"
+        "to_json_string(biography)",
+        QUERY.format("TO_JSON_STRING(`biography`)"),
+        id="to_json_string",
     ),
 ]
 
