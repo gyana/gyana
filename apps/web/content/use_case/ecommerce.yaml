@@ -1,3 +1,11 @@
 seo:
   title: Gyana for Ecommerce
   description: Build a single view of your customer journey. Shopify, Google Analytics, Facebook Ads and more, in custom reports designed around your store.
+connectors:
+  - shopify
+  - magento_mysql
+  - woocommerce_via_mysql
+  - prestashop_via_mysql
+  - spree_commerce_via_mysql
+  - oscommerce_mysql
+  - loaded_commerce_via_mysql

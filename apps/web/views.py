@@ -119,5 +119,6 @@ class ECommerce(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context["services"] = get_services_obj()
         context["content"] = get_content("use_case/ecommerce.yaml")
         return context
