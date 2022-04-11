@@ -14,7 +14,7 @@
           You'll have access to the raw data, from products to coupons to shipping addresses.
         </span>
       </p>
-      <div class="mt-12 flex-1 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-4 gap-8">
+      <div class="mt-12 flex-1 grid grid-cols-2 sm:grid-cols-4 xl:grid-cols-8 gap-8 xl:gap-4">
         {% for id in content.connectors %}
           {% with connector=services|get_item:id %}
             <a href="{% url 'web:integration' id %}" data-turbo-frame="_top" class="card card--none">
