@@ -24,7 +24,7 @@ sitmap_urlpatterns = [
         name="privacy-policy",
     ),
     path("terms-of-use", cache_site(views.TermsOfUse.as_view()), name="terms-of-use"),
-    path("book-a-demo", cache_site(views.BookADemo.as_view()), name="book-a-demo")
+    path("book-a-demo", cache_site(views.BookADemo.as_view()), name="book-a-demo"),
 ]
 
 urlpatterns = sitmap_urlpatterns + [
@@ -33,6 +33,11 @@ urlpatterns = sitmap_urlpatterns + [
         "integrations/<str:id>",
         cache_site(views.Integration.as_view()),
         name="integration",
+    ),
+    path(
+        "use-case/<str:id>",
+        cache_site(views.UseCase.as_view()),
+        name="use_case",
     ),
     path("toggle-sidebar", views.toggle_sidebar),
     # frames

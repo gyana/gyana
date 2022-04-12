@@ -1,0 +1,46 @@
+{% load static heroicons %}
+
+{% with connect=content.connect %}
+  <div class="bg-white border-t border-b border-gray">
+    <div>
+      <div class="max-w-7xl mx-auto text-left py-16 px-4 sm:py-20 sm:px-6 lg:px-8">
+        <h2 class="text-3xl font-extrabold text-gray-900">
+          {{ connect.title }}
+        </h2>
+        <p class="mt-4 text-lg text-gray-600 max-w-3xl">
+          {% for summary in connect.summary %}
+            <span class="block lg:inline {% if forloop.counter0 > 0 %}mt-4{% endif %}">
+              {{ summary }}
+            </span>
+          {% endfor %}
+        </p>
+        <div class="mt-12 flex-1 grid grid-cols-2 sm:grid-cols-4 xl:grid-cols-8 gap-8 xl:gap-4"> 
+          {% for category in content.apps %}
+            {% if connect.category == category.name %}
+              {% for id in category.connectors|slice:":7" %}
+                {% with connector=services|get_item:id %}
+                  <a href="{% url 'web:integration' id %}" data-turbo-frame="_top" class="card card--none">
+                    <div class="flex flex-col h-full">
+                      <div class='flex items-center flex-grow'>
+                        <img class="w-full p-4" src="{% static 'images/integrations/fivetran/'|add:connector.icon_path %}" alt="">
+                      </div>
+                      <div class="mt-auto bg-gray text-gray-600 border border-gray w-full text-center">{{ connector.name }}</div>
+                    </div>
+                  </a>
+                {% endwith %}
+              {% endfor %}  
+            {% endif %}
+          {% endfor %}
+          <a href="{% url 'web:integrations' %}#build" data-turbo-frame="_top" class="card card--none">
+            <div class="flex flex-col h-full">
+              <div class='flex items-center flex-grow p-4'>
+                <div class='text-gray-600 text-center'>We'll build a custom integration for you.</div>
+              </div>
+              <div class="mt-auto bg-gray text-gray-600 border border-gray w-full text-center">Custom</div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endwith %}

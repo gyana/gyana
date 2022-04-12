@@ -27,13 +27,55 @@
         </button>
       </div>
 
-      <nav class="hidden md:flex gap-x-10 text-indigo-500 lg:flex-2">
-        <a
-          href="{% url 'web:integrations' %}"
-          class="text-gray-600 font-normal hover:text-gray-900"
-        >
-          Integrations
-        </a>
+      <nav class="hidden md:flex gap-x-6 text-indigo-500 lg:flex-2">
+        <button
+        type="button"
+        class="group bg-white rounded-md text-gray-600 font-normal inline-flex items-center hover:text-gray-900 focus:outline-none focus:text-gray-900"
+        data-controller="popover"
+        data-theme="popover-menu"
+      >
+        <span>Use Cases</span>
+        {% heroicon 'chevron-down' class="ml-1 h-5 w-5 text-gray-600 group-hover:text-gray-900 font-normal" style="solid" %}
+
+        <template data-popover-target="body">
+          <div class="absolute z-10 -ml-4 mt-3 transform px-2 w-screen max-w-md sm:px-0 lg:ml-0 lg:left-1/2 lg:-translate-x-1/2">
+            <div class="card card--none ring-1 ring-black ring-opacity-5 overflow-hidden">
+              <div class="relative grid gap-6 bg-white px-5 py-6 sm:gap-8 sm:p-8">
+                <a
+                  href="{% url 'web:use_case' 'ecommerce' %}"
+                  class="-m-3 p-3 flex items-start rounded-lg hover:bg-gray-50"
+                >
+                  {% heroicon 'shopping-cart' class="flex-shrink-0 h-6 w-6 text-blue" style="solid"%}
+                  <div class="ml-4">
+                    <p class="text-base font-normal text-gray-900">Ecommerce</p>
+                    <p class="mt-1 text-sm text-gray-600">Build a single view of your customer journey.</p>
+                  </div>
+                </a>
+                <a
+                  href="{% url 'web:use_case' 'b2b-saas' %}"
+                  class="-m-3 p-3 flex items-start rounded-lg hover:bg-gray-50"
+                >
+                  {% heroicon 'cloud' class="flex-shrink-0 h-6 w-6 text-blue" style="solid"%}
+                  <div class="ml-4">
+                    <p class="text-base font-normal text-gray-900">B2B Saas</p>
+                    <p class="mt-1 text-sm text-gray-600">Kickstart product-lead growth without code.</p>
+                  </div>
+                </a>
+                <a
+                  href="{% url 'web:use_case' 'marketing-agency' %}"
+                  class="-m-3 p-3 flex items-start rounded-lg hover:bg-gray-50"
+                >
+                  {% heroicon 'user-group' class="flex-shrink-0 h-6 w-6 text-blue" style="solid"%}
+                  <div class="ml-4">
+                    <p class="text-base font-normal text-gray-900">Marketing Agency</p>
+                    <p class="mt-1 text-sm text-gray-600">Showcase ROAS for all your clients.</p>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </template>
+      </button>
 
         <button
           type="button"
@@ -41,8 +83,8 @@
           data-controller="popover"
           data-theme="popover-menu"
         >
-          <span>Resources</span>
-          {% heroicon 'chevron-down' class="ml-2 h-5 w-5 text-black-20 group-hover:text-black-50 font-normal" style="solid" %}
+          <span>Learn</span>
+          {% heroicon 'chevron-down' class="ml-1 h-5 w-5 text-gray-600 group-hover:text-gray-900 font-normal" style="solid" %}
 
           <template data-popover-target="body">
             <div class="absolute z-10 -ml-4 mt-3 transform px-2 w-screen max-w-md sm:px-0 lg:ml-0 lg:left-1/2 lg:-translate-x-1/2">
@@ -84,6 +126,13 @@
             </div>
           </template>
         </button>
+
+        <a
+        href="{% url 'web:integrations' %}"
+        class="text-gray-600 font-normal hover:text-gray-900"
+        >
+          Integrations
+        </a>
 
         <a
           href="{% url 'web:pricing' %}"

@@ -1,0 +1,15 @@
+{% extends 'web/site_base.html' %}
+{% load static site_tags heroicons %}
+
+{% block meta %}
+  <title>{{ content.title }}</title>
+  <meta name="description" content="{{ content.description }}" /> 
+{% endblock %}
+
+{% block body.content %}
+  {% include 'web/site/use_case/hero.html' %}
+  {% include 'web/site/use_case/connect.html' %}
+  {% include 'web/site/use_case/data.html' %}
+  {% include 'web/site/use_case/report.html' %}
+  {% include "web/site/home/cta.html" %}
+{% endblock %}
