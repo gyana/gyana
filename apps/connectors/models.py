@@ -50,6 +50,10 @@ class Connector(DirtyFieldsMixin, BaseModel):
             "rescheduled",
             "Rescheduled - the sync is waiting until more API calls are available in the source service",
         )
+        SUNSET = (
+            "sunset",
+            "Sunset - this connector is no longer supported and won't sync.",
+        )
 
     class UpdateState(models.TextChoices):
         ON_SCHEDULE = (

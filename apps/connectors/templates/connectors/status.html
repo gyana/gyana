@@ -6,7 +6,9 @@
 {% else %}  
   never synced
 {% endif %}
-{% if object.setup_state == 'not-found' %}
+
+{% if object.sync_state == 'sunset' %}Connector no longer supported{% endif %}
+{% elif object.setup_state == 'not-found' %}
   <span data-controller='tooltip' 
     data-tooltip-content="Fivetran can't find this connector please contact the support."
   >
