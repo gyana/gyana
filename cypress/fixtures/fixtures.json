@@ -646,6 +646,7 @@
     "fields": {
       "created": "2021-12-13T22:47:57.268Z",
       "updated": "2021-12-13T22:47:57.268Z",
+      "name": null,
       "dashboard": 1,
       "position": 1
     }
@@ -656,6 +657,7 @@
     "fields": {
       "created": "2021-12-14T21:17:52.317Z",
       "updated": "2021-12-14T21:17:52.317Z",
+      "name": null,
       "dashboard": 2,
       "position": 1
     }
@@ -678,6 +680,12 @@
       "metric_header_font_color": null,
       "metric_comparison_font_size": null,
       "metric_comparison_font_color": null,
+      "lower_limit": 0,
+      "upper_limit": 100,
+      "first_segment_color": null,
+      "second_segment_color": null,
+      "third_segment_color": null,
+      "fourth_segment_color": null,
       "page": 1,
       "table": 12,
       "text_content": null,
@@ -721,6 +729,12 @@
       "metric_header_font_color": null,
       "metric_comparison_font_size": null,
       "metric_comparison_font_color": null,
+      "lower_limit": 0,
+      "upper_limit": 100,
+      "first_segment_color": null,
+      "second_segment_color": null,
+      "third_segment_color": null,
+      "fourth_segment_color": null,
       "page": 1,
       "table": 19,
       "text_content": null,
@@ -764,6 +778,12 @@
       "metric_header_font_color": null,
       "metric_comparison_font_size": null,
       "metric_comparison_font_color": null,
+      "lower_limit": 0,
+      "upper_limit": 100,
+      "first_segment_color": null,
+      "second_segment_color": null,
+      "third_segment_color": null,
+      "fourth_segment_color": null,
       "page": 2,
       "table": 22,
       "text_content": null,
@@ -812,7 +832,8 @@
       "string_predicate": null,
       "string_value": null,
       "string_values": null,
-      "bool_value": true
+      "bool_value": true,
+      "struct_predicate": null
     }
   },
   {
@@ -838,7 +859,8 @@
       "string_predicate": null,
       "string_value": null,
       "string_values": null,
-      "bool_value": true
+      "bool_value": true,
+      "struct_predicate": null
     }
   },
   {
@@ -3256,15 +3278,6 @@
     }
   },
   {
-    "model": "templates.template",
-    "pk": 1,
-    "fields": {
-      "created": "2021-08-30T21:44:56.106Z",
-      "updated": "2021-08-30T21:44:56.106Z",
-      "project": 6
-    }
-  },
-  {
     "model": "runs.jobrun",
     "pk": 1,
     "fields": {
@@ -3431,7 +3444,7 @@
     "pk": 10,
     "fields": {
       "created": "2021-12-16T01:46:42.564Z",
-      "updated": "2022-03-02T11:01:05.930Z",
+      "updated": "2022-04-12T11:03:28.262Z",
       "state": "success",
       "started_at": "2021-12-16T01:46:42.563Z",
       "completed_at": "2021-12-16T01:46:46.036Z",
@@ -3620,7 +3633,7 @@
   {
     "model": "django_celery_beat.periodictasks",
     "pk": 1,
-    "fields": { "last_update": "2022-03-02T11:01:05.922Z" }
+    "fields": { "last_update": "2022-04-12T11:03:28.254Z" }
   },
   {
     "model": "django_celery_beat.periodictask",
@@ -3655,6 +3668,7 @@
     "pk": 1,
     "fields": {
       "task_id": "32f7a738-c597-4aae-9429-303873aaad18",
+      "periodic_task_name": null,
       "task_name": "apps.customapis.tasks.run_customapi_sync_task",
       "task_args": "\"(10,)\"",
       "task_kwargs": "\"{}\"",
@@ -3713,7 +3727,7 @@
     "fields": {
       "content_type": ["wagtailcore", "page"],
       "object_id": "1",
-      "title_norm": 1.9,
+      "title_norm": 2.5,
       "autocomplete": "'root':1",
       "title": "'root':1B",
       "body": ""
@@ -3725,7 +3739,7 @@
     "fields": {
       "content_type": ["wagtailcore", "page"],
       "object_id": "2",
-      "title_norm": 0.475,
+      "title_norm": 0.625,
       "autocomplete": "'new':4 'site':6 'to':2 'wagtail':5 'welcome':1 'your':3",
       "title": "'new':4B 'site':6B 'wagtail':5B 'welcom':1B",
       "body": ""
