@@ -16,29 +16,17 @@ def forward(apps, schema_editor):
         "data"
     ]["items"]
 
-    google_ads = list(
-        filter(lambda c: c["service"] in ["adwords", "google_ads"], connectors)
-    )
+    google_ads = list(filter(lambda c: c["service"] == "adwords", connectors))
 
     schema_mapping = {c["schema"]: c for c in google_ads}
 
     for c in google_ads:
         if new_c := schema_mapping.get(f"{c['schema']}_new_api"):
             connector = Connector.objects.get(fivetran_id=c["id"])
-            connector.service = "google_ads"
             connector.schema = new_c["schema"]
             connector.fivetran_id = new_c["id"]
 
             connector.save()
-
-
-def backward(apps, schema_editor):
-    Connector = apps.get_model("connectors", "Connector")
-    connectors = Connector.objects.filter(service="google_ads").all()
-    for connector in connectors:
-        connector.service = "adswords"
-
-    Connector.objects.bulk_update(connectors, ["service"])
 
 
 class Migration(migrations.Migration):
@@ -47,4 +35,4 @@ class Migration(migrations.Migration):
         ("connectors", "0020_alter_connector_fivetran_id"),
     ]
 
-    operations = [migrations.RunPython(forward, reverse_code=backward)]
+    operations = [migrations.RunPython(forward, reverse_code=migrations.RunPython.noop)]

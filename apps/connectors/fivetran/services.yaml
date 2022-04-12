@@ -88,7 +88,7 @@ facebook_pages: {}
 freshdesk: {}
 front: {}
 github: {}
-google_ads:
+adwords:
   static_config:
     sync_mode: AllAccounts
     timeframe_months: TWELVE
