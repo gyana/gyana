@@ -18,17 +18,6 @@ tiers:
       - Dedicated support
     color: text-indigo-900
     button: button--primary
-    mostPopular: True
-  # - name: Agency
-  #   description: Manage custom reports for your clients, in your own branded portal.
-  #   includedHeader: Everything in elite, plus
-  #   price: 249
-  #   includedFeatures:
-  #     - Client management
-  #     - White-label
-  #     - Custom domains
-  #   color: text-indigo-600
-  #   button: button--secondary
   - name: Enterprise
     description: Ideal for 50 to 1,000-person companies with an existing data warehouse.
     includedHeader: Everything in pro, plus
@@ -38,6 +27,23 @@ tiers:
       - Solution architect
     color: text-indigo-600
     button: button--secondary
+addons:
+  - name: Personalized setup
+    summary: Our data experts will understand your business use case, and build your reports from scratch. We've done it for hundreds of companies.
+    price: 500
+    features:
+      - Live connections
+      - Data modelling
+      - Handover sessions
+      - Private Slack channel
+  - name: Custom integrations
+    summary: We're experts in data integration. Whether you have a custom SaaS app, internal API or cloud service, we’ll setup a robust integration into Gyana.
+  - name: Agency
+    summary: Setup Gyana to manage multiple clients, in your own branded portal.
+    features:
+      - Client management
+      - White-label
+      - Custom domains
 
 faqs:
   - q: What does Gyana do?
