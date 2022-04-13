@@ -39,39 +39,6 @@ class TeamCreate(TurboCreateView):
         return reverse("teams:detail", args=(self.object.id,))
 
 
-class TeamPlans(TurboUpdateView):
-    model = Team
-    form_class = TeamCreateForm
-    template_name = "teams/plans.html"
-    pk_url_kwarg = "team_id"
-
-    def get(self, request, *args, **kwargs):
-        team = self.get_object()
-
-        if team.has_subscription:
-            return redirect("teams:subscription", team.id)
-
-        return super().get(request, *args, **kwargs)
-
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs["user"] = self.request.user
-        return kwargs
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["paddle_pro_plan"] = Plan.objects.get(pk=settings.DJPADDLE_PRO_PLAN_ID)
-        context["paddle_business_plan"] = Plan.objects.get(
-            pk=settings.DJPADDLE_BUSINESS_PLAN_ID
-        )
-        context["DJPADDLE_VENDOR_ID"] = settings.DJPADDLE_VENDOR_ID
-        context["DJPADDLE_SANDBOX"] = settings.DJPADDLE_SANDBOX
-        return context
-
-    def get_success_url(self) -> str:
-        return reverse("teams:detail", args=(self.object.id,))
-
-
 class TeamPricing(DetailView):
     model = Team
     template_name = "teams/pricing.html"
