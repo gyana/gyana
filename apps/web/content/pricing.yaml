@@ -1,6 +1,6 @@
 tiers:
   - name: Free
-    description: Best-in-class, no-code custom report builder with 100+ integrations.
+    description: Ideal for personal use and individuals at early stage companies.
     includedHeader: What's included
     includedFeatures:
       - 50,000 rows synced
@@ -9,7 +9,7 @@ tiers:
     color: text-gray-600
     button: button--tertiary
   - name: Pro
-    description: Build custom reports for any source, supported by our team of experts.
+    description: Ideal for CEOs, founders, and marketing teams at 10 to 25-person companies.
     includedHeader: Everything in pro, plus
     price: 99
     includedFeatures:
@@ -30,7 +30,7 @@ tiers:
   #   color: text-indigo-600
   #   button: button--secondary
   - name: Enterprise
-    description: Manage custom reports for your clients, in your own branded portal.
+    description: Ideal for 50 to 1,000-person companies with an existing data warehouse.
     includedHeader: Everything in pro, plus
     includedFeatures:
       - Bring your own warehouse
