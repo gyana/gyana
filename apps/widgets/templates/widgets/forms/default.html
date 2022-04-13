@@ -73,83 +73,79 @@
       {% endif %}
 
       {% block widget_form %}
-
-      {% for label, formset in formsets.items %}
-        {% if not formset.hidden %}
+        {% for label, formset in formsets.items %}
           {% if label == "Aggregations" or label == "Group columns" %}
-            <fieldset>
+            <fieldset {% if formset.hidden %}hidden{% endif %}>
               <label>{{ label }}</label>
               {% include "components/formset.html" with formset=formset %}
             </fieldset>
           {% endif %}
-        {% endif %}
-      {% endfor %}
+        {% endfor %}
 
-      {% with array='tab name kind table date_column sort_column sort_ascending'%}
-      {% for bound_field in form.visible_fields %}
-      {% if bound_field.name not in array.split %}
-        <div class="input-group">
-          {% if bound_field.widget_type == "checkbox" %}
-          <label class="flex flex-row items-center gap-4 w-full">
-            {{ bound_field }}
-            <span>
-              {{ bound_field.label }}
-              <p class=" input__help-text">{{ bound_field.help_text }} {% if not bound_field.field.required %}<span>- optional</span>{% endif %}</p>
-              
-            </span>
-          </label>
-          {% elif bound_field.subwidgets|length == 1 %}
-          <label>
-            <span>
-              {{ bound_field.label }}
-              <p class=" input__help-text">{{ bound_field.help_text }}</p>
-              {% if not bound_field.field.required %}<span class="text-black-50">- optional</span>{% endif %}
-            </span>
+        {% with array="tab name kind table date_column sort_column sort_ascending" %}
+          {% for bound_field in form.visible_fields %}
+            {% if bound_field.name not in array.split %}
+              <div class="input-group">
+                {% if bound_field.widget_type == "checkbox" %}
+                <label class="flex flex-row items-center gap-4 w-full">
+                  {{ bound_field }}
+                  <span>
+                    {{ bound_field.label }}
+                    <p class=" input__help-text">{{ bound_field.help_text }} {% if not bound_field.field.required %}<span>- optional</span>{% endif %}</p>
+                    
+                  </span>
+                </label>
+                {% elif bound_field.subwidgets|length == 1 %}
+                <label>
+                  <span>
+                    {{ bound_field.label }}
+                    <p class=" input__help-text">{{ bound_field.help_text }}</p>
+                    {% if not bound_field.field.required %}<span class="text-black-50">- optional</span>{% endif %}
+                  </span>
 
-            {{ bound_field }}
-          </label>
-          {% else %}
-          <label for="{{ bound_field.id_for_label }}">
-            {{ bound_field.label }}
-            <p class=" input__help-text">{{ bound_field.help_text }}</p>
-          </label>
-          {{ bound_field }}
-          {% endif %}
+                  {{ bound_field }}
+                </label>
+                {% else %}
+                <label for="{{ bound_field.id_for_label }}">
+                  {{ bound_field.label }}
+                  <p class=" input__help-text">{{ bound_field.help_text }}</p>
+                </label>
+                {{ bound_field }}
+                {% endif %}
 
-          {{ bound_field.errors }}
-        </div>
-      {% endif %}
-      {% endfor %}
-      {% endwith %}
-        
-      {% if form.sort_column and not form.sort_column.widget_type == "hidden" %}
-      <fieldset>
-        <label>{{ form.sort_column.label}}</label>
+                {{ bound_field.errors }}
+              </div>
+            {% endif %}
+          {% endfor %}
+        {% endwith %}
+          
+        {% if form.sort_column and not form.sort_column.widget_type == "hidden" %}
+        <fieldset>
+          <label>{{ form.sort_column.label}}</label>
 
-        <div class="formset-wrapper">
-          {{ form.sort_column }}
+          <div class="formset-wrapper">
+            {{ form.sort_column }}
 
-          <div>
-            <label class="input__toggle" for="{{ form.sort_ascending.id_for_label }}">
-              <p class="input__help-text">{{ form.sort_ascending.label}}</p>
+            <div>
+              <label class="input__toggle" for="{{ form.sort_ascending.id_for_label }}">
+                <p class="input__help-text">{{ form.sort_ascending.label}}</p>
 
-              {{form.sort_ascending}}
-            </label>
+                {{ form.sort_ascending }}
+              </label>
+            </div>
           </div>
-        </div>
-      </fieldset>
-      {% endif %}
-
+        </fieldset>
+        {% endif %}
       {% endblock %}
 
-      {% if form.date_column and not form.date_column.widget_type == "hidden" %}
-        <fieldset>
+      {% if form.date_column %}
+        <fieldset {% if form.date_column.widget_type %}hidden{% endif %}>
           <div class='formset-wrapper' data-controller='widget-slice' >
             <label>Date range</label>
             <div>
               <div
                 data-widget-slice-target="input"
-                {% if not show_date_column%}hidden{%endif%}
+                {% if not show_date_column %}hidden{%endif%}
               >
                 <p class="input__help-text">{{ form.date_column.help_text }}</p>
                 <div class='flex flex-row items-center gap-2'>
@@ -189,13 +185,13 @@
               <label class="input__toggle" for="{{ form.compare_previous_period.id_for_label }}">
                 <p class="input__help-text">{{ form.compare_previous_period.label}}</p>
 
-                {{form.compare_previous_period}}
+                {{ form.compare_previous_period }}
               </label>
 
               <label class="ml-3 input__toggle" for="{{ form.positive_decrease.id_for_label }}">
                 <p class="input__help-text">{{ form.positive_decrease.label}}</p>
 
-                {{form.positive_decrease}}
+                {{ form.positive_decrease }}
               </label>
             </div>
           {% endif %}
@@ -204,13 +200,11 @@
       {% endif %}
 
       {% for label, formset in formsets.items %}
-        {% if not formset.hidden %}
-          {% if label != "Aggregations" and label != "Charts" and label != "Group columns" and label != "control"%}
-            <fieldset>
-              <label>{{ label }}</label>
-              {% include "components/formset.html" with formset=formset %}
-            </fieldset>
-          {% endif %}
+        {% if label != "Aggregations" and label != "Charts" and label != "Group columns" and label != "control"%}
+          <fieldset {% if formset.hidden %}hidden{% endif %}>
+            <label>{{ label }}</label>
+            {% include "components/formset.html" with formset=formset %}
+          </fieldset>
         {% endif %}
       {% endfor %}
 
