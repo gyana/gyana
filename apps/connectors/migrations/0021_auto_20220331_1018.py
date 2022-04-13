@@ -53,7 +53,7 @@ def update_kwargs_from_fivetran(connector, data):
 
 def forward(apps, schema_editor):
     Connector = apps.get_model("connectors", "Connector")
-    Integration = apps.get_model("connectors", "Integration")
+    Integration = apps.get_model("integrations", "Integration")
 
     connectors = requests.get(group_url, headers=settings.FIVETRAN_HEADERS).json()[
         "data"
@@ -65,25 +65,25 @@ def forward(apps, schema_editor):
 
     for c in google_ads:
         if new_c := schema_mapping.get(f"{c['schema']}_new_api"):
-            old_connector = Connector.objects.get(fivetran_id=c["id"])
-            old_integration = old_connector.integration
+            if old_connector := Connector.objects.filter(fivetran_id=c["id"]).first():
+                old_integration = old_connector.integration
 
-            new_integration = Integration.objects.create(
-                project=old_integration.project,
-                kind="connector",
-                name=f"{old_integration.name} New Api",
-                created_by=old_integration.created_by,
-                is_scheduled=old_integration.is_scheduled,
-                state="load",
-                ready=False,
-            )
-            new_connector = Connector(integration=new_integration)
-            update_kwargs_from_fivetran(new_connector, new_c)
-            new_connector.save()
+                new_integration = Integration.objects.create(
+                    project=old_integration.project,
+                    kind="connector",
+                    name=f"{old_integration.name} New Api",
+                    created_by=old_integration.created_by,
+                    is_scheduled=old_integration.is_scheduled,
+                    state="load",
+                    ready=False,
+                )
+                new_connector = Connector(integration=new_integration)
+                update_kwargs_from_fivetran(new_connector, new_c)
+                new_connector.save()
 
-            old_connector.sync_state = "sunset"
-            old_connector.paused = True
-            old_connector.save()
+                old_connector.sync_state = "sunset"
+                old_connector.paused = True
+                old_connector.save()
 
 
 class Migration(migrations.Migration):
