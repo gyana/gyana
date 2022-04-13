@@ -20,42 +20,56 @@
               {% endif %}
             </p>
             {% if tier.name == 'Free' %}
-              <a
-                href="{% url 'account_signup' %}"
-                class="mt-6 button button--secondary"
-              >
-                Sign up
-              </a>
-            {% elif tier.name == 'Pro' %}
-              <div class="flex items-center gap-4 mt-6">
+              {% if request.GET.iframe %}
+                <div class="mt-6 button button--tertiary" disabled>
+                  Your current plan
+                </div>
+              {% else %}
                 <a
                   href="{% url 'account_signup' %}"
-                  class="button button--secondary"
+                  class="mt-6 button button--secondary"
                 >
-                  Try for free
+                  Sign up
                 </a>
-                <div>or</div>
+              {% endif %}
+            {% elif tier.name == 'Pro' %}
+              <div class="flex items-center gap-4 mt-6">
+                {% if request.GET.iframe %}
+                  <a target="_parent" href="{% url 'teams:checkout' request.GET.team_id %}?plan={{ paddle_pro_plan.id }}" class="button button--secondary">
+                    Upgrade to Pro
+                  </a>
+                {% else %}
+                  <a
+                    href="{% url 'account_signup' %}"
+                    class="button button--secondary"
+                  >
+                    Try for free
+                  </a>
+                  <div>or</div>
+                  <a
+                    href="{% external_url 'request_demo' %}"
+                    class="button button--primary"
+                  >
+                    Book a demo
+                  </a>
+                {% endif %}
+              </div>
+            {% else %}
+              {% if request.GET.iframe %}
+                <a
+                  href="{% external_url 'hubspot_meeting' %}"
+                  class="mt-6 button button--primary"
+                >
+                  Talk to Sales
+                </a>
+              {% else %}
                 <a
                   href="{% external_url 'request_demo' %}"
-                  class="button button--primary"
+                  class="mt-6 button button--primary"
                 >
                   Book a demo
                 </a>
-              </div>
-            {% elif request.GET.iframe %}
-              <a
-                href="{% external_url 'hubspot_meeting' %}"
-                class="mt-6 button button--primary"
-              >
-                Talk to Sales
-              </a>
-            {% else %}
-              <a
-                href="{% external_url 'request_demo' %}"
-                class="mt-6 button button--primary"
-              >
-                Book a demo
-              </a>
+              {% endif %}
             {% endif %}
           </div>
           <div class="pt-6 pb-8 px-6">

@@ -3,6 +3,7 @@ from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.views.generic import TemplateView
+from djpaddle.models import Plan
 from rest_framework.decorators import api_view
 
 from apps.columns.transformer import FUNCTIONS
@@ -62,6 +63,7 @@ class Pricing(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["content"] = get_content("pricing.yaml")
+        context["paddle_pro_plan"] = Plan.objects.get(pk=settings.DJPADDLE_PRO_PLAN_ID)
         return context
 
 
