@@ -7,10 +7,10 @@ PLANS = {
         "name": "Pro",
         "projects": -1,
         "custom_branding": True,
-        "sub_accounts": -1,
-        "rows": 1_000_000,
+        "rows": 10_000_000,
         "credits": 10_000,
     },
+    # todo: convert to agency plan
     "business": {
         "name": "Business",
         "projects": -1,

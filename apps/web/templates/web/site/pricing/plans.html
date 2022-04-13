@@ -21,9 +21,9 @@
             </p>
             {% if tier.name == 'Free' %}
               {% if request.GET.iframe %}
-                <div class="mt-6 button button--tertiary" disabled>
-                  Your current plan
-                </div>
+                <a target="_parent" href="{% url 'teams:detail' request.GET.team_id %}" class="mt-6 button button--tertiary">
+                  Continue
+                </a>
               {% else %}
                 <a
                   href="{% url 'account_signup' %}"

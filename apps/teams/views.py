@@ -36,7 +36,7 @@ class TeamCreate(TurboCreateView):
         return kwargs
 
     def get_success_url(self) -> str:
-        return reverse("teams:detail", args=(self.object.id,))
+        return reverse("teams:pricing", args=(self.object.id,))
 
 
 class TeamPricing(DetailView):

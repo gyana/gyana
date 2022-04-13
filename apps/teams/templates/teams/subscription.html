@@ -6,27 +6,33 @@
 <div class="flex flex-col justify-center items-center h-full">
   <div class="flex flex-col space-y-4 mb-16 max-w-xl w-full">
     <h2>Your Current Subscription</h2>
-    <form id='team-subscription-form' method="post" data-controller="live-update">
-      {% csrf_token %}
+    <h1>Pro</h1>
 
-      {% include "django/forms/default_form.html" %}
+    <p>
+      Total due: <strong>{{ new_price }} {{ team.active_subscription.currency }}</strong>, billing monthly
+    </p>
+    {% comment %} TODO: remove this {% endcomment %}
+    {% comment %}
+      <form id='team-subscription-form' method="post" data-controller="live-update">
+        {% csrf_token %}
 
-      <p>
-        Total due: <strong>{{ new_price }} {{ team.active_subscription.currency }}</strong>, billing monthly
-      </p>
+        {% include "django/forms/default_form.html" %}
 
-      <button type="submit" value="submit" name="submit" class="button button--filled w-full">
-        Update Plan
-      </button>
 
-      <span
-        data-live-update-target="loading"
-        class="workflow-detail__sidebar__loading"
-        hidden
-      >
-        <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-fw fa-2x"></i>
-      </span>
-    </form>
+
+        <button type="submit" value="submit" name="submit" class="button button--filled w-full">
+          Update Plan
+        </button>
+
+        <span
+          data-live-update-target="loading"
+          class="workflow-detail__sidebar__loading"
+          hidden
+        >
+          <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-fw fa-2x"></i>
+        </span>
+      </form>
+    {% endcomment %}
   </div>
   <div class="flex flex-col space-y-4 max-w-xl w-full">
     <h2>Cancel Subscription</h2>
