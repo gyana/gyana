@@ -1,5 +1,6 @@
 import pytest
 import wagtail_factories
+from djpaddle.models import Plan
 from pytest_django.asserts import assertContains, assertNotContains
 from wagtail.core.models import Locale, Site
 
@@ -9,7 +10,11 @@ from apps.users.models import CustomUser
 pytestmark = pytest.mark.django_db
 
 
-def test_site_pages(client):
+def test_site_pages(client, settings):
+
+    pro_plan = Plan.objects.create(name="Pro", billing_type="month", billing_period=1)
+    settings.DJPADDLE_PRO_PLAN_ID = pro_plan.id
+    
     r = client.get("/")
     assertOK(r)
 
@@ -47,7 +52,10 @@ def test_site_pages(client):
     assertOK(r)
 
 
-def test_site_links(client):
+def test_site_links(client, settings):
+
+    pro_plan = Plan.objects.create(name="Pro", billing_type="month", billing_period=1)
+    settings.DJPADDLE_PRO_PLAN_ID = pro_plan.id
 
     r = client.get("/")
 

@@ -7,7 +7,7 @@ tiers:
       - Pre-built integrations
       - Build custom reports
   - name: Pro
-    description: Ideal for CEOs, founders, and marketing teams at 10 to 25-person companies.
+    description: Ideal for founders, analysts and marketing teams at 10 to 25-person companies.
     includedHeader: Everything in free, plus
     price: 99
     includedFeatures:
