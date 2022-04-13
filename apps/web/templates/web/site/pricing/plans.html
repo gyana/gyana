@@ -55,7 +55,8 @@
             {% else %}
               {% if request.GET.iframe %}
                 <a
-                  href="{% external_url 'hubspot_meeting' %}"
+                  target="_parent"
+                  href="{% external_url 'request_demo' %}"
                   class="mt-6 button button--primary"
                 >
                   Talk to Sales
@@ -96,6 +97,7 @@
           our team will give you the support you need to get started fast.
         </p>
         <a
+          {% if request.GET.iframe %}target="_parent"{% endif %}
           href="{% external_url 'request_demo' %}"
           class="button button--primary mr-1"
         >
