@@ -1,32 +1,41 @@
 tiers:
-  - name: Pro
+  - name: Free
     description: Best-in-class, no-code custom report builder with 100+ integrations.
     includedHeader: What's included
-    price: 49
     includedFeatures:
+      - 50,000 rows synced
       - Pre-built integrations
       - Build custom reports
-      - Automated updates
     color: text-gray-600
     button: button--tertiary
-  - name: Elite
+  - name: Pro
     description: Build custom reports for any source, supported by our team of experts.
     includedHeader: Everything in pro, plus
-    price: 149
+    price: 99
     includedFeatures:
-      - Custom integrations
-      - Personalized setup
+      - 10,000,000 rows synced
+      - Report automation
       - Dedicated support
     color: text-indigo-900
     button: button--primary
     mostPopular: True
-  - name: Agency
+  # - name: Agency
+  #   description: Manage custom reports for your clients, in your own branded portal.
+  #   includedHeader: Everything in elite, plus
+  #   price: 249
+  #   includedFeatures:
+  #     - Client management
+  #     - White-label
+  #     - Custom domains
+  #   color: text-indigo-600
+  #   button: button--secondary
+  - name: Enterprise
     description: Manage custom reports for your clients, in your own branded portal.
-    includedHeader: Everything in elite, plus
+    includedHeader: Everything in pro, plus
     includedFeatures:
-      - Client management
-      - White-label
-      - Custom domains
+      - Bring your own warehouse
+      - Hosted in your cloud
+      - Solution architect
     color: text-indigo-600
     button: button--secondary
 

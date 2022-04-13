@@ -14,6 +14,7 @@ EXTERNAL_URLS = {
     "slack_community": "https://join.slack.com/t/gyanacommunity/shared_invite/zt-vly76dna-dxv12CkXdanlwqMam5zDPQ",
     "university": "/learn",
     "careers": "https://gyanalimited.recruitee.com/",
+    "appsumo": "https://appsumo.com/products/gyana/",
     # social
     "facebook": "https://www.facebook.com/GyanaHQ",
     "twitter": "https://twitter.com/GyanaHQ",
