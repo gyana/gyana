@@ -73,25 +73,17 @@
       {% endif %}
 
       {% block widget_form %}
-      
-      {% with formsets|dict_key:"Group columns" as formset %}
-        {% if formset and not formset.hidden %}
-          <fieldset>
-            <label>Groups</label>
-            {% include "components/formset.html" with formset=formset %}
-          </fieldset>
-        {% endif %}
-      {% endwith %}
-      
 
-      {% if formsets.Aggregations and not formsets.Aggregations.hidden %}
-        {% with formset=formsets.Aggregations %}
-          <fieldset>
-            <label>Metrics</label>
-            {% include "components/formset.html" with formset=formset %}
-          </fieldset>
-        {% endwith %}
-      {% endif %}
+      {% for label, formset in formsets.items %}
+        {% if not formset.hidden %}
+          {% if label == "Aggregations" or label == "Group columns" %}
+            <fieldset>
+              <label>{{ label }}</label>
+              {% include "components/formset.html" with formset=formset %}
+            </fieldset>
+          {% endif %}
+        {% endif %}
+      {% endfor %}
 
       {% with array='tab name kind table date_column sort_column sort_ascending'%}
       {% for bound_field in form.visible_fields %}
