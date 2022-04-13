@@ -1,9 +1,9 @@
 {% load heroicons %}
 
-<div>
-  <div class="flex text-center justify-center flex-wrap mx-auto max-w-md sm:max-w-3xl lg:max-w-7xl py-8 opacity-50">
+<div class="bg-gray-20 border-b border-gray">
+  <div class="flex text-center justify-center flex-wrap mx-auto max-w-md sm:max-w-3xl lg:max-w-7xl py-8">
     {% for quote in content.quotes %}
-      <div class="{% if forloop.counter0 > 3%}hidden lg:{% endif %}flex p-2 lg:p-4 flex-col items-center">
+      <div class="{% if forloop.counter0 > 3%}hidden lg:{% endif %}flex p-2 lg:p-4 flex-col items-center opacity-50">
         <div class="flex">
           {% for idx in '01234'|make_list %}
               {% heroicon 'star' class="h-4 w-4 text-yellow-400" style="solid" %}

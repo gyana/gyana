@@ -10,6 +10,13 @@
               {{ tier.name }}
             </h2>
             <p class="mt-4 text-base text-gray-600">{{ tier.description }}</p>
+            <p class="mt-4 text-3xl font-bold text-gray-900">
+              {% if tier.price %}
+                ${{ tier.price }}<span class="text-sm font-normal text-gray-600"> per month</span> 
+              {% else %}
+                Talk to us
+              {% endif %}
+            </p>
             {% if request.GET.iframe %}
               <a
                 href="{% external_url 'hubspot_meeting' %}"
@@ -20,7 +27,7 @@
             {% else %}
               <a
                 href="{% external_url 'request_demo' %}"
-                class="mt-8 button {{ tier.button }}"
+                class="mt-6 button {{ tier.button }}"
               >
                 Book a demo
               </a>

@@ -2,6 +2,7 @@ tiers:
   - name: Pro
     description: Best-in-class, no-code custom report builder with 100+ integrations.
     includedHeader: What's included
+    price: 49
     includedFeatures:
       - Pre-built integrations
       - Build custom reports
@@ -11,10 +12,11 @@ tiers:
   - name: Elite
     description: Build custom reports for any source, supported by our team of experts.
     includedHeader: Everything in pro, plus
+    price: 149
     includedFeatures:
       - Custom integrations
       - Personalized setup
-      - Hands-on training
+      - Dedicated support
     color: text-indigo-900
     button: button--primary
     mostPopular: True
