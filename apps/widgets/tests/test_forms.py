@@ -60,7 +60,7 @@ def test_generic_form(kind, formset_classes, setup, widget_factory):
     dashboard, table = setup
     widget = widget_factory(kind=kind, table=table, page__dashboard=dashboard)
     form = FORMS[kind](instance=widget, schema=TABLE.schema())
-    fields = {"kind", "table", "date_column"}
+    fields = {"tab", "kind", "table", "date_column"}
     if kind == Widget.Kind.TABLE:
         fields |= {"show_summary_row", "sort_column", "sort_ascending"}
     assert set(form.get_live_fields()) == fields
@@ -119,6 +119,7 @@ def test_one_dimension_form(kind, formset_classes, setup, widget_factory):
 
     if kind == Widget.Kind.COMBO:
         assert set(form.get_live_fields()) == {
+            "tab",
             "kind",
             "table",
             "dimension",
@@ -126,6 +127,7 @@ def test_one_dimension_form(kind, formset_classes, setup, widget_factory):
         }
     else:
         assert set(form.get_live_fields()) == {
+            "tab",
             "kind",
             "table",
             "sort_by",
@@ -175,7 +177,7 @@ def test_two_dimension_form(kind, formset_classes, setup, widget_factory):
     widget = widget_factory(kind=kind, table=table, page__dashboard=dashboard)
     form = FORMS[kind](instance=widget)
 
-    fields = {"kind", "table", "dimension", "second_dimension", "date_column"}
+    fields = {"tab", "kind", "table", "dimension", "second_dimension", "date_column"}
     if kind not in [Widget.Kind.STACKED_LINE, Widget.Kind.HEATMAP]:
         fields |= {"stack_100_percent"}
 
