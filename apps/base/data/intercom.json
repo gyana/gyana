@@ -26,7 +26,8 @@
     "sheet": "5548491-getting-started-how-do-we-add-data#h_e09ab9c28c",
     "connector": "5548491-getting-started-how-do-we-add-data#h_11fabedd0f",
     "customapi": "5829359-custom-api-reference",
-    "error": "5548601-my-integration-isn-t-working"
+    "error": "5548601-my-integration-isn-t-working",
+    "adwords-sunset": "6137943-google-adwords-api-deprecation"
   },
   "workflows": {
     "select": "5562508-nodes-reference#h_19a96e4a68",

@@ -330,7 +330,8 @@ class Connector(DirtyFieldsMixin, BaseModel):
             self.paused = True
             self.sync_state = self.SyncState.PAUSED
 
-        self.update_kwargs_from_fivetran(data)
+        if self.sync_state != self.SyncState.SUNSET:
+            self.update_kwargs_from_fivetran(data)
 
         # update fivetran sync time if user has updated timezone/daily sync time
         # or daylight savings time is going in/out tomorrow
