@@ -39,7 +39,7 @@ describe('signup', () => {
     cy.get('button[type=submit]').click({ turbo: false })
 
     // select plan and continue
-    cy.url().should('contain', `/teams/${newTeamId}/plans`)
+    cy.url().should('contain', `/teams/${newTeamId}/pricing`)
     cy.contains('Continue').click()
 
     // new project

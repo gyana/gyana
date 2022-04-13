@@ -3668,7 +3668,6 @@
     "pk": 1,
     "fields": {
       "task_id": "32f7a738-c597-4aae-9429-303873aaad18",
-      "periodic_task_name": null,
       "task_name": "apps.customapis.tasks.run_customapi_sync_task",
       "task_args": "\"(10,)\"",
       "task_kwargs": "\"{}\"",

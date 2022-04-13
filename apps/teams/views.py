@@ -82,12 +82,9 @@ class TeamSubscription(DetailView):
     template_name = "teams/subscription.html"
     pk_url_kwarg = "team_id"
 
-    def get_initial(self):
-        return {"plan": self.object.active_subscription.plan.id}
-
     @property
     def plan(self):
-        return Plan.objects.get(pk=self.get_form()["plan"].value())
+        return Plan.objects.get(pk=self.object.active_subscription.plan.id)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -97,9 +94,6 @@ class TeamSubscription(DetailView):
         context["DJPADDLE_VENDOR_ID"] = settings.DJPADDLE_VENDOR_ID
         context["DJPADDLE_SANDBOX"] = settings.DJPADDLE_SANDBOX
         return context
-
-    def get_success_url(self) -> str:
-        return reverse("teams:account", args=(self.object.id,))
 
 
 class TeamPayments(SingleTableMixin, DetailView):

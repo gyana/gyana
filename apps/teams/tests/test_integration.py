@@ -44,13 +44,16 @@ def test_team_crudl(client, logged_in_user, bigquery, flag_factory, settings):
     r = client.post("/teams/new", data={"name": "Neera"})
     assert logged_in_user.teams.count() == 2
     new_team = logged_in_user.teams.first()
-    assertRedirects(r, f"/teams/{new_team.id}", status_code=303)
+    assertRedirects(r, f"/teams/{new_team.id}/pricing", status_code=303)
 
     assert bigquery.create_dataset.call_count == 1
     assert bigquery.create_dataset.call_args.args == (new_team.tables_dataset_id,)
 
     # choose plan
     r = client.get(f"/teams/{new_team.id}/pricing")
+    assertOK(r)
+    # in turn, loads web pricing via iframe
+    r = client.get(f"/pricing?iframe=true&team_id={new_team.id}")
     assertOK(r)
     assertLink(r, f"/teams/{new_team.id}", "Continue")
 
@@ -210,9 +213,7 @@ def test_team_subscriptions(client, logged_in_user, settings, paddle):
     team = logged_in_user.teams.first()
     pro_plan = Plan.objects.create(name="Pro", billing_type="month", billing_period=1)
     settings.DJPADDLE_PRO_PLAN_ID = pro_plan.id
-    paddle.get_plan.side_effect = lambda id_: {
-        "recurring_price": {"USD": 99}
-    }
+    paddle.get_plan.side_effect = lambda id_: {"recurring_price": {"USD": 99}}
     paddle.list_subscription_payments.return_value = [
         {
             "payout_date": "2021-11-01",
