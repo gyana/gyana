@@ -90,14 +90,13 @@ class GenericWidgetForm(LiveFormsetForm):
 
         self.fields["tab"].value = tab
 
-        if self.get_live_field("tab") == self.Tab.SOURCE:
-            self.fields["table"].queryset = (
-                Table.available.filter(project=project)
-                .exclude(
-                    source__in=[Table.Source.INTERMEDIATE_NODE, Table.Source.CACHE_NODE]
-                )
-                .order_by("updated")
+        self.fields["table"].queryset = (
+            Table.available.filter(project=project)
+            .exclude(
+                source__in=[Table.Source.INTERMEDIATE_NODE, Table.Source.CACHE_NODE]
             )
+            .order_by("updated")
+        )
 
         # https://stackoverflow.com/a/30766247/15425660
         self.fields["kind"].choices = [
