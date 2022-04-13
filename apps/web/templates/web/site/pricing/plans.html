@@ -64,7 +64,7 @@
             </h3>
             <ul class="mt-6 space-y-4">
               {% for feature in tier.includedFeatures %}
-                <li class="flex space-x-3 {{ tier.color }}">
+                <li class="flex space-x-3 text-indigo-900">
                   {% heroicon 'check-circle' class="flex-shrink-0 h-5 w-5" %}
                   <span class="text-sm text-gray-600">{{ feature|safe }}</span>
                 </li>
@@ -79,8 +79,9 @@
         <h2 class="text-3xl font-extrabold text-indigo-900">
           Add ons
         </h2>
-        <p class="my-4 text-lg text-gray-600 max-w-3xl">
-          We provide optional services to accelerate your transition to a data-driven work environment.
+        <p class="my-4 text-base text-gray-600 max-w-3xl">
+          <b>Do you have a specific report in mind?</b> With our optional service packages, 
+          our team will give you the support you need to get started fast.
         </p>
         <a
           href="{% external_url 'request_demo' %}"
@@ -88,33 +89,38 @@
         >
           Book a demo
         </a>
-        <span class="text-gray-600 text-lg"> to learn more</span>
+        <span class="text-gray-600 text-base"> to learn more</span>
       </div>
-      <div class="card card--sm col-span-2 grid grid-cols-2 divide-y">
+      <div class="card card--sm col-span-2 grid grid-cols-2 divide-y space-y-4">
         {% for addon in content.addons %}
-          <div class="py-4 flex">
-            <div>
-              <h3 class="text-lg font-medium text-gray-900">
-                {{ addon.name }}
-              </h3>
-              <p class="mt-2 text-base text-gray-800">
-                {{ addon.summary }}
-              </p>
-              <ul class="mt-3 space-x-4 flex">
-                {% for feature in addon.features %}
-                  <li class="flex space-x-3 text-indigo-600">
-                    {% heroicon 'check-circle' class="flex-shrink-0 h-5 w-5" %}
-                    <span class="text-sm text-gray-600">{{ feature }}</span>
-                  </li>
-                {% endfor %}
-              </ul>
+          <div class="{% if forloop.counter0 > 0 %}pt-4{% endif %}">
+            <div class="flex">
+              <div>
+                <h3 class="text-lg font-medium text-gray-900">
+                  {{ addon.name }}
+                </h3>
+                <p class="mt-2 text-base text-gray-800">
+                  {{ addon.summary }}
+                </p>
+              </div>
+              
+              <div class="w-64 text-right">
+                {% if addon.price %}
+                  <div>
+                    <span class="text-sm font-normal text-gray-600">Starting at</span>
+                    <span class="text-xl font-bold text-gray-900">{{ addon.price }}</span>
+                  </div>
+                {% endif %}
+              </div>
             </div>
-            {% if addon.price %}
-              <p class="text-3xl font-bold text-gray-900">
-                <span class="text-sm font-normal text-gray-600">Starting at</span> 
-                ${{ addon.price }}
-              </p>
-            {% endif %}
+            <ul class="mt-3 space-x-4 flex">
+              {% for feature in addon.features %}
+                <li class="flex space-x-1 text-indigo-600">
+                  {% heroicon 'check' class="flex-shrink-0 h-5 w-5" %}
+                  <span class="text-sm text-gray-600">{{ feature }}</span>
+                </li>
+              {% endfor %}
+            </ul>
           </div>
         {% endfor %}
       </div>
