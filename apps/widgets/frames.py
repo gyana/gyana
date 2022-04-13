@@ -157,6 +157,7 @@ class WidgetUpdate(WidgetUpdateMixin, TurboFrameUpdateView):
             ).schema
 
         kwargs["project"] = self.dashboard.project
+        kwargs["tab"] = self.request.POST.get("tab")
         return kwargs
 
     def get_success_url(self) -> str:

@@ -6,6 +6,7 @@ const get_formset_row = (element) => element.closest('[data-formset-index]')
 export default class extends Controller {
   static targets = ['loading']
   clicked_button = false
+
   disable = (event) => {
     const form = this.element
 
@@ -36,6 +37,7 @@ export default class extends Controller {
 
     // manually POST the form and get HTML response
     const data = new FormData(form)
+
     // update view will re-render form with updated values
     data.append('hidden_live', 'true')
     // HTML forms just omit unchecked checkboxes

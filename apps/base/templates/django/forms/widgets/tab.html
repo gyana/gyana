@@ -1,0 +1,18 @@
+{% load static %}
+
+<div class="tabbar w-full">
+  {% for option in widget.options %}
+  <label class="tabbar__link {% if widget.selected == option.id %}tabbar__link--active{% endif %}">
+    <input 
+      type="radio"
+      id="id_{{ widget.name }}_{{ option.id }}"
+      name="{{ widget.name }}" 
+      value="{{ option.id }}" 
+      class="checkbox__hidden"
+      {% if widget.selected == option.id %}checked{% endif %}
+    />
+
+    {{ option.name }}
+  </label>
+  {% endfor %}
+</div>

@@ -6,6 +6,41 @@ from apps.widgets.models import WIDGET_KIND_TO_WEB, Widget
 ICONS = {"integration": "far fa-link", "workflow_node": "far fa-stream"}
 
 
+class TabWidget(ChoiceWidget):
+    template_name = "django/forms/widgets/tab.html"
+
+    def get_context(self, name, value, attrs):
+        context = super().get_context(name, value, attrs)
+
+        context["widget"]["options"] = [
+            {"id": option[0], "name": option[1]} for option in self.choices
+        ]
+        context["widget"]["selected"] = value
+
+        return context
+
+
+class InputNode(ChoiceWidget):
+    template_name = "django/forms/widgets/input_node.html"
+
+    def get_context(self, name, value, attrs):
+        context = super().get_context(name, value, attrs)
+
+        context["widget"]["options"] = [
+            {
+                "icon": ICONS[option.source],
+                "id": option.id,
+                "image": option.integration.icon if option.integration else None,
+                "label": option.owner_name,
+            }
+            for option in self.choices.queryset
+        ]
+
+        context["widget"]["selected"] = value
+        context["widget"]["name"] = name
+        return context
+
+
 class SourceSelect(ChoiceWidget):
     class Media:
         js = ("js/components-bundle.js",)

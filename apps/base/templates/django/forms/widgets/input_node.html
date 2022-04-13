@@ -3,7 +3,7 @@
 <fieldset name="{{ widget.name }}">
  {% for option in widget.options %}
  <label 
-    class="checkbox checkbox--radio checkbox--icon {% if option.id == widget.selected %}checkbox--checked{% endif %}"
+    class="checkbox checkbox--radio checkbox--icon {% if option.id|add:0 == widget.selected|add:0 %}checkbox--checked{% endif %}"
     id="{{ option.id }}"
   >
     <input 
@@ -12,7 +12,8 @@
       name="{{ widget.name }}" 
       value="{{ option.id }}" 
       class="checkbox__hidden"
-      data-action="click->tf-modal#preview"
+      {% if option.id|add:0 == widget.selected|add:0 %}checked{% endif %}
+      {% comment %} data-action="click->tf-modal#preview" {% endcomment %}
     />
 
     {% if option.image %}

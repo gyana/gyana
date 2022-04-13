@@ -161,7 +161,7 @@
 </div>
 
 {% for label, formset in formsets.items %}
-<fieldset>
+<fieldset {% if formset.hidden %}hidden{% endif %}>
   <label>{{ label }}</label>
   {% include "components/formset.html" with formset=formset %}
 </fieldset>

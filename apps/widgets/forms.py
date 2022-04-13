@@ -2,6 +2,8 @@ import copy
 import re
 
 from django import forms
+from django.db import models
+from django.forms.widgets import HiddenInput
 from ibis.expr.datatypes import Date, Time, Timestamp
 
 from apps.base.core.utils import create_column_choices
@@ -13,7 +15,7 @@ from apps.tables.models import Table
 
 from .formsets import FORMSETS, AggregationColumnFormset, ControlFormset, FilterFormset
 from .models import COUNT_COLUMN_NAME, WIDGET_KIND_TO_WEB, Widget
-from .widgets import SourceSelect
+from .widgets import InputNode, SourceSelect, TabWidget
 
 
 def get_not_deleted_entries(data, regex):
@@ -25,13 +27,46 @@ def get_not_deleted_entries(data, regex):
 
 
 class GenericWidgetForm(LiveFormsetForm):
+    class Tab(models.TextChoices):
+        SOURCE = "source", "Source"
+        CONFIGURE = "configure", "Configure"
+
+    tab = forms.ChoiceField(
+        choices=Tab.choices,
+        initial=Tab.SOURCE,
+        widget=TabWidget(),
+        required=False,
+    )
     dimension = forms.ChoiceField(choices=())
     second_dimension = forms.ChoiceField(choices=())
     sort_column = forms.ChoiceField(choices=(), required=False)
 
+    mapping = {
+        Tab.SOURCE: ["tab", "table"],
+        Tab.CONFIGURE: [
+            "tab",
+            "kind",
+            "dimension",
+            "part",
+            "second_dimension",
+            "sort_by",
+            "sort_column",
+            "sort_ascending",
+            "stack_100_percent",
+            "date_column",
+            "show_summary_row",
+            "compare_previous_period",
+            "positive_decrease",
+            "FilterFormFormSet",
+            "ColumnFormFormSet",
+            "AggregationColumnFormFormSet",
+        ],
+    }
+
     class Meta:
         model = Widget
         fields = [
+            "tab",
             "table",
             "kind",
             "dimension",
@@ -46,13 +81,25 @@ class GenericWidgetForm(LiveFormsetForm):
             "compare_previous_period",
             "positive_decrease",
         ]
-        widgets = {"table": SourceSelect()}
+        widgets = {"table": InputNode()}
 
     def __init__(self, *args, **kwargs):
-        # https://stackoverflow.com/a/30766247/15425660
+        tab = kwargs.pop("tab", None)
         project = kwargs.pop("project", None)
-
         super().__init__(*args, **kwargs)
+
+        self.fields["tab"].value = tab
+
+        if self.get_live_field("tab") == self.Tab.SOURCE:
+            self.fields["table"].queryset = (
+                Table.available.filter(project=project)
+                .exclude(
+                    source__in=[Table.Source.INTERMEDIATE_NODE, Table.Source.CACHE_NODE]
+                )
+                .order_by("updated")
+            )
+
+        # https://stackoverflow.com/a/30766247/15425660
         self.fields["kind"].choices = [
             choice
             for choice in self.fields["kind"].choices
@@ -60,56 +107,54 @@ class GenericWidgetForm(LiveFormsetForm):
             not in [Widget.Kind.TEXT, Widget.Kind.IMAGE, Widget.Kind.IFRAME]
         ]
 
-        if project:
-            self.fields["table"].queryset = Table.available.filter(
-                project=project
-            ).exclude(
-                source__in=[Table.Source.INTERMEDIATE_NODE, Table.Source.CACHE_NODE]
-            )
-            table = self.get_live_field("table")
+        table = self.get_live_field("table")
+        schema = (
+            (table if isinstance(table, Table) else Table.objects.get(pk=table)).schema
+            if table
+            else None
+        )
 
-            schema = (
-                (
-                    table if isinstance(table, Table) else Table.objects.get(pk=table)
-                ).schema
-                if table
-                else None
+        if "date_column" in self.fields and schema:
+            self.fields["date_column"] = forms.ChoiceField(
+                required=False,
+                widget=SelectWithDisable(
+                    disabled=disable_non_time(schema),
+                ),
+                choices=create_column_choices(schema),
+                help_text=self.base_fields["date_column"].help_text,
             )
-            if "date_column" in self.fields and schema:
-                self.fields["date_column"] = forms.ChoiceField(
-                    required=False,
-                    widget=SelectWithDisable(
-                        disabled=disable_non_time(schema),
-                    ),
-                    choices=create_column_choices(schema),
-                    help_text=self.base_fields["date_column"].help_text,
-                )
 
-            if table and self.get_live_field("kind") == Widget.Kind.TABLE:
-                formsets = self.get_formsets()
-                group_columns = [
-                    form.data[f"{form.prefix}-column"]
-                    for form in formsets["Group columns"].forms
-                    if not form.deleted and form.data.get(f"{form.prefix}-column")
+        if table and self.get_live_field("kind") == Widget.Kind.TABLE:
+            formsets = self.get_formsets()
+            group_columns = [
+                form.data[f"{form.prefix}-column"]
+                for form in formsets["Group columns"].forms
+                if not form.deleted and form.data.get(f"{form.prefix}-column")
+            ]
+            aggregations = [
+                form.data[f"{form.prefix}-column"]
+                for form in formsets["Aggregations"].forms
+                if not form.deleted and form.data.get(f"{form.prefix}-column")
+            ]
+            if columns := group_columns + aggregations:
+                if not aggregations:
+                    columns += [COUNT_COLUMN_NAME]
+                self.fields["sort_column"].choices = [("", "No column selected")] + [
+                    (name, name) for name in columns
                 ]
-                aggregations = [
-                    form.data[f"{form.prefix}-column"]
-                    for form in formsets["Aggregations"].forms
-                    if not form.deleted and form.data.get(f"{form.prefix}-column")
-                ]
-                if columns := group_columns + aggregations:
-                    if not aggregations:
-                        columns += [COUNT_COLUMN_NAME]
-                    self.fields["sort_column"].choices = [
-                        ("", "No column selected")
-                    ] + [(name, name) for name in columns]
-                else:
-                    self.fields["sort_column"].choices = create_column_choices(schema)
+            else:
+                self.fields["sort_column"].choices = create_column_choices(schema)
+
+        for field in self.fields:
+            if field in self.mapping[self.get_live_field("tab")]:
+                continue
+
+            self.fields[field].widget = HiddenInput()
 
     def get_live_fields(self):
-        fields = ["table", "kind"]
-        table = self.get_live_field("table")
-        if table:
+        fields = ["tab", "table", "kind"]
+
+        if table := self.get_live_field("table"):
             fields += ["date_column"]
 
         if self.get_live_field("kind") == Widget.Kind.TABLE and table:
@@ -144,6 +189,13 @@ class GenericWidgetForm(LiveFormsetForm):
             formsets += chart_formsets
         else:
             formsets += [AggregationColumnFormset]
+
+        for formset in formsets:
+            if formset.__name__ in self.mapping[self.get_live_field("tab")]:
+                setattr(formset, 'hidden', False)
+                continue
+
+            setattr(formset, 'hidden', True)
 
         return formsets
 
