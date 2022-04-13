@@ -82,9 +82,8 @@ class PaddlePostCheckoutApiView(BasePaddlePostCheckoutApiView):
         return super().post(request, *args, **kwargs)
 
 
-class TeamSubscription(TurboUpdateView):
+class TeamSubscription(DetailView):
     model = Team
-    form_class = TeamSubscriptionForm
     template_name = "teams/subscription.html"
     pk_url_kwarg = "team_id"
 

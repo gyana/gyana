@@ -112,27 +112,3 @@ class MembershipUpdateForm(BaseModelForm):
             ].help_text = (
                 "You cannot make yourself a member because there is no admin left"
             )
-
-
-class TeamSubscriptionForm(LiveModelForm):
-    class Meta:
-        model = Team
-        fields = ()
-
-    plan = forms.ChoiceField(
-        label="Your plan",
-        help_text=mark_safe(
-            '<a href="https://www.gyana.com/pricing" class="link">Learn more</a> on our website.'
-        ),
-    )
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields["plan"].choices = (
-            (settings.DJPADDLE_PRO_PLAN_ID, "Pro"),
-            (settings.DJPADDLE_BUSINESS_PLAN_ID, "Business"),
-        )
-
-    def post_save(self, instance):
-        update_plan_for_team(instance, int(self.cleaned_data["plan"]))
-        return super().post_save(instance)

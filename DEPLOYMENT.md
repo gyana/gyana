@@ -106,7 +106,6 @@ DJPADDLE_VENDOR_ID = {{ vendor_id }}
 DJPADDLE_API_KEY = {{ api_key }}
 DJPADDLE_PUBLIC_KEY = {{ public_key }}
 DJPADDLE_PRO_PLAN_ID = {{ pro_plan_id }}
-DJPADDLE_BUSINESS_PLAN_ID = {{ business_plan_id }}
 ENVIRONMENT = production
 EXTERNAL_URL = https://app.gyana.com
 FIVETRAN_GROUP = intended_monsieur

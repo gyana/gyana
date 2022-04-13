@@ -26,11 +26,7 @@ def test_team_crudl(client, logged_in_user, bigquery, flag_factory, settings):
     team = logged_in_user.teams.first()
     flag = flag_factory(name="beta")
     pro_plan = Plan.objects.create(name="Pro", billing_type="month", billing_period=1)
-    business_plan = Plan.objects.create(
-        name="Pro", billing_type="month", billing_period=1
-    )
     settings.DJPADDLE_PRO_PLAN_ID = pro_plan.id
-    settings.DJPADDLE_BUSINESS_PLAN_ID = business_plan.id
     # the fixture creates a new team
     bigquery.reset_mock()
 
