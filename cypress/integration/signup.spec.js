@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 
-import { getModelStartId } from '../support/utils'
+import { getModelStartId, getIframeBody } from '../support/utils'
 
 const newProjectUrl = `/projects/${getModelStartId('projects.project')}`
 
@@ -40,7 +40,7 @@ describe('signup', () => {
 
     // select plan and continue
     cy.url().should('contain', `/teams/${newTeamId}/pricing`)
-    cy.contains('Continue').click()
+    getIframeBody('pricing').contains('Continue').click({ turbo: false })
 
     // new project
     cy.url().should('contain', `/teams/${newTeamId}`)
