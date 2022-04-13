@@ -13,12 +13,7 @@ from djpaddle.views import PaddlePostCheckoutApiView as BasePaddlePostCheckoutAp
 from apps.base.analytics import CHECKOUT_COMPLETED_EVENT, CHECKOUT_OPENED_EVENT
 from apps.base.views import TurboCreateView, TurboUpdateView
 
-from .forms import (
-    MembershipUpdateForm,
-    TeamCreateForm,
-    TeamSubscriptionForm,
-    TeamUpdateForm,
-)
+from .forms import MembershipUpdateForm, TeamCreateForm, TeamUpdateForm
 from .mixins import TeamMixin
 from .models import Membership, Team
 from .paddle import get_plan_price_for_currency, list_payments_for_team
