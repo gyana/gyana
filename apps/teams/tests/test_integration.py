@@ -54,7 +54,7 @@ def test_team_crudl(client, logged_in_user, bigquery, flag_factory, settings):
     assert bigquery.create_dataset.call_args.args == (new_team.tables_dataset_id,)
 
     # choose plan
-    r = client.get(f"/teams/{new_team.id}/plans")
+    r = client.get(f"/teams/{new_team.id}/pricing")
     assertOK(r)
     assertLink(r, f"/teams/{new_team.id}", "Continue")
 
@@ -213,24 +213,20 @@ def test_team_subscriptions(client, logged_in_user, settings, paddle):
 
     team = logged_in_user.teams.first()
     pro_plan = Plan.objects.create(name="Pro", billing_type="month", billing_period=1)
-    business_plan = Plan.objects.create(
-        name="Business", billing_type="month", billing_period=1
-    )
     settings.DJPADDLE_PRO_PLAN_ID = pro_plan.id
-    settings.DJPADDLE_BUSINESS_PLAN_ID = business_plan.id
     paddle.get_plan.side_effect = lambda id_: {
-        "recurring_price": {"USD": 30 if id_ == pro_plan.id else 150}
+        "recurring_price": {"USD": 99}
     }
     paddle.list_subscription_payments.return_value = [
         {
             "payout_date": "2021-11-01",
-            "amount": 30,
+            "amount": 99,
             "currency": "USD",
             "receipt_url": "https://receipt-1.url",
         },
         {
             "payout_date": "2021-12-01",
-            "amount": 30,
+            "amount": 99,
             "currency": "USD",
             "receipt_url": "https://receipt-2.url",
         },
@@ -243,19 +239,10 @@ def test_team_subscriptions(client, logged_in_user, settings, paddle):
     r = client.get(f"/teams/{team.id}/pricing")
     assertOK(r)
 
-    # paddle flow removed from app for now
-    # assertLink(r, f"/teams/{team.id}/plans", "Upgrade")
-
-    r = client.get(f"/teams/{team.id}/plans")
+    # in turn, loads web pricing via iframe
+    r = client.get(f"/pricing?iframe=true&team_id={team.id}")
     assertOK(r)
     assertLink(r, f"/teams/{team.id}/checkout?plan={pro_plan.id}", "Upgrade to Pro")
-    assertLink(
-        r, f"/teams/{team.id}/checkout?plan={business_plan.id}", "Upgrade to Business"
-    )
-    # check for paddle attributes on prices
-    assertSelectorLength(r, f"[data-product='{pro_plan.id}']", 1)
-    assertSelectorLength(r, f"[data-product='{business_plan.id}']", 1)
-    assertSelectorLength(r, ".paddle-gross", 2)
 
     r = client.get(f"/teams/{team.id}/checkout?plan={pro_plan.id}")
     assertOK(r)
@@ -288,7 +275,7 @@ def test_team_subscriptions(client, logged_in_user, settings, paddle):
         source="test.url",
         status=Subscription.STATUS_ACTIVE,
         plan=pro_plan,
-        unit_price=30,
+        unit_price=99,
         update_url="https://update.url",
         created_at=timezone.now(),
         updated_at=timezone.now(),
@@ -301,30 +288,8 @@ def test_team_subscriptions(client, logged_in_user, settings, paddle):
     assertLink(r, f"/teams/{team.id}/payments", "View Payments & Receipts")
     assertLink(r, "https://update.url", "Update Payment Method")
 
-    # upgrade to business
-    r = client.get(f"/teams/{team.id}/subscription")
-    assertFormRenders(r, ["plan"])
-
-    r = client.post(
-        f"/teams/{team.id}/subscription",
-        data={"hidden_live": True, "plan": str(business_plan.id)},
-    )
-    # the new price is calculated and shown
-    assert paddle.get_plan.call_count == 2
-    assert paddle.get_plan.call_args.args == (business_plan.id,)
-    assertContains(r, "150")
-
-    r = client.post(
-        f"/teams/{team.id}/subscription",
-        data={"plan": str(business_plan.id)},
-    )
-    assertRedirects(r, f"/teams/{team.id}/account", status_code=303)
-    assert paddle.update_subscription.call_count == 1
-    assert paddle.update_subscription.call_args.args == (str(subscription.id),)
-    assert paddle.update_subscription.call_args.kwargs == {"plan_id": business_plan.id}
-
     # redirect
-    r = client.get(f"/teams/{team.id}/plans")
+    r = client.get(f"/teams/{team.id}/pricing")
     assertRedirects(r, f"/teams/{team.id}/subscription")
 
     # cancel

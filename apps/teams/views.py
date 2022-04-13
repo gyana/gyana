@@ -44,6 +44,14 @@ class TeamPricing(DetailView):
     template_name = "teams/pricing.html"
     pk_url_kwarg = "team_id"
 
+    def get(self, request, *args, **kwargs):
+        team = self.get_object()
+
+        if team.has_subscription:
+            return redirect("teams:subscription", team.id)
+
+        return super().get(request, *args, **kwargs)
+
 
 class TeamCheckout(DetailView):
     model = Team
@@ -59,9 +67,6 @@ class TeamCheckout(DetailView):
         context = super().get_context_data(**kwargs)
         context["plan"] = self.plan
         context["paddle_pro_plan"] = Plan.objects.get(pk=settings.DJPADDLE_PRO_PLAN_ID)
-        context["paddle_business_plan"] = Plan.objects.get(
-            pk=settings.DJPADDLE_BUSINESS_PLAN_ID
-        )
         context["DJPADDLE_VENDOR_ID"] = settings.DJPADDLE_VENDOR_ID
         context["DJPADDLE_SANDBOX"] = settings.DJPADDLE_SANDBOX
         return context
