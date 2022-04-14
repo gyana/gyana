@@ -1,5 +1,5 @@
 PLANS = {
-    "free": {"name": "Free", "projects": 3, "rows_per_integration": 10},
+    "free": {"name": "Free", "projects": 3, "rows_per_integration": 100_000},
     "pro": {
         "name": "Pro",
         "projects": -1,
