@@ -6,6 +6,7 @@ from django.urls.base import reverse
 from apps.base.analytics import INTEGRATION_CREATED_EVENT, NEW_INTEGRATION_START_EVENT
 from apps.base.views import TurboCreateView
 from apps.integrations.models import Integration
+from apps.integrations.tasks import run_integration
 from apps.projects.mixins import ProjectMixin
 
 from .forms import SheetCreateForm
@@ -38,7 +39,6 @@ class SheetCreate(ProjectMixin, TurboCreateView):
         return context_data
 
     def form_valid(self, form):
-
         r = super().form_valid(form)
 
         analytics.track(
@@ -51,10 +51,16 @@ class SheetCreate(ProjectMixin, TurboCreateView):
             },
         )
 
+        run_integration(
+            Integration.Kind.SHEET,
+            self.object.integration.source_obj,
+            self.request.user,
+        )
+
         return r
 
     def get_success_url(self) -> str:
         return reverse(
-            "project_integrations:configure",
+            "project_integrations:load",
             args=(self.project.id, self.object.integration.id),
         )

@@ -18,4 +18,14 @@ form,
     font-style: italic;
     margin-bottom: 1.2rem;
   }
+
+  .form__extra {
+    width: 100%;
+
+    summary {
+      display: flex;
+      justify-content: flex-end;
+      width: 100%;
+    }
+  }
 }

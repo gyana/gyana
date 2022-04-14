@@ -5,8 +5,9 @@
 
 <div class="input-group">
 {% for bound_field in form.visible_fields %}
-{% comment %} Ignore these fields because they are going to be rendered in an extendable manner further down {% endcomment %}
-  {% if form.formatting_unfolded and bound_field.label in 'Currency, Rounding, Name, Formatting unfolded, Show in %'%}
+  {% if bound_field.name in form.extra_fields %}
+  {% comment %} Ignore these fields because they are going to be rendered in an extendable manner further down {% endcomment %}
+  {% elif form.formatting_unfolded and bound_field.label in 'Currency, Rounding, Name, Formatting unfolded, Show in %'%}
   {% elif bound_field.widget_type == "palettecolors" %}
     <div class="label">
       <label>
@@ -57,6 +58,10 @@
     <div class="{{ bound_field.field.widget.attrs.class }}">
       <label class="block mb-2">
         {{ bound_field.label }}
+
+        {% if not bound_field.field.required and not optional == False %}
+        <span class="text-black-50">- optional</span>
+        {% endif %}
     
         {% if bound_field.help_text %}
         <p class="input__help-text">
@@ -131,6 +136,26 @@
   {{ bound_field.errors }}
   {% endfor %}
 
+  {% if form.extra_fields %}
+  <details class="form__extra">
+    <summary>
+      <a class="link small cursor-pointer">
+        <i class="fas fa-fw fa-angle-down"></i>Advanced
+      </a>
+    </summary>
+
+    <div
+      class="input-group"
+    >
+      {% for bound_field in form.visible_fields  %}
+        {% if bound_field.name in form.extra_fields %}
+          {% include "django/forms/field.html" with field=bound_field %}
+        {% endif %}
+      {% endfor %}
+    </div>
+  </details>
+  {% endif %}
+
   {% if form.formatting_unfolded %}
     <div class='formatting' data-controller='column-format'>
       <button 
@@ -142,7 +167,7 @@
         Formatting
       </button>
 
-      {{form.formatting_unfolded}}
+      {{ form.formatting_unfolded }}
 
       <div
         class="input-group"

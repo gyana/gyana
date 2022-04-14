@@ -37,18 +37,26 @@
           This data source will be available in your project after you confirm.
         </p>
 
-        <form
-          method="POST"
-          action="{{ request.get_full_path }}"
-          class="form--no-layout w-full"
-        >
-          {% csrf_token %}
+        <div class="flex gap-3">
+          <a
+            href="{% url 'project_integrations:configure' project.id object.id %}"
+            class="button button--tertiary w-1/2"
+          >
+            Reconfigure
+          </a>
 
-          <button type="submit" class="button button--success w-full">
-            Confirm
-          </button>
-        </form>
-
+          <form
+            method="POST"
+            action="{{ request.get_full_path }}"
+            class="form--no-layout w-1/2"
+          >
+            {% csrf_token %}
+  
+            <button type="submit" class="button button--success w-full">
+              Confirm
+            </button>
+          </form>
+        </div>
         {% endif %}
       {% else %}
       <p>

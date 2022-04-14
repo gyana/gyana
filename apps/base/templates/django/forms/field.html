@@ -2,17 +2,18 @@
   <label for="{{ field.id_for_label }}">
     <span class="block">
       {{ field.label }}
+
+      {% if not bound_field.field.required and not optional == False %}
+        <span class="text-black-50">- optional</span>
+      {% endif %}
     </span>
 
     {% if field.help_text %}
     <p class="input__help-text">
       {{ field.help_text }}
-      {% if not field.field.required %} - optional{% endif %}
     </p>
     {% endif %}
   </label>
-
-
 
   {{ field }}
 </div>
