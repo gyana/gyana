@@ -37,7 +37,7 @@
       </header>
 
       <div class="account__plan card card--none">
-        {% if team.appsumocode_set.count > 0 %}
+        {% if team.is_ltd > 0 %}
           <div class="w-full">
             <p>Rows used</p>
             <h4 class="h2">{{ team.row_count|intcomma }} / {{ team.row_limit|intcomma }}</h4>
