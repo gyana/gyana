@@ -1,14 +1,12 @@
 PLANS = {
-    "free": {
-        "name": "Free",
-        "projects": 3,
-    },
+    "free": {"name": "Free", "projects": 3, "rows_per_integration": 10},
     "pro": {
         "name": "Pro",
         "projects": -1,
         "custom_branding": True,
         "rows": 10_000_000,
         "credits": 10_000,
+        "rows_per_integration": 10_000_000,
     },
     # todo: convert to agency plan
     "business": {

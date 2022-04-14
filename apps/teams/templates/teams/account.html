@@ -37,10 +37,12 @@
       </header>
 
       <div class="account__plan card card--none">
-        <div class="w-full">
-          <p>Rows used</p>
-          <h4 class="h2">{{ team.row_count|intcomma }} / {{ team.row_limit|intcomma }}</h4>
-        </div>
+        {% if team.appsumocode_set.count > 0 %}
+          <div class="w-full">
+            <p>Rows used</p>
+            <h4 class="h2">{{ team.row_count|intcomma }} / {{ team.row_limit|intcomma }}</h4>
+          </div>
+        {% endif %}
 
         <div class="w-1/3">
           <p>Projects</p>

@@ -1,6 +1,6 @@
 {% load static %}
 
-{% if team.plan.name == 'Pro' and service.id in disabled_services %}
+{% if team.is_pro and service.id in disabled_services %}
   <button class="card card--sm disabled" style="background-color: #e6e6e6;">
     <div class="flex items-center gap-7">
       <img style="height:2.4rem;"

@@ -17,46 +17,59 @@
 
     <div class="flex flex-col flex-1 justify-center gap-3">
       {% if not integration.ready %}
-        {% if exceeds_row_limit %}
-        <p>Adding this data will bring your total rows to <strong>{{ projected_num_rows|intcomma }}</strong>,
-        which exceeds your row limit of <strong>{{ project.team.row_limit|intcomma }}</strong>.</p>
+        {% if team.is_ltd and exceeds_row_limit %}
+          <p>
+            Adding this data will bring your total rows to <strong>{{ projected_num_rows|intcomma }}</strong>,
+            which exceeds your row limit of <strong>{{ project.team.row_limit|intcomma }}</strong>.
+          </p>
 
-        <p class="alert">
-          You can either reduce your row count, or reach out for an upgrade.
-        </p>
+          <p class="alert">
+            You can either reduce your row count, or reach out for an upgrade.
+          </p>
+        {% elif not team.is_ltd and exceeds_per_integration_row_limit %}
+          <p>
+            The total rows synced is <strong>{{ object.num_rows }}</strong>,
+            which exceeds your rows per integration limit of <strong>{{ project.team.rows_per_integration_limit|intcomma }}</strong>.
+          </p>
+
+          <p class="alert">
+            You can either reduce your row count, or reach out for an upgrade.
+          </p>
         {% else %}
-        <p>This will add a total of <strong>{{ object.num_rows|intcomma }}</strong> rows to your team.</p>
+          {% if team.is_ltd %}
+            <p>This will import total of <strong>{{ object.num_rows|intcomma }}</strong> rows to your team.</p>
+          {% endif %}
 
-        <p>
-          You can <a class="link" href="{% url 'project_integrations:detail' project.id object.id %}">preview</a> the data
-          and <a class="link" href="{% url 'project_integrations:configure' project.id object.id %}">re-configure</a> the import
-          now{% if object.kind != 'upload' %}, or come back later at any time{% endif %}.
-        </p>
+          <p>
+            You can <a class="link" href="{% url 'project_integrations:detail' project.id object.id %}">preview</a> the data
+            and <a class="link" href="{% url 'project_integrations:configure' project.id object.id %}">re-configure</a> the import
+            now{% if object.kind != 'upload' %}, or come back later at any time{% endif %}.
+          </p>
 
-        <p class="alert">
-          This data source will be available in your project after you confirm.
-        </p>
+          <p class="alert">
+            This data source will be available in your project after you confirm.
+          </p>
 
-        <div class="flex gap-3">
-          <a
-            href="{% url 'project_integrations:configure' project.id object.id %}"
-            class="button button--tertiary w-1/2"
-          >
-            Reconfigure
-          </a>
+          <div class="flex gap-3">
+            <a
+              href="{% url 'project_integrations:configure' project.id object.id %}"
+              class="button button--tertiary w-1/2"
+            >
+              Reconfigure
+            </a>
 
-          <form
-            method="POST"
-            action="{{ request.get_full_path }}"
-            class="form--no-layout w-1/2"
-          >
-            {% csrf_token %}
-  
-            <button type="submit" class="button button--success w-full">
-              Confirm
-            </button>
-          </form>
-        </div>
+            <form
+              method="POST"
+              action="{{ request.get_full_path }}"
+              class="form--no-layout w-1/2"
+            >
+              {% csrf_token %}
+    
+              <button type="submit" class="button button--success w-full">
+                Confirm
+              </button>
+            </form>
+          </div>
         {% endif %}
       {% else %}
       <p>

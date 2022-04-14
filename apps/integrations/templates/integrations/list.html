@@ -44,11 +44,11 @@
 
   <p class="my-7 text-black-50">
     Build reliable, automated reporting with our connectors and custom APIs.
-    {% if team.plan.name == 'Free' %}Available on a paid plan, <a class="link" href="{% url 'teams:pricing' team.id %}">learn more</a>.{% endif %}
+    {% if team.is_free %}Available on a paid plan, <a class="link" href="{% url 'teams:pricing' team.id %}">learn more</a>.{% endif %}
   </p>
 
   <div class="flex gap-8 mt-7">
-    {% if team.plan.name == 'Free' %}
+    {% if team.is_free %}
       <button class="button button--tertiary flex-1 disabled">
         Add a connector
       </button>
@@ -98,7 +98,7 @@
             <i class="fas fa-fw fa-file-spreadsheet mr-4"></i> Add Sheet
           </a>
 
-          {% if team.plan.name == 'Free' %}
+          {% if team.is_free %}
             <button disabled class="list__item list__item--interactive disabled">
               <i class="fas fa-fw fa-plus mr-4"></i> New Connector
             </button>
