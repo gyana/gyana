@@ -3,17 +3,51 @@ tiers:
     description: Ideal for personal use and individuals at early stage companies.
     includedHeader: What's included
     includedFeatures:
-      - 50,000 rows synced
-      - Pre-built integrations
+      - Google Sheets and CSV
       - Build custom reports
+      - Live chat
+    features:
+      Integrations:
+        Google Sheets: true
+        CSV: true
+        Rows synced per integration: 100,000
+      Reports:
+        Projects: 3
+      Support:
+        Live chat: true
+      Other:
+        Shareable URLs: true
+        HTML Embed: true
   - name: Pro
     description: Ideal for founders, analysts and marketing teams at 10 to 25-person companies.
     includedHeader: Everything in free, plus
     price: 99
     includedFeatures:
-      - 10,000,000 rows synced
+      - All integrations
       - Report automation
       - Dedicated support
+    features:
+      Integrations:
+        Google Sheets: true
+        CSV: true
+        Custom API & Webhooks: true
+        Databases: true
+        Applications: true
+        Custom integration: Add-on
+        Accounts per integration: 1
+        Rows synced per integration: 10,000,000
+      Reports:
+        Projects: Unlimited
+        Report automation: Daily
+      Support:
+        Live chat: true
+        Shared Slack Channel: true
+        Report setup: Add-on
+      Other:
+        Shareable URLs: true
+        HTML Embed: true
+        Remove Gyana branding: true
+        White-labelling: Add-on
   - name: Enterprise
     description: Ideal for 50 to 1,000-person companies with an existing data warehouse.
     includedHeader: Everything in pro, plus
@@ -21,6 +55,57 @@ tiers:
       - Bring your own warehouse
       - Hosted in your cloud
       - Solution architect
+    features:
+      Integrations:
+        Google Sheets: true
+        CSV: true
+        Custom API & Webhooks: true
+        Applications: true
+        Databases: true
+        Custom integration: true
+        Accounts per integration: Custom
+        Rows synced per integration: Custom
+      Reports:
+        Projects: Unlimited
+        Report automation: Custom
+      Support:
+        Live chat: true
+        Shared Slack Channel: true
+        Report setup: true
+        Solution architect: true
+      Other:
+        Shareable URLs: true
+        HTML Embed: true
+        Remove Gyana branding: true
+        White-labelling: true
+        Okta Single Sign-On: true
+        Custom billing & MSA: true
+
+features:
+  Integrations:
+    - Google Sheets
+    - CSV
+    - Custom API & Webhooks
+    - Applications
+    - Databases
+    - Custom integration
+    - name: Accounts per integration
+      description: E.g. How many Shopify stores, Google Ads accounts or Postgres databases you can connect. Excludes Google Sheets, CSV, custom API and webhooks, which are unlimited.
+    - name: Rows synced per integration
+      description: Total rows synced to Gyana from each data source e.g. Shopify store.
+  Reports:
+    - Projects
+    - Report automation
+  Support:
+    - Live chat
+    - Shared Slack Channel
+    - Report setup
+    - Solution architect
+  Other:
+    - HTML Embed
+    - White-labelling
+    - Okta Single Sign-On
+    - Custom billing & MSA
 addons:
   - name: Report setup
     summary: Our data experts will understand your business use case, and build your reports from scratch. We've done it for hundreds of companies.
@@ -34,7 +119,7 @@ addons:
   - name: Custom integrations
     summary: We can build you a custom data pipeline for your source. It will sync historical data and daily updates into Gyana.
     features:
-      - Saas
+      - Applications
       - Databases
       - Warehouse
       - Cloud
@@ -43,6 +128,7 @@ addons:
       - Feeds
   - name: Agency
     summary: Setup Gyana to manage multiple clients, in your own branded portal. Partner with us for exclusive insights, templates and training.
+    note: Billed per client
     features:
       - Client management
       - White-label

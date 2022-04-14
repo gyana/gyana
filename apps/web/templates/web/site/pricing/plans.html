@@ -101,7 +101,7 @@
           href="{% external_url 'request_demo' %}"
           class="button button--primary mr-1"
         >
-          Book a demo
+          Get in contact
         </a>
         <span class="text-gray-600 text-base"> to learn more</span>
       </div>
@@ -124,6 +124,9 @@
                     <span class="text-sm font-normal text-gray-600">Starting at</span>
                     <span class="text-xl font-bold text-gray-900">{{ addon.price }}</span>
                   </div>
+                {% endif %}
+                {% if addon.note %}
+                  <span class="text-sm font-normal text-gray-600">{{ addon.note }}</span>
                 {% endif %}
               </div>
             </div>
