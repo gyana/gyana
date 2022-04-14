@@ -59,6 +59,9 @@ class SheetCreateForm(FormExtraMixin, BaseModelForm):
         return url
 
     def clean_cell_range(self):
+        if not self.cleaned_data.get("url"):
+            raise ValidationError("Sheet URL is required")
+
         url = self.cleaned_data["url"]
         sheet_name = self.cleaned_data["sheet_name"]
         cell_range = self.cleaned_data["cell_range"]

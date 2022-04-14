@@ -55,7 +55,8 @@ def test_sheet_create(
     # create
     r = client.get(f"{LIST}/sheets/new")
     assertOK(r)
-    assertFormRenders(r, ["url", "is_scheduled"])
+    # Configuration shows up at the same page now
+    assertFormRenders(r, ["url", "is_scheduled", "cell_range", "sheet_name"])
 
     r = client.post(
         f"{LIST}/sheets/new", data={"url": SHEETS_URL, "is_scheduled": True}
@@ -68,21 +69,23 @@ def test_sheet_create(
     assert integration.created_by == logged_in_user
     DETAIL = f"/projects/{project.id}/integrations/{integration.id}"
 
-    assertRedirects(r, f"{DETAIL}/configure", status_code=303)
+    assertRedirects(r, f"{DETAIL}/load", status_code=303, target_status_code=302)
 
-    # configure
+    # Task should have ran already
+    assert integration.runs.count() == 1
+
+    # Test the configure page works
     r = client.get(f"{DETAIL}/configure")
     assertOK(r)
     # todo: fix this!
     assertFormRenders(r, ["name", "sheet_name", "cell_range"])
 
-    assert bigquery.query.call_count == 0
+    # Import should have happened already
+    assert bigquery.query.call_count == 1
 
     # complete the sync
     # it will happen immediately as celery is run in eager mode
     r = client.post(f"{DETAIL}/configure", data={"cell_range": CELL_RANGE})
-
-    assert bigquery.query.call_count == 1
 
     # validate the sql and external table configuration
     table = integration.table_set.first()
@@ -99,8 +102,8 @@ def test_sheet_create(
     r = client.get(f"{DETAIL}/load")
     assertRedirects(r, f"{DETAIL}/done")
 
-    # validate the run and task result exist
-    assert integration.runs.count() == 1
+    # validate the run and task result exist, both times
+    assert integration.runs.count() == 2
     run = integration.runs.first()
     assert run.result is not None
     assert run.result.status == states.SUCCESS
@@ -120,7 +123,7 @@ def test_validation_failures(client, logged_in_user, sheet_factory, sheets):
 
     r = client.get(f"{LIST}/sheets/new")
     assertOK(r)
-    assertFormRenders(r, ["is_scheduled", "url"])
+    assertFormRenders(r, ["is_scheduled", "url", "cell_range", "sheet_name"])
 
     # not a valid url
     r = client.post(
