@@ -75,33 +75,33 @@
 
   <div class="flex ml-4">
     {% if project.team.enabled %}
-    <div data-controller='popover'>
-      <button class="button button--sm">
-        New Integration <i class="fas fa-fw fa-angle-up fa-rotate-180"></i>
-      </button>
+      <div data-controller="popover">
+        <button class="button button--dropdown button--sm">
+          New Integration <i class="fas fa-fw fa-angle-down"></i>
+        </button>
 
-      <div data-popover-target="body" class="list list--bordered" style="margin-top:6px;">
-        <a class="list__item list__item--interactive" href="{% url 'project_integrations_uploads:create' project.id %}">
-          <i class="fas fa-fw fa-upload mr-4"></i> Upload CSV
-        </a>
+        <div data-popover-target="body" class="list list--bordered" style="margin-top:6px;">
+          <a class="list__item list__item--interactive" href="{% url 'project_integrations_uploads:create' project.id %}">
+            <i class="fas fa-fw fa-upload mr-4"></i> Upload CSV
+          </a>
 
-        <a class="list__item list__item--interactive" href="{% url 'project_integrations_sheets:create' project.id %}">
-          <i class="fas fa-fw fa-file-spreadsheet mr-4"></i> Add Sheet
-        </a>
+          <a class="list__item list__item--interactive" href="{% url 'project_integrations_sheets:create' project.id %}">
+            <i class="fas fa-fw fa-file-spreadsheet mr-4"></i> Add Sheet
+          </a>
 
-        <a class="list__item list__item--interactive" href="{% url 'project_integrations_connectors:create' project.id %}">
-          <i class="fas fa-fw fa-plus mr-4"></i> New Connector
-        </a>
+          <a class="list__item list__item--interactive" href="{% url 'project_integrations_connectors:create' project.id %}">
+            <i class="fas fa-fw fa-plus mr-4"></i> New Connector
+          </a>
 
-        <a class="list__item list__item--interactive" href="{% url 'project_integrations_customapis:create' project.id %}">
-          <i class="fas fa-fw fa-brackets-curly mr-4"></i> Custom API
-        </a>
+          <a class="list__item list__item--interactive" href="{% url 'project_integrations_customapis:create' project.id %}">
+            <i class="fas fa-fw fa-brackets-curly mr-4"></i> Custom API
+          </a>
+        </div>
       </div>
-    </div>
     {% else %}
-    <button disabled class="button button--sm disabled">
-      New Integration <i class="fas fa-fw fa-angle-up fa-rotate-180"></i>
-    </button>
+      <button disabled class="button button--sm disabled">
+        New Integration <i class="fas fa-fw fa-angle-down"></i>
+      </button>
     {% endif %}
   </div>
 </div>
