@@ -121,6 +121,11 @@
                   widget-card__visual--view
                   {% if widget.page.dashboard.show_widget_border %}widget-card__visual--border{% endif %}
                 "
+                style="
+                  {% if widget.page.dashboard.widget_border_color %}border-color: {{ widget.page.dashboard.widget_border_color }};{% endif %}
+                  {% if widget.page.dashboard.widget_border_radius %}border-radius: {{ widget.page.dashboard.widget_border_radius }}px;{% endif %}
+                  {% if widget.page.dashboard.widget_border_thickness %}border-width: {{ widget.page.dashboard.widget_border_thickness }}px;{% endif %}
+                "
               >
                 {% if widget.page.dashboard.show_widget_headers %}
                   {% include 'widgets/_widget_title.html' with object=widget%}
