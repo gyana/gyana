@@ -1,4 +1,5 @@
 import json
+import re
 from graphlib import CycleError, TopologicalSorter
 from uuid import uuid4
 
@@ -157,7 +158,19 @@ def duplicate_project(project_id, user_id):
     project = Project.objects.get(pk=project_id)
 
     with transaction.atomic():
-        clone = project.make_clone({"name": f"Copy of {project.name}"})
+        new_project_name = f"Copy of {project.name}"
+        name_regex = f"{new_project_name} ([0-9]*)"
+        team_project_names = [
+            int(match.group(1)) if (match := re.search(name_regex, p.name)) else 1
+            for p in project.team.project_set.filter(
+                name__startswith=new_project_name
+            ).all()
+        ]
+
+        if team_project_names:
+            new_project_name += f" {max(team_project_names)+1}"
+
+        clone = project.make_clone({"name": new_project_name})
 
         # Replace the table dependencies of input_nodes
         tables = Table.objects.filter(project=clone).all()

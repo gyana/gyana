@@ -6,6 +6,7 @@ from django.utils import timezone
 from apps.integrations.models import Integration
 from apps.nodes.models import Node
 from apps.projects import tasks
+from apps.projects.models import Project
 from apps.runs.models import GraphRun, JobRun
 from apps.workflows.models import Workflow
 
@@ -135,3 +136,22 @@ def test_run_project(
 
     assert graph_run.runs.count() == 2
     assert {run.source_obj for run in graph_run.runs.all()} == {integration, workflow_2}
+
+
+PROJECT_NAME = "Mission possible"
+
+
+def test_project_duplication_naming(project_factory, user):
+    project = project_factory(name=PROJECT_NAME)
+
+    tasks.duplicate_project(project.id, user.id)
+    duplicate_1 = Project.objects.order_by("-created").first()
+    assert duplicate_1.name == f"Copy of {PROJECT_NAME}"
+
+    tasks.duplicate_project(project.id, user.id)
+    duplicate_2 = Project.objects.order_by("-created").first()
+    assert duplicate_2.name == f"Copy of {PROJECT_NAME} 2"
+
+    tasks.duplicate_project(project.id, user.id)
+    duplicate_3 = Project.objects.order_by("-created").first()
+    assert duplicate_3.name == f"Copy of {PROJECT_NAME} 3"
