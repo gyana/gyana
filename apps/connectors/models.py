@@ -292,7 +292,9 @@ class Connector(DirtyFieldsMixin, BaseModel):
         # is to list all connectors via /groups/{{ group_id }}/connectors and
         # sync changes locally every 10 minutes
 
-        connectors = Connector.objects.all()
+        connectors = Connector.objects.exclude(
+            sync_state=Connector.SyncState.SUNSET
+        ).all()
         connectors_dict = {c.fivetran_id: c for c in connectors}
 
         for data in clients.fivetran().list():

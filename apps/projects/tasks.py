@@ -159,7 +159,7 @@ def duplicate_project(project_id, user_id):
 
     with transaction.atomic():
         new_project_name = f"Copy of {project.name}"
-        name_regex = f"{new_project_name} ([0-9]*)"
+        name_regex = f"{new_project_name} ([0-9]+)"
         team_project_names = [
             int(match.group(1)) if (match := re.search(name_regex, p.name)) else 1
             for p in project.team.project_set.filter(
