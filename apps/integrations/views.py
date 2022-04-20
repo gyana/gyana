@@ -103,11 +103,45 @@ class IntegrationRuns(ReadyMixin, SingleTableMixin, DetailView):
 class IntegrationSettings(ProjectMixin, TurboUpdateView):
     template_name = "integrations/settings.html"
     model = Integration
-    form_class = IntegrationUpdateForm
+
+    def get_form_instance(self):
+        return self.object.source_obj
+
+    def get_form_class(self):
+        if self.object.kind in [Integration.Kind.SHEET, Integration.Kind.CUSTOMAPI]:
+            return KIND_TO_FORM_CLASS[self.object.kind]
+
+        return IntegrationUpdateForm
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs.update({"instance": self.object.source_obj})
+
+        return kwargs
+
+    def form_valid(self, form):
+        with transaction.atomic():
+            form.save()
+            for formset in form.get_formsets().values():
+                if formset.is_valid():
+                    formset.save()
+
+        # Do not run the integration if the only change is scheduling
+        if not form.has_changed() or form.changed_data == ["is_scheduled"]:
+            return redirect(
+                reverse(
+                    "project_integrations:settings",
+                    args=(self.project.id, self.object.id),
+                )
+            )
+
+        run_integration(self.object.kind, self.object.source_obj, self.request.user)
+
+        return redirect(self.get_success_url())
 
     def get_success_url(self) -> str:
         return reverse(
-            "project_integrations:settings", args=(self.project.id, self.object.id)
+            "project_integrations:load", args=(self.project.id, self.object.id)
         )
 
 

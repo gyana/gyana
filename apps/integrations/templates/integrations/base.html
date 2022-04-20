@@ -57,18 +57,22 @@
   {% endif %}
 </div>
 
-<nav id='tabbar' class="tabbar tabbar--top">
-  {% if object.ready or object.state == 'done' %}
-    <a class="tabbar__link {% if request.resolver_match.url_name == 'detail' %} tabbar__link--active {% endif %}"
-      href="{% url 'project_integrations:detail' project.id object.id %}">
-      Overview
-    </a>
-  {% endif %}
+<nav id="tabbar" class="tabbar bg-white">
+  <div class="tabbar__item" data-controller="tooltip" data-tooltip-content="{{ object.state_text }}">
+    <i class="fas fa-fw {{ object.state_icon }}"></i>
+  </div>
+
   {% comment %} Uploads cannot be setup again after approval {% endcomment %}
   {% if not object.ready or object.kind != object.Kind.UPLOAD %}
     <a class="tabbar__link {% if request.resolver_match.url_name in 'configure,load,done,setup' %} tabbar__link--active {% endif %}"
       href="{% url 'project_integrations:done' project.id object.id %}">
       Sync
+    </a>
+  {% endif %}
+  {% if object.ready or object.state == 'done' %}
+    <a class="tabbar__link {% if request.resolver_match.url_name == 'detail' %} tabbar__link--active {% endif %}"
+      href="{% url 'project_integrations:detail' project.id object.id %}">
+      Overview
     </a>
   {% endif %}
   {% if object.ready %}

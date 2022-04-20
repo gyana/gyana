@@ -1,6 +1,7 @@
 import googleapiclient
 from django import forms
 from django.core.exceptions import ValidationError
+from django.db import transaction
 
 from apps.base import clients
 from apps.base.account import is_scheduled_paid_only
@@ -90,9 +91,20 @@ class SheetCreateForm(FormExtraMixin, BaseModelForm):
 
 
 class SheetUpdateForm(LiveFormsetMixin, BaseModelForm):
+    is_scheduled = forms.BooleanField(
+        required=False, label="Automatically sync new data"
+    )
+
     class Meta:
         model = Sheet
-        fields = ["sheet_name", "cell_range"]
+        fields = ["sheet_name", "cell_range", "is_scheduled"]
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["is_scheduled"].initial = self.instance.integration.is_scheduled
+        is_scheduled_paid_only(
+            self.fields["is_scheduled"], self.instance.integration.project
+        )
 
     def clean_cell_range(self):
         sheet_name = self.cleaned_data["sheet_name"]
@@ -108,3 +120,9 @@ class SheetUpdateForm(LiveFormsetMixin, BaseModelForm):
             raise ValidationError(e.reason.strip())
 
         return cell_range
+
+    def pre_save(self, instance):
+        with transaction.atomic():
+            self.instance.integration.is_scheduled = self.cleaned_data["is_scheduled"]
+            self.instance.integration.save()
+            self.instance.integration.project.update_schedule()

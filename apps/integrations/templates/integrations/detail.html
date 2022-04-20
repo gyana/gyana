@@ -53,9 +53,13 @@
             {% for table in tables %}
             <li>
               <p>
-                <a class="truncate hover:underline 
-                  {% if table.id|slugify == request.GET.table_id or not request.GET.table_id and forloop.counter0 == 0 %}text-blue{% endif %}"
-                  title="{{ table.bq_table }}" href="?table_id={{ table.id }}&view={{ request.GET.view }}">
+                <a
+                  class="
+                    truncate hover:underline 
+                    {% if table.id|slugify == request.GET.table_id or not request.GET.table_id and forloop.counter0 == 0 %}text-blue{% endif %}
+                  "
+                  title="{{ table.bq_table }}" href="?table_id={{ table.id }}&view={{ request.GET.view }}"
+                >
                   {{ table.humanize }}
                 </a>
               </p>
