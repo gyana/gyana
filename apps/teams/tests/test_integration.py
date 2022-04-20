@@ -337,7 +337,7 @@ def test_pro_upgrade_with_limits(
 
     r = client.get(f"{LIST}/connectors/new")
     assertOK(r)
-    assertLink(r, f"{LIST}/connectors/new?service=facebook_ads", "Facebook Ads")
+    assertLink(r, f"{LIST}/connectors/new?service=facebook_ads", "Import with Fivetran")
 
     connector_factory(integration__project=project, service="facebook_ads")
 
@@ -349,4 +349,4 @@ def test_pro_upgrade_with_limits(
     # pro tier cannot create two connectors in account
     r = client.get(f"{LIST}/connectors/new")
     assertOK(r)
-    assertNotLink(r, f"{LIST}/connectors/new?service=facebook_ads", "Facebook Ads")
+    assertNotLink(r, f"{LIST}/connectors/new?service=facebook_ads", "Import with Fivetran")
