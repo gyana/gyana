@@ -38,6 +38,8 @@ class InputNode(ChoiceWidget):
 
         context["widget"]["selected"] = value
         context["widget"]["name"] = name
+        context["previewOnClick"] = False
+
         return context
 
 

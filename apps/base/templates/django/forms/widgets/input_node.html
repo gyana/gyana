@@ -13,7 +13,9 @@
       value="{{ option.id }}" 
       class="checkbox__hidden"
       {% if option.id|add:0 == widget.selected|add:0 %}checked{% endif %}
-      {% comment %} data-action="click->tf-modal#preview" {% endcomment %}
+      {% if previewOnClick %}
+      data-action="click->tf-modal#preview"
+      {% endif %}
     />
 
     {% if option.image %}
