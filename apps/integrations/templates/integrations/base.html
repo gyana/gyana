@@ -57,45 +57,6 @@
   {% endif %}
 </div>
 
-{% if integration.ready %}
-  <div class="workflow-detail__header flex items-center space-x-2 p-4 pl-8 bg-white border-b border-gray">
-    <div class="flex items-center w-full">
-      <p>
-        <strong>{{ integration.num_rows|intcomma }}</strong> row{{ integration.num_rows|pluralize }} •
-        <strong>{{ integration.num_tables|intcomma }}</strong> table{{ integration.num_tables|pluralize }} •
-      </p>
-  
-      <p class="flex items-center gap-2 m-0">
-        {% if integration.created_by %}
-        <img
-          class="h-8 w-8 rounded-full ml-2"
-          src="{{ integration.created_by.avatar_url }}"
-          alt="{{ integration.created_by.get_display_name }}"
-        />
-        {% endif %}
-
-        <strong>{{ integration.created_by.get_display_name }}</strong> created this integration
-        <strong>{% include 'columns/natural_datetime.html' with datetime=integration.created %}</strong>
-
-        {% if object.kind == 'sheet' %}
-          • <turbo-frame id="sheets:status" src="{% url 'sheets:status' object.sheet.id %}">
-            {% include "sheets/status.html" with object=object.sheet %}
-          </turbo-frame>
-        {% elif object.kind == 'connector' %}
-          • <turbo-frame id="connectors:status" src="{% url 'connectors:status' object.connector.id %}">
-            {% include "connectors/status.html" with object=object.connector %}
-          </turbo-frame>
-        {% endif %}
-      </p>
-      {% if object.kind == 'connector' %}
-        <turbo-frame id="connectors:pause" class='ml-auto'>
-          {% include "connectors/pause.html" with object=object.connector %}
-        </turbo-frame>
-      {% endif %}
-    </div>
-  </div>
-{% endif %}
-
 <nav id='tabbar' class="tabbar tabbar--top">
   {% if object.ready or object.state == 'done' %}
     <a class="tabbar__link {% if request.resolver_match.url_name == 'detail' %} tabbar__link--active {% endif %}"
@@ -133,4 +94,43 @@
 <div id='main' class="flex flex-col flex-1 overflow-auto">
   {% block tab %}{% endblock %}
 </div>
+
+{% if integration.ready %}
+  <div class="workflow-detail__footer">
+    <div class="flex items-center w-full">
+      <p>
+        <strong>{{ integration.num_rows|intcomma }}</strong> row{{ integration.num_rows|pluralize }} •
+        <strong>{{ integration.num_tables|intcomma }}</strong> table{{ integration.num_tables|pluralize }} •
+      </p>
+  
+      <p class="flex items-center gap-2 m-0">
+        {% if integration.created_by %}
+        <img
+          class="h-8 w-8 rounded-full ml-2"
+          src="{{ integration.created_by.avatar_url }}"
+          alt="{{ integration.created_by.get_display_name }}"
+        />
+        {% endif %}
+
+        <strong>{{ integration.created_by.get_display_name }}</strong> created this integration
+        <strong>{% include 'columns/natural_datetime.html' with datetime=integration.created %}</strong>
+
+        {% if object.kind == 'sheet' %}
+          • <turbo-frame id="sheets:status" src="{% url 'sheets:status' object.sheet.id %}">
+            {% include "sheets/status.html" with object=object.sheet %}
+          </turbo-frame>
+        {% elif object.kind == 'connector' %}
+          • <turbo-frame id="connectors:status" src="{% url 'connectors:status' object.connector.id %}">
+            {% include "connectors/status.html" with object=object.connector %}
+          </turbo-frame>
+        {% endif %}
+      </p>
+      {% if object.kind == 'connector' %}
+        <turbo-frame id="connectors:pause" class='ml-auto'>
+          {% include "connectors/pause.html" with object=object.connector %}
+        </turbo-frame>
+      {% endif %}
+    </div>
+  </div>
+{% endif %}
 {% endblock %}
