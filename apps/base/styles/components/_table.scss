@@ -46,9 +46,17 @@
       &--string a::before {
         content: '\f031';
       }
-
+      
       &--time a::before {
+        content: '\f017';
+      }
+      
+      &--date a::before {
         content: '\f073';
+      }
+
+      &--datetime a::before {
+        content: '\f271';
       }
 
       &--boolean a::before {
