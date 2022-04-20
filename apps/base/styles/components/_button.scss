@@ -111,6 +111,13 @@ $button-colors: (
   padding: 0.8rem 1.2rem;
 }
 
+.button--xs {
+  font-size: 1.4rem;
+  line-height: 1.6rem;
+  max-height: 3.2rem;
+  padding: 0.6rem 1rem;
+}
+
 // Variants
 .button--rounded {
   border-radius: 50px;
