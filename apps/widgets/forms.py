@@ -88,8 +88,6 @@ class GenericWidgetForm(LiveFormsetForm):
         project = kwargs.pop("project", None)
         super().__init__(*args, **kwargs)
 
-        self.fields["tab"].value = tab
-
         self.fields["table"].queryset = (
             Table.available.filter(project=project)
             .exclude(
@@ -97,6 +95,12 @@ class GenericWidgetForm(LiveFormsetForm):
             )
             .order_by("updated")
         )
+
+        table = self.get_live_field("table")
+        if table:
+            self.fields["tab"].initial = self.Tab.CONFIGURE
+        else:
+            self.fields["tab"].initial = tab
 
         # https://stackoverflow.com/a/30766247/15425660
         self.fields["kind"].choices = [
@@ -106,7 +110,6 @@ class GenericWidgetForm(LiveFormsetForm):
             not in [Widget.Kind.TEXT, Widget.Kind.IMAGE, Widget.Kind.IFRAME]
         ]
 
-        table = self.get_live_field("table")
         schema = (
             (table if isinstance(table, Table) else Table.objects.get(pk=table)).schema
             if table
