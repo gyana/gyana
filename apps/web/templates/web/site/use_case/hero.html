@@ -38,8 +38,7 @@
       </div>
 
       <div class="relative flex flex-col items-center mt-12 lg:mt-0 lg:col-span-3">
-        <img class="object-cover" src="{% static 'images/site/integration/hero.svg' %}" />
-        {% heroicon hero.icon class="absolute isometric text-indigo-600" style="solid" %}
+        {% include 'web/site/use_case/svg/'|add:view.kwargs.id|add:'.svg' %}
       </div>
     </div>
   </div>

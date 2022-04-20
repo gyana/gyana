@@ -31,8 +31,8 @@ preview mode.
         "
         style="
           {% if object.page.dashboard.widget_border_color %}border-color: {{ object.page.dashboard.widget_border_color }};{% endif %}
-          {% if object.page.dashboard.widget_border_radius %}border-radius: {{ object.page.dashboard.widget_border_radius }}px;{% endif %}
-          {% if object.page.dashboard.widget_border_thickness %}border-width: {{ object.page.dashboard.widget_border_thickness }}px;{% endif %}
+          {% if object.page.dashboard.widget_border_radius is not None %}border-radius: {{ object.page.dashboard.widget_border_radius }}px;{% endif %}
+          {% if object.page.dashboard.widget_border_thickness is not None %}border-width: {{ object.page.dashboard.widget_border_thickness }}px;{% endif %}
         "
       >
         {% block widget %}

@@ -10,16 +10,26 @@ from .models import Sheet
 from .sheets import get_cell_range, get_sheets_id_from_url
 
 
-class SheetCreateForm(BaseModelForm):
+class FormExtraMixin:
+    def __init__(self, *args, **kwargs):
+        if not hasattr(self, "extra_fields"):
+            raise ValueError("FormExtraMixin has no extra_fields specified.")
+
+        super().__init__(*args, **kwargs)
+
+
+class SheetCreateForm(FormExtraMixin, BaseModelForm):
+    extra_fields = ["sheet_name", "cell_range"]
+
     is_scheduled = forms.BooleanField(
         required=False, label="Automatically sync new data"
     )
 
     class Meta:
         model = Sheet
-        fields = ["url"]
-        help_texts = {}
-        labels = {"url": "Google Sheets URL"}
+        fields = ["url", "sheet_name", "cell_range"]
+        help_texts = {"url": "You can revoke our access at any time"}
+        labels = {"url": "Enter your Google Sheet URL"}
 
     def __init__(self, *args, **kwargs):
         url = kwargs.pop("url")
@@ -47,6 +57,25 @@ class SheetCreateForm(BaseModelForm):
             )
 
         return url
+
+    def clean_cell_range(self):
+        if not self.cleaned_data.get("url"):
+            raise ValidationError("Sheet URL is required")
+
+        url = self.cleaned_data["url"]
+        sheet_name = self.cleaned_data["sheet_name"]
+        cell_range = self.cleaned_data["cell_range"]
+        sheet_id = get_sheets_id_from_url(url)
+
+        client = clients.sheets()
+        try:
+            client.spreadsheets().get(
+                spreadsheetId=sheet_id, ranges=get_cell_range(sheet_name, cell_range)
+            ).execute()
+        except googleapiclient.errors.HttpError as e:
+            raise ValidationError(e.reason.strip())
+
+        return cell_range
 
     def pre_save(self, instance):
         instance.create_integration(

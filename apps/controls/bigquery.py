@@ -423,9 +423,9 @@ def slice_query(query, column, control, use_previous_period):
     ):
         query = query.mutate(**{column: query[column].to_timestamp()})
     if control.start:
-        query = query[query[column] > control.start]
+        query = query[query[column] >= control.start]
 
     if control.end:
-        query = query[query[column] < control.end]
+        query = query[query[column] <= control.end]
 
     return query

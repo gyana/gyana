@@ -6,7 +6,7 @@ from django.utils import timezone
 from apps.integrations import periodic
 from apps.integrations.models import Integration
 
-PENDING_DELETE_AFTER_DAYS = 7
+PENDING_DELETE_AFTER_DAYS = 30
 
 pytestmark = pytest.mark.django_db
 

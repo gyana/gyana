@@ -1,18 +1,26 @@
-{% load heroicons %}
+{% load heroicons site_tags %}
 
-<div>
-  <div class="flex text-center justify-center flex-wrap mx-auto max-w-md sm:max-w-3xl lg:max-w-7xl py-8 opacity-50">
+<div class="bg-gray-20">
+  <div class="flex text-center justify-center flex-wrap mx-auto max-w-md sm:max-w-3xl lg:max-w-7xl">
     {% for quote in content.quotes %}
-      <div class="{% if forloop.counter0 > 3%}hidden lg:{% endif %}flex p-2 lg:p-4 flex-col items-center">
+      <div class="flex p-2 lg:p-4 flex-col items-center opacity-50">
         <div class="flex">
           {% for idx in '01234'|make_list %}
               {% heroicon 'star' class="h-4 w-4 text-yellow-400" style="solid" %}
           {% endfor %}
         </div>
-        <blockquote class="lg:block max-w-md text-xs lg:text-base">
+        <blockquote class="lg:block max-w-md text-xs lg:text-sm">
           <i>&ldquo;{{ quote }}&rdquo;</i>
         </blockquote>
       </div>
     {% endfor %}
+
+    <div class="p-2 lg:p-4 flex items-center">
+      <a href="{% external_url 'appsumo' %}" class="flex text-xs lg:text-sm text-gray-600 items-center gap-x-1 bg-gray-50 hover:bg-gray border border-gray px-2 py-1 rounded">
+        Rated 4.7
+        <span>{% heroicon 'star' class="h-4 w-4 text-yellow-400" style="solid" %}</span>
+        on AppSumo
+      </a>
+    </div>
   </div>
 </div>

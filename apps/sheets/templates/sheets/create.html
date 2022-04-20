@@ -5,13 +5,11 @@
 {% block app %}
 <div class="flex flex-1 justify-center items-center">
   <div class="flex flex-col max-w-3xl">
-    <div class="flex flex-col text-center mb-7">
-      <h1>
-        Connect a Google Sheet
-        {% link_article 'integrations' 'sheet' %}
-        {% link_video 'sheet' %}
-      </h1>
-      <p></p>
+    <div class="flex items-center justify-center gap-3 mb-7">
+      <h1>Connect a Google Sheet</h1>
+
+      {% link_article 'integrations' 'sheet' %}
+      {% link_video 'sheet' %}
     </div>
 
     <p class="mb-2">
@@ -24,9 +22,6 @@
         <i class='fa fa-clipboard'></i>
       </button>
     </div>
-
-    <p class="alert mt-6">You can revoke our access at any time.</p>
-    
 
     <form method="post" class="mt-7">
       {% csrf_token %}

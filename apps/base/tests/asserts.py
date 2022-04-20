@@ -29,6 +29,10 @@ def assertLink(response, url, text=None, title=None, tooltip=None, total=1):
     assert len(matches) == total, f"Possible matches are {[match for match in matches]}"
 
 
+def assertNotLink(*args, **kwargs):
+    return assertLink(*args, **kwargs, total=0)
+
+
 def assertSelectorLength(response, selector, length):
     __tracebackhide__ = True
 

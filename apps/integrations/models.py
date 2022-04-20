@@ -15,7 +15,7 @@ from apps.widgets.models import Widget
 
 from .clone import clone_connector_and_tables
 
-PENDING_DELETE_AFTER_DAYS = 7
+PENDING_DELETE_AFTER_DAYS = 30
 
 
 class IntegrationsManager(models.Manager):

@@ -1,12 +1,24 @@
 {% load static %}
 
-<a class="card card--sm"
-  href="{% url 'project_integrations_connectors:create' project.id %}?service={{ service.id }}">
-  <div class="flex items-center gap-7">
-    <img style="height:2.4rem;"
-      src="{% static 'images/integrations/fivetran/'|add:service.icon_path %}"
-      alt="{{ service.name }}"
-    />
-    <h4 {% if service.is_beta %}class="beta"{% endif %}>{{ service.name }}</h4>
-  </div>
-</a>
+{% if team.is_pro and service.id in disabled_services %}
+  <button class="card card--sm disabled" style="background-color: #e6e6e6;">
+    <div class="flex items-center gap-7">
+      <img style="height:2.4rem;"
+        src="{% static 'images/integrations/fivetran/'|add:service.icon_path %}"
+        alt="{{ service.name }}"
+      />
+      <h4 {% if service.is_beta %}class="beta"{% endif %}>{{ service.name }}</h4>
+    </div>
+  </button>
+{% else %}
+  <a class="card card--sm"
+    href="{% url 'project_integrations_connectors:create' project.id %}?service={{ service.id }}">
+    <div class="flex items-center gap-7">
+      <img style="height:2.4rem;"
+        src="{% static 'images/integrations/fivetran/'|add:service.icon_path %}"
+        alt="{{ service.name }}"
+      />
+      <h4 {% if service.is_beta %}class="beta"{% endif %}>{{ service.name }}</h4>
+    </div>
+  </a>
+{% endif %}

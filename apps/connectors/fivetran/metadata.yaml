@@ -36,13 +36,13 @@ adroll:
   name: AdRoll
   type: Marketing
 adwords:
-  description: Google Ads Reporting syncs Google search ad aggregate results
+  description: Google Ads is an online advertising platform.
   icon_path: adwords.png
   icon_url: https://fivetran.com/integrations/adwords/resources/google_ads.png
   id: adwords
   link_to_docs: https://fivetran.com/docs/applications/google-ads
   link_to_erd: https://fivetran.com/docs/applications/google-ads#schemainformation
-  name: Google Ads
+  name: Google Ads (AdWords)
   type: Marketing
 airtable:
   description: Airtable works like a spreadsheet but gives you the power of a database
@@ -54,15 +54,6 @@ airtable:
   link_to_erd: https://fivetran.com/docs/applications/airtable#schemainformation
   name: Airtable
   type: Productivity
-amazon_ads:
-  description: The key selling platform for online retail customers
-  icon_path: amazon_ads.svg
-  icon_url: https://fivetran.com/integrations/amazon_ads/resources/amazon-ads-logo.svg
-  id: amazon_ads
-  link_to_docs: https://fivetran.com/docs/applications/amazon-ads
-  link_to_erd: https://fivetran.com/docs/applications/amazon-ads#schemainformation
-  name: Amazon Ads
-  type: Marketing
 amplitude:
   description: Amplitude is the comprehensive product analytics software for web and
     mobile
@@ -480,8 +471,8 @@ facebook_ads:
   icon_path: facebook_ads.svg
   icon_url: https://fivetran.com/integrations/facebook/resources/facebook.svg
   id: facebook_ads
-  link_to_docs: https://fivetran.comdocs/applications/facebook-ads
-  link_to_erd: https://fivetran.comdocs/applications/facebook-ads#schemainformation
+  link_to_docs: https://fivetran.com/docs/applications/facebook-ads
+  link_to_erd: https://fivetran.com/docs/applications/facebook-ads#schemainformation
   name: Facebook Ads
   type: Marketing
 facebook_pages:
@@ -1335,30 +1326,6 @@ salesforce_sandbox:
   link_to_erd: https://fivetran.com/docs/applications/salesforce#schemainformation
   name: Salesforce sandbox
   type: Sales
-sap_hana:
-  description: SAP HANA is an in-memory relational database and application platform
-    that provides high-performance analytics and real-time data processing.
-  icon_path: sap_hana.jpeg
-  icon_url: https://fivetran.com/integrations/sap_s4hana/resources/sap-hana.jpeg
-  id: sap_hana
-  link_to_docs: https://fivetran.com/docs/databases/sap-hana
-  link_to_erd: https://fivetran.com/docs/databases/sap-hana#schemainformation
-  name: SAP HANA
-  type: Database
-sap_s4hana:
-  description: "SAP S/4 is an enterprise resource planning system that is built for\
-    \ businesses of all sizes \u2013 small, midsize, and large. SAP S/4 has modules\
-    \ specific to industries \u2013 from manufacturing to retail. The software supports\
-    \ and integrates almost every functional area of a business process from procurement\
-    \ of goods and services, sale and distribution, finance, accounting, human resource,\
-    \ manufacturing, production planning to logistics and warehouse management."
-  icon_path: sap_s4hana.svg
-  icon_url: https://fivetran.com/integrations/sap_s4hana/resources/sap-s4hana.svg
-  id: sap_s4hana
-  link_to_docs: https://fivetran.com/docs/applications/sap-s4
-  link_to_erd: https://fivetran.com/docs/applications/sap-s4#schemainformation
-  name: SAP S/4
-  type: Finance
 segment:
   description: Segment is an event tracking library.
   icon_path: segment.svg
@@ -1644,6 +1611,15 @@ zendesk_chat:
   link_to_docs: https://fivetran.com/docs/applications/zendesk-chat
   link_to_erd: https://fivetran.com/docs/applications/zendesk-chat#schemainformation
   name: Zendesk Chat
+  type: Support
+zendesk_sell:
+  description: Zendesk Sell is a sales CRM solution and sales force automation tool.
+  icon_path: zendesk_sell.svg
+  icon_url: https://fivetran.com/integrations/zendesk_sell/resources/zendesk_sell.svg
+  id: zendesk_sell
+  link_to_docs: https://fivetran.com/docs/applications/zendesk-sell
+  link_to_erd: https://fivetran.com/docs/applications/zendesk-sell#schemainformation
+  name: Zendesk Sell
   type: Support
 zendesk_sunshine:
   description: Zendesk Sunshine is an open and flexible CRM platform. It lets you

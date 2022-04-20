@@ -75,6 +75,11 @@ $button-colors: (
     align-items: center;
   }
 
+  &[aria-expanded*=true] .fa-angle-down::before,
+  [aria-expanded*=true] > & .fa-angle-down::before {
+    content: '\f00d';
+  }
+
   // Color variant generation
   @each $color, $value in $button-colors {
     &--#{$color} {

@@ -157,7 +157,7 @@ def test_integration_create_pending_load_and_approve(
     r = client.get(f"{LIST}/")
     assertOK(r)
     assertContains(r, f"Import a source of data")
-    assertLink(r, f"{LIST}/connectors/new", "Add a connector")
+    # connector link tested in team/account test
     assertLink(r, f"{LIST}/sheets/new", "Add a Google Sheet")
     assertLink(r, f"{LIST}/uploads/new", "Upload CSV")
 
@@ -172,7 +172,6 @@ def test_integration_create_pending_load_and_approve(
     r = client.get(f"{LIST}/")
     assertOK(r)
     assertContains(r, "New Integration")
-    assertLink(r, f"{LIST}/connectors/new", "New Connector")
     assertLink(r, f"{LIST}/sheets/new", "Add Sheet")
     assertLink(r, f"{LIST}/uploads/new", "Upload CSV")
 

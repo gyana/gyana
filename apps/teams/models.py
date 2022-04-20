@@ -18,6 +18,7 @@ from .config import PLANS
 from .flag import Flag  # noqa
 from .utils import getRandomColor
 
+PRO_ROW_LIMIT = 100_000_000  # soft internal limit
 WARNING_BUFFER = 0.2
 
 
@@ -139,6 +140,14 @@ class Team(DirtyFieldsMixin, BaseModel, SafeDeleteModel):
         )
 
     @property
+    def is_ltd(self):
+        return self.active_codes > 0
+
+    @property
+    def is_pro(self):
+        return self.has_subscription or self.recently_completed_checkout
+
+    @property
     def plan(self):
         from apps.appsumo.account import get_deal
 
@@ -146,9 +155,7 @@ class Team(DirtyFieldsMixin, BaseModel, SafeDeleteModel):
             return {**PLANS["appsumo"], **get_deal(self.appsumocode_set.all())}
 
         if self.has_subscription:
-            if self.active_subscription.plan.id == settings.DJPADDLE_BUSINESS_PLAN_ID:
-                return PLANS["business"]
-            elif self.active_subscription.plan.id == settings.DJPADDLE_PRO_PLAN_ID:
+            if self.active_subscription.plan.id == settings.DJPADDLE_PRO_PLAN_ID:
                 return PLANS["pro"]
 
         return PLANS["free"]
@@ -162,7 +169,14 @@ class Team(DirtyFieldsMixin, BaseModel, SafeDeleteModel):
     def row_limit(self):
         from .account import get_row_limit
 
+        if self.plan["name"] == "Pro":
+            return PRO_ROW_LIMIT
+
         return get_row_limit(self)
+
+    @property
+    def rows_per_integration_limit(self):
+        return self.plan.get("rows_per_integration", 0)
 
     @property
     def credits(self):
@@ -213,6 +227,9 @@ class Team(DirtyFieldsMixin, BaseModel, SafeDeleteModel):
 
     def check_new_rows(self, num_rows):
         return self.add_new_rows(num_rows) > self.row_limit
+
+    def check_new_rows_per_integration(self, num_rows):
+        return num_rows > self.rows_per_integration_limit
 
     @property
     def recently_completed_checkout(self):

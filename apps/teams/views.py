@@ -13,12 +13,7 @@ from djpaddle.views import PaddlePostCheckoutApiView as BasePaddlePostCheckoutAp
 from apps.base.analytics import CHECKOUT_COMPLETED_EVENT, CHECKOUT_OPENED_EVENT
 from apps.base.views import TurboCreateView, TurboUpdateView
 
-from .forms import (
-    MembershipUpdateForm,
-    TeamCreateForm,
-    TeamSubscriptionForm,
-    TeamUpdateForm,
-)
+from .forms import MembershipUpdateForm, TeamCreateForm, TeamUpdateForm
 from .mixins import TeamMixin
 from .models import Membership, Team
 from .paddle import get_plan_price_for_currency, list_payments_for_team
@@ -36,13 +31,12 @@ class TeamCreate(TurboCreateView):
         return kwargs
 
     def get_success_url(self) -> str:
-        return reverse("teams:detail", args=(self.object.id,))
+        return reverse("teams:pricing", args=(self.object.id,))
 
 
-class TeamPlans(TurboUpdateView):
+class TeamPricing(DetailView):
     model = Team
-    form_class = TeamCreateForm
-    template_name = "teams/plans.html"
+    template_name = "teams/pricing.html"
     pk_url_kwarg = "team_id"
 
     def get(self, request, *args, **kwargs):
@@ -52,30 +46,6 @@ class TeamPlans(TurboUpdateView):
             return redirect("teams:subscription", team.id)
 
         return super().get(request, *args, **kwargs)
-
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs["user"] = self.request.user
-        return kwargs
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["paddle_pro_plan"] = Plan.objects.get(pk=settings.DJPADDLE_PRO_PLAN_ID)
-        context["paddle_business_plan"] = Plan.objects.get(
-            pk=settings.DJPADDLE_BUSINESS_PLAN_ID
-        )
-        context["DJPADDLE_VENDOR_ID"] = settings.DJPADDLE_VENDOR_ID
-        context["DJPADDLE_SANDBOX"] = settings.DJPADDLE_SANDBOX
-        return context
-
-    def get_success_url(self) -> str:
-        return reverse("teams:detail", args=(self.object.id,))
-
-
-class TeamPricing(DetailView):
-    model = Team
-    template_name = "teams/pricing.html"
-    pk_url_kwarg = "team_id"
 
 
 class TeamCheckout(DetailView):
@@ -92,9 +62,6 @@ class TeamCheckout(DetailView):
         context = super().get_context_data(**kwargs)
         context["plan"] = self.plan
         context["paddle_pro_plan"] = Plan.objects.get(pk=settings.DJPADDLE_PRO_PLAN_ID)
-        context["paddle_business_plan"] = Plan.objects.get(
-            pk=settings.DJPADDLE_BUSINESS_PLAN_ID
-        )
         context["DJPADDLE_VENDOR_ID"] = settings.DJPADDLE_VENDOR_ID
         context["DJPADDLE_SANDBOX"] = settings.DJPADDLE_SANDBOX
         return context
@@ -110,18 +77,14 @@ class PaddlePostCheckoutApiView(BasePaddlePostCheckoutApiView):
         return super().post(request, *args, **kwargs)
 
 
-class TeamSubscription(TurboUpdateView):
+class TeamSubscription(DetailView):
     model = Team
-    form_class = TeamSubscriptionForm
     template_name = "teams/subscription.html"
     pk_url_kwarg = "team_id"
 
-    def get_initial(self):
-        return {"plan": self.object.active_subscription.plan.id}
-
     @property
     def plan(self):
-        return Plan.objects.get(pk=self.get_form()["plan"].value())
+        return Plan.objects.get(pk=self.object.active_subscription.plan.id)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -131,9 +94,6 @@ class TeamSubscription(TurboUpdateView):
         context["DJPADDLE_VENDOR_ID"] = settings.DJPADDLE_VENDOR_ID
         context["DJPADDLE_SANDBOX"] = settings.DJPADDLE_SANDBOX
         return context
-
-    def get_success_url(self) -> str:
-        return reverse("teams:account", args=(self.object.id,))
 
 
 class TeamPayments(SingleTableMixin, DetailView):

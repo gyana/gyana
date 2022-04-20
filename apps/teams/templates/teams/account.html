@@ -23,7 +23,9 @@
         <div class="flex items-center mb-4">
           <h2>Gyana - <span>{{ team.plan.name }}</span></h2>
 
-          <a href="{% url 'teams:pricing' team.id %}" class="button button--sm button--success">Upgrade your plan</a>
+          {% if team.is_free %}
+            <a href="{% url 'teams:pricing' team.id %}" class="button button--sm button--success">Upgrade your plan</a>
+          {% endif %}
 
         </div>
         {% if team.is_free %}
@@ -35,10 +37,12 @@
       </header>
 
       <div class="account__plan card card--none">
-        <div class="w-full">
-          <p>Rows used</p>
-          <h4 class="h2">{{ team.row_count|intcomma }} / {{ team.row_limit|intcomma }}</h4>
-        </div>
+        {% if team.is_ltd %}
+          <div class="w-full">
+            <p>Rows used</p>
+            <h4 class="h2">{{ team.row_count|intcomma }} / {{ team.row_limit|intcomma }}</h4>
+          </div>
+        {% endif %}
 
         <div class="w-1/3">
           <p>Projects</p>

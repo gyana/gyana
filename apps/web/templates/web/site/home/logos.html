@@ -2,15 +2,15 @@
 
 <div class="bg-gray-20 border-b border-gray">
   <div class="max-w-7xl mx-auto py-12 px-8 sm:px-6 lg:px-0">
-    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-y-8">
-      {% for logo in content.logos|slice:":14" %}
+    <div class="grid grid-cols-4 md:grid-cols-5 gap-x-8 lg:grid-cols-10 gap-y-8">
+      {% for logo in content.logos|slice:":10" %}
         <div class="flex justify-center">
           <img class="logo w-full" src="{% static 'images/site/logos/'|add:logo|add:'.svg' %}" />
         </div>
       {% endfor %}
     </div>
-    <p class="mt-12 text-gray-600 text-center text-base">
-      From agencies to global enterprises, the world's most effective teams use Gyana to power their custom reports.
+    <p class="mt-12 text-gray-600 text-center text-sm">
+      Trusted by 2,000+ customers, from small businesses to global enterprises.
     </p>
   </div>
 </div>

@@ -21,14 +21,14 @@ DAVIDS_BIRTHDAY = dt.date(1992, 8, 3)
             CustomChoice.CUSTOM,
             SASCHAS_BIRTHDAY,
             None,
-            QUERY.format(f"`birthday` > DATE '{SASCHAS_BIRTHDAY.isoformat()}'"),
+            QUERY.format(f"`birthday` >= DATE '{SASCHAS_BIRTHDAY.isoformat()}'"),
             id="custom with start",
         ),
         pytest.param(
             CustomChoice.CUSTOM,
             None,
             SASCHAS_BIRTHDAY,
-            QUERY.format(f"`birthday` < DATE '{SASCHAS_BIRTHDAY.isoformat()}'"),
+            QUERY.format(f"`birthday` <= DATE '{SASCHAS_BIRTHDAY.isoformat()}'"),
             id="custom with end",
         ),
         pytest.param(
@@ -36,7 +36,7 @@ DAVIDS_BIRTHDAY = dt.date(1992, 8, 3)
             DAVIDS_BIRTHDAY,
             SASCHAS_BIRTHDAY,
             QUERY.format(
-                f"(`birthday` > DATE '{DAVIDS_BIRTHDAY.isoformat()}') AND\n      (`birthday` < DATE '{SASCHAS_BIRTHDAY.isoformat()}')"
+                f"(`birthday` >= DATE '{DAVIDS_BIRTHDAY.isoformat()}') AND\n      (`birthday` <= DATE '{SASCHAS_BIRTHDAY.isoformat()}')"
             ),
             id="custom with start and end",
         ),

@@ -1,5 +1,5 @@
 {% extends "teams/base.html" %}
 
 {% block app %}
-  <iframe class="h-full w-full" src="{% url 'web:pricing' %}?iframe=true"></iframe>
+  <iframe id="pricing" class="h-full w-full" src="{% url 'web:pricing' %}?iframe=true&team_id={{ team.id }}"></iframe>
 {% endblock %}

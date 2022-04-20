@@ -50,6 +50,10 @@ class Connector(DirtyFieldsMixin, BaseModel):
             "rescheduled",
             "Rescheduled - the sync is waiting until more API calls are available in the source service",
         )
+        SUNSET = (
+            "sunset",
+            "Sunset - this connector is no longer supported and won't sync.",
+        )
 
     class UpdateState(models.TextChoices):
         ON_SCHEDULE = (
@@ -288,7 +292,9 @@ class Connector(DirtyFieldsMixin, BaseModel):
         # is to list all connectors via /groups/{{ group_id }}/connectors and
         # sync changes locally every 10 minutes
 
-        connectors = Connector.objects.all()
+        connectors = Connector.objects.exclude(
+            sync_state=Connector.SyncState.SUNSET
+        ).all()
         connectors_dict = {c.fivetran_id: c for c in connectors}
 
         for data in clients.fivetran().list():
@@ -326,7 +332,8 @@ class Connector(DirtyFieldsMixin, BaseModel):
             self.paused = True
             self.sync_state = self.SyncState.PAUSED
 
-        self.update_kwargs_from_fivetran(data)
+        if self.sync_state != self.SyncState.SUNSET:
+            self.update_kwargs_from_fivetran(data)
 
         # update fivetran sync time if user has updated timezone/daily sync time
         # or daylight savings time is going in/out tomorrow

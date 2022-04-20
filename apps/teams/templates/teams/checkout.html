@@ -27,13 +27,9 @@
         <h2 class="mb-8">Unlock the full power of Gyana</h2>
 
         <ul class="flex flex-col gap-7">
-          {% if plan.id == paddle_business_plan.id %}
-            <li><p> <i class="fas fa-fw fa-check text-green"></i> Up to <strong>10 million</strong> rows of data</p></li>
-          {% else %}
-            <li><p> <i class="fas fa-fw fa-check text-green"></i> Up to <strong>1 million</strong> rows of data</p></li>
-          {% endif %}
-          <li><p> <i class="fas fa-fw fa-check text-green"></i> Unlimited collaboration</p></li>
-          <li><p> <i class="fas fa-fw fa-check text-green"></i> Priority support</p></li>
+          <li><p> <i class="fas fa-fw fa-check text-green"></i> Up to <strong>10,000,000</strong> rows synced</p></li>
+          <li><p> <i class="fas fa-fw fa-check text-green"></i> Report automation</p></li>
+          <li><p> <i class="fas fa-fw fa-check text-green"></i> Dedicated support</p></li>
           <li><p> <i class="fas fa-fw fa-check text-green"></i> Cancel anytime</p></li>
         </ul>
       </div>
@@ -42,7 +38,7 @@
         <h2 class="mb-8">Your subscription</h2>
           <div class="flex flex-row items-end">
             <h1 class="mr-2">Gyana Pro</h1>
-            <p><a class='link' href="{% url 'teams:plans' team.id %}" class="link">Change</a></p>
+            <p><a class='link' href="{% url 'teams:pricing' team.id %}" class="link">Change</a></p>
           </div>
 
           <h4 class="mt-8 mb-3">Your total is
