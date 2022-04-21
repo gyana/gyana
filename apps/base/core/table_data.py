@@ -95,31 +95,38 @@ class RequestConfig(BaseRequestConfig):
         return super().configure(table)
 
 
-TYPE_NAME = {
-    dt.Floating: "Numeric",
-    dt.Decimal: "Numeric",
-    dt.Integer: "Numeric",
-    dt.Int64: "Numeric",
-    dt.String: "String",
-    dt.Boolean: "Boolean",
-    dt.Time: "Time",
-    dt.Timestamp: "Date & Time",
-    dt.Date: "Date",
-    dt.Struct: "Dictionary",
-}
+def get_type_name(type_):
+    if isinstance(type_, (dt.Floating, dt.Integer, dt.Decimal)):
+        return "Numeric"
+    if isinstance(type_, dt.String):
+        return "String"
+    if isinstance(type_, dt.Boolean):
+        return "Boolean"
+    if isinstance(type_, (dt.Time)):
+        return "Time"
+    if isinstance(type_, dt.Date):
+        return "Date"
+    if isinstance(type_, dt.Timestamp):
+        return "Date & Time"
+    if isinstance(type_, dt.Struct):
+        return "Dictionary"
 
-TYPE_CLASS = {
-    dt.Floating: "column--numeric",
-    dt.Decimal: "column--numeric",
-    dt.Integer: "column--numeric",
-    dt.Int64: "column--numeric",
-    dt.String: "column--string",
-    dt.Boolean: "column--boolean",
-    dt.Time: "column--time",
-    dt.Timestamp: "column--datetime",
-    dt.Date: "column--date",
-    dt.Struct: "column--dict",
-}
+
+def get_type_class(type_):
+    if isinstance(type_, (dt.Floating, dt.Integer, dt.Decimal)):
+        return "column column--numeric"
+    if isinstance(type_, dt.String):
+        return "column column--string"
+    if isinstance(type_, dt.Boolean):
+        return "column column--boolean"
+    if isinstance(type_, dt.Time):
+        return "column column--time"
+    if isinstance(type_, dt.Date):
+        return "column column--date"
+    if isinstance(type_, dt.Timestamp):
+        return "column column--datetime"
+    if isinstance(type_, dt.Struct):
+        return "column column--dict"
 
 
 class BigQueryColumn(Column):
@@ -202,9 +209,9 @@ def get_table(schema, query, footer=None, settings=None, **kwargs):
             verbose_name=name,
             attrs={
                 "th": {
-                    "class": f"column {TYPE_CLASS.get(type_.__class__)}",
+                    "class": get_type_class(type_),
                     "data-controller": "tooltip",
-                    "data-tooltip-content": TYPE_NAME.get(type_.__class__),
+                    "data-tooltip-content": get_type_name(type_),
                 },
             },
             footer=footer.get(name) if footer else None,
