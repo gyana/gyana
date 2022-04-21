@@ -9,6 +9,7 @@ from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.functional import cached_property
+from honeybadger import honeybadger
 
 from apps.base import clients
 from apps.base.fields import ChoiceArrayField
@@ -287,6 +288,7 @@ class Connector(DirtyFieldsMixin, BaseModel):
 
     @staticmethod
     def sync_all_updates_from_fivetran():
+        from apps.connectors.fivetran.client import FivetranClientError
 
         # until Fivetran implements webhooks, the most reliable syncing method
         # is to list all connectors via /groups/{{ group_id }}/connectors and
@@ -299,9 +301,12 @@ class Connector(DirtyFieldsMixin, BaseModel):
 
         for data in clients.fivetran().list():
             # ignore orphaned connectors
-            if data["id"] in connectors_dict:
-                connector = connectors_dict[data["id"]]
-                connector.sync_updates_from_fivetran(data)
+            try:
+                if data["id"] in connectors_dict:
+                    connector = connectors_dict[data["id"]]
+                    connector.sync_updates_from_fivetran(data)
+            except FivetranClientError as e:
+                honeybadger.notify(e)
 
     def sync_updates_from_fivetran(self, data=None):
         from apps.connectors.fivetran.client import FivetranConnectorNotFound
