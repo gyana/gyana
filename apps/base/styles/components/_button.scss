@@ -38,7 +38,7 @@ $button-colors: (
   border: 1px solid transparent;
   color: var(--c-white);
 
-  [data-controller*=popover] &,
+  [data-controller*='popover'] &,
   &[type='submit'],
   &[href],
   &[data-action],
@@ -76,8 +76,8 @@ $button-colors: (
     align-items: center;
   }
 
-  &[aria-expanded*=true] .fa-angle-down::before,
-  [aria-expanded*=true] > & .fa-angle-down::before {
+  &[aria-expanded*='true'] .fa-angle-down::before,
+  [aria-expanded*='true'] > & .fa-angle-down::before {
     content: '\f00d';
   }
 
