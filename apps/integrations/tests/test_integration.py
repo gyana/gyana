@@ -173,7 +173,7 @@ def test_integration_create_pending_load_and_approve(
     assertOK(r)
     assertContains(r, "New Integration")
     assertLink(r, f"{LIST}/sheets/new", "Add Sheet")
-    assertLink(r, f"{LIST}/uploads/new", "Upload CSV")
+    assertLink(r, f"{LIST}/uploads/new")
 
     # the create and configure steps are tested in individual apps
     # the load stage requires celery progress (javascript)
