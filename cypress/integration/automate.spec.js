@@ -8,7 +8,7 @@ describe('automate', () => {
     cy.get('button[data-cy=project-run]').click()
 
     cy.get('[data-cy-status=running]').should('have.length', 1)
-    cy.get('[data-cy-status=pending]').should('have.length', 2)
+    cy.get('[data-cy-status=pending]').should('have.length', 3)
 
     const initial = 2
 
