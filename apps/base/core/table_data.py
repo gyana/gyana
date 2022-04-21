@@ -99,6 +99,7 @@ TYPE_NAME = {
     dt.Floating: "Numeric",
     dt.Decimal: "Numeric",
     dt.Integer: "Numeric",
+    dt.Int64: "Numeric",
     dt.String: "String",
     dt.Boolean: "Boolean",
     dt.Time: "Time",
@@ -111,6 +112,7 @@ TYPE_CLASS = {
     dt.Floating: "column--numeric",
     dt.Decimal: "column--numeric",
     dt.Integer: "column--numeric",
+    dt.Int64: "column--numeric",
     dt.String: "column--string",
     dt.Boolean: "column--boolean",
     dt.Time: "column--time",
@@ -200,9 +202,9 @@ def get_table(schema, query, footer=None, settings=None, **kwargs):
             verbose_name=name,
             attrs={
                 "th": {
-                    "class": f"column {TYPE_CLASS.get(type_)}",
+                    "class": f"column {TYPE_CLASS.get(type_.__class__)}",
                     "data-controller": "tooltip",
-                    "data-tooltip-content": TYPE_NAME.get(type_),
+                    "data-tooltip-content": TYPE_NAME.get(type_.__class__),
                 },
             },
             footer=footer.get(name) if footer else None,
