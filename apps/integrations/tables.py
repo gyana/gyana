@@ -59,10 +59,9 @@ class IntegrationListTable(tables.Table):
     is_scheduled = FaBooleanColumn(verbose_name="Scheduled")
     num_rows = RowCountColumn()
     last_synced = NaturalDayColumn(orderable=False)
-    kind = tables.Column(
-        accessor="display_kind",
-        orderable=False,
+    display_kind = tables.Column(
         verbose_name="Kind",
+        order_by=("kind"),
         attrs={"th": {"style": "min-width: auto; width: 0%;"}},
     )
     expires = NaturalDatetimeColumn(orderable=False)
