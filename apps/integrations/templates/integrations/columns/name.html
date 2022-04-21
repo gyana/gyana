@@ -1,0 +1,17 @@
+{% load static %}
+
+<div class="flex items-center gap-3">
+  <img
+    {% comment %} Checking if it's an external link. {% endcomment %}
+    {% if image|slice:":4" in "http" %}
+    src="{{ image }}"
+    {% else %}
+    src="{% static image %}"
+    {% endif %}
+    height="20px"
+    width="20px"
+    style="min-width: 20px;"
+  >
+
+  {{ value }}
+</div>

@@ -53,25 +53,23 @@ class IntegrationListTable(tables.Table):
         fields = ()
         attrs = {"class": "table"}
 
-    icon = tables.TemplateColumn(
-        template_name="columns/image.html",
-        orderable=False,
-        verbose_name="",
-        attrs={"th": {"style": "min-width: auto; width: 0%;"}},
-    )
     name = tables.Column(linkify=True)
+    ready = FaBooleanColumn()
+    state = PendingStatusColumn(verbose_name="Status")
+    is_scheduled = FaBooleanColumn(verbose_name="Scheduled")
+    num_rows = RowCountColumn()
+    last_synced = NaturalDayColumn(orderable=False)
     kind = tables.Column(
         accessor="display_kind",
         orderable=False,
         verbose_name="Kind",
         attrs={"th": {"style": "min-width: auto; width: 0%;"}},
     )
-    ready = FaBooleanColumn()
-    state = PendingStatusColumn(verbose_name="Status")
-    is_scheduled = FaBooleanColumn(verbose_name="Scheduled")
-    num_rows = RowCountColumn()
-    last_synced = NaturalDayColumn(orderable=False)
     expires = NaturalDatetimeColumn(orderable=False)
+
+    def render_name(self, value, record):
+        template = get_template("integrations/columns/name.html")
+        return template.render({"record": record, "value": value, "image": record.icon})
 
     def order_num_rows(self, queryset, is_descending):
         queryset = queryset.annotate(num_rows_agg=Sum("table__num_rows")).order_by(
