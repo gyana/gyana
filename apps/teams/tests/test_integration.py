@@ -106,7 +106,7 @@ def test_team_crudl(client, logged_in_user, bigquery, flag_factory, settings):
     # update
     r = client.get(f"/teams/{new_team.id}/update")
     assertOK(r)
-    assertFormRenders(r, ["icon", "name", "timezone", "beta"])
+    assertFormRenders(r, ["icon", "name", "color", "timezone", "beta"])
 
     r = client.post(
         f"/teams/{new_team.id}/update",
