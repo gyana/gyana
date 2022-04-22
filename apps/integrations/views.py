@@ -313,3 +313,29 @@ class IntegrationDone(ProjectMixin, TurboUpdateView):
             "project_integrations:detail",
             args=(self.project.id, self.object.id),
         )
+
+
+class IntegrationSync(TurboUpdateView):
+    template_name = "components/_sync.html"
+    model = Integration
+    fields = []
+    extra_context = {"object_name": "integration"}
+
+    def form_valid(self, form):
+        r = super().form_valid(form)
+
+        run_integration(self.object.kind, self.object.source_obj, self.request.user)
+        analytics.track(
+            self.request.user.id,
+            INTEGRATION_SYNC_STARTED_EVENT,
+            {
+                "id": self.object.id,
+                "type": self.object.kind,
+                "name": self.object.name,
+            },
+        )
+
+        return r
+
+    def get_success_url(self) -> str:
+        return reverse("project_integrations:list", args=(self.object.project.id,))

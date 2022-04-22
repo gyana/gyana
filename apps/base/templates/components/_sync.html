@@ -1,0 +1,21 @@
+{% url object_name|add:"s:sync" object.id as sync_url %}
+
+{% if sync_url %}
+  <form 
+    method="POST"
+    class="form--no-layout"
+    action="{{ sync_url }}"
+  >
+    {% csrf_token %}
+
+    <button
+      class="table__action"
+      type="submit"
+      id="{{ object_name }}-sync-{{object.id}}"
+      data-controller="tooltip"
+      data-tooltip-content="Sync latest data"
+    >
+      <i class="fas fa-fw fa-sync"></i>
+    </button>
+  </form>
+{% endif %}

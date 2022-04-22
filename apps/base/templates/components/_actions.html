@@ -1,4 +1,8 @@
 <div class="flex gap-3">
-  {% include 'components/_duplicate.html' %}
-  {% include 'components/_delete.html' %}
+  {% if object.kind == "sheet" %}
+    {% include "components/_sync.html" %}
+  {% endif %}
+
+  {% include "components/_duplicate.html" %}
+  {% include "components/_delete.html" %}
 </div>

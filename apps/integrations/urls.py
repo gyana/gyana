@@ -8,6 +8,12 @@ from .access import login_and_integration_required
 
 app_name = "integrations"
 urlpatterns = [
+    # views
+    path(
+        "<hashid:pk>/sync",
+        login_and_integration_required(views.IntegrationSync.as_view()),
+        name="sync",
+    ),
     # frames
     path(
         "<hashid:pk>/grid",
