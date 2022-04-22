@@ -1,9 +1,14 @@
 {% extends "projects/settings_base.html" %}
 
 {% block app %}
-<div class="flex flex-1 flex-col justify-center items-center self-center max-w-xl">
-  <h1 class="mb-3">Delete: {{ object.name }}</h1>
-  <p class="alert mb-6">Are you sure you want to delete this? This action is <strong>irreversible</strong>.</p>
+<div class="flex flex-1 flex-col gap-4 justify-center items-center self-center max-w-xl">
+  <h1>Deleting <strong>{{ object.name }}</strong></h1>
+  <p>
+    This integration has <strong>{{ object.num_rows }} row{{ object.num_rows|pluralize }}</strong>
+    and is used in <strong>{{ object.used_in|length }} widget{{ object.used_in|pluralize }}
+    or node{{ object.used_in|pluralize }}</strong>.
+  </p>
+  <p class="alert">Are you sure you want to delete this? This action is <strong>irreversible</strong>.</p>
 
   <form class="w-full" method="post" action="{% url 'project_integrations:delete' project.id object.id %}">
     {% csrf_token %}
