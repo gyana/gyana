@@ -204,14 +204,12 @@ def test_resync_after_source_update(
     # sheet is out of date
     r = client.get_turbo_frame(f"{DETAIL}", f"/sheets/{sheet.id}/status")
     assertOK(r)
-    assertContains(r, "sync the latest data")
-    assertLink(r, f"{DETAIL}/configure", "sync the latest data")
 
     r = client.get(f"{DETAIL}/configure")
     assertOK(r)
 
     # sync new data
-    r = client.post(f"{DETAIL}/configure")
+    r = client.post(f"{DETAIL}/sync")
 
     # sheet is up to date
     r = client.get_turbo_frame(f"{DETAIL}", f"/sheets/{sheet.id}/status")
