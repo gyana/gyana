@@ -31,11 +31,34 @@
     target="_blank"
     rel="noopener noreferer"
     data-controller="tooltip"
+    data-tooltip-content="Go to Google Sheet"
   >
     <i class="fas fa-fw fa-external-link"></i>
-
-    <span data-tooltip-target="body">Go to Google Sheet</span>
   </a>
+
+  <form
+    method="POST"
+    action="{% url 'project_integrations:load' object.project.id object.id %}"
+    class="form--no-layout"
+  >
+    {% csrf_token %}
+
+    <button
+      type="submit"
+      class="
+        button button--circle
+        {% if object.sheet.up_to_date_with_drive %}
+        button--tertiary
+        {% else %}
+        button--success
+        {% endif %}
+      "
+      data-controller="tooltip"
+      data-tooltip-content="Fetch latest data"
+    >
+      <i class="fas fa-fw fa-sync"></i>
+    </button>
+  </form>
   {% endif %}
 
   {% if integration.ready %}
@@ -58,8 +81,17 @@
 </div>
 
 <nav id="tabbar" class="tabbar bg-white">
-  <div class="tabbar__item" data-controller="tooltip" data-tooltip-content="{{ object.state_text }}">
-    <i class="fas fa-fw {{ object.state_icon }}"></i>
+  <div class="tabbar__item">
+    <i
+      data-controller="tooltip"
+      data-tooltip-content="{{ object.state_text }}"
+      class="fas fa-fw fa-center {{ object.state_icon }} mr-4">
+    </i>
+
+    <p>
+      <strong>{{ integration.num_rows|intcomma }}</strong> row{{ integration.num_rows|pluralize }} •
+      <strong>{{ integration.num_tables|intcomma }}</strong> table{{ integration.num_tables|pluralize }}
+    </p>
   </div>
 
   {% comment %} Uploads cannot be setup again after approval {% endcomment %}
@@ -91,6 +123,7 @@
     href="{% url 'project_integrations:settings' project.id object.id %}">
     Settings
   </a>
+
 </nav>
 
 {% block extra_tab %}{% endblock %}
@@ -101,13 +134,8 @@
 
 {% if integration.ready %}
   <div class="workflow-detail__footer">
-    <div class="flex items-center w-full">
-      <p>
-        <strong>{{ integration.num_rows|intcomma }}</strong> row{{ integration.num_rows|pluralize }} •
-        <strong>{{ integration.num_tables|intcomma }}</strong> table{{ integration.num_tables|pluralize }} •
-      </p>
-  
-      <p class="flex items-center gap-2 m-0">
+    <div class="flex items-center w-full gap-2">
+      <p class="flex items-center m-0">
         {% if integration.created_by %}
         <img
           class="h-8 w-8 rounded-full ml-2"
@@ -116,11 +144,8 @@
         />
         {% endif %}
 
-        <strong>{{ integration.created_by.get_display_name }}</strong> created this integration
-        <strong>{% include 'columns/natural_datetime.html' with datetime=integration.created %}</strong>
-
         {% if object.kind == 'sheet' %}
-          • <turbo-frame id="sheets:status" src="{% url 'sheets:status' object.sheet.id %}">
+          <turbo-frame id="sheets:status" src="{% url 'sheets:status' object.sheet.id %}">
             {% include "sheets/status.html" with object=object.sheet %}
           </turbo-frame>
         {% elif object.kind == 'connector' %}
