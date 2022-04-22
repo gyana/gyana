@@ -4,7 +4,7 @@ from django.template import Context
 from django.template.loader import get_template
 from django.utils.html import format_html
 
-from apps.base.tables import FaBooleanColumn, NaturalDatetimeColumn, NaturalDayColumn
+from apps.base.tables import FaBooleanColumn, NaturalDatetimeColumn, NaturalDayColumn, TemplateColumn
 
 from .models import Integration
 
@@ -65,6 +65,10 @@ class IntegrationListTable(tables.Table):
         attrs={"th": {"style": "min-width: auto; width: 0%;"}},
     )
     expires = NaturalDatetimeColumn(orderable=False)
+    actions = TemplateColumn(
+        template_name="components/_actions.html",
+        orderable=False,
+    )
 
     def render_name(self, value, record):
         template = get_template("integrations/columns/name.html")
