@@ -74,6 +74,14 @@ def isupper(query, column):
     return query[query[column] == query[column].upper()]
 
 
+def is_true(query, column):
+    return query[query[column]]
+
+
+def is_false(query, column):
+    return query[query[column] == False]
+
+
 def get_date(column):
     if isinstance(column, TimestampValue):
         return column.date()
@@ -223,14 +231,6 @@ def last_year(query, column):
     return query[date.year() == last_year]
 
 
-def filter_boolean(query, column, value):
-    # If filtering for TRUE we do not include Null fields.
-    if value:
-        return query[(query[column] == value)]
-    else:
-        return query[(query[column] == value) | (query[column].isnull())]
-
-
 FILTER_MAP = {
     Filter.StringPredicate.EQUAL: eq,
     Filter.StringPredicate.NEQUAL: neq,
@@ -248,25 +248,23 @@ FILTER_MAP = {
     Filter.NumericPredicate.LESSTHANEQUAL: lte,
     Filter.NumericPredicate.ISIN: isin,
     Filter.NumericPredicate.NOTIN: notin,
+    Filter.BoolPredicate.ISFALSE: is_false,
+    Filter.BoolPredicate.ISTRUE: is_true,
     **{key: value["function"] for key, value in DATETIME_FILTERS.items()},
-    Filter.Type.BOOL: filter_boolean,
 }
 
 
-def get_query_from_filter(query, filter: Filter):
-    column = filter.column
-    predicate = (
-        getattr(filter, PREDICATE_MAP[filter.type])
-        if filter.type != Filter.Type.BOOL
-        else None
-    )
-    func = FILTER_MAP[predicate or filter.type]
+def get_query_from_filter(query, filter_: Filter):
+    column = filter_.column
+    predicate = getattr(filter_, PREDICATE_MAP[filter_.type])
+
+    func = FILTER_MAP[predicate]
     func_params = signature(func).parameters
     if "value" not in func_params and "values" not in func_params:
         return func(query, column)
 
     value_str = "values" if predicate in ["isin", "notin"] else "value"
-    value = getattr(filter, f"{filter.type.lower()}_{value_str}")
+    value = getattr(filter_, f"{filter_.type.lower()}_{value_str}")
     return func(query, column, value)
 
 

@@ -199,7 +199,7 @@ def parametrize_column_predicate(
         ),
         pytest.param(
             {"column": "is_nice"},
-            {"column", "bool_value"},
+            {"column", "bool_predicate"},
             {},
             id="bool column",
         ),

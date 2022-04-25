@@ -50,7 +50,7 @@ class FilterForm(BaseLiveSchemaForm):
             "integer_values",
             "float_value",
             "float_values",
-            "bool_value",
+            "bool_predicate",
         )
 
         widgets = {
@@ -76,9 +76,6 @@ class FilterForm(BaseLiveSchemaForm):
                 ) is not None and pred not in NO_VALUE:
 
                     fields += [value + "s"] if pred in ["isin", "notin"] else [value]
-
-            if filter_type == Filter.Type.BOOL:
-                fields += [value]
 
         return fields
 
