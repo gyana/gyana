@@ -56,7 +56,7 @@ const GCSFileUpload_: React.FC<IProps> = ({ name, value }) => {
               inputFileRef.current.value = path
               inputNameRef.current.value = file.name
 
-              inputFileRef.current.closest('form').submit()
+              !value && inputFileRef.current.closest('form').submit()
             },
             onError: (error) => {
               setError(error)
@@ -86,10 +86,13 @@ const GCSFileUpload_: React.FC<IProps> = ({ name, value }) => {
           <div className='integration__file-upload'>
             {stage === 'initial' ? (
               <div className='flex flex-col'>
-                <h2>Drag and drop a file here</h2>
+                {!value && (
+                  <>
+                    <h2>Drag and drop a file here</h2>
 
-                <p className='text-black-50 text-center my-3'>or</p>
-
+                    <p className='text-black-50 text-center my-3'>or</p>
+                  </>
+                )}
                 <label
                   className='button button--success button--outline'
                   htmlFor='gcsfileupload'
@@ -129,7 +132,7 @@ const GCSFileUpload_: React.FC<IProps> = ({ name, value }) => {
               <>
                 <i className='fas fa-fw fa-4x fa-check text-green'></i>
                 <h4>File uploaded</h4>
-                <p>You'll be redirected shortly</p>
+                {!value && <p>You'll be redirected shortly</p>}
               </>
             ) : (
               <>

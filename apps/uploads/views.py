@@ -4,6 +4,7 @@ from django.urls import reverse
 from apps.base.analytics import INTEGRATION_CREATED_EVENT, NEW_INTEGRATION_START_EVENT
 from apps.base.views import TurboCreateView
 from apps.integrations.models import Integration
+from apps.integrations.tasks import run_integration
 from apps.projects.mixins import ProjectMixin
 from apps.uploads.models import Upload
 
@@ -45,10 +46,16 @@ class UploadCreate(ProjectMixin, TurboCreateView):
             },
         )
 
+        run_integration(
+            Integration.Kind.UPLOAD,
+            self.object,
+            self.request.user,
+        )
+
         return r
 
     def get_success_url(self) -> str:
         return reverse(
-            "project_integrations:configure",
+            "project_integrations:load",
             args=(self.project.id, self.object.integration.id),
         )

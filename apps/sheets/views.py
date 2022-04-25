@@ -53,7 +53,7 @@ class SheetCreate(ProjectMixin, TurboCreateView):
 
         run_integration(
             Integration.Kind.SHEET,
-            self.object.integration.source_obj,
+            self.object,
             self.request.user,
         )
 
