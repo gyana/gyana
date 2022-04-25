@@ -52,7 +52,7 @@ def chart_to_output(widget: Widget, control) -> Dict[str, Any]:
 def get_summary_row(query, widget):
     # Only naming the first group column
     group = widget.columns.first()
-    columns = widget.aggregations.all()
+
     query = aggregate_columns(query, widget, None)
     summary = clients.bigquery().get_query_results(query.compile()).rows_dict[0]
 
@@ -62,8 +62,9 @@ def get_summary_row(query, widget):
 def table_to_output(widget: Widget, control, url=None) -> Dict[str, Any]:
     query = pre_filter(widget, control)
     summary = None
-    if widget.columns.first():
-        if widget.show_summary_row:
+    if (group := widget.columns.first()) or widget.aggregations.first():
+        # Only show summary row when a group has been selected
+        if widget.show_summary_row and group:
             # TODO: add sorting and limit
             summary = get_summary_row(query, widget)
         groups = get_groups(query, widget)
