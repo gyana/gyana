@@ -5,6 +5,7 @@ import GoogleUploader from '../upload'
 
 interface IProps {
   name: string
+  value?: string
 }
 
 type Stage = 'initial' | 'progress' | 'done' | 'error'
@@ -16,7 +17,7 @@ function handleBeforeUnload(event) {
   event.returnValue = ''
 }
 
-const GCSFileUpload_: React.FC<IProps> = ({ name }) => {
+const GCSFileUpload_: React.FC<IProps> = ({ name, value }) => {
   const fileRef = useRef<HTMLInputElement>(null)
   const inputFileRef = useRef<HTMLInputElement>(null)
   const inputNameRef = useRef<HTMLInputElement>(null)
@@ -72,8 +73,14 @@ const GCSFileUpload_: React.FC<IProps> = ({ name }) => {
   return (
     <>
       {/* pass the file_name to django as well */}
-      <input ref={inputNameRef} type='hidden' id={`id_name`} name='file_name' />
-      <input ref={inputFileRef} type='hidden' id={`id_${name}`} name={name} />
+      <input ref={inputNameRef} type='hidden' id='id_name' name='file_name' />
+      <input
+        ref={inputFileRef}
+        type='hidden'
+        id={`id_${name}`}
+        name={name}
+        value={value}
+      />
       <ul className='integration__create-flow'>
         <li>
           <div className='integration__file-upload'>
@@ -83,7 +90,10 @@ const GCSFileUpload_: React.FC<IProps> = ({ name }) => {
 
                 <p className='text-black-50 text-center my-3'>or</p>
 
-                <label className='button button--success button--outline' htmlFor='gcsfileupload'>
+                <label
+                  className='button button--success button--outline'
+                  htmlFor='gcsfileupload'
+                >
                   Choose a file to upload
                 </label>
                 <input
@@ -98,8 +108,18 @@ const GCSFileUpload_: React.FC<IProps> = ({ name }) => {
             ) : stage === 'progress' ? (
               <div className='flex flex-col'>
                 <div className='integration__file-progress mr-4'>
-                  <svg height='120' width='120' style={{ strokeDashoffset: 220 - progress * 2.2 }}>
-                    <circle cx='60' cy='60' r='35' strokeWidth='3' fill='transparent' />
+                  <svg
+                    height='120'
+                    width='120'
+                    style={{ strokeDashoffset: 220 - progress * 2.2 }}
+                  >
+                    <circle
+                      cx='60'
+                      cy='60'
+                      r='35'
+                      strokeWidth='3'
+                      fill='transparent'
+                    />
                   </svg>
                   <h4>{progress}%</h4>
                 </div>
@@ -133,11 +153,15 @@ const GCSFileUpload_: React.FC<IProps> = ({ name }) => {
 
 class GCSFileUpload extends HTMLElement {
   connectedCallback() {
-    console.assert(!!this.parentElement, 'gcs-file-upload requires a container element')
+    console.assert(
+      !!this.parentElement,
+      'gcs-file-upload requires a container element'
+    )
 
     const name = this.attributes['name'].value
+    const value = this.attributes['value'].value
 
-    ReactDOM.render(<GCSFileUpload_ name={name} />, this)
+    ReactDOM.render(<GCSFileUpload_ name={name} value={value} />, this)
   }
 }
 
