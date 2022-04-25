@@ -2,9 +2,8 @@ import pytest
 from django.core import mail
 from pytest_django.asserts import assertRedirects
 
-from apps.base.tests.asserts import assertFormRenders, assertOK
+from apps.base.tests.asserts import assertOK
 from apps.integrations.models import Integration
-from apps.uploads.models import Upload
 
 pytestmark = pytest.mark.django_db
 
@@ -23,7 +22,6 @@ def test_upload_create(client, logged_in_user, project, bigquery):
     bigquery.reset_mock()  # reset the call count
 
     GCS_URL = "path/to/gcs"
-    FIELD_DELIMITER = Upload.FieldDelimiter.COMMA
 
     # test: create a new upload, configure it and complete the sync
 
@@ -43,24 +41,13 @@ def test_upload_create(client, logged_in_user, project, bigquery):
     assert integration.kind == Integration.Kind.UPLOAD
     assert integration.upload is not None
     assert integration.created_by == logged_in_user
-    DETAIL = f"/projects/{project.id}/integrations/{integration.id}"
-
-    assertRedirects(r, f"{DETAIL}/configure", status_code=303)
-
-    # configure
-    r = client.get(f"{DETAIL}/configure")
-    assertOK(r)
-    # todo: fix this!
-    assertFormRenders(r, ["name", "field_delimiter"])
-
     assert bigquery.query.call_count == 0
+
+    DETAIL = f"/projects/{project.id}/integrations/{integration.id}"
+    assertRedirects(r, f"{DETAIL}/load", status_code=303, target_status_code=302)
 
     # complete the sync
     # it will happen immediately as celery is run in eager mode
-    r = client.post(
-        f"{DETAIL}/configure",
-        data={"field_delimiter": FIELD_DELIMITER},
-    )
 
     assert bigquery.load_table_from_uri.call_count == 1
 
@@ -78,8 +65,6 @@ def test_upload_create(client, logged_in_user, project, bigquery):
     assert job_config.allow_jagged_rows
     assert job_config.autodetect
     assert job_config.skip_leading_rows == 1
-
-    assertRedirects(r, f"{DETAIL}/load", target_status_code=302)
 
     r = client.get(f"{DETAIL}/load")
     assertRedirects(r, f"{DETAIL}/done")
