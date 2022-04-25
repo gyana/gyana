@@ -1,23 +1,37 @@
-{% comment %} https://github.com/django-hijack/django-hijack/blob/master/hijack/templates/hijack/notification.html {% endcomment %}
-
+{% comment %}
+Based on the django-hijack template found here:
+https://github.com/django-hijack/django-hijack/blob/master/hijack/templates/hijack/notification.html
+{% endcomment %}
 {% load i18n static %}
 
-<link rel="stylesheet" type="text/css" href="{% static 'hijack/hijack.min.css' %}" media="screen">
-<div class="djhj" id="djhj">
-  <div class="djhj-notification">
-    <div class="djhj-message">
+<div class="hijack" id="djhj">
+  <div class="hijack__notification card card--sm">
+    <div class="hijack__message">
       {% blocktrans trimmed with user=request.user %}
-        You are currently working on behalf of <em>{{ user }}</em>.
+        You are currently logged in as <strong>{{ user }}</strong>
       {% endblocktrans %}
     </div>
-    <form action="{% url 'hijack:release' %}" method="POST" class="djhj-actions" data-turbo="false">
+
+    <form
+      action="{% url 'hijack:release' %}"
+      method="POST"
+      class="hijack__actions"
+      data-turbo="false"
+    >
       {% csrf_token %}
+
       <input type="hidden" name="next" value="{% url 'admin:users_customuser_changelist' %}" />
-      <button class="djhj-button" onclick="document.getElementById('djhj').style.display = 'none';" type="button">
-        {% trans 'hide' %}
+
+      <button
+        class="button button--sm button--tertiary flex-1"
+        onclick="document.getElementById('djhj').style.display = 'none';document.body.classList.remove('isHijacked');"
+        type="button"
+      >
+        Hide
       </button>
-      <button class="djhj-button" type="submit">
-        {% trans 'release' %}
+
+      <button class="button button--sm button--tertiary flex-1" type="submit">
+        Release user
       </button>
     </form>
   </div>

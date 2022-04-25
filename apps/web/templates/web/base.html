@@ -58,6 +58,9 @@
 </head>
 
 <body
+  {% if request.user.is_hijacked %}
+    class="isHijacked"
+  {% endif %}
   {% block body.attrs %}
     data-controller="tf-modal on-submit-loading turbo-loading"
   {% endblock body.attrs %}

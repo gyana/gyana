@@ -14,16 +14,26 @@
     {% endif %}
   </a>
 {% elif user.is_hijacked %}
-  <form class="sidebar__link sidebar__link--border" action="{% url 'hijack:release' %}" method="POST" data-turbo="false">
+  <form
+    class="form--no-layout"
+    method="POST"
+    action="{% url 'hijack:release' %}"
+    data-turbo="false"
+  >
     {% csrf_token %}
+
     <input type="hidden" name="next" value="{{ object|admin_url }}" />
-    <i class="fas fa-fw fa-user-cog {% if object|admin_url_found %}text-blue{% endif %}"></i>
+
     <button type="submit">
-      {% if object|admin_url_found %}
-        Admin: <strong class="text-blue"> {{ object|verbose_name|capfirst }}</strong>
-      {% else %}
-        Admin
-      {% endif %}
+      <div class="sidebar__link sidebar__link--border">
+        <i class="fas fa-fw fa-user-cog {% if object|admin_url_found %}text-blue{% endif %}"></i>
+
+        {% if object|admin_url_found %}
+          Admin: <strong class="text-blue"> {{ object|verbose_name|capfirst }}</strong>
+        {% else %}
+          Admin
+        {% endif %}
+      </div>
     </button>
   </form>
 {% endif %}

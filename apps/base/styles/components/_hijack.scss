@@ -1,0 +1,29 @@
+.hijack {
+  bottom: 1.6rem;
+  position: absolute;
+  right: 1.6rem;
+  width: 32rem;
+
+  &__message {
+    text-align: center;
+    padding-bottom: 1.6rem;
+  }
+
+  &__notification {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  &__actions {
+    display: flex;
+    width: 100%;
+    gap: 1.6rem;
+    flex-direction: row;
+  }
+}
+
+.isHijacked {
+  border: 2px dashed var(--c-red-50);
+}
