@@ -301,6 +301,11 @@ PARAMS = [
         id="integer to datetime",
     ),
     pytest.param(
+        'to_timezone(when, "US/Pacific")',
+        QUERY.format("TIMESTAMP(DATETIME(`when`, 'US/Pacific'))"),
+        id="to_timezone",
+    ),
+    pytest.param(
         "date(1993,07, medals)",
         QUERY.format(
             "PARSE_DATE('%Y-%m-%d', CONCAT(CONCAT(CONCAT(CONCAT(CAST(1993 AS STRING), '-'), CAST(7 AS STRING)), '-'), CAST(`medals` AS STRING)))"
