@@ -187,7 +187,7 @@ def test_integration_create_pending_load_and_approve(
     r = client.get(f"{DETAIL}/done")
     assertOK(r)
     assertContains(r, "Review import")
-    assertLink(r, f"{DETAIL}/configure", "re-configure")
+    assertLink(r, f"{DETAIL}/configure", "Reconfigure")
     # todo: fix this!
     assertFormRenders(r, ["name"])
 
