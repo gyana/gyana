@@ -272,9 +272,19 @@ class IntegrationLoad(ProjectMixin, TurboUpdateView):
 
 
 class IntegrationDone(ProjectMixin, TurboUpdateView):
-    template_name = "integrations/done.html"
     model = Integration
     fields = []
+
+    def get_template_names(self):
+        team = self.project.team
+        team.update_row_count()
+
+        if not self.object.ready and not team.check_new_rows(
+            self.object.num_rows
+        ):
+            return "integrations/review.html"
+
+        return "integrations/done.html"
 
     def get(self, request, *args, **kwargs):
 

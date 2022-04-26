@@ -23,6 +23,13 @@ urlpatterns = [
         name="grid",
     ),
     path(
+        "<hashid:pk>/preview",
+        cache.integration_grid(
+            login_and_integration_required(frames.IntegrationPreview.as_view())
+        ),
+        name="preview",
+    ),
+    path(
         "<hashid:pk>/schema",
         login_and_integration_required(frames.IntegrationSchema.as_view()),
         name="schema",
