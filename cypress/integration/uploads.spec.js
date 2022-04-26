@@ -10,8 +10,7 @@ describe('uploads', () => {
     cy.visit('/projects/1/integrations')
   })
   it('upload valid CSV', () => {
-    cy.contains('New Integration').click()
-    cy.contains('Upload CSV').click({ force: true })
+    cy.get('.fa-upload').click({ force: true })
 
     cy.url().should('contain', '/projects/1/integrations/uploads/new')
     cy.get('input[type=file]').attachFile('store_info.csv')

@@ -46,9 +46,17 @@
       &--string a::before {
         content: '\f031';
       }
-
+      
       &--time a::before {
+        content: '\f017';
+      }
+      
+      &--date a::before {
         content: '\f073';
+      }
+
+      &--datetime a::before {
+        content: '\f271';
       }
 
       &--boolean a::before {
@@ -272,6 +280,7 @@
   padding: 1.2rem 1.6rem;
   text-align: left;
 }
+
 .table .table__action,
 .table__action {
   align-items: center;
@@ -292,5 +301,10 @@
     background-color: var(--c-blue);
     border: 1px solid var(--c-transparent);
     color: var(--c-white);
+  }
+
+  &--danger:hover,
+  &--danger:focus {
+    background-color: var(--c-red);
   }
 }

@@ -349,3 +349,23 @@ TimestampValue.to_timestamp = to_timestamp
 def _to_timestamp(t, expr):
     d = expr.op().args[0]
     return f"TIMESTAMP({t.translate(d)})"
+
+
+class ToTimezone(ValueOp):
+    datetime = Arg(rlz.timestamp)
+    timezone = Arg(rlz.string)
+    output_type = rlz.shape_like("datetime", dt.timestamp)
+
+
+def to_timezone(d, tz):
+    return ToTimezone(d, tz).to_expr()
+
+
+TimestampValue.to_timezone = to_timezone
+
+
+@compiles(ToTimezone)
+def _to_timezone(t, expr):
+    d, tz = expr.op().args
+
+    return f"TIMESTAMP(DATETIME({t.translate(d)}, {t.translate(tz)}))"

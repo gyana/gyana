@@ -27,5 +27,9 @@ form,
       justify-content: flex-end;
       width: 100%;
     }
+
+    input {
+      box-sizing: border-box;
+    }
   }
 }

@@ -11,6 +11,7 @@ from apps.base.analytics import (
     identify_user,
     identify_user_group,
 )
+from apps.base.fields import ColorField, ColorInput
 from apps.base.forms import BaseModelForm, LiveModelForm
 from apps.base.templatetags.help_utils import INTERCOM_ROOT, get_intercom
 from apps.invites.models import Invite
@@ -67,13 +68,20 @@ class TeamCreateForm(BaseModelForm):
 class TeamUpdateForm(BaseModelForm):
     class Meta:
         model = Team
-        fields = ("icon", "name", "timezone")
-        widgets = {"icon": forms.ClearableFileInput(attrs={"accept": "image/*"})}
+        fields = ("icon", "name", "color", "timezone")
+        widgets = {"icon": forms.ClearableFileInput(attrs={"accept": "image/*"}), "name": forms.TextInput(attrs={"class": "label--half"})}
         help_texts = {
             "icon": "For best results use a square image",
             "timezone": "We use this to display time information and to schedule workflows",
         }
 
+    color = ColorField(
+        label="Color",
+        required=False,
+        widget=ColorInput(
+            attrs={"class": "label--third"}
+        ),
+    )
     beta = forms.BooleanField(
         required=False,
         label="Join Beta",

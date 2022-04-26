@@ -60,6 +60,12 @@ class Filter(SaveParentModel):
         ISNULL = "isnull", "is empty"
         NOTNULL = "notnull", "is not empty"
 
+    class BoolPredicate(models.TextChoices):
+        ISNULL = "isnull", "is empty"
+        NOTNULL = "notnull", "is not empty"
+        ISTRUE = "istrue", "is true"
+        ISFALSE = "isfalse", "is false"
+
     widget = models.ForeignKey(
         Widget, on_delete=models.CASCADE, null=True, related_name="filters"
     )
@@ -111,7 +117,12 @@ class Filter(SaveParentModel):
     string_value = models.TextField(null=True, verbose_name="Value")
     string_values = ArrayField(models.TextField(), null=True, verbose_name="Value")
 
-    bool_value = models.BooleanField(default=True, verbose_name="Value")
+    bool_predicate = models.CharField(
+        max_length=16,
+        choices=BoolPredicate.choices,
+        default=BoolPredicate.ISTRUE,
+        verbose_name="Condition",
+    )
 
     struct_predicate = models.CharField(
         max_length=16,
@@ -136,6 +147,7 @@ PREDICATE_MAP = {
     Filter.Type.FLOAT: "numeric_predicate",
     Filter.Type.INTEGER: "numeric_predicate",
     Filter.Type.STRUCT: "struct_predicate",
+    Filter.Type.BOOL: "bool_predicate",
 }
 
 NO_VALUE = [
@@ -143,5 +155,7 @@ NO_VALUE = [
     Filter.NumericPredicate.NOTNULL,
     Filter.StringPredicate.ISLOWERCASE,
     Filter.StringPredicate.ISUPPERCASE,
+    Filter.BoolPredicate.ISTRUE,
+    Filter.BoolPredicate.ISFALSE,
     *DateRange,
 ]

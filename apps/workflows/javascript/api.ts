@@ -1,10 +1,16 @@
 import { getApiClient } from 'apps/base/javascript/api'
-import { Node, Edge, XYPosition, Connection, ArrowHeadType } from 'react-flow-renderer'
+import {
+  Node,
+  Edge,
+  XYPosition,
+  Connection,
+  ArrowHeadType,
+} from 'react-flow-renderer'
 import { NODES } from './interfaces'
 
 // Utilities to convert from coreapi JSON response to react-flow-renderer
 
-export const toNode = (res, position: XYPosition): Node => ({
+export const toNode = (res): Node => ({
   id: `${res.id}`,
   type: ['input', 'output', 'text'].includes(res.kind) ? res.kind : 'default',
   data: {
@@ -17,16 +23,29 @@ export const toNode = (res, position: XYPosition): Node => ({
     description: res.description,
     join_is_valid: res.join_is_valid,
   },
-  position,
+  position: { x: res.x, y: res.y },
 })
 
 // Copied from react flow src/graph.ts
-export const getEdgeId = ({ source, sourceHandle, target, targetHandle }: Connection) =>
+export const getEdgeId = ({
+  source,
+  sourceHandle,
+  target,
+  targetHandle,
+}: Connection) =>
   `reactflow__edge-${source}${sourceHandle}-${target}${targetHandle}`
 
-export const EDGE_DEFAULTS = { type: 'smoothstep', arrowHeadType: ArrowHeadType.ArrowClosed }
+export const EDGE_DEFAULTS = {
+  type: 'smoothstep',
+  arrowHeadType: ArrowHeadType.ArrowClosed,
+}
 
-export const toEdge = (id: number, parent: number, child: number, position: number): Edge => {
+export const toEdge = (
+  id: number,
+  parent: number,
+  child: number,
+  position: number
+): Edge => {
   const edgeParams = {
     source: parent.toString(),
     sourceHandle: null,
@@ -52,12 +71,16 @@ export const createNode = async (
   type: string,
   position: XYPosition
 ): Promise<Node> => {
-  const result = await client.action(window.schema, ['nodes', 'api', 'nodes', 'create'], {
-    kind: type,
-    workflow: workflowId,
-    x: position.x,
-    y: position.y,
-  })
+  const result = await client.action(
+    window.schema,
+    ['nodes', 'api', 'nodes', 'create'],
+    {
+      kind: type,
+      workflow: workflowId,
+      x: position.x,
+      y: position.y,
+    }
+  )
 
   return toNode(result, position)
 }
@@ -76,10 +99,14 @@ export const moveNode = (node: Node): void => {
 }
 
 export const updateNode = async (id: string, data: any) => {
-  await client.action(window.schema, ['nodes', 'api', 'nodes', 'partial_update'], {
-    id,
-    ...data,
-  })
+  await client.action(
+    window.schema,
+    ['nodes', 'api', 'nodes', 'partial_update'],
+    {
+      id,
+      ...data,
+    }
+  )
 }
 
 export const deleteNode = (node: Node): void => {
@@ -89,11 +116,15 @@ export const deleteNode = (node: Node): void => {
 }
 
 export const duplicateNode = async (id: string) => {
-  const res = await client.action(window.schema, ['nodes', 'duplicate', 'create'], {
-    id,
-  })
+  const res = await client.action(
+    window.schema,
+    ['nodes', 'duplicate', 'create'],
+    {
+      id,
+    }
+  )
 
-  const node = toNode(res, { x: res.x, y: res.y })
+  const node = toNode(res)
   const edges = res.parent_edges.map((edge) =>
     toEdge(edge.id, edge.parent, edge.child, edge.position)
   )
@@ -102,11 +133,15 @@ export const duplicateNode = async (id: string) => {
 }
 
 export const createEdge = async (connection: Connection) => {
-  const result = await client.action(window.schema, ['nodes', 'api', 'edges', 'create'], {
-    parent: connection.source,
-    child: connection.target,
-    position: parseInt(connection.targetHandle as string),
-  })
+  const result = await client.action(
+    window.schema,
+    ['nodes', 'api', 'edges', 'create'],
+    {
+      parent: connection.source,
+      child: connection.target,
+      position: parseInt(connection.targetHandle as string),
+    }
+  )
 
   return toEdge(result.id, result.parent, result.child, result.position)
 }
@@ -126,14 +161,22 @@ export const deleteEdge = (edge: Edge): void => {
   })
 }
 
-export const listAll = async (workflowId: string): Promise<[Node[], Edge[]]> => {
-  const result = await client.action(window.schema, ['nodes', 'api', 'nodes', 'list'], {
-    workflow: workflowId,
-  })
-  const nodes = result.results.map((r) => toNode(r, { x: r.x, y: r.y }))
+export const listAll = async (
+  workflowId: string
+): Promise<[Node[], Edge[]]> => {
+  const result = await client.action(
+    window.schema,
+    ['nodes', 'api', 'nodes', 'list'],
+    {
+      workflow: workflowId,
+    }
+  )
+  const nodes = result.results.map((r) => toNode(r))
   const edges = result.results
     .map((r) =>
-      r.parent_edges.map((edge) => toEdge(edge.id, edge.parent, edge.child, edge.position))
+      r.parent_edges.map((edge) =>
+        toEdge(edge.id, edge.parent, edge.child, edge.position)
+      )
     )
     .flat()
   return [nodes, edges]
@@ -146,10 +189,15 @@ export const runWorkflow = (workflowId: number) => {
 }
 
 export const getWorkflowStatus = (workflowId: string) => {
-  return client.action(window.schema, ['workflows', 'out_of_date', 'list'], { id: workflowId })
+  return client.action(window.schema, ['workflows', 'out_of_date', 'list'], {
+    id: workflowId,
+  })
 }
 
-export const updateWorkflowLayout = (id: number, nodes: { id: string; x: number; y: number }[]) =>
+export const updateWorkflowLayout = (
+  id: number,
+  nodes: { id: string; x: number; y: number }[]
+) =>
   client.action(window.schema, ['workflows', 'update_positions', 'create'], {
     id,
     nodes,

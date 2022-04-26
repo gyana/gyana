@@ -38,6 +38,7 @@ $button-colors: (
   border: 1px solid transparent;
   color: var(--c-white);
 
+  [data-controller*='popover'] &,
   &[type='submit'],
   &[href],
   &[data-action],
@@ -75,8 +76,8 @@ $button-colors: (
     align-items: center;
   }
 
-  &[aria-expanded*=true] .fa-angle-down::before,
-  [aria-expanded*=true] > & .fa-angle-down::before {
+  &[aria-expanded*='true'] .fa-angle-down::before,
+  [aria-expanded*='true'] > & .fa-angle-down::before {
     content: '\f00d';
   }
 
@@ -109,6 +110,13 @@ $button-colors: (
   line-height: 1.6rem;
   max-height: 3.2rem;
   padding: 0.8rem 1.2rem;
+}
+
+.button--xs {
+  font-size: 1.4rem;
+  line-height: 1.6rem;
+  max-height: 3.2rem;
+  padding: 0.6rem 1rem;
 }
 
 // Variants

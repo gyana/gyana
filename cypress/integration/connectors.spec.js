@@ -14,16 +14,25 @@ describe('connectors', () => {
 
     cy.url().should('contain', '/projects/1/integrations/connectors/new')
     // all Fivetran connectors are mocked via MockFivetranClient
-    cy.contains('Google Analytics').click()
+    cy.contains('Google Analytics')
+      .siblings()
+      .contains('Import with Fivetran')
+      .click({ force: true })
 
-    cy.url().should('contain', '/projects/1/integrations/connectors/new?service=google_analytics')
+    cy.url().should(
+      'contain',
+      '/projects/1/integrations/connectors/new?service=google_analytics'
+    )
     cy.get('button[type=submit]').click()
 
     // mock fivetran redirect
     cy.url().should('contain', '/connectors/mock')
     cy.contains('continue').click()
 
-    cy.url().should('contain', `/projects/1/integrations/${newConnectorId}/configure`)
+    cy.url().should(
+      'contain',
+      `/projects/1/integrations/${newConnectorId}/configure`
+    )
     cy.get('button[type=submit]').click()
 
     cy.contains('Validating and importing your Google Analytics connector...')

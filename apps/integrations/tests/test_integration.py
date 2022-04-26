@@ -173,7 +173,7 @@ def test_integration_create_pending_load_and_approve(
     assertOK(r)
     assertContains(r, "New Integration")
     assertLink(r, f"{LIST}/sheets/new", "Add Sheet")
-    assertLink(r, f"{LIST}/uploads/new", "Upload CSV")
+    assertLink(r, f"{LIST}/uploads/new")
 
     # the create and configure steps are tested in individual apps
     # the load stage requires celery progress (javascript)
@@ -187,8 +187,7 @@ def test_integration_create_pending_load_and_approve(
     r = client.get(f"{DETAIL}/done")
     assertOK(r)
     assertContains(r, "Review import")
-    assertLink(r, f"{DETAIL}", "preview")
-    assertLink(r, f"{DETAIL}/configure", "re-configure")
+    assertLink(r, f"{DETAIL}/configure", "Reconfigure")
     # todo: fix this!
     assertFormRenders(r, ["name"])
 

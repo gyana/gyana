@@ -32,12 +32,6 @@
       >
         Schema
       </a>
-      <a
-        class="tabbar__link {% if request.GET.view == 'detail' %}tabbar__link--active{% endif %}"
-        href="{{ request.path }}?table_id={{ request.GET.table_id }}&view=detail"
-      >
-        Detail
-      </a>
 
       {% comment %} TODO: {% if table_id %}
         <turbo-frame id='exports:create_integration_table' class='ml-auto'>
@@ -53,9 +47,13 @@
             {% for table in tables %}
             <li>
               <p>
-                <a class="truncate hover:underline 
-                  {% if table.id|slugify == request.GET.table_id or not request.GET.table_id and forloop.counter0 == 0 %}text-blue{% endif %}"
-                  title="{{ table.bq_table }}" href="?table_id={{ table.id }}&view={{ request.GET.view }}">
+                <a
+                  class="
+                    truncate hover:underline 
+                    {% if table.id|slugify == request.GET.table_id or not request.GET.table_id and forloop.counter0 == 0 %}text-blue{% endif %}
+                  "
+                  title="{{ table.bq_table }}" href="?table_id={{ table.id }}&view={{ request.GET.view }}"
+                >
                   {{ table.humanize }}
                 </a>
               </p>
@@ -73,17 +71,6 @@
           <div class='placeholder-scr placeholder-scr--fillscreen'>
             <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
             <p class='placeholder-scr__title'>Loading schema...</p>
-          </div>
-        </turbo-frame>
-      {% elif request.GET.view == 'detail' %}
-        <turbo-frame
-          class="block w-full overflow-auto"
-          id="integrations:table_detail"
-          src="{% url 'integrations:table_detail' object.id %}?table_id={{ request.GET.table_id }}"
-        >
-          <div class='placeholder-scr placeholder-scr--fillscreen'>
-            <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
-            <p class='placeholder-scr__title'>Loading detail...</p>
           </div>
         </turbo-frame>
       {% elif request.GET.view == 'reference' %}

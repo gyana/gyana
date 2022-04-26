@@ -6,7 +6,6 @@ from django.template.loader import get_template
 from django_tables2 import Column, Table
 from django_tables2.config import RequestConfig as BaseRequestConfig
 from django_tables2.data import TableData
-from django_tables2.templatetags.django_tables2 import QuerystringNode
 
 from apps.base import clients
 from apps.base.core.utils import md5
@@ -49,9 +48,11 @@ class BigQueryTableData(TableData):
 
     def __getitem__(self, page: slice):
         """Fetches the data for the current page"""
-        if not self._page_selected:
-            return self._get_query_results().rows_dict_by_md5[: page.stop - page.start]
-        return self._get_query_results(page.start, page.stop).rows_dict_by_md5
+        return (
+            self._get_query_results(page.start, page.stop).rows_dict_by_md5
+            if self._page_selected
+            else self._get_query_results().rows_dict_by_md5[: page.stop - page.start]
+        )
 
     def __len__(self):
         """Fetches the total size from BigQuery"""
@@ -101,8 +102,12 @@ def get_type_name(type_):
         return "String"
     if isinstance(type_, dt.Boolean):
         return "Boolean"
-    if isinstance(type_, (dt.Date, dt.Time, dt.Timestamp)):
+    if isinstance(type_, (dt.Time)):
         return "Time"
+    if isinstance(type_, dt.Date):
+        return "Date"
+    if isinstance(type_, dt.Timestamp):
+        return "Date & Time"
     if isinstance(type_, dt.Struct):
         return "Dictionary"
 
@@ -114,8 +119,12 @@ def get_type_class(type_):
         return "column column--string"
     if isinstance(type_, dt.Boolean):
         return "column column--boolean"
-    if isinstance(type_, (dt.Date, dt.Time, dt.Timestamp)):
+    if isinstance(type_, dt.Time):
         return "column column--time"
+    if isinstance(type_, dt.Date):
+        return "column column--date"
+    if isinstance(type_, dt.Timestamp):
+        return "column column--datetime"
     if isinstance(type_, dt.Struct):
         return "column column--dict"
 
@@ -175,7 +184,7 @@ class BigQueryColumn(Column):
                 "data-controller": "tooltip",
                 "data-tooltip-content": value,
             }
-            return super().render("{}...".format(value[:61]))
+            return super().render(f"{value[:61]}...")
 
         return super().render(value)
 

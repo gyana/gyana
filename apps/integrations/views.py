@@ -41,6 +41,7 @@ class IntegrationList(ProjectMixin, SingleTableMixin, FilterView):
         context_data["pending_integration_count"] = queryset.pending().count()
         context_data["show_zero_state"] = queryset.visible().count() == 0
         context_data["integration_kinds"] = Integration.Kind.choices
+        context_data["object_name"] = "integration"
 
         return context_data
 
@@ -103,11 +104,62 @@ class IntegrationRuns(ReadyMixin, SingleTableMixin, DetailView):
 class IntegrationSettings(ProjectMixin, TurboUpdateView):
     template_name = "integrations/settings.html"
     model = Integration
-    form_class = IntegrationUpdateForm
+
+    def get_form_instance(self):
+        if self.object.kind in [
+            Integration.Kind.SHEET,
+            Integration.Kind.CUSTOMAPI,
+            Integration.Kind.UPLOAD,
+        ]:
+            return self.object.source_obj
+
+        return self.object
+
+    def get_form_class(self):
+        if self.object.kind in [
+            Integration.Kind.SHEET,
+            Integration.Kind.CUSTOMAPI,
+            Integration.Kind.UPLOAD,
+        ]:
+            return KIND_TO_FORM_CLASS[self.object.kind]
+
+        return IntegrationUpdateForm
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+
+        if self.object.kind in [
+            Integration.Kind.SHEET,
+            Integration.Kind.CUSTOMAPI,
+            Integration.Kind.UPLOAD,
+        ]:
+            kwargs.update({"instance": self.object.source_obj})
+
+        return kwargs
+
+    def form_valid(self, form):
+        with transaction.atomic():
+            form.save()
+            for formset in form.get_formsets().values():
+                if formset.is_valid():
+                    formset.save()
+
+        # Do not run the integration if the only change is scheduling
+        if not form.has_changed() or form.changed_data == ["is_scheduled"]:
+            return redirect(
+                reverse(
+                    "project_integrations:settings",
+                    args=(self.project.id, self.object.id),
+                )
+            )
+
+        run_integration(self.object.kind, self.object.source_obj, self.request.user)
+
+        return redirect(self.get_success_url())
 
     def get_success_url(self) -> str:
         return reverse(
-            "project_integrations:settings", args=(self.project.id, self.object.id)
+            "project_integrations:load", args=(self.project.id, self.object.id)
         )
 
 
@@ -220,9 +272,19 @@ class IntegrationLoad(ProjectMixin, TurboUpdateView):
 
 
 class IntegrationDone(ProjectMixin, TurboUpdateView):
-    template_name = "integrations/done.html"
     model = Integration
     fields = []
+
+    def get_template_names(self):
+        team = self.project.team
+        team.update_row_count()
+
+        if not self.object.ready and not team.check_new_rows(
+            self.object.num_rows
+        ):
+            return "integrations/review.html"
+
+        return "integrations/done.html"
 
     def get(self, request, *args, **kwargs):
 
@@ -273,3 +335,29 @@ class IntegrationDone(ProjectMixin, TurboUpdateView):
             "project_integrations:detail",
             args=(self.project.id, self.object.id),
         )
+
+
+class IntegrationSync(TurboUpdateView):
+    template_name = "components/_sync.html"
+    model = Integration
+    fields = []
+    extra_context = {"object_name": "integration"}
+
+    def form_valid(self, form):
+        r = super().form_valid(form)
+
+        run_integration(self.object.kind, self.object.source_obj, self.request.user)
+        analytics.track(
+            self.request.user.id,
+            INTEGRATION_SYNC_STARTED_EVENT,
+            {
+                "id": self.object.id,
+                "type": self.object.kind,
+                "name": self.object.name,
+            },
+        )
+
+        return r
+
+    def get_success_url(self) -> str:
+        return reverse("project_integrations:list", args=(self.object.project.id,))

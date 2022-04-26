@@ -82,18 +82,23 @@
     <p>A source of data, like a CSV file, Google Sheet, ads account, database, or web app.</p>
   </div>
 
-  <div class="flex ml-4">
+  <div class="flex gap-3 ml-4">
     {% if project.team.enabled %}
+      <a
+        class="button button--tertiary button--sm"
+        data-controller="tooltip"
+        data-tooltip-content="Upload CSV file"
+        href="{% url 'project_integrations_uploads:create' project.id %}"
+      >
+        <i class="fas fa-fw fa-upload"></i>
+      </a>
+
       <div data-controller='popover'>
         <button class="button button--dropdown button--sm">
           New Integration <i class="fas fa-fw fa-angle-down"></i>
         </button>
 
         <div data-popover-target="body" class="list list--bordered" style="margin-top:6px;">
-          <a class="list__item list__item--interactive" href="{% url 'project_integrations_uploads:create' project.id %}">
-            <i class="fas fa-fw fa-upload mr-4"></i> Upload CSV
-          </a>
-
           <a class="list__item list__item--interactive" href="{% url 'project_integrations_sheets:create' project.id %}">
             <i class="fas fa-fw fa-file-spreadsheet mr-4"></i> Add Sheet
           </a>

@@ -74,12 +74,6 @@ def test_sheet_create(
     # Task should have ran already
     assert integration.runs.count() == 1
 
-    # Test the configure page works
-    r = client.get(f"{DETAIL}/configure")
-    assertOK(r)
-    # todo: fix this!
-    assertFormRenders(r, ["name", "sheet_name", "cell_range"])
-
     # Import should have happened already
     assert bigquery.query.call_count == 1
 
@@ -146,7 +140,9 @@ def test_validation_failures(client, logged_in_user, sheet_factory, sheets):
     # invalid cell range
     r = client.get(f"{DETAIL}/configure")
     assertOK(r)
-    assertFormRenders(r, ["sheet_name", "cell_range"], "#configure-update-form")
+    assertFormRenders(
+        r, ["sheet_name", "cell_range", "is_scheduled"], "#configure-update-form"
+    )
 
     error = googleapiclient.errors.HttpError(Mock(), b"")
     error.reason = "Unable to parse range: does_not_exist!A1:D11"
@@ -208,14 +204,12 @@ def test_resync_after_source_update(
     # sheet is out of date
     r = client.get_turbo_frame(f"{DETAIL}", f"/sheets/{sheet.id}/status")
     assertOK(r)
-    assertContains(r, "sync the latest data")
-    assertLink(r, f"{DETAIL}/configure", "sync the latest data")
 
     r = client.get(f"{DETAIL}/configure")
     assertOK(r)
 
     # sync new data
-    r = client.post(f"{DETAIL}/configure")
+    r = client.post(f"{DETAIL}/sync")
 
     # sheet is up to date
     r = client.get_turbo_frame(f"{DETAIL}", f"/sheets/{sheet.id}/status")

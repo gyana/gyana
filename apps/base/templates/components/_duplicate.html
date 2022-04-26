@@ -1,17 +1,21 @@
-<form 
-  method="POST"
-  class="form--no-layout"
-  action="{% url object_name|add:"s:duplicate" object.id %}"
->
-  {% csrf_token %}
+{% url object_name|add:"s:duplicate" object.id as duplicate_url %}
 
-  <button
-    class="table__action"
-    type="submit"
-    id="{{ object_name }}-duplicate-{{object.id}}"
-    data-controller="tooltip"
-    data-tooltip-content="Duplicate"
+{% if duplicate_url %}
+  <form 
+    method="POST"
+    class="form--no-layout"
+    action="{{ duplicate_url }}"
   >
-    <i class="fas fa-fw fa-copy"></i>
-  </button>
-</form>
+    {% csrf_token %}
+
+    <button
+      class="table__action"
+      type="submit"
+      id="{{ object_name }}-duplicate-{{object.id}}"
+      data-controller="tooltip"
+      data-tooltip-content="Duplicate"
+    >
+      <i class="fas fa-fw fa-copy"></i>
+    </button>
+  </form>
+{% endif %}

@@ -58,6 +58,21 @@ class IntegrationGrid(TableInstanceMixin, SingleTableMixin, TurboFrameDetailView
         ).configure(table)
 
 
+class IntegrationPreview(TableInstanceMixin, SingleTableMixin, TurboFrameDetailView):
+    template_name = "integrations/grid.html"
+    model = Integration
+    paginate_by = 5
+    turbo_frame_dom_id = "integrations:preview"
+
+    def get_table(self, **kwargs):
+        query = get_query_from_table(self.table_instance)
+        table = get_table(query.schema(), query.limit(15), None, **kwargs)
+
+        return RequestConfig(
+            self.request, paginate=self.get_table_pagination(table)
+        ).configure(table)
+
+
 class IntegrationSchema(TableInstanceMixin, SingleTableMixin, TurboFrameDetailView):
     template_name = "integrations/schema.html"
     model = Integration
@@ -72,9 +87,3 @@ class IntegrationSchema(TableInstanceMixin, SingleTableMixin, TurboFrameDetailVi
             {"type": get_humanize_from_bigquery_type(t.field_type), "name": str(t.name)}
             for t in get_bq_table_schema_from_table(self.table_instance)
         ]
-
-
-class IntegrationTableDetail(TableInstanceMixin, TurboFrameDetailView):
-    template_name = "integrations/table_detail.html"
-    model = Integration
-    turbo_frame_dom_id = "integrations:table_detail"

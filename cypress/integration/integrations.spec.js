@@ -20,12 +20,15 @@ describe('integrations', () => {
     // start with runtime error
     cy.url().should('contain', '/projects/1/integrations/sheets/new')
     cy.get('input[name=url]').type(SHARED_SHEET)
-    cy.get('button[type=submit]').click()
+    cy.contains('Advanced').click()
 
     cy.get('input[name=sheet_name]').type('store_info')
     cy.get('input[name=cell_range]').type('A20:D21')
     cy.get('button[type=submit]').click()
-    cy.contains('No columns found in the schema.', { timeout: BIGQUERY_TIMEOUT })
+
+    cy.contains('No columns found in the schema.', {
+      timeout: BIGQUERY_TIMEOUT,
+    })
 
     // try to retry it
     cy.contains('Retry').click()

@@ -14,7 +14,6 @@ pytestmark = pytest.mark.django_db
     [
         pytest.param("/integrations/{integration_id}/grid", id="grid"),
         pytest.param("/integrations/{integration_id}/schema", id="schema"),
-        pytest.param("/integrations/{integration_id}/table_detail", id="table_detail"),
         pytest.param("/projects/{project_id}/integrations/{integration_id}", id="list"),
         pytest.param(
             "/projects/{project_id}/integrations/overview",

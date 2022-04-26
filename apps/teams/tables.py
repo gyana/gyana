@@ -1,5 +1,6 @@
 from django.db import models
 from django.template import loader
+from django.template.loader import get_template
 from django_tables2 import Column, LinkColumn, Table, TemplateColumn
 from django_tables2.columns.urlcolumn import URLColumn
 from django_tables2.utils import A
@@ -14,19 +15,12 @@ class TeamMembershipTable(Table):
         model = Membership
         attrs = {"class": "table"}
         fields = (
-            A("user__avatar_url"),
             A("user__email"),
             "role",
             A("user__last_login"),
             A("user__date_joined"),
         )
 
-    user__avatar_url = TemplateColumn(
-        template_name="columns/image.html",
-        orderable=False,
-        verbose_name="",
-        attrs={"th": {"style": "min-width: auto; width: 0%;"}},
-    )
     user__email = LinkColumn(
         verbose_name="Email",
         viewname="team_members:update",
@@ -34,6 +28,12 @@ class TeamMembershipTable(Table):
     )
     user__last_login = NaturalDatetimeColumn(verbose_name="Last login")
     user__date_joined = NaturalDatetimeColumn(verbose_name="Date joined")
+
+    def render_user__email(self, value, record):
+        template = get_template("integrations/columns/name.html")
+        return template.render(
+            {"record": record, "value": value, "image": record.user.avatar_url}
+        )
 
 
 class TeamProjectsTable(Table):

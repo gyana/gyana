@@ -83,11 +83,13 @@ def test_sheet_schedule(client, logged_in_user, sheet_factory, mocker, is_paid):
 
     r = client.get(f"{DETAIL}/settings")
     assertOK(r)
-    assertFormRenders(r, ["is_scheduled"], "#integration-schedule-form")
+    assertFormRenders(
+        r, ["cell_range", "sheet_name", "is_scheduled"], "#integration-schedule-form"
+    )
 
     # Add the schedule
     r = client.post(f"{DETAIL}/settings", data={"is_scheduled": True})
-    assertRedirects(r, f"{DETAIL}/settings", status_code=303)
+    assertRedirects(r, f"{DETAIL}/load", status_code=302)
 
     sheet.refresh_from_db()
     assert sheet.integration.is_scheduled
@@ -112,7 +114,7 @@ def test_sheet_schedule(client, logged_in_user, sheet_factory, mocker, is_paid):
 
     # Remove the schedule
     r = client.post(f"{DETAIL}/settings", data={"is_scheduled": False})
-    assertRedirects(r, f"{DETAIL}/settings", status_code=303)
+    assertRedirects(r, f"{DETAIL}/settings", status_code=302)
 
     project.refresh_from_db()
     assert project.periodic_task is None

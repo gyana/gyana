@@ -1,4 +1,3 @@
-
 from apps.base.forms import BaseModelForm, LiveFormsetMixin
 from apps.uploads.widgets import GCSFileUpload
 
@@ -28,7 +27,15 @@ class UploadCreateForm(BaseModelForm):
 class UploadUpdateForm(LiveFormsetMixin, BaseModelForm):
     class Meta:
         model = Upload
-        fields = ["field_delimiter"]
+        fields = ["file_gcs_path", "field_delimiter"]
+        widgets = {"file_gcs_path": GCSFileUpload()}
+        labels = {"file_gcs_path": "Choose a file"}
         help_texts = {
-            "field_delimiter": "A field delimiter is a character that separates cells in a CSV table."
+            "file_gcs_path": "Maximum file size is 1GB",
+            "field_delimiter": "A field delimiter is a character that separates cells in a CSV table.",
         }
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+        self.fields["file_gcs_path"].required = False

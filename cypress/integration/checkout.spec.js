@@ -51,7 +51,7 @@ describe('checkout', () => {
       .click({ turbo: false })
 
     getIframeBody('pf_18567').find('[data-testid=paymentSuccess]', {
-      timeout: 10000,
+      timeout: 20000,
     })
 
     // validate

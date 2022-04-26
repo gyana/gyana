@@ -1,9 +1,13 @@
-<a 
-  href="{% url "project_"|add:object_name|add:"s:delete" project.id object.id %}"
-  class="table__action"
-  id="{{ object_name }}-delete-{{ object_id }}"
-  data-controller="tooltip"
-  data-tooltip-content="Delete"
->
-  <i class="fas fa-fw fa-trash"></i>
-</a>
+{% url "project_"|add:object_name|add:"s:delete" project.id object.id as delete_url %}
+
+{% if delete_url %}
+  <a 
+    href="{{ delete_url }}"
+    class="table__action table__action--danger"
+    id="{{ object_name }}-delete-{{ object_id }}"
+    data-controller="tooltip"
+    data-tooltip-content="Delete"
+  >
+    <i class="fas fa-fw fa-trash"></i>
+  </a>
+{% endif %}

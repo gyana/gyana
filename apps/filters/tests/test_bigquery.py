@@ -47,7 +47,7 @@ def create_bool_filter(value):
     return Filter(
         column="is_nice",
         type=Filter.Type.BOOL,
-        bool_value=value,
+        bool_predicate=value,
     )
 
 
@@ -326,13 +326,13 @@ PARAMS = [
     ),
     # Bool filter
     pytest.param(
-        create_bool_filter(True),
-        QUERY.format("`is_nice` = TRUE"),
+        create_bool_filter(Filter.BoolPredicate.ISTRUE),
+        QUERY.format("`is_nice`"),
         id="Bool is true",
     ),
     pytest.param(
-        create_bool_filter(False),
-        QUERY.format("(`is_nice` = FALSE) OR (`is_nice` IS NULL)"),
+        create_bool_filter(Filter.BoolPredicate.ISFALSE),
+        QUERY.format("`is_nice` = FALSE"),
         id="Bool is false",
     ),
     # Time filter
@@ -691,7 +691,7 @@ def test_compiles_filter(filter_, expected_sql):
             id="String column with isin predicate",
         ),
         pytest.param(
-            Filter(column="is_nice"), ["column", "bool_value"], id="Bool column"
+            Filter(column="is_nice"), ["column", "bool_predicate"], id="Bool column"
         ),
         pytest.param(
             Filter(column="birthday"),
