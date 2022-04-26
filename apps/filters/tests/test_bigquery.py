@@ -327,12 +327,12 @@ PARAMS = [
     # Bool filter
     pytest.param(
         create_bool_filter(Filter.BoolPredicate.ISTRUE),
-        QUERY.format("`is_nice` = TRUE"),
+        QUERY.format("`is_nice`"),
         id="Bool is true",
     ),
     pytest.param(
         create_bool_filter(Filter.BoolPredicate.ISFALSE),
-        QUERY.format("(`is_nice` = FALSE) OR (`is_nice` IS NULL)"),
+        QUERY.format("`is_nice` = FALSE"),
         id="Bool is false",
     ),
     # Time filter
