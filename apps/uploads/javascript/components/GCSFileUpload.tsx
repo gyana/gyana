@@ -162,7 +162,8 @@ class GCSFileUpload extends HTMLElement {
     )
 
     const name = this.attributes['name'].value
-    const value = this.attributes['value'].value
+    let value = this.attributes['value'].value
+    value = value != 'None' ? value : undefined
 
     ReactDOM.render(<GCSFileUpload_ name={name} value={value} />, this)
   }
