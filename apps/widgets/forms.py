@@ -84,7 +84,7 @@ class GenericWidgetForm(LiveFormsetForm):
         widgets = {"table": InputNode()}
 
     def __init__(self, *args, **kwargs):
-        tab = kwargs.pop("tab", None)
+        tab = kwargs.pop("tab")
         project = kwargs.pop("project", None)
         super().__init__(*args, **kwargs)
 
@@ -97,10 +97,10 @@ class GenericWidgetForm(LiveFormsetForm):
         )
 
         table = self.get_live_field("table")
-        if table:
+        if table and not tab:
             self.fields["tab"].initial = self.Tab.CONFIGURE
         else:
-            self.fields["tab"].initial = tab
+            self.fields["tab"].initial = tab or self.Tab.SOURCE
 
         # https://stackoverflow.com/a/30766247/15425660
         self.fields["kind"].choices = [
@@ -194,10 +194,10 @@ class GenericWidgetForm(LiveFormsetForm):
 
         for formset in formsets:
             if formset.__name__ in self.mapping[self.get_live_field("tab")]:
-                setattr(formset, 'hidden', False)
+                setattr(formset, "hidden", False)
                 continue
 
-            setattr(formset, 'hidden', True)
+            setattr(formset, "hidden", True)
 
         return formsets
 
