@@ -4,18 +4,25 @@
 <title>Password protected page</title>
 {% endblock %}
 
-{% block body.content %}
+{% block body %}
 <div class="flex flex-col m-auto justify-center items-center">
   <h2 class="mb-7">Password protected page</h2>
+
   <form
     class="w-full form--no-layout"
-    method='post'
+    method="post"
   >
     {% csrf_token %}
 
     {% include "django/forms/default_form.html" %}
 
-    <button data-turbo='false' class='button button-primary w-full mt-4' type='submit'>Submit</button>
+    <button
+      class="button button-primary w-full mt-4"
+      type="submit"
+      data-turbo="false"
+    >
+      Submit
+    </button>
   </form>
 </div>
-{% endblock body.content %}
+{% endblock body %}
