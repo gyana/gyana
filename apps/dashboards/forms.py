@@ -55,6 +55,9 @@ class PaletteColorsField(forms.MultiValueField):
     def compress(self, data_list):
         return data_list
 
+    def has_changed(self, initial, data):
+        return super().has_changed(initial, map(lambda x: x.upper(), data))
+
 
 class DashboardCreateForm(BaseModelForm):
     class Meta:
