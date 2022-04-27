@@ -12,6 +12,12 @@
 
       <div class="tabbar">
         <a
+          href="{% url "dashboard_widgets:update" project.id dashboard.id object.pk %}?tab=source"
+          class="tabbar__link {% if tab == 'source' %}tabbar__link--active{% endif %}"
+        >
+          Source
+        </a>
+        <a
           href="{% url "dashboard_widgets:update" project.id dashboard.id object.pk %}"
           class="tabbar__link {% if tab == 'data' %}tabbar__link--active{% endif %}"
         >
@@ -25,10 +31,12 @@
         </a>
       </div>
 
-      {% if widget.kind == "table" %}
-        {% include 'widgets/forms/default.html' %}
+      {% if tab == 'style' %}
+        {% include 'widgets/forms/style.html' %}
+      {% elif tab == 'source' %}
+        {% include 'widgets/forms/source.html' %}
       {% else %}
-        {% include 'widgets/forms/chart.html' %}
+        {% include 'widgets/forms/data.html' %}
       {% endif %}
     </div>
   </div>

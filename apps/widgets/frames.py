@@ -25,7 +25,7 @@ from apps.tables.bigquery import get_query_from_table
 from apps.tables.models import Table
 from apps.widgets.visuals import chart_to_output, metric_to_output, table_to_output
 
-from .forms import FORMS, STYLE_FORMS, DefaultStyleForm
+from .forms import FORMS, STYLE_FORMS, DefaultStyleForm, WidgetSourceForm
 from .models import Widget
 
 
@@ -150,11 +150,16 @@ class WidgetUpdate(DashboardMixin, TurboFrameUpdateView):
     def get_form_class(self):
         if self.tab == "style":
             return STYLE_FORMS.get(self.object.kind, DefaultStyleForm)
+        if self.tab == "source":
+            return WidgetSourceForm
         return FORMS[self.request.POST.get("kind", self.object.kind)]
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         if self.tab == "style":
+            return kwargs
+        if self.tab == "source":
+            kwargs["project"] = self.dashboard.project
             return kwargs
         table = self.request.POST.get("table") or getattr(self.object, "table")
         if table is not None:
@@ -162,7 +167,6 @@ class WidgetUpdate(DashboardMixin, TurboFrameUpdateView):
                 table if isinstance(table, Table) else Table.objects.get(pk=table)
             ).schema
 
-        kwargs["project"] = self.dashboard.project
         return kwargs
 
     def get_success_url(self) -> str:
@@ -186,7 +190,7 @@ class WidgetUpdate(DashboardMixin, TurboFrameUpdateView):
         context = super().get_context_data(**kwargs)
         context["tab"] = self.tab
 
-        if self.tab != "style" and self.object.kind not in [
+        if self.tab == "data" and self.object.kind not in [
             Widget.Kind.TEXT,
             Widget.Kind.IFRAME,
             Widget.Kind.IMAGE,
