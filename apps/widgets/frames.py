@@ -101,6 +101,10 @@ class WidgetUpdate(DashboardMixin, TurboFrameUpdateView):
             ]
         )
 
+    @property
+    def tab(self):
+        return self.request.GET.get("tab", "data")
+
     def get_output_context(self):
         context = {
             "widget": self.object,
@@ -144,13 +148,13 @@ class WidgetUpdate(DashboardMixin, TurboFrameUpdateView):
         return "widgets/update.html"
 
     def get_form_class(self):
-        if self.request.GET.get("show_style"):
+        if self.tab == "style":
             return STYLE_FORMS.get(self.object.kind, DefaultStyleForm)
         return FORMS[self.request.POST.get("kind", self.object.kind)]
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        if self.request.GET.get("show_style"):
+        if self.tab == "style":
             return kwargs
         table = self.request.POST.get("table") or getattr(self.object, "table")
         if table is not None:
@@ -171,11 +175,8 @@ class WidgetUpdate(DashboardMixin, TurboFrameUpdateView):
                     self.object.id,
                 ),
             )
-            return (
-                f"{base_url}?show_style=true"
-                if self.request.GET.get("show_style")
-                else base_url
-            )
+            return f"{base_url}?tab={self.tab}"
+
         return reverse(
             "project_dashboards:detail",
             args=(self.project.id, self.dashboard.id),
@@ -183,7 +184,9 @@ class WidgetUpdate(DashboardMixin, TurboFrameUpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        if not self.request.GET.get("show_style") and self.object.kind not in [
+        context["tab"] = self.tab
+
+        if self.tab != "style" and self.object.kind not in [
             Widget.Kind.TEXT,
             Widget.Kind.IFRAME,
             Widget.Kind.IMAGE,

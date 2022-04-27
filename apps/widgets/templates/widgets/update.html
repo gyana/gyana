@@ -13,18 +13,18 @@
       <div class="tabbar">
         <a
           href="{% url "dashboard_widgets:update" project.id dashboard.id object.pk %}"
-          class="tabbar__link {% if not request.GET.show_style %}tabbar__link--active{% endif %}"
+          class="tabbar__link {% if tab == 'data' %}tabbar__link--active{% endif %}"
         >
           Data
         </a>
         <a
-          href="{% url "dashboard_widgets:update" project.id dashboard.id object.pk %}?show_style=true"
-          class="tabbar__link {% if request.GET.show_style %}tabbar__link--active{% endif %}"
+          href="{% url "dashboard_widgets:update" project.id dashboard.id object.pk %}?tab=style"
+          class="tabbar__link {% if tab == 'style' %}tabbar__link--active{% endif %}"
         >
           Style
         </a>
       </div>
-      
+
       {% if widget.kind == "table" %}
         {% include 'widgets/forms/default.html' %}
       {% else %}

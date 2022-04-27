@@ -135,7 +135,7 @@ preview mode.
           data-action="click->tf-modal#open"
           id="widget-update-{{ object.id }}"  
           data-modal-item="{{ object.id }}"
-          data-modal-src="{% url "dashboard_widgets:update" project.id dashboard.id object.pk %}?show_style=true"
+          data-modal-src="{% url "dashboard_widgets:update" project.id dashboard.id object.pk %}?tab=style"
           data-modal-id="widget-modal"
           data-modal-classes="tf-modal--full"
         >
