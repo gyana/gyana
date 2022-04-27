@@ -35,10 +35,6 @@ pytestmark = pytest.mark.django_db
             id="update",
         ),
         pytest.param(
-            "/projects/{project_id}/dashboards/{dashboard_id}/widgets/{widget_id}/update-style",
-            id="update-style",
-        ),
-        pytest.param(
             "/projects/{project_id}/dashboards/{dashboard_id}/widgets/{widget_id}/input",
             id="input",
         ),

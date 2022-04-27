@@ -4,11 +4,33 @@
 
 <div class="flex h-full">
   <div class="flex flex-col flex-1">
-    {% if widget.kind == "table" %}
-      {% include 'widgets/forms/default.html' %}
-    {% else %}
-      {% include 'widgets/forms/chart.html' %}
-    {% endif %}
+    <div class='widget-update-sidebar'>
+
+      <turbo-frame id="widget-editable-name" class="workflow-detail__header">
+        {% include 'widgets/name.html' %}
+      </turbo-frame>
+
+      <div class="tabbar">
+        <a
+          href="{% url "dashboard_widgets:update" project.id dashboard.id object.pk %}"
+          class="tabbar__link {% if not request.GET.show_style %}tabbar__link--active{% endif %}"
+        >
+          Data
+        </a>
+        <a
+          href="{% url "dashboard_widgets:update" project.id dashboard.id object.pk %}?show_style=true"
+          class="tabbar__link {% if request.GET.show_style %}tabbar__link--active{% endif %}"
+        >
+          Style
+        </a>
+      </div>
+      
+      {% if widget.kind == "table" %}
+        {% include 'widgets/forms/default.html' %}
+      {% else %}
+        {% include 'widgets/forms/chart.html' %}
+      {% endif %}
+    </div>
   </div>
 
   <turbo-frame

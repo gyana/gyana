@@ -55,11 +55,6 @@ dashboard_urlpatterns = (
             name="update",
         ),
         path(
-            "<hashid:pk>/update-style",
-            login_and_project_required(frames.WidgetStyle.as_view()),
-            name="update-style",
-        ),
-        path(
             "<hashid:pk>/input",
             login_and_project_required(frames.WidgetInput.as_view()),
             name="input",
