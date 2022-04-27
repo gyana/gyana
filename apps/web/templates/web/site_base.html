@@ -2,43 +2,17 @@
 {% load static %}
 
 {% block head %}
-  {% block meta %}
-    <title>Gyana | Custom reports for any source</title>
-    <meta
-      name="description"
-      content="Gyana delivers the power of business intelligence and data analytics in a web interface. Build repeatable workflows and dashboards with all your online data."
-    />
-  {% endblock %}
+  <link
+    href="//fonts.googleapis.com/css2?family=Caveat:wght@400&display=swap"
+    rel="stylesheet"
+  />
 
-{% include "web/components/favicon.html" %}
+  <link rel="stylesheet" href="{% static "css/website.css" %}" />
+  <script>
+    Turbo.session.drive = false
+  </script>
 
-{% comment %} Only load Poppins to use for our Logo {% endcomment %}
-<link rel="preconnect" href="//fonts.gstatic.com" />
-<link
-  href="//fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap&text=Gyana"
-  rel="stylesheet"
-/>
-<link
-  href="//fonts.googleapis.com/css2?family=Caveat:wght@400&display=swap"
-  rel="stylesheet"
-/>
-
-<link rel="stylesheet" href="{% static "css/fontawesome.css" %}" />
-<link rel="stylesheet" href="{% static "css/tailwind.css" %}" />
-<link rel="stylesheet" href="{% static "css/style.css" %}" />
-<link rel="stylesheet" href="{% static "css/website.css" %}" />
-
-<script src="{% static "js/turbo-bundle.js" %}"></script>
-<script src="{% static "js/stimulus-bundle.js" %}"></script>
-<script>
-  Turbo.session.drive = false
-</script>
-
-{% if WEBSITE_GTM_ID %}
-{% include "web/components/gtm_head.html" %}
-{% endif %}
-
-{% include "web/components/intercom-visitors.html" %}
+  {% include "web/components/intercom-visitors.html" %}
 {% endblock head %}
 
 {% block body.attrs %}{% endblock body.attrs %}
@@ -53,9 +27,5 @@
   {% block body.footer %}
     {% include "web/site/footer.html" %}
   {% endblock body.footer %}
-
-  {% if WEBSITE_GTM_ID %}
-  {% include "web/components/gtm_body.html" %}
-  {% endif %}
 {% endblock body %}
 

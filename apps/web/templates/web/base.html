@@ -7,54 +7,57 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+  {% block meta %}
+    {% include "web/components/meta.html" %}
+  {% endblock %}
+  {% include "web/components/favicon.html" %}
+
+  {% comment %} Only load Poppins to use for our Logo {% endcomment %}
+  <link rel="preconnect" href="//fonts.gstatic.com" />
+  <link
+    href="//fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap&text=Gyana"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="{% static "css/fontawesome.css" %}" />
+  <link rel="stylesheet" href="{% static "css/tailwind.css" %}" />
+  <link rel="stylesheet" href="{% static "css/style.css" %}" />
+
+  {% comment %} Enables iframe embedding with top navigation {% endcomment %}
+  {% if request.GET.iframe %}
+    <base target="_parent">
+  {% else %}
+    <script src="{% static "js/turbo-bundle.js" %}"></script>
+  {% endif %}
+  <script src="{% static "js/stimulus-bundle.js" %}"></script>
+
   {% block head %}
+    {% comment %} Default is for app e.g. app_base, landing_base {% endcomment %}
     <meta name="turbo-cache-control" content="no-cache" />
 
-    {% include "web/components/meta.html" %}
-    {% include "web/components/favicon.html" %}
-
-    <link rel="preconnect" href="//fonts.gstatic.com" />
     <link
       href="//fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap"
       rel="stylesheet"
     />
-    <link
-      href="//fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap&text=Gyana"
-      rel="stylesheet"
-    />
-
-    <link rel="stylesheet" href="{% static "css/fontawesome.css" %}" />
-    <link rel="stylesheet" href="{% static "css/tailwind.css" %}" />
-    <link rel="stylesheet" href="{% static "css/style.css" %}" />
-
-    {% comment %} Before all javascript is loaded {% endcomment %}
-    {% comment %} {% if HONEYBADGER_API_KEY %}
-    {% include "web/components/honeybadger.html" %}
-    {% endif %} {% endcomment %}
-
-    {% comment %} Enables iframe embedding with top navigation {% endcomment %}
-    {% if request.GET.iframe %}
-      <base target="_parent">
-    {% else %}
-      <script src="{% static "js/turbo-bundle.js" %}"></script>
-    {% endif %}
-
-    <script src="{% static "js/stimulus-bundle.js" %}"></script>
+    
     <script src="{% static "rest_framework/js/coreapi-0.1.1.js" %}"></script>
     <script src="{% url "api_schemajs" %}"></script>
 
-    {% if SEGMENT_ANALYTICS_JS_WRITE_KEY %}
-      {% include "web/components/analytics.html" %}
+    {% if not request.user.is_hijacked %}
+      {% if SEGMENT_ANALYTICS_JS_WRITE_KEY %}
+        {% include "web/components/analytics.html" %}
+      {% endif %}
     {% endif %}
-
-    {% if GOOGLE_ANALYTICS_ID %}
-      {% comment %} GAv3 and GAv4 {% endcomment %}
-      {% include "web/components/google_analytics.html" %}
-      {% include "web/components/google_analytics.html" with GOOGLE_ANALYTICS_ID=WEBSITE_GTM_ID %}
-    {% endif %}
-
-    {% block head.extra %}{% endblock head.extra %}
   {% endblock head %}
+
+  {% block head.extra %}{% endblock head.extra %}
+
+  {% if not request.user.is_hijacked %}
+    {% if WEBSITE_GTM_ID %}
+      {% include "web/components/gtm_head.html" %}
+    {% endif %}
+  {% endif %}
+
 </head>
 
 <body
@@ -103,6 +106,10 @@
     {% endblock body.modal %}
 
     {% block body.javascript %}{% endblock body.javascript %}
+
+    {% if WEBSITE_GTM_ID %}
+      {% include "web/components/gtm_body.html" %}
+    {% endif %}
   {% endblock body %}
 </body>
 </html>
