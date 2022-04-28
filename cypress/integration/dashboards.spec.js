@@ -6,8 +6,7 @@ const createWidget = (kind, offsetX, offsetY) => {
   cy.drag(`#widget-${kind}`)
   cy.drop('.widgets', { offsetX, offsetY })
   cy.get('[data-cy=widget-configure]').click()
-  cy.get('gy-select-source[name=table]').click()
-  cy.contains('store_info').click({ force: true })
+  cy.get('[name=table]').contains('store_info').click()
 }
 
 const widgetStartId = getModelStartId('widgets.widget')
@@ -27,7 +26,6 @@ describe('dashboards', () => {
 
     // create a table widget and view in the dashboard
     createWidget('table', 0, 0)
-    cy.contains('Save & Preview').should('not.be.disabled').click()
     cy.contains('Edinburgh')
 
     cy.get('button[class*=tf-modal__close]').click({
