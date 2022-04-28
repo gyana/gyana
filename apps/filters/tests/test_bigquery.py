@@ -343,7 +343,7 @@ PARAMS = [
     ),
     pytest.param(
         create_time_filter(Filter.TimePredicate.NOTON),
-        QUERY.format("`lunch` != TIME '11:11:11.1111'"),
+        QUERY.format("(`lunch` != TIME '11:11:11.1111') OR (`lunch` IS NULL)"),
         id="Time not on",
     ),
     pytest.param(
@@ -384,7 +384,7 @@ PARAMS = [
     ),
     pytest.param(
         create_date_filter(Filter.TimePredicate.NOTON),
-        QUERY.format("`birthday` != DATE '1993-07-26'"),
+        QUERY.format("(`birthday` != DATE '1993-07-26') OR (`birthday` IS NULL)"),
         id="Date not on",
     ),
     pytest.param(
@@ -565,7 +565,9 @@ PARAMS = [
     ),
     pytest.param(
         create_datetime_filter(Filter.TimePredicate.NOTON),
-        QUERY.format("`when` != TIMESTAMP '1993-07-26T06:30:12.1234'"),
+        QUERY.format(
+            "(`when` != TIMESTAMP '1993-07-26T06:30:12.1234') OR (`when` IS NULL)"
+        ),
         id="Dateime not on",
     ),
     pytest.param(
