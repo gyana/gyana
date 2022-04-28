@@ -3,7 +3,7 @@ import pytest
 from apps.base.tests.asserts import assertFormChoicesLength
 from apps.base.tests.mock_data import TABLE
 from apps.base.tests.mocks import mock_bq_client_with_schema
-from apps.widgets.forms import FORMS
+from apps.widgets.forms import FORMS, WidgetSourceForm
 from apps.widgets.formsets import (
     AggregationColumnFormset,
     AggregationWithFormattingFormset,
@@ -60,7 +60,7 @@ def test_generic_form(kind, formset_classes, setup, widget_factory):
     dashboard, table = setup
     widget = widget_factory(kind=kind, table=table, page__dashboard=dashboard)
     form = FORMS[kind](instance=widget, schema=TABLE.schema())
-    fields = {"kind", "table", "date_column"}
+    fields = {"kind", "date_column"}
     if kind == Widget.Kind.TABLE:
         fields |= {"show_summary_row", "sort_column", "sort_ascending"}
     assert set(form.get_live_fields()) == fields
@@ -120,14 +120,12 @@ def test_one_dimension_form(kind, formset_classes, setup, widget_factory):
     if kind == Widget.Kind.COMBO:
         assert set(form.get_live_fields()) == {
             "kind",
-            "table",
             "dimension",
             "date_column",
         }
     else:
         assert set(form.get_live_fields()) == {
             "kind",
-            "table",
             "sort_by",
             "sort_ascending",
             "dimension",
@@ -175,7 +173,7 @@ def test_two_dimension_form(kind, formset_classes, setup, widget_factory):
     widget = widget_factory(kind=kind, table=table, page__dashboard=dashboard)
     form = FORMS[kind](instance=widget)
 
-    fields = {"kind", "table", "dimension", "second_dimension", "date_column"}
+    fields = {"kind", "dimension", "second_dimension", "date_column"}
     if kind not in [Widget.Kind.STACKED_LINE, Widget.Kind.HEATMAP]:
         fields |= {"stack_100_percent"}
 
@@ -183,3 +181,14 @@ def test_two_dimension_form(kind, formset_classes, setup, widget_factory):
     assert set(form.get_live_formsets()) == formset_classes
     assertFormChoicesLength(form, "dimension", NUM_COLUMN_OPTIONS)
     assertFormChoicesLength(form, "second_dimension", NUM_COLUMN_OPTIONS)
+
+
+def test_widget_source_form(setup, widget_factory):
+    dashboard, table = setup
+    widget = widget_factory(
+        kind=Widget.Kind.TABLE, table=table, page__dashboard=dashboard
+    )
+
+    form = WidgetSourceForm(instance=widget)
+    assert set(form.fields) == {"table"}
+    assertFormChoicesLength(form, "table", 2)

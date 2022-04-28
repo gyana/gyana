@@ -58,6 +58,15 @@ def test_widget_crudl(
         f"{dashboard_url}/widgets/{widget.id}/update",
         data={
             "table": table.id,
+        },
+    )
+    widget.refresh_from_db()
+    assert isinstance(r, TurboStreamResponse)
+    assert widget.table == table
+
+    r = client.post(
+        f"{dashboard_url}/widgets/{widget.id}/update",
+        data={
             "kind": Widget.Kind.COLUMN,
             "dimension": "athlete",
             "sort_by": "dimension",
@@ -70,7 +79,6 @@ def test_widget_crudl(
     )
     widget.refresh_from_db()
     assert isinstance(r, TurboStreamResponse)
-    assert widget.table == table
     assert widget.dimension == "athlete"
 
     # delete
