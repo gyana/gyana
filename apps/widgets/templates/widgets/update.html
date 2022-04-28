@@ -18,8 +18,9 @@
           Source
         </a>
         <a
-          href="{% url "dashboard_widgets:update" project.id dashboard.id object.pk %}"
-          class="tabbar__link {% if tab == 'data' %}tabbar__link--active{% endif %}"
+         {% if object.table %}href="{% url "dashboard_widgets:update" project.id dashboard.id object.pk %}"{% endif %}
+          class="tabbar__link {% if tab == 'data' %}tabbar__link--active{% endif %}{% if not object.table %}tabbar__link--disabled{% endif %}"
+          
         >
           Data
         </a>

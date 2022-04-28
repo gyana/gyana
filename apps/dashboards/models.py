@@ -155,6 +155,10 @@ class Dashboard(DashboardSettings, HistoryModel):
             attrs["shared_id"] = uuid4()
         return super().make_clone(attrs, sub_clone, using)
 
+    @property
+    def input_tables_fk(self):
+        return [widget.table.id for widget in self.widgets.filter(table__isnull=False)]
+
 
 class Page(HistoryModel):
     class Meta:

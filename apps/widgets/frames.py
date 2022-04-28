@@ -103,7 +103,7 @@ class WidgetUpdate(DashboardMixin, TurboFrameUpdateView):
 
     @property
     def tab(self):
-        return self.request.GET.get("tab", "data")
+        return self.request.GET.get("tab", "data" if self.object.table else "source")
 
     def get_output_context(self):
         context = {
@@ -179,7 +179,7 @@ class WidgetUpdate(DashboardMixin, TurboFrameUpdateView):
                     self.object.id,
                 ),
             )
-            return f"{base_url}?tab={self.tab}"
+            return f"{base_url}?tab={self.tab if self.tab!='source' else 'data'}"
 
         return reverse(
             "project_dashboards:detail",

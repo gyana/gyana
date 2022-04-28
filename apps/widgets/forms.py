@@ -2,18 +2,18 @@ import copy
 import re
 
 from django import forms
+from django.db.models import Case, Q, When
 from ibis.expr.datatypes import Date, Time, Timestamp
 
 from apps.base.core.utils import create_column_choices
 from apps.base.fields import ColorField
 from apps.base.forms import BaseModelForm, LiveFormsetForm, LiveFormsetMixin
-from apps.base.widgets import Datalist, SelectWithDisable
+from apps.base.widgets import Datalist, SelectWithDisable, SourceSelect
 from apps.dashboards.forms import PaletteColorsField
 from apps.tables.models import Table
 
 from .formsets import FORMSETS, AggregationColumnFormset, ControlFormset, FilterFormset
 from .models import COUNT_COLUMN_NAME, WIDGET_KIND_TO_WEB, Widget
-from .widgets import SourceSelect
 
 
 def get_not_deleted_entries(data, regex):
@@ -28,17 +28,27 @@ class WidgetSourceForm(BaseModelForm):
     class Meta:
         model = Widget
         fields = ["table"]
-        widgets = {"table": SourceSelect()}
+        widgets = {"table": SourceSelect(parent="dashboard")}
 
     def __init__(self, *args, **kwargs):
         project = kwargs.pop("project", None)
 
         super().__init__(*args, **kwargs)
         if project:
-            self.fields["table"].queryset = Table.available.filter(
-                project=project
-            ).exclude(
-                source__in=[Table.Source.INTERMEDIATE_NODE, Table.Source.CACHE_NODE]
+            self.fields["table"].queryset = (
+                Table.available.filter(project=project)
+                .exclude(
+                    source__in=[Table.Source.INTERMEDIATE_NODE, Table.Source.CACHE_NODE]
+                )
+                .annotate(
+                    is_used_in=Case(
+                        When(
+                            id__in=self.instance.page.dashboard.input_tables_fk,
+                            then=True,
+                        ),
+                        default=False,
+                    ),
+                )
             )
 
 

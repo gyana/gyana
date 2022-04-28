@@ -23,9 +23,9 @@
 
     <div>
       {{ option.label }}
-      {% if option.usedInWorkflow %}
+      {% if option.usedIn %}
       <br>
-      <p class="small text-black-50">Used in this workflow</p>
+      <p class="small text-black-50">Used in this {{ parent }}</p>
       {% endif %}
     </div>
   </label>

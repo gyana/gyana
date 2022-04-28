@@ -7,14 +7,13 @@ from django.utils.functional import cached_property
 
 from apps.base.core.utils import create_column_choices
 from apps.base.forms import LiveFormsetForm
-from apps.base.widgets import MultiSelect
+from apps.base.widgets import MultiSelect, SourceSelect
 from apps.columns.forms import AGGREGATION_TYPE_MAP
 from apps.columns.models import Column
 from apps.nodes.formsets import KIND_TO_FORMSETS
 from apps.tables.models import Table
 
 from .models import Node
-from .widgets import InputNode
 
 INPUT_SEARCH_THRESHOLD = 0.3
 
@@ -53,7 +52,7 @@ class InputNodeForm(NodeForm):
         model = Node
         fields = ["input_table"]
         labels = {"input_table": "Table"}
-        widgets = {"input_table": InputNode()}
+        widgets = {"input_table": SourceSelect()}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -64,14 +63,14 @@ class InputNodeForm(NodeForm):
         # Re-focus the search bar when there is a value
         if self.data.get("search"):
             self.fields["search"].widget.attrs["autofocus"] = ""
-            
+
         self.fields["input_table"].queryset = (
             Table.available.filter(project=self.instance.workflow.project)
             .exclude(
                 source__in=[Table.Source.INTERMEDIATE_NODE, Table.Source.CACHE_NODE]
             )
             .annotate(
-                used_in_workflow=Case(
+                is_used_in=Case(
                     When(id__in=self.instance.workflow.input_tables_fk, then=True),
                     default=False,
                 ),
