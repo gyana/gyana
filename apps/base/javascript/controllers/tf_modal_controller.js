@@ -24,6 +24,7 @@ export default class extends Controller {
 
   initialize() {
     this.changed = false
+    this.changeElement = null
     this.boundHandleKeyup = this.handleKeyup.bind(this)
     this.boundHandleClick = this.handleClick.bind(this)
   }
@@ -151,6 +152,14 @@ export default class extends Controller {
     }
   }
 
+  changeTab(event) {
+    if (this.changed) {
+      event.preventDefault()
+      this.changeElement = event.target
+      this.closingWarningTarget.removeAttribute('hidden')
+    }
+  }
+
   close(event) {
     if (this.hasClosingWarningTarget && this.changed) {
       this.closingWarningTarget.removeAttribute('hidden')
@@ -170,15 +179,24 @@ export default class extends Controller {
 
   forceClose() {
     this.changed = false
-    this.modalTarget.setAttribute('hidden', '')
 
-    const params = new URLSearchParams(location.search)
-    params.delete('modal_item')
-    history.replaceState(
-      {},
-      '',
-      `${location.pathname}${params.toString() ? '?' + params.toString() : ''}`
-    )
+    if (this.changeElement) {
+      const element = this.changeElement
+      this.changeElement = null
+      element.click()
+    } else {
+      this.modalTarget.setAttribute('hidden', '')
+
+      const params = new URLSearchParams(location.search)
+      params.delete('modal_item')
+      history.replaceState(
+        {},
+        '',
+        `${location.pathname}${
+          params.toString() ? '?' + params.toString() : ''
+        }`
+      )
+    }
   }
 
   closeWarning() {
