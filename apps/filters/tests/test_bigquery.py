@@ -127,7 +127,7 @@ PARAMS = [
         create_int_filter(
             Filter.NumericPredicate.NEQUAL,
         ),
-        QUERY.format("`id` != 42"),
+        QUERY.format("(`id` != 42) OR (`id` IS NULL)"),
         id="Integer not equal",
     ),
     pytest.param(
@@ -200,7 +200,7 @@ PARAMS = [
     ),
     pytest.param(
         create_float_filter(Filter.NumericPredicate.NEQUAL),
-        QUERY.format("`stars` != 42.0"),
+        QUERY.format("(`stars` != 42.0) OR (`stars` IS NULL)"),
         id="Float not equal",
     ),
     pytest.param(
@@ -261,7 +261,7 @@ PARAMS = [
     ),
     pytest.param(
         create_string_filter(Filter.StringPredicate.NEQUAL),
-        QUERY.format("`athlete` != 'Adam Ondra'"),
+        QUERY.format("(`athlete` != 'Adam Ondra') OR (`athlete` IS NULL)"),
         id="String not equal",
     ),
     pytest.param(

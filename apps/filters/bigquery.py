@@ -15,7 +15,7 @@ def eq(query, column, value):
 
 
 def neq(query, column, value):
-    return query[query[column] != value]
+    return query[(query[column] != value) | query[column].isnull()]
 
 
 def gt(query, column, value):
