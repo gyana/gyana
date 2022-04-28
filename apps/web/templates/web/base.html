@@ -43,14 +43,16 @@
     <script src="{% static "rest_framework/js/coreapi-0.1.1.js" %}"></script>
     <script src="{% url "api_schemajs" %}"></script>
 
-    {% if SEGMENT_ANALYTICS_JS_WRITE_KEY %}
-      {% include "web/components/analytics.html" %}
-    {% endif %}
+    {% if not request.user.is_hijacked %}
+      {% if SEGMENT_ANALYTICS_JS_WRITE_KEY %}
+        {% include "web/components/analytics.html" %}
+      {% endif %}
 
-    {% if GOOGLE_ANALYTICS_ID %}
-      {% comment %} GAv3 and GAv4 {% endcomment %}
-      {% include "web/components/google_analytics.html" %}
-      {% include "web/components/google_analytics.html" with GOOGLE_ANALYTICS_ID=WEBSITE_GTM_ID %}
+      {% if GOOGLE_ANALYTICS_ID %}
+        {% comment %} GAv3 and GAv4 {% endcomment %}
+        {% include "web/components/google_analytics.html" %}
+        {% include "web/components/google_analytics.html" with GOOGLE_ANALYTICS_ID=WEBSITE_GTM_ID %}
+      {% endif %}
     {% endif %}
 
     {% block head.extra %}{% endblock head.extra %}

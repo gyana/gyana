@@ -85,13 +85,15 @@
     <i
       data-controller="tooltip"
       data-tooltip-content="{{ object.state_text }}"
-      class="fas fa-fw fa-center {{ object.state_icon }} mr-4">
+      class="fas fa-fw fa-center {{ object.state_icon }}">
     </i>
 
-    <p>
-      <strong>{{ integration.num_rows|intcomma }}</strong> row{{ integration.num_rows|pluralize }} •
-      <strong>{{ integration.num_tables|intcomma }}</strong> table{{ integration.num_tables|pluralize }}
-    </p>
+    {% if object.ready or object.state == 'done' %}
+      <p class="ml-4">
+        <strong>{{ integration.num_rows|intcomma }}</strong> row{{ integration.num_rows|pluralize }} •
+        <strong>{{ integration.num_tables|intcomma }}</strong> table{{ integration.num_tables|pluralize }}
+      </p>
+    {% endif %}
   </div>
 
   {% comment %} Uploads cannot be setup again after approval {% endcomment %}
