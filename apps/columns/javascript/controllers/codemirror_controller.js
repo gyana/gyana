@@ -14,13 +14,17 @@ const functions = require('../../functions.json')
 export default class extends Controller {
   static targets = ['textarea']
   connect() {
-    const columns = JSON.parse(this.element.querySelector('#columns').innerHTML).map((column) => ({
+    const columns = JSON.parse(
+      this.element.querySelector('#columns').innerHTML
+    ).map((column) => ({
       text: column,
       loweredText: column.toLowerCase(),
       className: 'text-pink',
     }))
 
-    const readOnly = this.textareaTarget.attributes['readonly'] ? 'nocursor' : false
+    const readOnly = this.textareaTarget.attributes['readonly']
+      ? 'nocursor'
+      : false
 
     registerLinter(columns)
 
@@ -35,6 +39,7 @@ export default class extends Controller {
       lint: true,
       selfContain: true,
       readOnly,
+      lineWrapping: true,
     })
 
     // From https://stackoverflow.com/a/54377763
@@ -79,7 +84,10 @@ CodeMirror.defineSimpleMode('gyanaformula', {
 
 // Autocomplete
 
-const operationCompletions = operations.map((op) => ({ text: op, className: 'text-blue' }))
+const operationCompletions = operations.map((op) => ({
+  text: op,
+  className: 'text-blue',
+}))
 
 const autocomplete = (columns) => (editor, option) => {
   let cursor = editor.getCursor(),
@@ -93,8 +101,11 @@ const autocomplete = (columns) => (editor, option) => {
 
   const word = line.slice(start, end).toLowerCase()
   if (word) {
-    const list = operationCompletions.filter((op) => op.text.startsWith(word)) || []
-    list.push(...(columns.filter((column) => column.loweredText.startsWith(word)) || []))
+    const list =
+      operationCompletions.filter((op) => op.text.startsWith(word)) || []
+    list.push(
+      ...(columns.filter((column) => column.loweredText.startsWith(word)) || [])
+    )
     return {
       list,
       from: CodeMirror.Pos(cursor.line, start),
@@ -131,7 +142,9 @@ const registerLinter = (columns) =>
         if (
           newline[m.index + m[0].length] != '(' &&
           !columnNames.includes(m[0]) &&
-          !(newline[m.index + m[0].length] == '"' && newline[m.index - 1] == '"') &&
+          !(
+            newline[m.index + m[0].length] == '"' && newline[m.index - 1] == '"'
+          ) &&
           !['TRUE', 'FALSE'].includes(m[0])
         ) {
           result.push({
