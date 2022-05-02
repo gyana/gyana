@@ -190,5 +190,5 @@ def test_widget_source_form(setup, widget_factory):
     )
 
     form = WidgetSourceForm(instance=widget)
-    assert set(form.fields) == {"table"}
+    assert set(form.fields) == {"table", "search"}
     assertFormChoicesLength(form, "table", 2)
