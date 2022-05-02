@@ -88,8 +88,9 @@ class MockFivetranClient:
             Connector.objects.filter(service=service).order_by("id").first()
             or Connector.objects.filter(service=self.DEFAULT_SERVICE).first()
         )
-        connector.schema = f"{connector.schema}_{uuid.uuid4().hex}"
-        connector.fivetran_id = f"{connector.fivetran_id}_{uuid.uuid4().hex}"
+
+        connector.schema = f"{connector.schema}_mock_{(uuid.uuid4().hex):6}"
+        connector.fivetran_id = f"{connector.fivetran_id}_mock_{(uuid.uuid4().hex):6}"
         return get_connector_json(connector, is_historical_sync=True)
 
     def new(self, config):
@@ -136,7 +137,7 @@ class MockFivetranClient:
 
         service = connector.service if connector is not None else "google_analytics"
         fivetran_id = (
-            "_".join(connector.fivetran_id.split("_")[:-1])
+            connector.fivetran_id.split("_mock_")[0]
             if connector is not None
             else "humid_rifle"
         )

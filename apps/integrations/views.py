@@ -73,6 +73,14 @@ class IntegrationDetail(ProjectMixin, TurboUpdateView):
         context_data["tables"] = self.object.table_set.order_by("bq_table").all()
         table = self.object.get_table_by_pk_safe(self.request.GET.get("table_id"))
         context_data["table_id"] = table.id if table else None
+
+        if self.object.kind == Integration.Kind.CONNECTOR:
+            syncing_or_empty = {
+                i.split(".")[1] for i in self.object.connector.schema_obj.enabled_bq_ids
+            } - {t.bq_table for t in context_data["tables"]}
+            context_data["syncing_or_empty"] = {
+                t.replace("_", " ").title() for t in syncing_or_empty
+            }
         return context_data
 
     def get_success_url(self) -> str:
@@ -279,9 +287,7 @@ class IntegrationDone(ProjectMixin, TurboUpdateView):
         team = self.project.team
         team.update_row_count()
 
-        if not self.object.ready and not team.check_new_rows(
-            self.object.num_rows
-        ):
+        if not self.object.ready and not team.check_new_rows(self.object.num_rows):
             return "integrations/review.html"
 
         return "integrations/done.html"

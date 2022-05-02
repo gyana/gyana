@@ -59,7 +59,27 @@
               </p>
             </li>
             {% endfor %}
+
+            {% if syncing_or_empty %}
+
+              {% for table in syncing_or_empty  %}
+              
+                <li>
+                  <p 
+                    data-controller="tooltip" 
+                    class="text-black-50"
+                    data-tooltip-content="This table is still syncing or empty"
+                  >
+                    {{ table  }}
+                  </p>
+                <li>
+                
+              {% endfor %}
+
+          {% endif %}
+          
           </ul> 
+
         </div>
       {% endif %}
       {% if request.GET.view == 'schema' %}
