@@ -1,6 +1,6 @@
 import json
 import os
-from datetime import datetime
+import uuid
 from functools import cache
 from glob import glob
 
@@ -88,6 +88,8 @@ class MockFivetranClient:
             Connector.objects.filter(service=service).order_by("id").first()
             or Connector.objects.filter(service=self.DEFAULT_SERVICE).first()
         )
+        connector.schema = f"{connector.schema}_{uuid.uuid4().hex}"
+        connector.fivetran_id = f"{connector.fivetran_id}_{uuid.uuid4().hex}"
         return get_connector_json(connector, is_historical_sync=True)
 
     def new(self, config):
@@ -100,7 +102,7 @@ class MockFivetranClient:
             if started is not None
             else False
         )
-        succeeded_at = timezone.now() if not is_historical_sync else None
+        succeeded_at = None if is_historical_sync else timezone.now()
 
         return get_connector_json(
             connector, is_historical_sync=is_historical_sync, succeeded_at=succeeded_at
@@ -133,7 +135,11 @@ class MockFivetranClient:
             return self._schema_cache[connector.id]
 
         service = connector.service if connector is not None else "google_analytics"
-        fivetran_id = connector.fivetran_id if connector is not None else "humid_rifle"
+        fivetran_id = (
+            "_".join(connector.fivetran_id.split("_")[:-1])
+            if connector is not None
+            else "humid_rifle"
+        )
 
         with open(f"{SCHEMA_FIXTURES_DIR}/{service}_{fivetran_id}.json", "r") as f:
             return json.load(f)

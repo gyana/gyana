@@ -1,5 +1,6 @@
 from itertools import chain
 
+from django.conf import settings
 from google.api_core.exceptions import NotFound
 
 from apps.base import clients
@@ -68,8 +69,12 @@ def get_bq_tables_for_connector(connector):
     if service_type == ServiceTypeEnum.API_CLOUD:
         if not (schemas := connector.schema_obj.schemas):
             return set()
+        schema = connector.schema
+        if settings.MOCK_FIVETRAN and len(schema.split("_")) == 6:
+            schema = "_".join(schema.split("_")[:-1])
+
         return _get_bq_tables_from_dataset_safe(
-            connector.schema,
+            schema,
             enabled_table_ids=schemas[0].enabled_table_ids,
         )
 
