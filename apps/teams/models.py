@@ -54,6 +54,7 @@ class Team(DirtyFieldsMixin, BaseModel, SafeDeleteModel):
     # the last checkout associated with this team (until subscription information syncs via webhook from Paddle)
     last_checkout = models.OneToOneField(Checkout, null=True, on_delete=models.SET_NULL)
     timezone = TimeZoneField(default="GMT", choices_display="WITH_GMT_OFFSET")
+    has_free_trial = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
         from .bigquery import create_team_dataset
@@ -242,9 +243,13 @@ class Team(DirtyFieldsMixin, BaseModel, SafeDeleteModel):
     @property
     def has_subscription(self):
         # https://tkainrad.dev/posts/implementing-paddle-payments-for-my-django-saas/
-        return self.subscriptions.filter(
-            Q(status="active") | Q(status="deleted", next_bill_date__gte=timezone.now())
-        ).exists()
+        return (
+            self.subscriptions.filter(
+                Q(status="active")
+                | Q(status="deleted", next_bill_date__gte=timezone.now())
+            ).exists()
+            or self.has_free_trial
+        )
 
     @property
     def active_subscription(self):
