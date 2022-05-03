@@ -50,7 +50,13 @@ class TeamAdmin(SafeDeleteAdmin):
         (None, {"fields": readonly_fields}),
         (
             "Manual override",
-            {"fields": ["override_row_limit", "override_credit_limit"]},
+            {
+                "fields": [
+                    "override_row_limit",
+                    "override_credit_limit",
+                    "has_free_trial",
+                ]
+            },
         ),
     )
     list_per_page = 20

@@ -138,6 +138,7 @@ class Team(DirtyFieldsMixin, BaseModel, SafeDeleteModel):
             self.active_codes == 0
             and not self.has_subscription
             and not self.recently_completed_checkout
+            and not self.has_free_trial
         )
 
     @property
@@ -155,9 +156,11 @@ class Team(DirtyFieldsMixin, BaseModel, SafeDeleteModel):
         if self.active_codes > 0:
             return {**PLANS["appsumo"], **get_deal(self.appsumocode_set.all())}
 
-        if self.has_subscription:
-            if self.active_subscription.plan.id == settings.DJPADDLE_PRO_PLAN_ID:
-                return PLANS["pro"]
+        if (
+            self.has_subscription
+            and self.active_subscription.plan.id == settings.DJPADDLE_PRO_PLAN_ID
+        ) or self.has_free_trial:
+            return PLANS["pro"]
 
         return PLANS["free"]
 
@@ -243,13 +246,9 @@ class Team(DirtyFieldsMixin, BaseModel, SafeDeleteModel):
     @property
     def has_subscription(self):
         # https://tkainrad.dev/posts/implementing-paddle-payments-for-my-django-saas/
-        return (
-            self.subscriptions.filter(
-                Q(status="active")
-                | Q(status="deleted", next_bill_date__gte=timezone.now())
-            ).exists()
-            or self.has_free_trial
-        )
+        return self.subscriptions.filter(
+            Q(status="active") | Q(status="deleted", next_bill_date__gte=timezone.now())
+        ).exists()
 
     @property
     def active_subscription(self):
