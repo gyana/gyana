@@ -21,7 +21,6 @@ from apps.filters.bigquery import get_query_from_filters
 from apps.tables.bigquery import get_query_from_table
 from apps.teams.models import OutOfCreditsException
 
-from ._sentiment_utils import CreditException, get_gcp_sentiment
 from ._utils import create_or_replace_intermediate_table, get_parent_updated
 
 
@@ -290,6 +289,9 @@ def get_window_query(node, query):
 
 
 def get_sentiment_query(node, parent):
+    # TODO: grpcio on M1 mac
+    from ._sentiment_utils import get_gcp_sentiment
+
     table = getattr(node, "intermediate_table", None)
     conn = clients.ibis_client()
 
@@ -364,6 +366,8 @@ def _validate_arity(func, len_args):
 
 
 def get_query_from_node(node):
+    # TODO: grpcio on M1 mac
+    from ._sentiment_utils import CreditException
 
     nodes = _get_all_parents(node)
     # remove duplicates (python dicts are insertion ordered)
