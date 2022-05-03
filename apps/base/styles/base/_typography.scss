@@ -32,6 +32,12 @@ h4,
   font-size: 1.6rem;
 }
 
+// Fix for blog rich text (c.f. blog_page.html)
+.prose > p {
+  font-size: 1rem;
+  line-height: 1.5rem;
+}
+
 p,
 .p {
   font-size: 1.4rem;
@@ -71,4 +77,9 @@ strong,
 
 p + p {
   margin-top: 0.6rem;
+}
+
+// Roboto has a slightly higher baseline than fontawesome so we can adjust
+i.fa-center {
+  margin-bottom: 2px;
 }

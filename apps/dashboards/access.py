@@ -8,7 +8,7 @@ from django.urls import reverse
 from apps.base.access import login_and_permission_to_access
 from apps.projects.access import user_can_access_project
 
-from .models import Dashboard
+from .models import Dashboard, DashboardUpdate, DashboardVersion
 
 
 def dashboard_of_team(user, pk, *args, **kwargs):
@@ -17,6 +17,25 @@ def dashboard_of_team(user, pk, *args, **kwargs):
 
 
 login_and_dashboard_required = login_and_permission_to_access(dashboard_of_team)
+
+
+def dashboard_version_of_team(user, pk, *args, **kwargs):
+    dashboard_version = get_object_or_404(DashboardVersion, pk=pk)
+    return user_can_access_project(user, dashboard_version.dashboard.project)
+
+
+def dashboard_update_of_team(user, pk, *args, **kwargs):
+    dashboard_update = get_object_or_404(DashboardUpdate, pk=pk)
+    return user_can_access_project(user, dashboard_update.dashboard.project)
+
+
+login_and_dashboardversion_required = login_and_permission_to_access(
+    dashboard_version_of_team
+)
+
+login_and_dashboardupdate_required = login_and_permission_to_access(
+    dashboard_update_of_team
+)
 
 
 def can_access_password_protected_dashboard(request, dashboard) -> bool:
@@ -84,12 +103,6 @@ def dashboard_is_in_template(view_func):
             return HttpResponseRedirect(
                 "{}?next={}".format(reverse("account_login"), request.path)
             )
-        dashboard = Dashboard.objects.get(pk=kwargs["pk"])
-        if (
-            user_can_access_project(request.user, dashboard.project)
-            and dashboard.project.is_template
-        ):
-            return view_func(request, *args, **kwargs)
         return render(request, "404.html", status=404)
 
     return decorator

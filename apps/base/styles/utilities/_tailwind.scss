@@ -1,0 +1,59 @@
+@use 'sass:math';
+
+// Tailwind-like Sass utilities
+// https://github.com/tailwindlabs/tailwindcss/blob/master/stubs/defaultConfig.stub.js
+
+@function spacing($spacing) {
+  @return math.div($spacing, 4) * 1rem;
+}
+
+$font-sizes:  (
+  'xs': 0.75rem,
+  'sm': 0.875rem,
+  'base': 1rem,
+  'lg': 1.125rem,
+  'xl': 1.25rem,
+  '2xl': 1.5rem,
+  '3xl': 1.875rem,
+  '4xl': 2.25rem,
+  '5xl': 3rem,
+  '6xl': 3.75rem,
+  '7xl': 4.5rem,
+  '8xl': 6rem,
+  '9xl': 8rem,
+);
+
+$line-heights: (
+  'xs': 1rem,
+  'sm': 1.25rem,
+  'base': 1.5rem,
+  'lg': 1.75rem,
+  'xl': 1.75rem,
+  '2xl': 2rem,
+  '3xl': 2.25rem,
+  '4xl': 2.5rem,
+  '5xl': 1,
+  '6xl': 1,
+  '7xl': 1,
+  '8xl': 1,
+  '9xl': 1,
+);
+
+@mixin font-size($value) {
+
+  $font-size: map-get($font-sizes, $value);
+  $line-height: map-get($line-heights, $value);
+
+  @if $font-size == null {
+    @warn "Unfortunately, no value could be retrieved from `#{$font-size}`. "
+        + "Please make sure it is defined in `$font-size` map.";
+  }
+
+  @if $line-height == null {
+    @warn "Unfortunately, no value could be retrieved from `#{$line-height}`. "
+        + "Please make sure it is defined in `$line-height` map.";
+  }
+
+  font-size:  $font-size;
+  line-height: $line-height;
+}

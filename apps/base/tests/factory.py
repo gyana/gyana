@@ -1,4 +1,7 @@
+import uuid
+
 import factory
+import wagtail_factories
 from django.utils import timezone
 from pytest_factoryboy import register
 
@@ -21,6 +24,7 @@ from apps.dashboards.models import Dashboard, Page
 from apps.filters.models import Filter
 from apps.integrations.models import Integration
 from apps.invites.models import Invite
+from apps.learn.models import LearnPage
 from apps.nodes.models import Node
 from apps.oauth2.models import OAuth2
 from apps.projects.models import Project
@@ -66,11 +70,11 @@ class ConnectorFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Connector
 
-    fivetran_id = "fivetran_id"
+    fivetran_id = factory.Sequence(lambda n: uuid.uuid4())
     group_id = "group_id"
     service = "google_analytics"
     service_version = 0
-    schema = "dataset"
+    schema = factory.Sequence(lambda n: f"dataset_{uuid.uuid4()}")
     paused = False
     pause_after_trial = False
     connected_by = ""
@@ -323,3 +327,14 @@ class FacebookAdsCustomReportFactory(factory.django.DjangoModelFactory):
         model = FacebookAdsCustomReport
 
     connector = factory.SubFactory(ConnectorFactory)
+
+
+@register
+class LearnPageFactory(wagtail_factories.PageFactory):
+    title = "Gyana University"
+    body = []
+    slug = "learn"
+    show_in_menus = True
+
+    class Meta:
+        model = LearnPage

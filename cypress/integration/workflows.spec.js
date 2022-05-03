@@ -81,9 +81,13 @@ describe('workflows', () => {
   })
 
   it('Shows nodes loading error', () => {
-    cy.intercept('GET', `/nodes/api/nodes/?workflow=${getModelStartId('workflows.workflow')}`, {
-      statusCode: 500,
-    })
+    cy.intercept(
+      'GET',
+      `/nodes/api/nodes/?workflow=${getModelStartId('workflows.workflow')}`,
+      {
+        statusCode: 500,
+      }
+    )
     cy.get('button[type=submit]').first().click()
     cy.contains('Loading...')
     cy.contains('Failed loading your nodes!')
@@ -108,7 +112,9 @@ describe('Workflow-format', () => {
         const xSorted = _.sortBy(filtered, (n) => n.x).map((n) => n.id)
         expect(xSorted).to.deep.equal(movedNodes)
 
-        const ySorted = _.reverse(_.sortBy(filtered, (n) => n.y)).map((n) => n.id)
+        const ySorted = _.reverse(_.sortBy(filtered, (n) => n.y)).map(
+          (n) => n.id
+        )
         expect(ySorted).to.deep.equal(movedNodes)
       })
     cy.get('.react-flow__controls-button').eq(4).click()

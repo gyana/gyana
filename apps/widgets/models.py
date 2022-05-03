@@ -2,11 +2,10 @@ from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.urls import reverse
-from simple_history.models import HistoricalRecords
 
 from apps.base.clients import SLUG
 from apps.base.core.aggregations import AggregationFunctions
-from apps.base.models import BaseModel, SaveParentModel
+from apps.base.models import HistoryModel, SaveParentModel
 from apps.columns.bigquery import DatePeriod
 from apps.columns.currency_symbols import CurrencySymbols
 from apps.dashboards.models import Page
@@ -48,6 +47,14 @@ class WidgetStyle(models.Model):
     metric_comparison_font_size = models.IntegerField(null=True)
     metric_comparison_font_color = models.CharField(null=True, max_length=7)
 
+    # Gauge specific configuration
+    lower_limit = models.IntegerField(default=0)
+    upper_limit = models.IntegerField(default=100)
+    first_segment_color = models.CharField(null=True, max_length=7)
+    second_segment_color = models.CharField(null=True, max_length=7)
+    third_segment_color = models.CharField(null=True, max_length=7)
+    fourth_segment_color = models.CharField(null=True, max_length=7)
+
     @property
     def computed_background_color(self):
         if self.background_color:
@@ -59,7 +66,7 @@ class WidgetStyle(models.Model):
         return None
 
 
-class Widget(WidgetStyle, BaseModel):
+class Widget(WidgetStyle, HistoryModel):
     class Category(models.TextChoices):
         CONTENT = "content", "Content"
         SIMPLE = "simple", "Simple charts"
@@ -98,16 +105,9 @@ class Widget(WidgetStyle, BaseModel):
         TIMESERIES_AREA = "timeseries-area", "Area Timeseries"
         COMBO = "mscombidy2d", "Combination chart"
         IFRAME = "iframe", "iframe"
-
-    class Aggregator(models.TextChoices):
-        # These aggregators should reflect the names described in the ibis api, none is an exception
-        # https://ibis-project.org/docs/api.html#id2
-        NONE = "none", "None"
-        SUM = "sum", "Sum"
-        MEAN = "mean", "Average"
+        GAUGE = "angulargauge", "Gauge"
 
     _clone_excluded_m2o_or_o2m_fields = ["table"]
-    history = HistoricalRecords()
 
     page = models.ForeignKey(Page, on_delete=models.CASCADE, related_name="widgets")
 
@@ -128,7 +128,6 @@ class Widget(WidgetStyle, BaseModel):
 
     # Chart attributes
     kind = models.CharField(max_length=32, choices=Kind.choices, default=Kind.COLUMN)
-    aggregator = models.CharField(max_length=32, choices=Aggregator.choices)
     dimension = models.CharField(
         # maximum length of bigquery column name
         max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
@@ -191,23 +190,19 @@ class Widget(WidgetStyle, BaseModel):
     positive_decrease = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"<Widget {self.kind} on {self.table}>"
+        return f'{self.get_kind_display()}{f" {self.name}" if self.name else ""}'
 
     @property
     def is_valid(self) -> bool:
         """Returns bool stating whether this Widget is ready to be displayed"""
         # TODO: right now you also need to update the query in DashboardOverview dashboards/frames
-        if self.kind == self.Kind.IMAGE:
-            return True
-        if self.kind == self.Kind.TEXT:
-            return True
-        if self.kind == self.Kind.IFRAME:
+        if self.kind in [self.Kind.IMAGE, self.Kind.IFRAME, self.Kind.TEXT]:
             return True
         if not self.table:
             return False
         if self.kind == self.Kind.TABLE:
             return True
-        if self.kind == self.Kind.METRIC:
+        if self.kind in [self.Kind.METRIC, self.Kind.GAUGE]:
             return self.aggregations.count() == 1
         if self.kind == self.Kind.RADAR:
             return self.aggregations.count() >= 3
@@ -237,12 +232,33 @@ class Widget(WidgetStyle, BaseModel):
         )
         return f"{url}?dashboardPage={self.page.position}&modal_item={self.id}"
 
+    @property
+    def controlled_by(self):
+        if self.date_column:
+            if self.has_control:
+                return "self_controlled"
+            if self.page.has_control:
+                return "page_controlled"
+
+    def save(self, **kwargs):
+        skip_dashboard_update = kwargs.pop("skip_dashboard_update", False)
+        super().save(**kwargs)
+        if not skip_dashboard_update:
+            self.page.dashboard.updates.create(content_object=self)
+
+    def delete(self, **kwargs):
+        skip_dashboard_update = kwargs.pop("skip_dashboard_update", False)
+        if not skip_dashboard_update:
+            self.page.dashboard.updates.create(content_object=self)
+        return super().delete(**kwargs)
+
 
 NO_DIMENSION_WIDGETS = [
     Widget.Kind.RADAR,
     Widget.Kind.FUNNEL,
     Widget.Kind.PYRAMID,
     Widget.Kind.METRIC,
+    Widget.Kind.GAUGE,
 ]
 
 # widget = (icon, category, verbose_name)
@@ -313,10 +329,11 @@ WIDGET_KIND_TO_WEB = {
         "Area",
     ),
     Widget.Kind.COMBO.value: (
-        f"fa-analytics",
+        "fa-analytics",
         Widget.Category.COMBO,
         "Combination chart",
     ),
+    Widget.Kind.GAUGE.value: ("fa-tachometer-fast", Widget.Category.SIMPLE, "Gauge"),
 }
 
 

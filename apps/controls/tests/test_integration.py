@@ -41,7 +41,7 @@ def test_control_crudl(
     client, project, dashboard_factory, bigquery, integration_table_factory
 ):
     mock_bq_client_with_schema(
-        bigquery, [(name, type_.name) for name, type_ in TABLE.schema().items()]
+        bigquery, [(name, str(type_)) for name, type_ in TABLE.schema().items()]
     )
     mock_bq_client_data(bigquery)
     # add a widget with a dateslice column so it's picked up when creating the output stream
@@ -64,7 +64,7 @@ def test_control_crudl(
     assert control is not None
     assert control_widget is not None
     assertContains(r, "dashboard-widget-container")
-    assertContains(r, f"widgets-output-{widget.id}-stream")
+    assertContains(r, f"widgets-output-{widget.id}")
 
     # update
     r = client.get(control_url + f"{control.id}/update-widget")
@@ -85,10 +85,10 @@ def test_control_crudl(
     assertOK(r)
     control.refresh_from_db()
     assert isinstance(r, TurboStreamResponse)
-    assertContains(r, "controls:update-widget-stream")
+    assertContains(r, "controls:update-widget")
 
     # is sending the widget output
-    assertContains(r, f"widgets-output-{widget.id}-stream")
+    assertContains(r, f"widgets-output-{widget.id}")
     assert control.date_range == CustomChoice.CUSTOM
 
     # delete
@@ -97,7 +97,7 @@ def test_control_crudl(
     assert isinstance(r, TurboStreamResponse)
     assert Control.objects.first() is None
     assert ControlWidget.objects.first() is None
-    assertContains(r, f"widgets-output-{widget.id}-stream")
+    assertContains(r, f"widgets-output-{widget.id}")
 
 
 def test_public_date_slice_not_updating(
@@ -133,7 +133,8 @@ def test_adding_more_control_widgets(
 
     control_url = f"/projects/{project.id}/dashboards/{dashboard.id}/controls/"
     # create 2nd widget doesnt create new control
-    r = client.post(control_url + "new-widget", data={"page": page.id, "x": 0, "y": 0})
+    r = client.post(f"{control_url}new-widget", data={"page": page.id, "x": 0, "y": 0})
+
     assertOK(r)
     assert ControlWidget.objects.count() == 2
     assert Control.objects.count() == 1
@@ -144,7 +145,7 @@ def test_adding_more_control_widgets(
     assert ControlWidget.objects.count() == 1
     assert Control.objects.first() is not None
 
-    r = client.delete(f"{control_url}{control_widget.id}/delete-widget")
+    r = client.delete(f"{control_url}{ControlWidget.objects.first().id}/delete-widget")
     assertOK(r)
     assert ControlWidget.objects.first() is None
     assert Control.objects.first() is None

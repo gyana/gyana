@@ -2,6 +2,26 @@
 
 <div class="rounded-lg shadow-lg ring-1 ring-black ring-opacity-5 bg-white divide-y-2 divide-gray-50 w-screen">
   <div class="py-6 px-5 space-y-6">
+    <div>
+      <nav class="grid gap-y-8">
+        <a href="{% url 'web:use_case' 'ecommerce' %}" class="-m-3 p-3 flex items-center rounded-md hover:bg-gray-50">
+          {% heroicon 'shopping-cart' class="flex-shrink-0 h-6 w-6 text-blue" style="solid"%}
+          <span class="ml-3 text-base font-medium text-gray-900"> Ecommerce </span>
+        </a>
+
+        <a href="{% url 'web:use_case' 'b2b-saas' %}" class="-m-3 p-3 flex items-center rounded-md hover:bg-gray-50">
+          {% heroicon 'cloud' class="flex-shrink-0 h-6 w-6 text-blue" style="solid"%}
+          <span class="ml-3 text-base font-medium text-gray-900"> B2B Saas </span>
+        </a>
+
+        <a href="{% url 'web:use_case' 'marketing-agency' %}" class="-m-3 p-3 flex items-center rounded-md hover:bg-gray-50">
+          {% heroicon 'user-group' class="flex-shrink-0 h-6 w-6 text-blue" style="solid"%}
+          <span class="ml-3 text-base font-medium text-gray-900"> Marketing Agency </span>
+        </a>
+      </nav>
+    </div>
+  </div>
+  <div class="py-6 px-5 space-y-6">
     <div class="grid grid-cols-2 gap-y-4 gap-x-8">
       <a
         href="{% url 'web:integrations' %}"
@@ -45,7 +65,7 @@
       {% if request.user.is_authenticated %}
         <a
           href="{% url 'web:home' %}"
-          class="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-normal text-white bg-indigo-600 hover:bg-indigo-700"
+          class="button"
         >
           Go to app
         </a>
@@ -53,16 +73,16 @@
         <a
           href="{% url 'account_signup' %}"
           id="CTA_header"
-          class="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-normal text-indigo-900 bg-indigo-200 hover:bg-indigo-300"
+          class="button button--secondary"
         >
           Sign up
         </a>
         <a
-          href="{% external_url 'talk_to_us' %}"
+          href="{% external_url 'request_demo' %}"
           id="CTA_header"
-          class="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-normal text-white bg-indigo-800 hover:bg-indigo-900"
+          class="button"
         >
-          Talk to us
+          Book a demo
         </a>
         <p class="text-center text-base font-normal text-gray-600">
           Existing customer?

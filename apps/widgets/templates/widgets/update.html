@@ -4,11 +4,44 @@
 
 <div class="flex h-full">
   <div class="flex flex-col flex-1">
-    {% if widget.kind == "table" %}
-      {% include 'widgets/forms/default.html' %}
-    {% else %}
-      {% include 'widgets/forms/chart.html' %}
-    {% endif %}
+    <div class='widget-update-sidebar'>
+
+      <turbo-frame id="widget-editable-name" class="workflow-detail__header">
+        {% include 'widgets/name.html' %}
+      </turbo-frame>
+
+      <div class="tabbar">
+        <a
+          href="{% url "dashboard_widgets:update" project.id dashboard.id object.pk %}?tab=source"
+          class="tabbar__link {% if tab == 'source' %}tabbar__link--active{% endif %}"
+          data-action='tf-modal#changeTab'
+        >
+          Source
+        </a>
+        <a
+         {% if object.table %}href="{% url "dashboard_widgets:update" project.id dashboard.id object.pk %}"{% endif %}
+          class="tabbar__link {% if tab == 'data' %}tabbar__link--active{% endif %}{% if not object.table %}tabbar__link--disabled{% endif %}"
+          data-action='tf-modal#changeTab'
+        >
+          Data
+        </a>
+        <a
+          href="{% url "dashboard_widgets:update" project.id dashboard.id object.pk %}?tab=style"
+          class="tabbar__link {% if tab == 'style' %}tabbar__link--active{% endif %}"
+          data-action='tf-modal#changeTab'
+        >
+          Style
+        </a>
+      </div>
+
+      {% if tab == 'style' %}
+        {% include 'widgets/forms/style.html' %}
+      {% elif tab == 'source' %}
+        {% include 'widgets/forms/source.html' %}
+      {% else %}
+        {% include 'widgets/forms/data.html' %}
+      {% endif %}
+    </div>
   </div>
 
   <turbo-frame

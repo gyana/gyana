@@ -53,8 +53,17 @@ def test_integration_connector_clone(
     mock_update_kwargs_from_fivetran,
 ):
     connector = connector_factory()
-    table = integration_table_factory(integration=connector.integration)
-
+    table = integration_table_factory(
+        integration=connector.integration, bq_dataset=connector.schema
+    )
+    config = {
+        "group_id": connector.group_id,
+        "service": connector.service,
+        "config": connector.config,
+        "daily_sync_time": "00:00",
+    }
+    fivetran.get.return_value = config
+    fivetran.new.return_value = {"data": config}
     clone = connector.integration.make_clone()
 
     assert Integration.objects.count() == 2
@@ -64,7 +73,8 @@ def test_integration_connector_clone(
     assert clone.connector.schema.startswith(
         f"team_{connector.integration.project.team.id:06}_{clone.connector.service}_"
     )
-    assert fivetran.create.call_count == 1
+    assert fivetran.new.call_count == 1
+    assert fivetran.get.call_count == 1
 
     clone_table = clone.table_set.first()
     assert clone_table.bq_table == table.bq_table

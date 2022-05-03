@@ -1,3 +1,4 @@
+from django_tables2.tables import Table
 from django_tables2.views import SingleTableMixin
 
 from apps.base.core.bigquery import get_humanize_from_bigquery_type
@@ -25,7 +26,7 @@ class IntegrationOverview(ProjectMixin, TurboFrameTemplateView):
         broken = queryset.broken().count()
 
         context_data["integrations"] = {
-            "all": queryset.order_by("-updated").all()[:5],
+            "all": queryset.visible().order_by("-updated").all()[:5],
             "total": ready + pending,
             "ready": ready,
             "attention": queryset.needs_attention().count(),
@@ -47,8 +48,25 @@ class IntegrationGrid(TableInstanceMixin, SingleTableMixin, TurboFrameDetailView
     turbo_frame_dom_id = "integrations:grid"
 
     def get_table(self, **kwargs):
+        if not self.table_instance:
+            return type("DynamicTable", (Table,), {})(data=[])
         query = get_query_from_table(self.table_instance)
         table = get_table(query.schema(), query, None, **kwargs)
+
+        return RequestConfig(
+            self.request, paginate=self.get_table_pagination(table)
+        ).configure(table)
+
+
+class IntegrationPreview(TableInstanceMixin, SingleTableMixin, TurboFrameDetailView):
+    template_name = "integrations/grid.html"
+    model = Integration
+    paginate_by = 5
+    turbo_frame_dom_id = "integrations:preview"
+
+    def get_table(self, **kwargs):
+        query = get_query_from_table(self.table_instance)
+        table = get_table(query.schema(), query.limit(15), None, **kwargs)
 
         return RequestConfig(
             self.request, paginate=self.get_table_pagination(table)
@@ -63,14 +81,9 @@ class IntegrationSchema(TableInstanceMixin, SingleTableMixin, TurboFrameDetailVi
     table_class = StructureTable
 
     def get_table_data(self, **kwargs):
-
+        if not self.table_instance:
+            return []
         return [
             {"type": get_humanize_from_bigquery_type(t.field_type), "name": str(t.name)}
             for t in get_bq_table_schema_from_table(self.table_instance)
         ]
-
-
-class IntegrationTableDetail(TableInstanceMixin, TurboFrameDetailView):
-    template_name = "integrations/table_detail.html"
-    model = Integration
-    turbo_frame_dom_id = "integrations:table_detail"

@@ -3,7 +3,7 @@ from django.template import Context
 from django.template.loader import get_template
 from django.utils.html import format_html
 
-from apps.base.tables import DuplicateColumn, FaBooleanColumn, NaturalDatetimeColumn
+from apps.base.tables import FaBooleanColumn, NaturalDatetimeColumn, TemplateColumn
 
 from .models import Workflow
 
@@ -30,7 +30,6 @@ class WorkflowTable(tables.Table):
             "last_success_run",
             "created",
             "updated",
-            "duplicate",
         )
         attrs = {"class": "table"}
 
@@ -43,9 +42,8 @@ class WorkflowTable(tables.Table):
     updated = NaturalDatetimeColumn()
     # TODO: Fix orderable for status column.
     status = StatusColumn(template_name="columns/status.html", orderable=False)
-    duplicate = DuplicateColumn(
-        template_name="components/_duplicate.html",
-        verbose_name="Actions",
+    actions = TemplateColumn(
+        template_name="components/_actions.html",
         orderable=False,
     )
 

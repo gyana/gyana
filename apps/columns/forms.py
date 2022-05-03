@@ -1,5 +1,5 @@
 from django import forms
-from ibis.expr.datatypes import Date, Floating, Integer, Timestamp
+from ibis.expr.datatypes import Array, Date, Floating, Integer, Struct, Timestamp
 
 from apps.base.core.aggregations import AGGREGATION_TYPE_MAP
 from apps.base.core.utils import create_column_choices
@@ -34,6 +34,20 @@ IBIS_TO_FUNCTION = {
 }
 
 
+def disable_struct_and_array_columns(fields, column_field, schema):
+    fields["column"] = forms.ChoiceField(
+        choices=column_field.choices,
+        help_text=column_field.help_text,
+        widget=SelectWithDisable(
+            disabled={
+                name: "Currently, you cannot use this column type here."
+                for name, type_ in schema.items()
+                if isinstance(type_, (Struct, Array))
+            }
+        ),
+    )
+
+
 class ColumnForm(BaseLiveSchemaForm):
     class Meta:
         fields = ("column", "part")
@@ -47,6 +61,9 @@ class ColumnForm(BaseLiveSchemaForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        disable_struct_and_array_columns(
+            self.fields, self.fields["column"], self.schema
+        )
 
         if "part" in self.fields and isinstance(self.column_type, Date):
             self.fields["part"].choices = [
@@ -105,6 +122,9 @@ class AggregationColumnForm(BaseLiveSchemaForm):
     def __init__(self, *args, **kwargs):
 
         super().__init__(*args, **kwargs)
+        disable_struct_and_array_columns(
+            self.fields, self.fields["column"], self.schema
+        )
 
         if self.column_type is not None:
             self.fields["function"].choices = [
@@ -145,10 +165,9 @@ class AggregationFormWithFormatting(AggregationColumnForm):
                 and self.parent_instance.kind == Widget.Kind.METRIC
             ):
                 fields += ["name"]
-            fields += ["formatting_unfolded"]
+            # For aggregation column the numeric type of the output is guaranteed
+            fields += ["formatting_unfolded", "rounding", "currency", "is_percentage"]
 
-        if isinstance(self.column_type, (Floating, Integer)):
-            fields += ["rounding", "currency", "is_percentage"]
         return fields
 
 
@@ -171,6 +190,12 @@ class OperationColumnForm(BaseLiveSchemaForm):
         widgets = {
             "string_value": forms.Textarea(attrs={"rows": 1}),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        disable_struct_and_array_columns(
+            self.fields, self.fields["column"], self.schema
+        )
 
     def get_live_fields(self):
         fields = ["column"]
@@ -249,11 +274,10 @@ class WindowColumnForm(BaseLiveSchemaForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        choices = create_column_choices(self.schema)
-        self.fields["column"] = forms.ChoiceField(
-            choices=choices,
-            help_text=self.base_fields["column"].help_text,
+        disable_struct_and_array_columns(
+            self.fields, self.fields["column"], self.schema
         )
+        choices = create_column_choices(self.schema)
 
         if self.column_type is not None:
             self.fields["function"].choices = [

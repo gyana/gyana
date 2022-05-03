@@ -1,4 +1,4 @@
-{% extends 'integrations/base_setup.html' %}
+{% extends 'integrations/base.html' %}
 {% load static %}
 {% load help_utils %}
 
@@ -46,8 +46,7 @@
                 {% link_article 'integrations' 'error' %}
               </div>
 
-              <p>
-                Our servers had this to say: <strong id="failure-message"></strong>
+              <p id="failure-message">
               </p>
 
               {% if object.kind == 'upload' %}

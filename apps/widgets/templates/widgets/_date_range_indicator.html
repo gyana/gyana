@@ -1,0 +1,16 @@
+{% if object.controlled_by %}
+<div class='widget-card__date-range-indicator' data-controller='tooltip' 
+  data-tooltip-content="This widget is controlled by 
+  {% if object.controlled_by == 'page_controlled' %}
+    the date range controller on the page
+  {% else %}
+    its own date range controller
+  {% endif %}.">
+  <i class="far fa-clock fa-sm
+    {% if object.controlled_by == 'page_controlled' %}
+      text-black-50
+      {% else %}
+      text-orange
+    {% endif %}"></i>
+</div>
+{% endif %}

@@ -120,7 +120,6 @@ PROJECT_APPS = [
     "apps.sheets",
     "apps.connectors.apps.ConnectorsConfig",
     "apps.appsumo",
-    "apps.templates",
     "apps.cnames.apps.CNamesConfig",
     "apps.exports",
     "apps.controls",
@@ -356,7 +355,7 @@ CELERY_RESULT_BACKEND = "django-db"
 PROJECT_METADATA = {
     "NAME": "Gyana",
     "URL": "http://gyana.com",
-    "DESCRIPTION": "No-Code Data Analytics",
+    "DESCRIPTION": "Custom reports for any source",
     "IMAGE": "https://upload.wikimedia.org/wikipedia/commons/2/20/PEO-pegasus_black.svg",
     "KEYWORDS": "SaaS, django",
     "CONTACT_EMAIL": "developers@gyana.com",
@@ -466,16 +465,12 @@ DJPADDLE_SUBSCRIBER_BY_PAYLOAD = "apps.teams.paddle.get_subscriber_by_payload"
 DJPADDLE_LINK_STALE_SUBSCRIPTIONS = False
 
 DJPADDLE_PRO_PLAN_ID = int(os.getenv("DJPADDLE_PRO_PLAN_ID", default="0"))
-DJPADDLE_BUSINESS_PLAN_ID = int(os.getenv("DJPADDLE_BUSINESS_PLAN_ID", default="0"))
 
 # https://stackoverflow.com/questions/47153776/how-to-store-third-party-apps-migrations-in-django
 MIGRATION_MODULES = {"djpaddle": "apps.teams.migrate.djpaddle"}
 
 
 WAFFLE_FLAG_MODEL = "teams.Flag"
-
-# TODO: Remove once the website is enabled
-ENABLE_WEBSITE = os.getenv("ENABLE_WEBSITE", default="False") == "True"
 
 WAGTAIL_SITE_NAME = "Gyana CMS"
 WAGTAILSEARCH_BACKENDS = {

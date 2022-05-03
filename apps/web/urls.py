@@ -11,7 +11,11 @@ app_name = "web"
 
 sitmap_urlpatterns = [
     path("", views.Home.as_view(), name="home"),  # cache_site in view.get
-    path("pricing", cache_site(views.Pricing.as_view()), name="pricing"),
+    path(
+        "pricing",
+        xframe_options_sameorigin_allowlist(cache_site(views.Pricing.as_view())),
+        name="pricing",
+    ),
     path("integrations", cache_site(views.Integrations.as_view()), name="integrations"),
     path("about", cache_site(views.About.as_view()), name="about"),
     path(
@@ -20,9 +24,21 @@ sitmap_urlpatterns = [
         name="privacy-policy",
     ),
     path("terms-of-use", cache_site(views.TermsOfUse.as_view()), name="terms-of-use"),
+    path("book-a-demo", cache_site(views.BookADemo.as_view()), name="book-a-demo"),
 ]
 
 urlpatterns = sitmap_urlpatterns + [
+    # manually added to sitemap
+    path(
+        "integrations/<str:id>",
+        cache_site(views.Integration.as_view()),
+        name="integration",
+    ),
+    path(
+        "use-case/<str:id>",
+        cache_site(views.UseCase.as_view()),
+        name="use_case",
+    ),
     path("toggle-sidebar", views.toggle_sidebar),
     # frames
     path(

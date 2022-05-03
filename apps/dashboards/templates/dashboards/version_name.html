@@ -1,0 +1,19 @@
+<form 
+  class="form--no-layout w-full"
+  method="post"
+  action="{% url 'dashboards:version-rename' object.id %}"
+>
+  {% csrf_token %}
+
+  <input
+    class="input__inline input__font-inherit input__ellipsis"
+    id="name"
+    type="text"
+    name="name"
+    {% if object.name != None %}
+      value="{{ object.name }}"
+    {% endif %}
+    onblur="this.form.requestSubmit();"
+    placeholder="{{ placeholder }}"
+  />
+</form>

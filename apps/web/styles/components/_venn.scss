@@ -1,0 +1,120 @@
+@use '../../base/styles/utilities/mixins';
+@use '../../base/styles/utilities/tailwind' as *;
+
+.venn {
+  position: relative;
+  display: flex;
+  justify-content: center;
+
+  .venn__gyana {
+    position: absolute;
+    right: 0; 
+    left: 0;
+    top: spacing(24); 
+    color: var(--c-blue); 
+    @include font-size('2xl');
+    text-align: center; 
+    font-family: 'Caveat';
+    z-index: var(--z-overlay);
+    animation: fade-in 3s ease-in-out;
+
+    @include mixins.respond-to(sm) { 
+      top: spacing(28);
+      @include font-size('3xl');
+    }
+  }
+
+  .venn__circle {
+    display: flex;
+    justify-content: center; 
+    align-items: center; 
+    width: spacing(56); 
+    height: spacing(56); 
+    border-radius: 9999px; 
+    border-width: 1px; 
+    // --c-blue with alpha 0.25
+    // Sass color functions do not work for CSS variables :(
+    // https://codyhouse.co/blog/post/how-to-combine-sass-color-functions-and-css-variables
+    background-color: rgba(197, 230, 251, 0.25);
+
+    @include mixins.respond-to(sm) { 
+      width: spacing(64); 
+      height: spacing(64); 
+    }
+
+    &-left {
+      margin-right: spacing(-16);
+      animation: float-left 3s ease-in-out;
+    }
+
+    &-right {
+      margin-left: spacing(-16);
+      animation: float-right 3s ease-in-out;
+    }
+  }
+
+  .venn__value {
+    color: var(--c-gray-600); 
+    @include font-size(sm);
+    text-align: center; 
+    width: spacing(20);
+
+    @include mixins.respond-to(sm) { 
+      @include font-size(base);
+    }
+
+    &-left {
+      margin-right: spacing(32);
+    }
+
+    &-right {
+      margin-left: spacing(32);
+    }
+  }
+
+  .venn__label {
+    margin-top: spacing(4); 
+    color: var(--c-gray-400); 
+    @include font-size(xs);
+    text-align: center; 
+
+    @include mixins.respond-to(sm) { 
+      @include font-size(sm);
+    }
+
+    &-left {
+      padding-left: spacing(12); 
+    }
+
+    &-right {
+      padding-right: spacing(12); 
+    }
+  }
+}
+
+@keyframes float-left {
+  0% {
+    transform: translatex(-20%);
+  }
+  100% {
+    transform: translatex(0);
+  }
+}
+
+@keyframes float-right {
+  0% {
+    transform: translatex(10%);
+  }
+  100% {
+    transform: translatex(0);
+  }
+}
+
+@keyframes fade-in {
+  0%, 50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}

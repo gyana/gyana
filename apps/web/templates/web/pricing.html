@@ -1,94 +1,28 @@
 {% extends 'web/site_base.html' %}
-{% load heroicons %}
 
 {% block meta %}
 <title>Pricing | Gyana</title>
 <meta name="description" content="Custom reports for any source. Start building for free, then add a paid plan to scale your data volume." /> 
 {% endblock %}
 
+{% block body.header %}
+  {% if not request.GET.iframe  %}
+    {% include "web/site/header.html" %}
+  {% endif %}
+{% endblock body.header %}
+
+{% block body.footer %}
+  {% if not request.GET.iframe  %}
+    {% include "web/site/footer.html" %}
+  {% endif %}
+{% endblock body.footer %}
+
 {% block body.content %}
-
-<div class="bg-gray-20 border-b border-gray">
-  <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8">
-    <h1 class="my-6 sm:my-12 text-7xl lg:text-8xl font-bold text-caveat text-indigo-600">
-      Pricing
-    </h1>
-    <p class="text-lg text-gray-600 max-w-3xl">
-      Plans that scale with your growth.
-    </p>
-  </div>
-</div>
-
-<div class="bg-white border-b border-gray">
-  <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8">
-    <div class="space-y-4 sm:space-y-0 sm:grid sm:grid-cols-2 sm:gap-6 lg:max-w-4xl lg:mx-auto xl:max-w-none xl:mx-0 xl:grid-cols-4">
-      {% for tier in content.tiers %}
-        <div class="card card--none divide-y divide-gray-200">
-          <div class="p-6">
-            <h2 class="text-2xl text-caveat text-indigo-600 lg:text-3xl">
-              {{ tier.name }}
-            </h2>
-            <p class="mt-4 text-sm text-gray-600">{{ tier.description }}</p>
-            <p class="mt-8">
-              {% if tier.priceMonthly <= 0 %}
-                <span class="text-4xl font-extrabold text-gray-900">
-                  {% if tier.priceMonthly == 0 %}It's free{% else %}Let's chat{% endif %}
-                </span>
-              {% else %}
-                <span class="text-4xl font-extrabold text-gray-900">
-                  ${{ tier.priceMonthly }}
-                </span>
-                <span class="-ml-1 text-base font-normal text-gray-600">
-                  /mo
-                </span>
-              {% endif %}
-            </p>
-            <p class="mt-2 text-sm text-gray-700">{{ tier.rows|safe }}</p>
-            <a
-              href={{ tier.href }}
-              class="mt-8 w-full button {% if tier.priceMonthly != -1 %}button--secondary{% endif %}"
-            >
-              {% if tier.priceMonthly == -1 %}Talk to us{% else %}Sign up{% endif %}
-            </a>
-          </div>
-          <div class="pt-6 pb-8 px-6">
-            <h3 class="text-xs font-normal text-gray-900 tracking-wide uppercase">
-              {{ tier.includedHeader }}
-            </h3>
-            <ul class="my-6 space-y-4 h-32">
-              {% for feature in tier.includedFeatures %}
-                <li class="flex space-x-3">
-                  {% heroicon 'check' class="flex-shrink-0 h-5 w-5 text-green-500" style="solid" %}
-                  <span class="text-sm text-gray-600">{{ feature|safe }}</span>
-                </li>
-              {% endfor %}
-            </ul>
-          </div>
-        </div>
-      {% endfor %}
-    </div>
-  </div>
-</div>
-
-<div class="bg-gray-20 border-b border-gray">
-  <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8">
-    <div class="lg:grid lg:grid-cols-3 lg:gap-8">
-      <div>
-        <h2 class="text-3xl font-extrabold text-gray-900">
-          Frequently asked questions
-        </h2>
-        <p class="mt-4 text-lg text-gray-600">
-          Can’t find the answer you’re looking for? Reach out to us in the
-          chat.
-        </p>
-      </div>
-      <div class="prose prose-indigo text-gray-600 mx-auto mt-12 lg:mt-0 lg:col-span-2">
-        {% for faq in content.faqs %}
-          <h3>{{ faq.q }}</h3>
-          <p>{{ faq.a }}</p>
-        {% endfor %}
-      </div>
-    </div>
-  </div>
-</div>
+  {% include "web/site/pricing/hero.html" %}
+  {% include "web/site/pricing/plans.html" %}
+  {% include "web/site/pricing/comparison.html" %}
+  {% include "web/site/pricing/faqs.html" %}
+  {% if not request.GET.iframe %}
+    {% include "web/site/home/cta.html" %}
+  {% endif %}
 {% endblock %}

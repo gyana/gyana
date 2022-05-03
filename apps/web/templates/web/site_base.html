@@ -2,46 +2,20 @@
 {% load static %}
 
 {% block head %}
-<title>Gyana | Custom reports for any source</title>
-<meta
-  name="description"
-  content="Gyana delivers the power of business intelligence and data analytics in a web interface. Build repeatable workflows and dashboards with all your online data."
-/>
+  <link
+    href="//fonts.googleapis.com/css2?family=Caveat:wght@400&display=swap"
+    rel="stylesheet"
+  />
 
-{% include "web/components/favicon.html" %}
+  <link rel="stylesheet" href="{% static "css/website.css" %}" />
+  <script>
+    Turbo.session.drive = false
+  </script>
 
-{% comment %} Only load Poppins to use for our Logo {% endcomment %}
-<link rel="preconnect" href="//fonts.gstatic.com" />
-<link
-  href="//fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap&text=Gyana"
-  rel="stylesheet"
-/>
-<link
-  href="//fonts.googleapis.com/css2?family=Caveat:wght@400&display=swap"
-  rel="stylesheet"
-/>
-
-<link rel="stylesheet" href="{% static "css/fontawesome.css" %}" />
-<link rel="stylesheet" href="{% static "css/tailwind.css" %}" />
-<link rel="stylesheet" href="{% static "css/style.css" %}" />
-<link rel="stylesheet" href="{% static "css/website.css" %}" />
-
-<script src="{% static "js/turbo-bundle.js" %}"></script>
-<script src="{% static "js/stimulus-bundle.js" %}"></script>
-<script>
-  Turbo.session.drive = false
-</script>
-
-{% if WEBSITE_GTM_ID %}
-{% include "web/components/gtm_head.html" %}
-{% endif %}
-
-{% include "web/components/intercom-visitors.html" %}
+  {% include "web/components/intercom-visitors.html" %}
 {% endblock head %}
 
-{% block body.attrs %}
-data-controller="tf-modal"
-{% endblock body.attrs %}
+{% block body.attrs %}{% endblock body.attrs %}
 
 {% block body %}
   {% block body.header %}
@@ -53,27 +27,5 @@ data-controller="tf-modal"
   {% block body.footer %}
     {% include "web/site/footer.html" %}
   {% endblock body.footer %}
-
-  {% block termly %}
-  <script
-    type="text/javascript"
-    src="//app.termly.io/embed.min.js"
-    data-auto-block="on"
-    data-website-uuid="20dd078f-264a-4111-8007-320b21ee3234"
-  ></script>
-
-  <button
-    class="termly-cookie-preference-button"
-    type="button"
-    style="background: white; width: 165px; height: 30px; border-radius: 3px; border: 1px solid #5f7d9c; font-family: Roboto, Arial; font-size: 10px; color: #5f7d9c; font-weight: 600; box-sizing: border-box; cursor: pointer; padding: 0; outline: none;"
-    onclick="displayPreferenceModal()"
-  >
-    Manage Cookie Preferences
-  </button>
-  {% endblock termly %}
-
-  {% if WEBSITE_GTM_ID %}
-  {% include "web/components/gtm_body.html" %}
-  {% endif %}
 {% endblock body %}
 

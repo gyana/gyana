@@ -15,20 +15,13 @@ from apps.columns.bigquery import (
     compile_function,
     convert_column,
     get_aggregate_expr,
+    get_groups,
 )
 from apps.filters.bigquery import get_query_from_filters
 from apps.tables.bigquery import get_query_from_table
 from apps.teams.models import OutOfCreditsException
 
-from ._sentiment_utils import CreditException, get_gcp_sentiment
 from ._utils import create_or_replace_intermediate_table, get_parent_updated
-
-JOINS = {
-    "inner": "inner_join",
-    "outer": "outer_join",
-    "left": "left_join",
-    "right": "right_join",
-}
 
 
 def _get_duplicate_names(left, right):
@@ -125,15 +118,12 @@ def get_join_query(node, left, right, *queries):
     for idx, join in enumerate(node.join_columns.all()[: len(renamed_queries) - 1]):
         left = renamed_queries[join.left_index]
         right = renamed_queries[idx + 1]
-        to_join = getattr(query, JOINS[join.how])
+
         left_col = duplicate_map[join.left_index].get(
             join.left_column, join.left_column
         )
         right_col = duplicate_map[idx + 1].get(join.right_column, join.right_column)
-        query = to_join(
-            right,
-            left[left_col] == right[right_col],
-        )
+        query = query.join(right, left[left_col] == right[right_col], how=join.how)
         if join.how == "inner":
             drops.add(right_col)
             relabels[left_col] = join.left_column
@@ -145,7 +135,8 @@ def get_join_query(node, left, right, *queries):
 
 
 def get_aggregation_query(node, query):
-    return aggregate_columns(query, node)
+    groups = get_groups(query, node)
+    return aggregate_columns(query, node, groups)
 
 
 def get_union_query(node, query, *queries):
@@ -298,6 +289,9 @@ def get_window_query(node, query):
 
 
 def get_sentiment_query(node, parent):
+    # TODO: grpcio on M1 mac
+    from ._sentiment_utils import get_gcp_sentiment
+
     table = getattr(node, "intermediate_table", None)
     conn = clients.ibis_client()
 
@@ -372,6 +366,8 @@ def _validate_arity(func, len_args):
 
 
 def get_query_from_node(node):
+    # TODO: grpcio on M1 mac
+    from ._sentiment_utils import CreditException
 
     nodes = _get_all_parents(node)
     # remove duplicates (python dicts are insertion ordered)

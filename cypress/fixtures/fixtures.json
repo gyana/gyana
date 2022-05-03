@@ -646,6 +646,7 @@
     "fields": {
       "created": "2021-12-13T22:47:57.268Z",
       "updated": "2021-12-13T22:47:57.268Z",
+      "name": null,
       "dashboard": 1,
       "position": 1
     }
@@ -656,6 +657,7 @@
     "fields": {
       "created": "2021-12-14T21:17:52.317Z",
       "updated": "2021-12-14T21:17:52.317Z",
+      "name": null,
       "dashboard": 2,
       "position": 1
     }
@@ -678,13 +680,18 @@
       "metric_header_font_color": null,
       "metric_comparison_font_size": null,
       "metric_comparison_font_color": null,
+      "lower_limit": 0,
+      "upper_limit": 100,
+      "first_segment_color": null,
+      "second_segment_color": null,
+      "third_segment_color": null,
+      "fourth_segment_color": null,
       "page": 1,
       "table": 12,
       "text_content": null,
       "url": null,
       "image": "",
       "kind": "msline",
-      "aggregator": "",
       "dimension": "date",
       "part": null,
       "second_dimension": null,
@@ -722,13 +729,18 @@
       "metric_header_font_color": null,
       "metric_comparison_font_size": null,
       "metric_comparison_font_color": null,
+      "lower_limit": 0,
+      "upper_limit": 100,
+      "first_segment_color": null,
+      "second_segment_color": null,
+      "third_segment_color": null,
+      "fourth_segment_color": null,
       "page": 1,
       "table": 19,
       "text_content": null,
       "url": null,
       "image": "",
       "kind": "mscolumn2d",
-      "aggregator": "",
       "dimension": "Owner",
       "part": null,
       "second_dimension": null,
@@ -766,13 +778,18 @@
       "metric_header_font_color": null,
       "metric_comparison_font_size": null,
       "metric_comparison_font_color": null,
+      "lower_limit": 0,
+      "upper_limit": 100,
+      "first_segment_color": null,
+      "second_segment_color": null,
+      "third_segment_color": null,
+      "fourth_segment_color": null,
       "page": 2,
       "table": 22,
       "text_content": null,
       "url": null,
       "image": "",
       "kind": "table",
-      "aggregator": "",
       "dimension": null,
       "part": null,
       "second_dimension": null,
@@ -815,7 +832,8 @@
       "string_predicate": null,
       "string_value": null,
       "string_values": null,
-      "bool_value": true
+      "bool_predicate": "istrue",
+      "struct_predicate": null
     }
   },
   {
@@ -841,7 +859,8 @@
       "string_predicate": null,
       "string_value": null,
       "string_values": null,
-      "bool_value": true
+      "bool_predicate": "istrue",
+      "struct_predicate": null
     }
   },
   {
@@ -2792,9 +2811,17 @@
       "sync_state": "rescheduled",
       "update_state": "delayed",
       "is_historical_sync": false,
-      "tasks": [{ "code": "change_in_tls_detected", "message": "Revalidate TLS Certificate" }],
+      "tasks": [
+        {
+          "code": "change_in_tls_detected",
+          "message": "Revalidate TLS Certificate"
+        }
+      ],
       "warnings": [
-        { "code": "long_term_broken_connector", "message": "Connector broken for over 7 days" }
+        {
+          "code": "long_term_broken_connector",
+          "message": "Connector broken for over 7 days"
+        }
       ],
       "config": {
         "host": "ec2-52-50-171-4.eu-west-1.compute.amazonaws.com",
@@ -2843,7 +2870,11 @@
       "is_historical_sync": false,
       "tasks": [],
       "warnings": [],
-      "config": { "sync_mode": "AllAccounts", "sync_metadata": true, "timeframe_months": "SIX" },
+      "config": {
+        "sync_mode": "AllAccounts",
+        "sync_metadata": true,
+        "timeframe_months": "SIX"
+      },
       "source_sync_details": { "account_ids": ["act_78363492"] },
       "schema_config": null,
       "sync_task_id": null,
@@ -3096,7 +3127,10 @@
       "is_historical_sync": true,
       "tasks": [{ "code": "reconnect", "message": "Reconnect" }],
       "warnings": [
-        { "code": "long_term_broken_connector", "message": "Connector broken for over 7 days" }
+        {
+          "code": "long_term_broken_connector",
+          "message": "Connector broken for over 7 days"
+        }
       ],
       "config": { "shop": "gyanalimited" },
       "source_sync_details": null,
@@ -3184,7 +3218,11 @@
             "config_type": "Prebuilt",
             "prebuilt_report": "SOCIAL_MEDIA_ACQUISITIONS"
           },
-          { "table": "traffic", "config_type": "Prebuilt", "prebuilt_report": "TRAFFIC" }
+          {
+            "table": "traffic",
+            "config_type": "Prebuilt",
+            "prebuilt_report": "TRAFFIC"
+          }
         ],
         "sync_mode": "AllAccounts",
         "timeframe_months": "ALL_TIME"
@@ -3237,15 +3275,6 @@
       "redeemed": "2021-08-23T23:00:00Z",
       "refunded_before": null,
       "redeemed_by": null
-    }
-  },
-  {
-    "model": "templates.template",
-    "pk": 1,
-    "fields": {
-      "created": "2021-08-30T21:44:56.106Z",
-      "updated": "2021-08-30T21:44:56.106Z",
-      "project": 6
     }
   },
   {
@@ -3415,7 +3444,7 @@
     "pk": 10,
     "fields": {
       "created": "2021-12-16T01:46:42.564Z",
-      "updated": "2022-03-02T11:01:05.930Z",
+      "updated": "2022-04-27T07:56:16.072Z",
       "state": "success",
       "started_at": "2021-12-16T01:46:42.563Z",
       "completed_at": "2021-12-16T01:46:46.036Z",
@@ -3455,17 +3484,32 @@
   {
     "model": "account.emailaddress",
     "pk": 1,
-    "fields": { "user": ["test"], "email": "test@gyana.com", "verified": true, "primary": true }
+    "fields": {
+      "user": ["test"],
+      "email": "test@gyana.com",
+      "verified": true,
+      "primary": true
+    }
   },
   {
     "model": "account.emailaddress",
     "pk": 2,
-    "fields": { "user": ["alone"], "email": "alone@gyana.com", "verified": true, "primary": true }
+    "fields": {
+      "user": ["alone"],
+      "email": "alone@gyana.com",
+      "verified": true,
+      "primary": true
+    }
   },
   {
     "model": "account.emailaddress",
     "pk": 3,
-    "fields": { "user": ["admin"], "email": "admin@gyana.com", "verified": true, "primary": true }
+    "fields": {
+      "user": ["admin"],
+      "email": "admin@gyana.com",
+      "verified": true,
+      "primary": true
+    }
   },
   {
     "model": "socialaccount.socialapp",
@@ -3589,7 +3633,7 @@
   {
     "model": "django_celery_beat.periodictasks",
     "pk": 1,
-    "fields": { "last_update": "2022-03-02T11:01:05.922Z" }
+    "fields": { "last_update": "2022-04-27T07:56:16.060Z" }
   },
   {
     "model": "django_celery_beat.periodictask",
@@ -3624,6 +3668,7 @@
     "pk": 1,
     "fields": {
       "task_id": "32f7a738-c597-4aae-9429-303873aaad18",
+      "periodic_task_name": null,
       "task_name": "apps.customapis.tasks.run_customapi_sync_task",
       "task_args": "\"(10,)\"",
       "task_kwargs": "\"{}\"",
@@ -3682,7 +3727,7 @@
     "fields": {
       "content_type": ["wagtailcore", "page"],
       "object_id": "1",
-      "title_norm": 1.9,
+      "title_norm": 2.5,
       "autocomplete": "'root':1",
       "title": "'root':1B",
       "body": ""
@@ -3694,7 +3739,7 @@
     "fields": {
       "content_type": ["wagtailcore", "page"],
       "object_id": "2",
-      "title_norm": 0.475,
+      "title_norm": 0.625,
       "autocomplete": "'new':4 'site':6 'to':2 'wagtail':5 'welcome':1 'your':3",
       "title": "'new':4B 'site':6B 'wagtail':5B 'welcom':1B",
       "body": ""
@@ -3836,7 +3881,11 @@
     "pk": 1,
     "fields": { "path": "0001", "depth": 1, "numchild": 0, "name": "Root" }
   },
-  { "model": "wagtailcore.locale", "pk": 1, "fields": { "language_code": "en" } },
+  {
+    "model": "wagtailcore.locale",
+    "pk": 1,
+    "fields": { "language_code": "en" }
+  },
   {
     "model": "wagtailcore.page",
     "pk": 1,
@@ -4259,7 +4308,7 @@
       "submitted_for_moderation": false,
       "created_at": "2022-02-01T23:01:57.866Z",
       "user": ["admin"],
-      "content_json": "{\"pk\": 8, \"path\": \"00010001000200020001\", \"depth\": 5, \"numchild\": 0, \"translation_key\": \"52c83335-a1f6-47a3-ab68-ac8df7cb0807\", \"locale\": 1, \"title\": \"Integrations\", \"draft_title\": \"Integrations\", \"slug\": \"integrations\", \"content_type\": 130, \"live\": true, \"has_unpublished_changes\": false, \"url_path\": \"/home/learn/guides/integrations/\", \"owner\": 2, \"seo_title\": \"\", \"show_in_menus\": true, \"search_description\": \"\", \"go_live_at\": null, \"expire_at\": null, \"expired\": false, \"locked\": false, \"locked_at\": null, \"locked_by\": null, \"first_published_at\": \"2022-02-01T15:43:08.578Z\", \"last_published_at\": \"2022-02-01T22:54:06.999Z\", \"latest_revision_created_at\": \"2022-02-01T22:54:06.800Z\", \"live_revision\": 47, \"alias_of\": null, \"body\": \"[{\\\"type\\\": \\\"loom\\\", \\\"value\\\": {\\\"loom_id\\\": \\\"413d09614b2b41d3bd5a7b4514176be7\\\", \\\"caption\\\": \\\"Video overview of our integrations\\\"}, \\\"id\\\": \\\"ee1da91f-b9a2-498c-8058-5e146eacbb17\\\"}, {\\\"type\\\": \\\"text\\\", \\\"value\\\": \\\"<p data-block-key=\\\\\\\"m0246\\\\\\\">An integration is a source of data, like a CSV file, Google Sheet, ads account, database, or web app.</p><p data-block-key=\\\\\\\"9srm3\\\\\\\">Since you can&#x27;t do data analytics without data (!), it&#x27;s our top priority to make it as effortless as possible for you to integrate data from anywhere.</p><p data-block-key=\\\\\\\"10cqi\\\\\\\">\\\\ud83d\\\\udca1 If you&#x27;re having difficulties importing data, take a look at our <a href=\\\\\\\"https://intercom.help/gyana/en/articles/5548601-my-integration-isn-t-working\\\\\\\">troubleshooting guide</a>.</p><h2 data-block-key=\\\\\\\"2bojv\\\\\\\">\\\\ud83d\\\\ude9b Choosing your import method</h2><p data-block-key=\\\\\\\"94e4n\\\\\\\">At a high level, you have three ways to get data into Gyana: <b>connectors</b>, <b>sheets</b> and <b>uploads</b>. We&#x27;ll go through them one by one.</p><h3 data-block-key=\\\\\\\"8rpis\\\\\\\">Connectors</h3><p data-block-key=\\\\\\\"co0jt\\\\\\\">Connectors are specially made integrations for specific data sources, like Google Analytics or Facebook Ads. We support 80+ connectors out of the box, with 150+ planned for the end of 2021.</p><p data-block-key=\\\\\\\"30rcs\\\\\\\">Connectors are the best choice, if available. After a one-time authorization process, new data is synced on a regular basis, and you&#x27;ll have many tables of data to choose from.</p><p data-block-key=\\\\\\\"35ngn\\\\\\\">\\\\ud83d\\\\udca1 The data sync frequency is <b>24 hours</b>. You can set the daily sync time in your project settings.</p><p data-block-key=\\\\\\\"8el4n\\\\\\\">Connectors are powered by our unique partnership with Fivetran. They&#x27;ve built an enterprise grade data integration platform that is trusted by 2000+ <a href=\\\\\\\"https://fivetran.com/customers\\\\\\\">demanding customers</a>. You&#x27;ll interact with them in the connector authorization page.</p><h3 data-block-key=\\\\\\\"5vsm1\\\\\\\">Google Sheets</h3><p data-block-key=\\\\\\\"b1r02\\\\\\\">If there&#x27;s no dedicated connector, Google Sheets offers a great alternative for getting your data ready:</p><ul><li data-block-key=\\\\\\\"8fo5u\\\\\\\">Many tools offer one-off or scheduled exports to Google Sheets</li><li data-block-key=\\\\\\\"cvm7b\\\\\\\">Many automation tools (Zapier, Pabbly Connect, n8n) write to Google Sheets</li><li data-block-key=\\\\\\\"96o79\\\\\\\">Typing sheet.new in your browser bar is the quickest way we know to quickly jot down or copy + paste data</li></ul><p data-block-key=\\\\\\\"5bqba\\\\\\\">Gyana has a native Google Sheets connector that will take a <b>few seconds</b> to import. Just share the sheet with us, copy and paste the URL, and you&#x27;re done.</p><p data-block-key=\\\\\\\"e8ste\\\\\\\">\\\\ud83d\\\\udca1 By default, new data will not automatically sync from your sheet if you make changes. You need to manually re-sync. We have improvements to this planned.</p><h3 data-block-key=\\\\\\\"2knm9\\\\\\\">Upload CSV</h3><p data-block-key=\\\\\\\"3apkp\\\\\\\">Your final alternative is the swiss-army knife of data, the CSV file. Nowadays, most tools (including Excel, databases, web apps, ads accounts) will export a CSV file that you can download and upload to Gyana.</p><p data-block-key=\\\\\\\"26rqk\\\\\\\">Our native CSV importer is designed to handle most CSV nonsense, including quoted newlines, jagged rows and autodetecting headers. If your CSV file fails to import, you can always try uploading to Google Drive, opening as a Google Sheet, and connect to that instead.</p><p data-block-key=\\\\\\\"ha2u\\\\\\\">\\\\ud83d\\\\udca1 We will always autodetect the first line of the CSV as a header row.</p><h2 data-block-key=\\\\\\\"5hqde\\\\\\\">\\\\ud83d\\\\udd2e What does the future hold?</h2><p data-block-key=\\\\\\\"8uojv\\\\\\\">We know first hand the pain of duct taping tools together to move your data around. Our focus is to add seamless integration to as many data sources as possible, including webhooks, APIs and web scrapers.</p><p data-block-key=\\\\\\\"bgk6c\\\\\\\">Down the line, we&#x27;re also exploring hosting public datasets (e.g. demographic segmentations, Google trends), and even paid datasets from partner providers. If that&#x27;s something you&#x27;d be interested in trying out, please get in touch!</p>\\\", \\\"id\\\": \\\"52b1f5e1-d73a-4985-832c-605caf7a28e5\\\"}]\", \"wagtail_admin_comments\": []}",
+      "content_json": "{\"pk\": 8, \"path\": \"00010001000200020001\", \"depth\": 5, \"numchild\": 0, \"translation_key\": \"52c83335-a1f6-47a3-ab68-ac8df7cb0807\", \"locale\": 1, \"title\": \"Integrations\", \"draft_title\": \"Integrations\", \"slug\": \"integrations\", \"content_type\": 130, \"live\": true, \"has_unpublished_changes\": false, \"url_path\": \"/home/learn/guides/integrations/\", \"owner\": 2, \"seo_title\": \"\", \"show_in_menus\": true, \"search_description\": \"\", \"go_live_at\": null, \"expire_at\": null, \"expired\": false, \"locked\": false, \"locked_at\": null, \"locked_by\": null, \"first_published_at\": \"2022-02-01T15:43:08.578Z\", \"last_published_at\": \"2022-02-01T22:54:06.999Z\", \"latest_revision_created_at\": \"2022-02-01T22:54:06.800Z\", \"live_revision\": 47, \"alias_of\": null, \"body\": \"[{\\\"type\\\": \\\"loom\\\", \\\"value\\\": {\\\"loom_id\\\": \\\"413d09614b2b41d3bd5a7b4514176be7\\\", \\\"caption\\\": \\\"Video overview of our integrations\\\"}, \\\"id\\\": \\\"ee1da91f-b9a2-498c-8058-5e146eacbb17\\\"}, {\\\"type\\\": \\\"text\\\", \\\"value\\\": \\\"<p data-block-key=\\\\\\\"m0246\\\\\\\">An integration is a source of data, like a CSV file, Google Sheet, ads account, database, or web app.</p><p data-block-key=\\\\\\\"9srm3\\\\\\\">Since you can&#x27;t do data analytics without data (!), it&#x27;s our top priority to make it as effortless as possible for you to integrate data from anywhere.</p><p data-block-key=\\\\\\\"10cqi\\\\\\\">\\\\ud83d\\\\udca1 If you&#x27;re having difficulties importing data, take a look at our <a href=\\\\\\\"https://support.gyana.com/en/articles/5548601-my-integration-isn-t-working\\\\\\\">troubleshooting guide</a>.</p><h2 data-block-key=\\\\\\\"2bojv\\\\\\\">\\\\ud83d\\\\ude9b Choosing your import method</h2><p data-block-key=\\\\\\\"94e4n\\\\\\\">At a high level, you have three ways to get data into Gyana: <b>connectors</b>, <b>sheets</b> and <b>uploads</b>. We&#x27;ll go through them one by one.</p><h3 data-block-key=\\\\\\\"8rpis\\\\\\\">Connectors</h3><p data-block-key=\\\\\\\"co0jt\\\\\\\">Connectors are specially made integrations for specific data sources, like Google Analytics or Facebook Ads. We support 80+ connectors out of the box, with 150+ planned for the end of 2021.</p><p data-block-key=\\\\\\\"30rcs\\\\\\\">Connectors are the best choice, if available. After a one-time authorization process, new data is synced on a regular basis, and you&#x27;ll have many tables of data to choose from.</p><p data-block-key=\\\\\\\"35ngn\\\\\\\">\\\\ud83d\\\\udca1 The data sync frequency is <b>24 hours</b>. You can set the daily sync time in your project settings.</p><p data-block-key=\\\\\\\"8el4n\\\\\\\">Connectors are powered by our unique partnership with Fivetran. They&#x27;ve built an enterprise grade data integration platform that is trusted by 2000+ <a href=\\\\\\\"https://fivetran.com/customers\\\\\\\">demanding customers</a>. You&#x27;ll interact with them in the connector authorization page.</p><h3 data-block-key=\\\\\\\"5vsm1\\\\\\\">Google Sheets</h3><p data-block-key=\\\\\\\"b1r02\\\\\\\">If there&#x27;s no dedicated connector, Google Sheets offers a great alternative for getting your data ready:</p><ul><li data-block-key=\\\\\\\"8fo5u\\\\\\\">Many tools offer one-off or scheduled exports to Google Sheets</li><li data-block-key=\\\\\\\"cvm7b\\\\\\\">Many automation tools (Zapier, Pabbly Connect, n8n) write to Google Sheets</li><li data-block-key=\\\\\\\"96o79\\\\\\\">Typing sheet.new in your browser bar is the quickest way we know to quickly jot down or copy + paste data</li></ul><p data-block-key=\\\\\\\"5bqba\\\\\\\">Gyana has a native Google Sheets connector that will take a <b>few seconds</b> to import. Just share the sheet with us, copy and paste the URL, and you&#x27;re done.</p><p data-block-key=\\\\\\\"e8ste\\\\\\\">\\\\ud83d\\\\udca1 By default, new data will not automatically sync from your sheet if you make changes. You need to manually re-sync. We have improvements to this planned.</p><h3 data-block-key=\\\\\\\"2knm9\\\\\\\">Upload CSV</h3><p data-block-key=\\\\\\\"3apkp\\\\\\\">Your final alternative is the swiss-army knife of data, the CSV file. Nowadays, most tools (including Excel, databases, web apps, ads accounts) will export a CSV file that you can download and upload to Gyana.</p><p data-block-key=\\\\\\\"26rqk\\\\\\\">Our native CSV importer is designed to handle most CSV nonsense, including quoted newlines, jagged rows and autodetecting headers. If your CSV file fails to import, you can always try uploading to Google Drive, opening as a Google Sheet, and connect to that instead.</p><p data-block-key=\\\\\\\"ha2u\\\\\\\">\\\\ud83d\\\\udca1 We will always autodetect the first line of the CSV as a header row.</p><h2 data-block-key=\\\\\\\"5hqde\\\\\\\">\\\\ud83d\\\\udd2e What does the future hold?</h2><p data-block-key=\\\\\\\"8uojv\\\\\\\">We know first hand the pain of duct taping tools together to move your data around. Our focus is to add seamless integration to as many data sources as possible, including webhooks, APIs and web scrapers.</p><p data-block-key=\\\\\\\"bgk6c\\\\\\\">Down the line, we&#x27;re also exploring hosting public datasets (e.g. demographic segmentations, Google trends), and even paid datasets from partner providers. If that&#x27;s something you&#x27;d be interested in trying out, please get in touch!</p>\\\", \\\"id\\\": \\\"52b1f5e1-d73a-4985-832c-605caf7a28e5\\\"}]\", \"wagtail_admin_comments\": []}",
       "approved_go_live_at": null
     }
   },
@@ -4283,7 +4332,11 @@
     "pk": 1,
     "fields": { "name": "Moderators approval", "active": true }
   },
-  { "model": "wagtailcore.groupapprovaltask", "pk": 1, "fields": { "groups": [["Moderators"]] } },
+  {
+    "model": "wagtailcore.groupapprovaltask",
+    "pk": 1,
+    "fields": { "groups": [["Moderators"]] }
+  },
   {
     "model": "wagtailcore.pagesubscription",
     "pk": 1,

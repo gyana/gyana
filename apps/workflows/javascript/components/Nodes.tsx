@@ -63,11 +63,15 @@ const NodeContent: React.FC<Props> = ({ id, data, showFilledIcon = true }) => {
   )
 }
 
-const InputNode: React.FC<NodeProps> = ({ id, data, isConnectable }) => {
-  const [stateData, setStateData] = useState(data)
+const InputNode: React.FC<NodeProps> = ({
+  id,
+  data: initialData,
+  isConnectable,
+}) => {
+  const [data, setData] = useState(initialData)
   const onNodeConfigUpdate = async () => {
     const result = await getNode(id)
-    setStateData(toNode(result, { x: result.x, y: result.y }).data)
+    setData(toNode(result).data)
   }
 
   useEffect(() => {
@@ -78,8 +82,12 @@ const InputNode: React.FC<NodeProps> = ({ id, data, isConnectable }) => {
 
   return (
     <>
-      <NodeContent id={id} data={stateData} showFilledIcon={!!stateData.tableName} />
-      <Handle type='source' position={Position.Right} isConnectable={isConnectable} />
+      <NodeContent id={id} data={data} showFilledIcon={!!data.tableName} />
+      <Handle
+        type='source'
+        position={Position.Right}
+        isConnectable={isConnectable}
+      />
     </>
   )
 }
@@ -90,27 +98,36 @@ const OutputNode: React.FC<NodeProps> = ({ id, data, isConnectable }) => {
 
   return (
     <>
-      {showWarning && <WarningIcon text='Save Data needs one input connection' />}
+      {showWarning && (
+        <WarningIcon text='Save Data needs one input connection' />
+      )}
       <NodeContent id={id} data={data} showFilledIcon={!showWarning} />
-      <Handle type='target' position={Position.Left} id='0' isConnectable={isConnectable} />
+      <Handle
+        type='target'
+        position={Position.Left}
+        id='0'
+        isConnectable={isConnectable}
+      />
     </>
   )
 }
 
 const DefaultNode: React.FC<NodeProps> = ({
   id,
-  data,
+  data: initialData,
   isConnectable,
   targetPosition = Position.Left,
   sourcePosition = Position.Right,
 }) => {
   const incomingCount = useGetIncomingCount(id)
   const updateNodeInternals = useUpdateNodeInternals()
+  const [data, setData] = useState(initialData)
 
-  const showWarning = data.kind === 'join' ? !data.join_is_valid : incomingCount == 0
+  const showWarning =
+    data.kind === 'join' ? !data.join_is_valid : incomingCount == 0
   const warningMessage =
     data.kind === 'join'
-      ? 'Join needs at least two input connections'
+      ? 'Join needs at least two input connections and correct join conditions'
       : `${data.label} needs at least one input connection`
 
   const maxParents = NODES[data.kind].maxParents
@@ -119,6 +136,17 @@ const DefaultNode: React.FC<NodeProps> = ({
   useEffect(() => {
     updateNodeInternals(id)
   }, [id, incomingCount])
+
+  const onNodeUpdate = async () => {
+    const result = await getNode(id)
+    setData(toNode(result).data)
+  }
+
+  useEffect(() => {
+    const eventName = `${GyanaEvents.UPDATE_NODE}-${id}`
+    window.addEventListener(eventName, onNodeUpdate, false)
+    return () => window.removeEventListener(eventName, onNodeUpdate)
+  }, [])
 
   return (
     <>
@@ -130,11 +158,18 @@ const DefaultNode: React.FC<NodeProps> = ({
           position={targetPosition}
           isConnectable={isConnectable}
           id={idx.toString()}
-          style={{ top: `${Math.round((100 * (idx + 1)) / (handles + 1))}%`, borderRadius: 0 }}
+          style={{
+            top: `${Math.round((100 * (idx + 1)) / (handles + 1))}%`,
+            borderRadius: 0,
+          }}
         />
       ))}
       <NodeContent id={id} data={data} showFilledIcon={!showWarning} />
-      <Handle type='source' position={sourcePosition} isConnectable={isConnectable} />
+      <Handle
+        type='source'
+        position={sourcePosition}
+        isConnectable={isConnectable}
+      />
     </>
   )
 }

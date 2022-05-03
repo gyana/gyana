@@ -2,17 +2,23 @@ import copy
 import re
 
 from django import forms
+from django.db.models import Case, Q, When
 from ibis.expr.datatypes import Date, Time, Timestamp
 
 from apps.base.core.utils import create_column_choices
-from apps.base.forms import BaseModelForm, LiveFormsetForm, LiveFormsetMixin
-from apps.base.widgets import Datalist, SelectWithDisable
+from apps.base.fields import ColorField
+from apps.base.forms import (
+    BaseModelForm,
+    IntegrationSearchMixin,
+    LiveFormsetForm,
+    LiveFormsetMixin,
+)
+from apps.base.widgets import Datalist, SelectWithDisable, SourceSelect
 from apps.dashboards.forms import PaletteColorsField
 from apps.tables.models import Table
 
 from .formsets import FORMSETS, AggregationColumnFormset, ControlFormset, FilterFormset
 from .models import COUNT_COLUMN_NAME, WIDGET_KIND_TO_WEB, Widget
-from .widgets import SourceSelect
 
 
 def get_not_deleted_entries(data, regex):
@@ -23,6 +29,34 @@ def get_not_deleted_entries(data, regex):
     ]
 
 
+class WidgetSourceForm(IntegrationSearchMixin, BaseModelForm):
+    search = forms.CharField(required=False)
+
+    class Meta:
+        model = Widget
+        fields = ["table"]
+        widgets = {"table": SourceSelect(parent="dashboard")}
+
+    def __init__(self, *args, **kwargs):
+        project = kwargs.pop("project", None)
+
+        super().__init__(*args, **kwargs)
+        self.order_fields(["search", "table"])
+        self.fields["search"].widget.attrs["data-action"] = "input->tf-modal#search"
+
+        # Re-focus the search bar when there is a value
+        if self.data.get("search"):
+            self.fields["search"].widget.attrs["autofocus"] = ""
+
+        if project:
+            self.search_queryset(
+                self.fields["table"],
+                project,
+                self.instance.table,
+                self.instance.page.dashboard.input_tables_fk,
+            )
+
+
 class GenericWidgetForm(LiveFormsetForm):
     dimension = forms.ChoiceField(choices=())
     second_dimension = forms.ChoiceField(choices=())
@@ -31,7 +65,6 @@ class GenericWidgetForm(LiveFormsetForm):
     class Meta:
         model = Widget
         fields = [
-            "table",
             "kind",
             "dimension",
             "part",
@@ -45,13 +78,10 @@ class GenericWidgetForm(LiveFormsetForm):
             "compare_previous_period",
             "positive_decrease",
         ]
-        widgets = {"table": SourceSelect()}
 
     def __init__(self, *args, **kwargs):
-        # https://stackoverflow.com/a/30766247/15425660
-        project = kwargs.pop("project", None)
-
         super().__init__(*args, **kwargs)
+
         self.fields["kind"].choices = [
             choice
             for choice in self.fields["kind"].choices
@@ -59,65 +89,46 @@ class GenericWidgetForm(LiveFormsetForm):
             not in [Widget.Kind.TEXT, Widget.Kind.IMAGE, Widget.Kind.IFRAME]
         ]
 
-        if project:
-            self.fields["table"].queryset = Table.available.filter(
-                project=project
-            ).exclude(
-                source__in=[Table.Source.INTERMEDIATE_NODE, Table.Source.CACHE_NODE]
+        schema = self.instance.table.schema
+        if "date_column" in self.fields:
+            self.fields["date_column"] = forms.ChoiceField(
+                required=False,
+                widget=SelectWithDisable(
+                    disabled=disable_non_time(schema),
+                ),
+                choices=create_column_choices(schema),
+                help_text=self.base_fields["date_column"].help_text,
             )
-            table = self.get_live_field("table")
 
-            schema = (
-                (
-                    table if isinstance(table, Table) else Table.objects.get(pk=table)
-                ).schema
-                if table
-                else None
-            )
-            if "date_column" in self.fields and schema:
-                self.fields["date_column"] = forms.ChoiceField(
-                    required=False,
-                    widget=SelectWithDisable(
-                        disabled=disable_non_time(schema),
-                    ),
-                    choices=create_column_choices(schema),
-                    help_text=self.base_fields["date_column"].help_text,
-                )
-
-            if table and self.get_live_field("kind") == Widget.Kind.TABLE:
-                formsets = self.get_formsets()
-                group_columns = [
-                    form.data[f"{form.prefix}-column"]
-                    for form in formsets["Group columns"].forms
-                    if not form.deleted and form.data.get(f"{form.prefix}-column")
+        if self.get_live_field("kind") == Widget.Kind.TABLE:
+            formsets = self.get_formsets()
+            group_columns = [
+                form.data[f"{form.prefix}-column"]
+                for form in formsets["Group columns"].forms
+                if not form.deleted and form.data.get(f"{form.prefix}-column")
+            ]
+            aggregations = [
+                form.data[f"{form.prefix}-column"]
+                for form in formsets["Aggregations"].forms
+                if not form.deleted and form.data.get(f"{form.prefix}-column")
+            ]
+            if columns := group_columns + aggregations:
+                if not aggregations:
+                    columns += [COUNT_COLUMN_NAME]
+                self.fields["sort_column"].choices = [("", "No column selected")] + [
+                    (name, name) for name in columns
                 ]
-                aggregations = [
-                    form.data[f"{form.prefix}-column"]
-                    for form in formsets["Aggregations"].forms
-                    if not form.deleted and form.data.get(f"{form.prefix}-column")
-                ]
-                columns = group_columns + aggregations
-                if columns:
-                    if not aggregations:
-                        columns += [COUNT_COLUMN_NAME]
-                    self.fields["sort_column"].choices = [
-                        ("", "No column selected")
-                    ] + [(name, name) for name in columns]
-                else:
-                    self.fields["sort_column"].choices = create_column_choices(schema)
+            else:
+                self.fields["sort_column"].choices = create_column_choices(schema)
 
     def get_live_fields(self):
-        fields = ["table", "kind"]
-        table = self.get_live_field("table")
-        if table:
-            fields += ["date_column"]
+        fields = ["kind", "date_column"]
 
-        if self.get_live_field("kind") == Widget.Kind.TABLE and table:
+        if self.get_live_field("kind") == Widget.Kind.TABLE:
             fields += ["sort_column", "sort_ascending", "show_summary_row"]
 
         if (
             self.get_live_field("kind") == Widget.Kind.METRIC
-            and table
             and self.get_live_field("date_column")
             and (
                 self.instance.page.has_control
@@ -131,9 +142,6 @@ class GenericWidgetForm(LiveFormsetForm):
         return fields
 
     def get_live_formsets(self):
-        if not self.get_live_field("table"):
-            return []
-
         formsets = [FilterFormset]
 
         if self.get_live_field("date_column"):
@@ -172,10 +180,9 @@ class OneDimensionForm(GenericWidgetForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        table = self.get_live_field("table")
-        schema = Table.objects.get(pk=table).schema if table else None
+        schema = self.instance.table.schema
 
-        if schema and "dimension" in self.fields:
+        if "dimension" in self.fields:
 
             if is_timeseries_chart(self.get_live_field("kind")):
                 self.fields["dimension"].widget = SelectWithDisable(
@@ -185,24 +192,18 @@ class OneDimensionForm(GenericWidgetForm):
 
     def get_live_fields(self):
         fields = super().get_live_fields()
-        table = self.get_live_field("table")
+        fields += ["dimension"]
+        if self.get_live_field("kind") != Widget.Kind.COMBO:
+            fields += ["sort_by", "sort_ascending"]
 
-        if table:
-            fields += ["dimension"]
-            if self.get_live_field("kind") != Widget.Kind.COMBO:
-                fields += ["sort_by", "sort_ascending"]
-            schema = (
-                Table.objects.get(pk=table).schema
-                if isinstance(table, (str, int))
-                else table.schema
-            )
+        schema = self.instance.table.schema
 
-            if (
-                (dimension := self.get_live_field("dimension"))
-                and dimension in schema
-                and isinstance(schema[dimension], (Date, Timestamp))
-            ):
-                fields += ["part"]
+        if (
+            (dimension := self.get_live_field("dimension"))
+            and dimension in schema
+            and isinstance(schema[dimension], (Date, Timestamp))
+        ):
+            fields += ["part"]
         return fields
 
 
@@ -210,39 +211,30 @@ class TwoDimensionForm(GenericWidgetForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        table = self.get_live_field("table")
-        schema = Table.objects.get(pk=table).schema if table else None
+        schema = self.instance.table.schema
 
-        if schema:
-            columns = create_column_choices(schema)
-            if is_timeseries_chart(self.get_live_field("kind")):
-                self.fields["dimension"].widget = SelectWithDisable(
-                    disabled=disable_non_time(schema)
-                )
-            self.fields["dimension"].choices = columns
-            self.fields["dimension"].label = "X"
-            self.fields["second_dimension"].choices = columns
-            self.fields["second_dimension"].label = "Y"
+        columns = create_column_choices(schema)
+        if is_timeseries_chart(self.get_live_field("kind")):
+            self.fields["dimension"].widget = SelectWithDisable(
+                disabled=disable_non_time(schema)
+            )
+        self.fields["dimension"].choices = columns
+        self.fields["dimension"].label = "X"
+        self.fields["second_dimension"].choices = columns
+        self.fields["second_dimension"].label = "Y"
 
     def get_live_fields(self):
         fields = super().get_live_fields()
-        table = self.get_live_field("table")
+        fields += ["dimension", "second_dimension"]
 
-        if table:
-            fields += ["dimension", "second_dimension"]
+        schema = self.instance.table.schema
 
-            schema = (
-                Table.objects.get(pk=table).schema
-                if isinstance(table, (str, int))
-                else table.schema
-            )
-
-            if (
-                (dimension := self.get_live_field("dimension"))
-                and dimension in schema
-                and isinstance(schema[dimension], (Date, Timestamp))
-            ):
-                fields += ["part"]
+        if (
+            (dimension := self.get_live_field("dimension"))
+            and dimension in schema
+            and isinstance(schema[dimension], (Date, Timestamp))
+        ):
+            fields += ["part"]
         return fields
 
 
@@ -250,47 +242,39 @@ class StackedChartForm(GenericWidgetForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        table = self.get_live_field("table")
-        schema = Table.objects.get(pk=table).schema if table else None
+        schema = self.instance.table.schema
 
-        if schema:
-            choices = create_column_choices(schema)
-            if is_timeseries_chart(self.get_live_field("kind")):
-                self.fields["dimension"].widget = SelectWithDisable(
-                    disabled=disable_non_time(schema)
-                )
-            self.fields["dimension"].choices = choices
-            self.fields["second_dimension"].choices = choices
-            # Can't overwrite label in Meta because we would have to overwrite the whole thing
-            self.fields["second_dimension"].label = "Stack dimension"
-            self.fields["second_dimension"].required = False
+        choices = create_column_choices(schema)
+        if is_timeseries_chart(self.get_live_field("kind")):
+            self.fields["dimension"].widget = SelectWithDisable(
+                disabled=disable_non_time(schema)
+            )
+        self.fields["dimension"].choices = choices
+        self.fields["second_dimension"].choices = choices
+        # Can't overwrite label in Meta because we would have to overwrite the whole thing
+        self.fields["second_dimension"].label = "Stack dimension"
+        self.fields["second_dimension"].required = False
 
     def get_live_fields(self):
         fields = super().get_live_fields()
-        table = self.get_live_field("table")
 
-        if table:
+        fields += [
+            "dimension",
+            "second_dimension",
+        ]
+        if self.get_live_field("kind") != Widget.Kind.STACKED_LINE:
             fields += [
-                "dimension",
-                "second_dimension",
+                "stack_100_percent",
             ]
-            if self.get_live_field("kind") != Widget.Kind.STACKED_LINE:
-                fields += [
-                    "stack_100_percent",
-                ]
 
-            schema = (
-                Table.objects.get(pk=table).schema
-                if isinstance(table, (str, int))
-                else table.schema
-            )
+        schema = self.instance.table.schema
 
-            if (
-                (dimension := self.get_live_field("dimension"))
-                and dimension in schema
-                and isinstance(schema[dimension], (Date, Timestamp))
-            ):
-                fields += ["part"]
+        if (
+            (dimension := self.get_live_field("dimension"))
+            and dimension in schema
+            and isinstance(schema[dimension], (Date, Timestamp))
+        ):
+            fields += ["part"]
 
         return fields
 
@@ -359,6 +343,7 @@ FORMS = {
     Widget.Kind.COMBO: OneDimensionForm,
     Widget.Kind.IFRAME: IframeWidgetForm,
     Widget.Kind.IMAGE: ImageWidgetForm,
+    Widget.Kind.GAUGE: GenericWidgetForm,
 }
 
 
@@ -368,13 +353,27 @@ class WidgetDuplicateForm(BaseModelForm):
         fields = ()
 
 
-class WidgetStyleForm(BaseModelForm):
+class StyleMixin:
+    def get_initial_for_field(self, field, field_name):
+        if self.initial.get(field_name) != None and getattr(self.instance, field_name):
+            return self.initial.get(field_name)
+
+        # Field has no value but dashboard has set a value.
+        if hasattr(self.instance.page.dashboard, f"widget_{field_name}"):
+            return getattr(self.instance.page.dashboard, f"widget_{field_name}")
+
+        if hasattr(self.instance.page.dashboard, field_name):
+            return getattr(self.instance.page.dashboard, field_name)
+
+        if field.initial:
+            return field.initial
+
+        return super().get_initial_for_field(field, field_name)
+
+
+class DefaultStyleForm(StyleMixin, BaseModelForm):
     palette_colors = PaletteColorsField(required=False)
-    background_color = forms.CharField(
-        required=False,
-        initial="#ffffff",
-        widget=forms.TextInput(attrs={"type": "color"}),
-    )
+    background_color = ColorField(required=False, initial="#ffffff")
 
     class Meta:
         model = Widget
@@ -389,33 +388,20 @@ class WidgetStyleForm(BaseModelForm):
             "currency": Datalist(attrs={"data-live-update-ignore": ""}),
         }
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
 
-        if self.instance.kind == Widget.Kind.TABLE:
-            self.fields = copy.deepcopy(
-                {
-                    key: field
-                    for key, field in self.base_fields.items()
-                    if key not in ["palette_colors", "font_size", "show_tooltips"]
-                }
-            )
+class TableStyleForm(StyleMixin, BaseModelForm):
+    background_color = ColorField(required=False, initial="#ffffff")
 
-    # If widget has no value set for a setting, default to dashboard settings.
-    def get_initial_for_field(self, field, field_name):
-        if getattr(self.instance, field_name) is not None:
-            return super().get_initial_for_field(field, field_name)
-
-        if hasattr(self.instance.page.dashboard, field_name):
-            return getattr(self.instance.page.dashboard, field_name)
-
-        if field.initial:
-            return field.initial
-
-        return super().get_initial_for_field(field, field_name)
+    class Meta:
+        model = Widget
+        fields = [
+            "background_color",
+        ]
 
 
-class MetricStyleForm(WidgetStyleForm):
+class MetricStyleForm(StyleMixin, BaseModelForm):
+    background_color = ColorField(required=False, initial="#ffffff")
+
     metric_header_font_size = forms.IntegerField(
         required=False,
         initial=16,
@@ -465,12 +451,31 @@ class MetricStyleForm(WidgetStyleForm):
             "metric_comparison_font_color",
         ]
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields = copy.deepcopy(
-            {
-                key: field
-                for key, field in self.base_fields.items()
-                if key not in ["palette_colors", "font_size", "show_tooltips"]
-            }
-        )
+
+class GaugeStyleForm(StyleMixin, BaseModelForm):
+    background_color = ColorField(required=False, initial="#ffffff")
+    first_segment_color = ColorField(required=False, initial="#e30303")
+    second_segment_color = ColorField(required=False, initial="#f38e4f")
+    third_segment_color = ColorField(required=False, initial="#facc15")
+    fourth_segment_color = ColorField(required=False, initial="#0db145")
+
+    class Meta:
+        model = Widget
+        fields = [
+            "background_color",
+            "lower_limit",
+            "upper_limit",
+            "show_tooltips",
+            "currency",
+            "first_segment_color",
+            "second_segment_color",
+            "third_segment_color",
+            "fourth_segment_color",
+        ]
+
+
+STYLE_FORMS = {
+    Widget.Kind.METRIC: MetricStyleForm,
+    Widget.Kind.TABLE: TableStyleForm,
+    Widget.Kind.GAUGE: GaugeStyleForm,
+}

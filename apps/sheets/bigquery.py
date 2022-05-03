@@ -1,3 +1,5 @@
+import re
+
 from google.cloud import bigquery
 from google.cloud.bigquery.job.query import QueryJob
 
@@ -6,6 +8,7 @@ from apps.base.core.bigquery import (
     bq_table_schema_is_string_only,
     sanitize_bq_column_name,
 )
+from apps.base.core.utils import excel_colnum_string
 from apps.tables.models import Table
 
 from .models import Sheet
@@ -42,6 +45,11 @@ def _create_external_table(
     )
 
 
+CONVERSION_ERROR = re.compile(
+    "Could not convert value to (.*). Row ([0-9]*); Col ([0-9]*)"
+)
+
+
 def _load_table(sheet: Sheet, table: Table, **job_kwargs):
 
     client = clients.bigquery()
@@ -56,7 +64,14 @@ def _load_table(sheet: Sheet, table: Table, **job_kwargs):
     # capture external table creation errors
 
     if query_job.exception():
-        raise Exception(query_job.errors[0]["message"])
+        error_message = query_job.errors[0]["message"]
+        if re.search(CONVERSION_ERROR, error_message):
+            type_, row, col = re.search(CONVERSION_ERROR, error_message).groups()
+            error_message = (
+                f"We could not convert cell {excel_colnum_string(int(col)+1)}{int(row)+1} to {type_}."
+                f"Try changing the cell value to the appropiate format and retry the sync."
+            )
+        raise Exception(error_message)
 
 
 def import_table_from_sheet(table: Table, sheet: Sheet) -> QueryJob:

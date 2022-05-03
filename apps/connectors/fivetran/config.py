@@ -36,13 +36,13 @@ class Service:
     internal: bool = False
     sunset: bool = False
     alias: Optional[str] = None
+    is_beta: bool = False
 
     # fivetran metadata
     id: str = ""
     description: str = ""
     icon_path: str = ""
     icon_url: str = ""
-    id: str = ""
     link_to_docs: str = ""
     link_to_erd: str = ""
     name: str = ""

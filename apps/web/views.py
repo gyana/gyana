@@ -1,8 +1,9 @@
 from django.conf import settings
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.views.generic import TemplateView
+from djpaddle.models import Plan
 from rest_framework.decorators import api_view
 
 from apps.columns.transformer import FUNCTIONS
@@ -14,6 +15,8 @@ from apps.widgets.models import WIDGET_KIND_TO_WEB
 
 from .cache import cache_site
 from .content import get_content
+
+USE_CASES = ["ecommerce", "b2b-saas", "marketing-agency"]
 
 
 class Home(TemplateView):
@@ -38,9 +41,6 @@ class Home(TemplateView):
 
             return HttpResponseRedirect(reverse("teams:create"))
 
-        if not settings.ENABLE_WEBSITE:
-            return redirect("account_login")
-
         return cache_site(super().get)(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -63,6 +63,7 @@ class Pricing(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["content"] = get_content("pricing.yaml")
+        context["paddle_pro_plan"] = Plan.objects.get(pk=settings.DJPADDLE_PRO_PLAN_ID)
         return context
 
 
@@ -74,6 +75,16 @@ class Integrations(TemplateView):
         context["services"] = get_services_obj()
         context["services_grouped"] = get_services_grouped(4)
         context["content"] = get_content("integrations.yaml")
+        return context
+
+
+class Integration(TemplateView):
+    template_name = "web/integration.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["service"] = get_services_obj()[kwargs["id"]]
+        context["content"] = get_content("integration.yaml", context)
         return context
 
 
@@ -94,6 +105,10 @@ class TermsOfUse(TemplateView):
     template_name = "web/terms_of_use.html"
 
 
+class BookADemo(TemplateView):
+    template_name = "web/book_a_demo.html"
+
+
 @api_view(["POST"])
 def toggle_sidebar(request):
     request.session["sidebar_collapsed"] = not request.session.get(
@@ -101,3 +116,24 @@ def toggle_sidebar(request):
     )
 
     return HttpResponse(200)
+
+
+class UseCase(TemplateView):
+    template_name = "web/use_case.html"
+
+    def get(self, request, *args, **kwargs):
+
+        if kwargs["id"] not in USE_CASES:
+            return HttpResponseNotFound()
+
+        return super().get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["services"] = get_services_obj()
+        context["services_grouped"] = get_services_grouped(4)
+        context["content"] = {
+            **get_content(f"use_case/{kwargs['id']}.yaml"),
+            **get_content("integrations.yaml"),
+        }
+        return context

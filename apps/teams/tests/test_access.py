@@ -10,7 +10,7 @@ pytestmark = pytest.mark.django_db
 @pytest.mark.parametrize(
     "url",
     [
-        pytest.param("/teams/{team_id}/plans", id="plans"),
+        pytest.param("/teams/{team_id}/pricing", id="pricing"),
         pytest.param("/teams/{team_id}/checkout", id="checkout"),
         # TODO: need to find a way to mock list_payments_for_team
         # pytest.param("/teams/{team_id}/subscription", id="subscription"),
@@ -24,11 +24,7 @@ pytestmark = pytest.mark.django_db
 def test_admin_required(client, user, url, team_factory, settings):
     team = team_factory()
     pro_plan = Plan.objects.create(name="Pro", billing_type="month", billing_period=1)
-    business_plan = Plan.objects.create(
-        name="Pro", billing_type="month", billing_period=1
-    )
     settings.DJPADDLE_PRO_PLAN_ID = pro_plan.id
-    settings.DJPADDLE_BUSINESS_PLAN_ID = business_plan.id
 
     url = url.format(team_id=team.id)
     assertLoginRedirect(client, url)

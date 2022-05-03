@@ -29,3 +29,11 @@ class ChoiceArrayField(ArrayField):
         # care for it.
         # pylint:disable=bad-super-call
         return super(ArrayField, self).formfield(**defaults)
+
+
+class ColorInput(forms.TextInput):
+    input_type = "color"
+
+
+class ColorField(forms.CharField):
+    widget = ColorInput

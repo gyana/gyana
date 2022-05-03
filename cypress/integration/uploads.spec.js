@@ -10,15 +10,15 @@ describe('uploads', () => {
     cy.visit('/projects/1/integrations')
   })
   it('upload valid CSV', () => {
-    cy.contains('New Integration').click()
-    cy.contains('Upload CSV').click({ force: true })
+    cy.get('.fa-upload').click({ force: true })
 
     cy.url().should('contain', '/projects/1/integrations/uploads/new')
     cy.get('input[type=file]').attachFile('store_info.csv')
 
-    cy.url().should('contain', `/projects/1/integrations/${id}/configure`)
-    cy.get('button[type=submit]').click()
+    cy.url().should('contain', `/projects/1/integrations/${id}/load`)
     cy.contains('Validating and importing your upload...')
+    cy.contains('Upload successfully imported', { timeout: BIGQUERY_TIMEOUT })
+
     cy.contains('Upload successfully imported', { timeout: BIGQUERY_TIMEOUT })
 
     // review the table and approve
@@ -51,12 +51,10 @@ describe('uploads', () => {
 
     cy.get('input[type=file]').attachFile('fifa.csv')
 
-    // wait for entire process to happen successfully
-    cy.get('button[type=submit]').click()
     cy.contains('Confirm', { timeout: BIGQUERY_TIMEOUT }).click()
-    cy.contains('Overview')
+    cy.get('#tabbar').contains('Overview')
     // 2250 lines of CSV including header
-    cy.contains(2249)
+    cy.contains('2,249')
   })
   it('upload failures', () => {
     // invalid format - better way to test this?

@@ -1,4 +1,4 @@
-@use 'utilities/mixins';
+@use 'utilities' as u;
 
 %input {
   background-color: var(--c-white);
@@ -39,7 +39,7 @@ input[type='email'] {
 [data-controller*='password-input'] {
   position: relative;
 
-  @include mixins.fa-icon {
+  @include u.fa-icon {
     color: var(--c-black);
     display: inline;
     position: absolute;
@@ -106,7 +106,17 @@ input[type='color'] {
   padding: 0;
   width: 100%;
 
-  &::-webkit-color-swatch,
+  &::-webkit-color-swatch-wrapper {
+    padding: 0;
+  }
+
+  // Note for some reason SCSS is not playing well with nested pseudo-elements,
+  // do not nest/merge these or the styling breaks!
+  &::-webkit-color-swatch {
+    border: none;
+    border-radius: 5px;
+  }
+
   &::-moz-color-swatch {
     border: none;
     border-radius: 5px;
@@ -181,10 +191,10 @@ select {
 .label__unit {
   align-items: center;
   background-color: var(--c-gray-20);
-  border-bottom-right-radius: 5px;
-  border-left: 0;
-  border-top-right-radius: 5px;
   border: 1px solid var(--c-gray);
+  border-bottom-right-radius: 5px;
+  border-top-right-radius: 5px;
+  border-left: 0;
   color: var(--c-black-50);
   display: flex;
   font-weight: 400;
@@ -217,6 +227,16 @@ input.input,
     &:hover {
       background-color: var(--c-gray-50);
     }
+  }
+
+  &__ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__font-inherit {
+    font-size: inherit;
+    font-weight: inherit;
   }
 
   &__contenteditable {

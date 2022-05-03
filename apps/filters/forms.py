@@ -19,6 +19,7 @@ IBIS_TO_TYPE = {
     "Float64": Filter.Type.FLOAT,
     "Decimal": Filter.Type.FLOAT,
     "Boolean": Filter.Type.BOOL,
+    "Struct": Filter.Type.STRUCT,
 }
 
 
@@ -39,6 +40,7 @@ class FilterForm(BaseLiveSchemaForm):
             "numeric_predicate",
             "time_predicate",
             "datetime_predicate",
+            "struct_predicate",
             "time_value",
             "date_value",
             "datetime_value",
@@ -48,7 +50,7 @@ class FilterForm(BaseLiveSchemaForm):
             "integer_values",
             "float_value",
             "float_values",
-            "bool_value",
+            "bool_predicate",
         )
 
         widgets = {
@@ -74,9 +76,6 @@ class FilterForm(BaseLiveSchemaForm):
                 ) is not None and pred not in NO_VALUE:
 
                     fields += [value + "s"] if pred in ["isin", "notin"] else [value]
-
-            if filter_type == Filter.Type.BOOL:
-                fields += [value]
 
         return fields
 

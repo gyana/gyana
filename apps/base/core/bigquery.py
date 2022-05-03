@@ -32,7 +32,7 @@ BIGQUERY_TYPE_TO_HUMAN = {
     "FLOAT": "Number",  # undocumented
     "FLOAT64": "Number",
     "STRING": "Text",
-    "STRUCT": None,
+    "STRUCT": "Dictionary",
     "TIME": "Time",
     # technically without timezone
     "TIMESTAMP": "Date & Time",

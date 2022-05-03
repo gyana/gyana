@@ -39,7 +39,7 @@ def test_connector_create(client, logged_in_user, bigquery, fivetran, project):
     # view all connectors
     r = client.get(f"{CONNECTORS}/new")
     assertOK(r)
-    assertLink(r, f"{CONNECTORS}/new?service=google_analytics", "Google Analytics")
+    assertLink(r, f"{CONNECTORS}/new?service=google_analytics", "Import with Fivetran")
 
     # connector alias logic (e.g. mysql)
     r = client.get(f"{CONNECTORS}/new?service=woocommerce_via_mysql")
@@ -224,8 +224,8 @@ def test_connector_search_and_categories(client, logged_in_user, project):
 
     r = client.get(f"{CONNECTORS}/new")
     assertOK(r)
-    assertLink(r, f"{CONNECTORS}/new?service=google_analytics", "Google Analytics")
-    assertLink(r, f"{CONNECTORS}/new?service=asana", "Asana")
+    assertLink(r, f"{CONNECTORS}/new?service=google_analytics", "Import with Fivetran")
+    assertLink(r, f"{CONNECTORS}/new?service=asana", "Import with Fivetran")
 
     # filter by category
     assertLink(r, f"{CONNECTORS}/new?category=Marketing", "Marketing")

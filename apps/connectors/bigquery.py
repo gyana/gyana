@@ -1,5 +1,6 @@
 from itertools import chain
 
+from django.conf import settings
 from google.api_core.exceptions import NotFound
 
 from apps.base import clients
@@ -22,6 +23,8 @@ def _get_bq_tables_from_dataset_safe(dataset_id, enabled_table_ids=None):
     # this is useful for the fivetran schema logic as not all the schemas and
     # tables reported by fivetran may actually be created in bigquery
 
+    if settings.MOCK_FIVETRAN:
+        dataset_id = dataset_id.split("_mock_")[0]
     try:
         bq_tables = list(clients.bigquery().list_tables(dataset_id))
         if enabled_table_ids is None:
@@ -66,9 +69,12 @@ def get_bq_tables_for_connector(connector):
 
     # one dataset, multiple fixed tables determined by schema
     if service_type == ServiceTypeEnum.API_CLOUD:
+        if not (schemas := connector.schema_obj.schemas):
+            return set()
+
         return _get_bq_tables_from_dataset_safe(
             connector.schema,
-            enabled_table_ids=connector.schema_obj.schemas[0].enabled_table_ids,
+            enabled_table_ids=schemas[0].enabled_table_ids,
         )
 
     # multiple datasets, multiple fixed tables determined by schema

@@ -30,13 +30,13 @@ def test_get_bq_tables_for_connector_event_tracking(
     bq_tables = get_bq_tables_for_connector(connector)
 
     assert _get_bq_ids(bq_tables) == {
-        "dataset.table_1",
-        "dataset.table_2",
-        "dataset.table_3",
+        "dataset_1.table_1",
+        "dataset_2.table_2",
+        "dataset_3.table_3",
     }
 
     assert bigquery.list_tables.call_count == 1
-    assert bigquery.list_tables.call_args.args == ("dataset",)
+    assert bigquery.list_tables.call_args.args == (connector.schema,)
 
 
 def test_get_bq_tables_for_connector_webhooks_reports(
@@ -89,10 +89,10 @@ def test_get_bq_tables_for_connector_api_cloud(
     bigquery.list_tables.reset_mock()
 
     bq_tables = get_bq_tables_for_connector(connector)
-    assert _get_bq_ids(bq_tables) == {"dataset.table_1", "dataset.table_3"}
+    assert _get_bq_ids(bq_tables) == {"dataset_1.table_1", "dataset_3.table_3"}
 
     assert bigquery.list_tables.call_count == 1
-    assert bigquery.list_tables.call_args.args == ("dataset",)
+    assert bigquery.list_tables.call_args.args == (connector.schema,)
 
 
 def test_get_bq_tables_for_connector_database(
@@ -118,12 +118,16 @@ def test_get_bq_tables_for_connector_database(
 
     bq_tables = get_bq_tables_for_connector(connector)
     assert _get_bq_ids(bq_tables) == {
-        "dataset_schema_1.table_1",
-        "dataset_schema_1.table_3",
-        "dataset_schema_3.table_1",
-        "dataset_schema_3.table_3",
+        f"{connector.schema}_schema_1_1.table_1",
+        f"{connector.schema}_schema_1_3.table_3",
+        f"{connector.schema}_schema_3_1.table_1",
+        f"{connector.schema}_schema_3_3.table_3",
     }
 
     assert bigquery.list_tables.call_count == 2
-    assert bigquery.list_tables.call_args_list[0].args == ("dataset_schema_1",)
-    assert bigquery.list_tables.call_args_list[1].args == ("dataset_schema_3",)
+    assert bigquery.list_tables.call_args_list[0].args == (
+        f"{connector.schema}_schema_1",
+    )
+    assert bigquery.list_tables.call_args_list[1].args == (
+        f"{connector.schema}_schema_3",
+    )

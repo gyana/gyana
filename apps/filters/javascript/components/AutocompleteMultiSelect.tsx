@@ -64,7 +64,7 @@ const AutocompleteMultiSelect_: React.FC<{
   }, [JSON.stringify(selectedOptions)])
 
   return (
-    <Listbox as='div' value={selectedOptions} onChange={handleSelect}>
+    <Listbox className={'w-full'} as='div' value={selectedOptions} onChange={handleSelect}>
       {() => (
         <>
           <SelectButton>
@@ -153,7 +153,7 @@ class AutocompleteMultiSelect extends HTMLElement {
   connectedCallback() {
     const mountPoint = document.createElement('div')
     // Because the Select dropdown will be absolute positioned we need to make the outer div relative
-    mountPoint.setAttribute('class', 'relative')
+    mountPoint.setAttribute('class', 'relative w-full')
     const selected = JSON.parse(this.querySelector('#selected')?.innerHTML || '[]')
 
     const parentType = this.attributes['parent-type'].value

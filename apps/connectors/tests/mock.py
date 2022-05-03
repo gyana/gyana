@@ -7,7 +7,9 @@ from apps.connectors.fivetran.schema import FivetranSchemaObj
 
 
 def get_mock_list_tables(num_tables, dataset="dataset"):
-    return [BqTable(f"project.{dataset}.table_{n}") for n in range(1, num_tables + 1)]
+    return [
+        BqTable(f"project.{dataset}_{n}.table_{n}") for n in range(1, num_tables + 1)
+    ]
 
 
 def get_mock_fivetran_connector(
@@ -20,9 +22,9 @@ def get_mock_fivetran_connector(
 ):
 
     if succeeded_at is not None:
-        succeeded_at = datetime.strftime(succeeded_at, "%Y-%m-%dT%H:%M:%S.%f%z")
+        succeeded_at = succeeded_at.isoformat()
 
-    data = {
+    return {
         "id": "fivetran_id",
         "group_id": "group_id",
         "service": service,
@@ -47,8 +49,6 @@ def get_mock_fivetran_connector(
         },
         "config": {},
     }
-
-    return data
 
 
 def get_mock_schema(

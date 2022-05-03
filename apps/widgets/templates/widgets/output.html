@@ -2,7 +2,6 @@
   {% include 'widgets/modal_nav_bar.html'%}
 {% endif %}
 <div 
-  id="widgets-output-{{ widget.id }}-stream"
   style="
     display: flex; flex: 1 1 0%; min-height: 0;overflow: auto; height: auto;
     {% if widget.is_valid and widget.computed_background_color %}

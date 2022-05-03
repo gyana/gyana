@@ -33,14 +33,13 @@
       </span>
     </form>
 
-    {% flag 'beta' %}
-    <div class="max-w-3xl">
+    <div class="max-w-3xl mb-8">
       <div class="flex items-center mb-7">
         <h2 class="mr-2">OAuth2</h2>
       </div>
+
       <turbo-frame id="oauth2:list" src="{% url 'project_oauth2:list' object.id %}" target="_top"></turbo-frame>
     </div>
-    {% endflag %}
   </div>
 
   <div class="pad border-t border-gray">

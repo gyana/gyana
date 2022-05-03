@@ -6,7 +6,7 @@ from django import template
 INTERCOM_JSON = "apps/base/data/intercom.json"
 LOOM_JSON = "apps/base/data/loom.json"
 
-INTERCOM_ROOT = "https://intercom.help/gyana/en/articles"
+INTERCOM_ROOT = "https://support.gyana.com/en/articles"
 LOOM_ROOT = "https://www.loom.com/embed"
 
 register = template.Library()

@@ -1,6 +1,6 @@
 import json
 import os
-from datetime import datetime
+import uuid
 from functools import cache
 from glob import glob
 
@@ -16,7 +16,7 @@ MOCK_SCHEMA_DIR = os.path.abspath(".mock/.schema")
 def get_connector_json(connector, is_historical_sync=False, succeeded_at=None):
 
     if succeeded_at is not None:
-        succeeded_at = datetime.strftime(succeeded_at, "%Y-%m-%dT%H:%M:%S.%f%z")
+        succeeded_at = succeeded_at.isoformat()
 
     return {
         "id": connector.fivetran_id,
@@ -88,7 +88,13 @@ class MockFivetranClient:
             Connector.objects.filter(service=service).order_by("id").first()
             or Connector.objects.filter(service=self.DEFAULT_SERVICE).first()
         )
+
+        connector.schema = f"{connector.schema}_mock_{(uuid.uuid4().hex):6}"
+        connector.fivetran_id = f"{connector.fivetran_id}_mock_{(uuid.uuid4().hex):6}"
         return get_connector_json(connector, is_historical_sync=True)
+
+    def new(self, config):
+        return {"data": {}}
 
     def get(self, connector):
         started = self._started.get(connector.id)
@@ -97,7 +103,7 @@ class MockFivetranClient:
             if started is not None
             else False
         )
-        succeeded_at = timezone.now() if not is_historical_sync else None
+        succeeded_at = None if is_historical_sync else timezone.now()
 
         return get_connector_json(
             connector, is_historical_sync=is_historical_sync, succeeded_at=succeeded_at
@@ -130,7 +136,11 @@ class MockFivetranClient:
             return self._schema_cache[connector.id]
 
         service = connector.service if connector is not None else "google_analytics"
-        fivetran_id = connector.fivetran_id if connector is not None else "humid_rifle"
+        fivetran_id = (
+            connector.fivetran_id.split("_mock_")[0]
+            if connector is not None
+            else "humid_rifle"
+        )
 
         with open(f"{SCHEMA_FIXTURES_DIR}/{service}_{fivetran_id}.json", "r") as f:
             return json.load(f)

@@ -35,10 +35,6 @@ pytestmark = pytest.mark.django_db
             id="update",
         ),
         pytest.param(
-            "/projects/{project_id}/dashboards/{dashboard_id}/widgets/{widget_id}/update-style",
-            id="update-style",
-        ),
-        pytest.param(
             "/projects/{project_id}/dashboards/{dashboard_id}/widgets/{widget_id}/input",
             id="input",
         ),
@@ -50,7 +46,7 @@ pytestmark = pytest.mark.django_db
 )
 def test_widget_project_required(client, url, user, widget_factory, bigquery):
     mock_bq_client_with_schema(
-        bigquery, [(name, type_.name) for name, type_ in TABLE.schema().items()]
+        bigquery, [(name, str(type_)) for name, type_ in TABLE.schema().items()]
     )
     mock_bq_client_with_records(bigquery, [{"athlete": ["Usain", "Alex"]}])
     widget = widget_factory()
@@ -63,12 +59,13 @@ def test_widget_project_required(client, url, user, widget_factory, bigquery):
     assertLoginRedirect(client, url)
 
     client.force_login(user)
-    r = client.get(url)
+    call = client.delete if "delete" in url else client.get
+    r = call(url)
     assertNotFound(r)
 
     project.team = user.teams.first()
     project.save()
-    r = client.get(url)
+    r = call(url)
     assertOK(r)
 
 

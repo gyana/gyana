@@ -1,8 +1,9 @@
 <gy-select-autocomplete
-parent-type={{ parent_type }}
-parent={{ parent }}
-name={{ widget.name }}
-column={{ column }}
+  class="w-full"
+  parent-type={{ parent_type }}
+  parent={{ parent }}
+  name={{ widget.name }}
+  column={{ column }}
 >
-{{ selected|json_script:"selected" }}
+  {{ selected|json_script:"selected" }}
 </gy-select-autocomplete>

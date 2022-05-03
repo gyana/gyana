@@ -53,7 +53,7 @@
   </a>
 
   <a
-    class="sidebar__link {% if request.resolver_match.url_name in 'account,subscription,plan,payments' %}sidebar__link--active{% endif %}"
+    class="sidebar__link {% if request.resolver_match.url_name in 'account,subscription,plan,payments,pricing' %}sidebar__link--active{% endif %}"
     href="{% url 'teams:account' team.id %}"
     data-controller="tooltip"
     data-tooltip-placement="right"

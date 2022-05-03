@@ -45,8 +45,6 @@ MIDDLEWARE = ["silk.middleware.SilkyMiddleware"] + MIDDLEWARE
 # for code coverage
 TEMPLATES[0]["OPTIONS"]["debug"] = True
 
-ENABLE_WEBSITE = True
-
 CACHES = {
     "default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"},
     "site": {"BACKEND": "django.core.cache.backends.dummy.DummyCache"},

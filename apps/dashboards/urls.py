@@ -9,6 +9,8 @@ from .access import (
     dashboard_is_password_protected,
     dashboard_is_public,
     login_and_dashboard_required,
+    login_and_dashboardupdate_required,
+    login_and_dashboardversion_required,
 )
 
 app_name = "dashboards"
@@ -45,6 +47,21 @@ urlpatterns = [
         "<hashid:pk>/preview",
         dashboard_is_in_template(frames.DashboardPreview.as_view()),
         name="preview",
+    ),
+    path(
+        "version/<hashid:pk>/restore",
+        login_and_dashboardversion_required(views.DashboardRestore.as_view()),
+        name="restore",
+    ),
+    path(
+        "update/<hashid:pk>/restore",
+        login_and_dashboardupdate_required(views.DashboardUpdateRestore.as_view()),
+        name="restore-update",
+    ),
+    path(
+        "version/<hashid:pk>/rename",
+        login_and_dashboardversion_required(frames.DashboardVersionRename.as_view()),
+        name="version-rename",
     ),
 ]
 
@@ -91,6 +108,16 @@ project_urlpatterns = (
             "<hashid:dashboard_id>/pages/<hashid:pk>",
             login_and_project_required(views.PageDelete.as_view()),
             name="page-delete",
+        ),
+        path(
+            "<hashid:dashboard_id>/pages/<hashid:pk>/move",
+            login_and_project_required(views.PageMove.as_view()),
+            name="page-move",
+        ),
+        path(
+            "<hashid:dashboard_id>/pages/<hashid:pk>/name",
+            login_and_project_required(views.PageName.as_view()),
+            name="page-name",
         ),
         # Turbo frames
         path(

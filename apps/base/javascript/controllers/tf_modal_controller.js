@@ -1,6 +1,6 @@
 import { Controller } from '@hotwired/stimulus'
 
-const debounceTime = 300
+const debounceTime = 450
 
 /**
  * Modal controller with content populated by a turbo-frame.
@@ -24,6 +24,7 @@ export default class extends Controller {
 
   initialize() {
     this.changed = false
+    this.changeElement = null
     this.boundHandleKeyup = this.handleKeyup.bind(this)
     this.boundHandleClick = this.handleClick.bind(this)
   }
@@ -65,16 +66,27 @@ export default class extends Controller {
     `
 
     this.turboFrameTarget.removeAttribute('src')
-    this.turboFrameTarget.setAttribute('id', event.currentTarget.dataset.modalId)
-    this.turboFrameTarget.setAttribute('src', event.currentTarget.dataset.modalSrc)
+    this.turboFrameTarget.setAttribute(
+      'id',
+      event.currentTarget.dataset.modalId
+    )
+    this.turboFrameTarget.setAttribute(
+      'src',
+      event.currentTarget.dataset.modalSrc
+    )
 
     if (event.currentTarget.dataset.modalTarget) {
-      this.turboFrameTarget.setAttribute('target', event.currentTarget.dataset.modalTarget)
+      this.turboFrameTarget.setAttribute(
+        'target',
+        event.currentTarget.dataset.modalTarget
+      )
     }
 
     this.modalTarget.className = 'tf-modal'
     if (event.currentTarget.dataset.modalClasses) {
-      this.modalTarget.classList.add(...event.currentTarget.dataset.modalClasses.split(' '))
+      this.modalTarget.classList.add(
+        ...event.currentTarget.dataset.modalClasses.split(' ')
+      )
     }
 
     if (event.currentTarget.dataset.modalItem) {
@@ -87,7 +99,8 @@ export default class extends Controller {
   }
 
   async submit(e) {
-    for (const el of this.formTarget.querySelectorAll('button[type=submit]')) el.disabled = true
+    for (const el of this.formTarget.querySelectorAll('button[type=submit]'))
+      el.disabled = true
     // e.target.innerHTML = '<i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>'
 
     e.preventDefault()
@@ -107,15 +120,22 @@ export default class extends Controller {
     const doc = parser.parseFromString(text, 'text/html')
     const newForm = doc.querySelector(`#${this.formTarget.id}`)
 
-    this.formTarget.outerHTML = newForm.outerHTML
+    if (newForm) {
+      this.formTarget.outerHTML = newForm.outerHTML
+    }
 
     if ([200, 201].includes(result.status)) {
       // For nodes, we need to dispatch events
       // that are usually triggered on the default submit event
-      const nodeUpdateElement = this.element.querySelector('[data-controller=node-update]')
+      const nodeUpdateElement = this.element.querySelector(
+        '[data-controller=node-update]'
+      )
       if (nodeUpdateElement) {
         this.application
-          .getControllerForElementAndIdentifier(nodeUpdateElement, 'node-update')
+          .getControllerForElementAndIdentifier(
+            nodeUpdateElement,
+            'node-update'
+          )
           .sendNodeEvents()
       }
 
@@ -132,12 +152,25 @@ export default class extends Controller {
     }
   }
 
+  changeTab(event) {
+    if (this.changed) {
+      event.preventDefault()
+      this.changeElement = event.target
+      this.closingWarningTarget.removeAttribute('hidden')
+    }
+  }
+
   close(event) {
     if (this.hasClosingWarningTarget && this.changed) {
       this.closingWarningTarget.removeAttribute('hidden')
     } else {
-      if (this.hasFormTarget && this.formTarget.dataset.tfModalSubmitOnClose != undefined) {
-        this.formTarget.requestSubmit(this.formTarget.querySelector("button[value*='close']"))
+      if (
+        this.hasFormTarget &&
+        this.formTarget.dataset.tfModalSubmitOnClose != undefined
+      ) {
+        this.formTarget.requestSubmit(
+          this.formTarget.querySelector("button[value*='close']")
+        )
       }
 
       this.forceClose()
@@ -146,15 +179,24 @@ export default class extends Controller {
 
   forceClose() {
     this.changed = false
-    this.modalTarget.setAttribute('hidden', '')
 
-    const params = new URLSearchParams(location.search)
-    params.delete('modal_item')
-    history.replaceState(
-      {},
-      '',
-      `${location.pathname}${params.toString() ? '?' + params.toString() : ''}`
-    )
+    if (this.changeElement) {
+      const element = this.changeElement
+      this.changeElement = null
+      element.click()
+    } else {
+      this.modalTarget.setAttribute('hidden', '')
+
+      const params = new URLSearchParams(location.search)
+      params.delete('modal_item')
+      history.replaceState(
+        {},
+        '',
+        `${location.pathname}${
+          params.toString() ? '?' + params.toString() : ''
+        }`
+      )
+    }
   }
 
   closeWarning() {
@@ -165,20 +207,33 @@ export default class extends Controller {
   preview(e) {
     e.preventDefault()
     this.changed = false
-    this.formTarget.requestSubmit(this.formTarget.querySelector("button[value*='Save & Preview']"))
+    this.formTarget.requestSubmit(
+      this.formTarget.querySelector("button[value*='Save & Preview']")
+    )
   }
 
-  save() {
+  save(e) {
     this.changed = false
+
+    if (
+      e.detail &&
+      e.detail.success &&
+      e.detail.formSubmission.submitter.value == 'Save & Close'
+    ) {
+      this.forceClose()
+    }
   }
 
   search(event) {
     if (this.debounce) clearTimeout(this.debounce)
-    this.debounce = setTimeout(this.handleSearch(), debounceTime)
+    this.debounce = setTimeout(
+      this.handleSearch.bind(this, event),
+      debounceTime
+    )
   }
 
-  handleSearch() {
-    this.formTarget.requestSubmit(this.formTarget.querySelector("button[value*='close']"))
+  handleSearch(event) {
+    this.liveUpdateController.updateForm(event)
   }
 
   handleKeyup(event) {
@@ -188,8 +243,18 @@ export default class extends Controller {
   }
 
   handleClick(event) {
-    if (this.hasTurboFrameTarget && !this.turboFrameTarget.contains(event.target)) {
+    if (
+      this.hasTurboFrameTarget &&
+      !this.turboFrameTarget.contains(event.target)
+    ) {
       this.close(event)
     }
+  }
+
+  get liveUpdateController() {
+    return this.application.getControllerForElementAndIdentifier(
+      this.formTarget,
+      'live-update'
+    )
   }
 }

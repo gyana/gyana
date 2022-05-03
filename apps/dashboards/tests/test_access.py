@@ -3,7 +3,7 @@ import uuid
 import pytest
 
 from apps.base.tests.asserts import assertLoginRedirect, assertNotFound, assertOK
-from apps.dashboards.models import Dashboard
+from apps.dashboards.models import Dashboard, DashboardVersion
 
 pytestmark = pytest.mark.django_db
 
@@ -109,3 +109,49 @@ def test_dashboard_viewset(client, dashboard_factory, user):
     dashboard.project.save()
     r = client.patch(url, data={"name": "Maradona"}, content_type="application/json")
     assertOK(r)
+
+
+@pytest.mark.parametrize(
+    "url",
+    [
+        pytest.param("/dashboards/version/{version_id}/rename", id="rename"),
+        pytest.param("/dashboards/version/{version_id}/restore", id="restore"),
+    ],
+)
+def test_dashboard_version(client, dashboard_factory, user, url):
+    team = user.teams.first()
+    dashboard = dashboard_factory()
+    version = DashboardVersion(dashboard=dashboard)
+    version.save()
+    url = url.format(version_id=version.id)
+    assertLoginRedirect(client, url)
+
+    client.force_login(user)
+    r = client.get(url)
+    assert r.status_code == 404
+
+    dashboard.project.team = team
+    dashboard.project.save()
+    r = client.get(url)
+    assertOK(r)
+
+
+def test_dashboard_update_restore(client, dashboard_factory, user):
+    team = user.teams.first()
+    dashboard = dashboard_factory()
+    dashboard.pages.create()
+    update = dashboard.updates.first()
+
+    url = f"/dashboards/update/{update.id}/restore"
+    assertLoginRedirect(client, url)
+
+    client.force_login(user)
+    r = client.get(url)
+    assert r.status_code == 404
+
+    dashboard.project.team = team
+    dashboard.project.save()
+
+    r = client.post(url)
+    assert r.status_code == 302
+    assert r.url == f"/projects/{dashboard.project.id}/dashboards/{dashboard.id}"

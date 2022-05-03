@@ -1,0 +1,36 @@
+<form 
+  id="widget-update-form"
+  class="widget-update-sidebar__form"
+  action="{% url 'dashboard_widgets:update' project.id dashboard.id object.id %}?tab=style" 
+  method="POST"
+  data-controller="live-update" 
+  data-action="change->tf-modal#change turbo:submit-end->tf-modal#save"
+  data-tf-modal-target="form"
+  data-tf-modal-submit-on-close
+>
+  {% csrf_token %}
+
+  <div class="widget-update__body">
+    {% include "django/forms/default_form.html" with optional=False %}
+  </div>
+
+  <div class="widget-update__footer">
+    <button
+      type="submit"
+      name="submit"
+      value="Save & Close"
+      class="button button--success flex-1"
+    >
+      Save & Close
+    </button>
+
+    <button
+      type="submit"
+      name="submit"
+      value="Save & Preview"
+      class="button button--outline button--success flex-1"
+    >
+      Save & Preview
+    </button>
+  </div>
+</form>

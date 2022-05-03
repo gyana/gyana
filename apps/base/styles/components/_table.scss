@@ -1,3 +1,5 @@
+@use 'utilities' as u;
+
 .table {
   border-collapse: separate;
   border-spacing: 0;
@@ -46,11 +48,22 @@
       }
 
       &--time a::before {
+        content: '\f017';
+      }
+
+      &--date a::before {
         content: '\f073';
+      }
+
+      &--datetime a::before {
+        content: '\f271';
       }
 
       &--boolean a::before {
         content: '\f058';
+      }
+      &--dict a::before {
+        content: '\f7ea';
       }
     }
 
@@ -107,6 +120,10 @@
     tr:hover {
       background-color: var(--c-gray-10);
     }
+
+    tr:last-of-type td {
+      border-bottom: 0;
+    }
   }
 
   tfoot {
@@ -123,7 +140,7 @@
     }
   }
 
-  td a[href]:not(.button) {
+  td a {
     color: var(--c-blue);
     padding: 1.2rem 0;
 
@@ -192,21 +209,44 @@
   border-top: 1px solid var(--c-gray);
   bottom: 0;
   display: flex;
-  gap: 1.6rem;
   height: 3.2rem;
   justify-content: center;
   left: 0;
   position: sticky;
   width: 100%;
 
+  a {
+    padding: u.size('xs') u.size('sm');
+
+    &:hover {
+      text-decoration: underline;
+      color: var(--c-blue-50);
+    }
+  }
+
   li.active a {
     color: var(--c-blue);
     font-weight: 500;
   }
 
-  a:hover {
-    text-decoration: underline;
-    color: var(--c-blue-50);
+  .form--no-layout {
+    display: inline;
+  }
+
+  .input {
+    -moz-appearance: textfield;
+    border: 0;
+    color: inherit;
+    font-size: inherit;
+    padding: 0;
+    text-align: center;
+    width: u.size('lg');
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
   }
 }
 
@@ -239,4 +279,36 @@
   line-height: 1.4rem;
   padding: 1.2rem 1.6rem;
   text-align: left;
+}
+
+.table .table__action,
+.table__action {
+  align-items: center;
+  background-color: var(--c-transparent);
+  border: 1px solid var(--c-gray);
+  border-radius: 100%;
+  color: var(--c-black-50);
+  display: flex;
+  font-weight: bold;
+  height: u.size('lg');
+  justify-content: center;
+  padding: 0;
+  width: u.size('lg');
+
+  &:hover,
+  &:focus {
+    background-color: var(--c-blue);
+    border: 1px solid var(--c-transparent);
+    color: var(--c-white);
+    text-decoration: none;
+  }
+
+  &--danger:hover,
+  &--danger:focus {
+    background-color: var(--c-red);
+  }
+
+  &:last-child {
+    margin-right: auto;
+  }
 }

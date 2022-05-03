@@ -6,9 +6,9 @@
   {% if team and team.warning %}
   <div class="banner banner--warning">
     <p>
-      You're exceeding your row count limit.
+      You've exceeded your row count limit. To continue to use Gyana, upgrade to a custom row volume.
       <a
-        href="{% url 'teams:account' team.id %}"
+        href="{% url 'teams:pricing' team.id %}"
         class="text-white font-bold underline"
       >
         Learn more <i class="fas fa-fw fa-arrow-right fa-sm"></i>
@@ -18,12 +18,11 @@
   {% endif %}
 
   {% if team and not team.enabled %}
-  <div class="banner banner--danger">
+  <div class="banner banner--warning">
     <p>
-      You've exceeded your row count limit by over 20%, your team is
-      temporarily disabled.
+      You've exceeded your row count limit by over 20%. To continue to use Gyana, upgrade to a custom row volume.
       <a
-        href="{% url 'teams:account' team.id %}"
+        href="{% url 'teams:pricing' team.id %}"
         class="text-white font-bold underline"
       >
         Learn more <i class="fas fa-fw fa-arrow-right fa-sm"></i>

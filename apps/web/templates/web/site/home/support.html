@@ -1,5 +1,7 @@
 {% load heroicons site_tags static %}
 
+{% comment %} For the embedded hubspot form {% endcomment %}
+<script charset="utf-8" type="text/javascript" src="//js-eu1.hsforms.net/forms/v2.js"></script>
 
 <div class="bg-white">
   <div class="relative max-w-7xl mx-auto py-24 px-4 sm:px-6 lg:px-8">
@@ -9,8 +11,6 @@
       </h2>
       <p class="mt-4 max-w-lg text-base text-gray-800">
         We'll support you on every step of your journey to Gyana mastery.
-        <strong>Looking to get started fast?</strong>
-        <a href="{% external_url 'talk_to_us' %}" class="underline hover:text-gray-900">Get our team to build your report.</a>
       </p>
     </div>
     <nav aria-label="Progress" class="mt-8 lg:grid lg:grid-cols-2">
@@ -73,6 +73,25 @@
                       <script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js" async></script>
                       <!-- Calendly inline widget end -->
                     {% elif step == 5 %}
+                      {% comment %} Book a demo Typeform {% endcomment %}
+                      <div class="p-10 bg-white">
+                        <div class="sm:flex sm:flex-col sm:align-center mb-6">
+                          <h2 class="text-3xl font-extrabold text-gray-900">
+                            Talk to us
+                          </h2>
+                          <p class="mt-4 max-w-lg text-base text-gray-800">
+                            We'll work with you to build your ideal reports.
+                          </p>
+                        </div>
+                        <script>
+                          hbspt.forms.create({
+                          region: "eu1",
+                          portalId: "25534240",
+                          formId: "ba345893-d3d5-4569-99ea-2f44274c927a"
+                        });
+                        </script>
+                      </div>
+                    {% elif step == 6 %}
                       {% comment %} HelloNext changelog {% endcomment %}
                       <iframe style='border:0px; height:100%; width:100%;' src='https://feedback.gyana.com/embed/c?no_header=true'></iframe>
                     {% endif %}

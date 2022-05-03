@@ -1,0 +1,10 @@
+<!-- Start of HubSpot Embed Code -->
+<script type="text/javascript" id="hs-script-loader" async defer src="//js-eu1.hs-scripts.com/25534240.js"></script>
+<!-- End of HubSpot Embed Code -->
+
+{% if request.user %}
+  <script>
+    var _hsq = window._hsq = window._hsq || [];
+    _hsq.push(["identify", { email: "{{ request.user.email }}" }]);
+  </script>
+{% endif %}

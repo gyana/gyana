@@ -39,7 +39,7 @@ class TeamAdmin(SafeDeleteAdmin):
     search_fields = ("name", "members__email")
 
     readonly_fields = [
-        "name",
+        highlight_deleted,
         "plan_rows",
         "usage",
         "percent",
@@ -50,7 +50,13 @@ class TeamAdmin(SafeDeleteAdmin):
         (None, {"fields": readonly_fields}),
         (
             "Manual override",
-            {"fields": ["override_row_limit", "override_credit_limit"]},
+            {
+                "fields": [
+                    "override_row_limit",
+                    "override_credit_limit",
+                    "has_free_trial",
+                ]
+            },
         ),
     )
     list_per_page = 20

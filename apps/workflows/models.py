@@ -123,6 +123,10 @@ class Workflow(BaseModel):
 
     @property
     def out_of_date(self):
+        # New workflows have no runs, therefore are up to date.
+        if self.runs.count() == 0:
+            return False
+
         if not self.last_success_run:
             return True
 

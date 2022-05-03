@@ -4,6 +4,7 @@
   &-detail {
     padding: 0;
 
+    &__footer,
     &__header {
       align-items: center;
       background-color: var(--c-white);
@@ -13,6 +14,12 @@
       height: 4.2rem;
       flex-shrink: 0;
       padding: 0 1.6rem;
+    }
+
+    &__footer {
+      border-bottom: 0;
+      border-top: 1px solid var(--c-gray);
+      box-sizing: content-box;
     }
 
     &__sidebar {

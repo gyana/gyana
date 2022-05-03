@@ -1,0 +1,14 @@
+{% extends 'web/site_base.html' %}
+{% load static site_tags heroicons %}
+
+{% block meta %}
+  <title>{{ service.name }} Reports: How To Build Custom Reports</title>
+  <meta name="description" content="Do more with {{ service.name }} reports. Find out how to build almost any custom report for {{ service.name }} in just a few clicks." /> 
+{% endblock %}
+
+{% block body.content %}
+  {% include 'web/site/integration/hero.html' %}
+  {% include 'web/site/integration/benefits.html' %}
+  {% include 'web/site/integration/features.html' %}
+  {% include 'web/site/integration/cta.html' %}
+{% endblock %}

@@ -1,15 +1,23 @@
 {% extends "projects/settings_base.html" %}
 {% load static %}
 {% load help_utils %}
+{% load waffle_tags %}
 
 {% block app %}
 {% if not request.GET.service %}
 <div class='flex flex-col pad'>
-  <div class="flex items-center gap-3">
-    <h2>Choose a connector</h2>
+  <div class="flex flex-col gap-3">
+    <div class="flex items-center gap-3">
+      <h2>Choose a connector</h2>
+  
+      {% link_article 'integrations' 'connector' %}
+      {% link_video 'connector' %}
+    </div>
 
-    {% link_article 'integrations' 'connector' %}
-    {% link_video 'connector' %}
+    <p>
+      You'll need to authorise each connector using <strong>Fivetran</strong>. <br>
+      Learn more about our <a class="link" href="{% article_url 'integrations' 'connector' %}">partnership with Fivetran</a>.
+    </p>
   </div>
 
   <div class="flex mt-7 gap-7 w-full">
@@ -19,15 +27,18 @@
           <li>
             <a 
               href="{% url 'project_integrations_connectors:create' project.id %}"
-              class="sidebar__link {% if not request.GET.category %} sidebar__link--active {% endif %}">
+              class="sidebar__link {% if not request.GET.category %} sidebar__link--active {% endif %}"
+            >
               All
             </a>
           </li>
+
           {% for category in service_categories %}
             <li>
               <a 
                 href="{% url 'project_integrations_connectors:create' project.id %}?category={{ category }}"
-                class="sidebar__link {% if category == request.GET.category %} sidebar__link--active {% endif %}">
+                class="sidebar__link {% if category == request.GET.category %} sidebar__link--active {% endif %}"
+              >
                 {{ category }}
               </a>
             </li>
@@ -46,16 +57,14 @@
           <p>{{ services_query_count }} sources</p>
         </div>
         {% for service in services_query %}
-          <a class="card card--sm"
-            href="{% url 'project_integrations_connectors:create' project.id %}?service={{ service.id }}">
-            <div class="flex items-center gap-7">
-              <img style="height:2.4rem;"
-                src="{% static 'images/integrations/fivetran/'|add:service.icon_path %}"
-                  alt="{{ service.name }}"
-              />
-              <h4>{{ service.name }}</h4>
-            </div>
-          </a>
+          {% if service.is_beta %}
+            {%flag 'beta'%}
+              {% include 'connectors/_connector_card.html' %}
+            {% endflag %}
+          {% else %}
+            {% include 'connectors/_connector_card.html' %}
+          {% endif %}
+
         {% endfor %}
       </div>
     </div>
@@ -67,15 +76,17 @@
   {% with services|dict_key:request.GET.service as service %}
   <div class="flex flex-1 justify-center items-center">
     <div class="flex flex-col max-w-3xl">
-      <h2 class="mb-4">
+      <h2 class="flex items-center gap-3 mb-4">
         Add a new connector
+
         {% link_article 'integrations' 'connector' %}
         {% link_video 'connector' %}
       </h2>
+
       <div class="card mb-4">
         <div class="flex flex-col items-start gap-4">
           <img class="h-40 object-contain mb-2" src="{% static 'images/integrations/fivetran/'|add:service.icon_path %}" alt="{{ service.name }}" />
-          <h1>{{ service.name }}</h1>
+          <h1 {% if service.is_beta %}class="beta"{% endif %}>{{ service.name }}</h1>
           <p class="max-w-xl">{{ service.description }}</p>
         </div>
       </div>
@@ -87,11 +98,12 @@
           Continue to view our MySQL connectors.
         </p>
         
-        <div>
-          <a href="{% url 'project_integrations_connectors:create' project.id %}?search=mysql" class="button button--success">
-            Continue
-          </a>
-        </div>
+        <a
+          class="button button--success w-full"
+          href="{% url 'project_integrations_connectors:create' project.id %}?search=mysql"
+        >
+          Continue
+        </a>
       {% else %}
         <p>
           You'll now be redirected to <strong>Fivetran</strong> to
@@ -117,14 +129,28 @@
           After the initial import, new data will sync into Gyana automatically.
         </p>
         
-        <form id="create-form" method="post" action="{{ request.get_full_path }}" class="form max-w-xl" data-turbo="false">
+        <form
+          id="create-form"
+          method="POST" action="{{ request.get_full_path }}"
+          class="form--no-layout"
+          data-turbo="false"
+        >
           {% csrf_token %}
 
           {% include "django/forms/default_form.html" %}
+          
+          <div class="flex gap-3 w-full">
+            <a
+              href="{% url 'project_integrations_connectors:create' project.id %}"
+              class="button button--tertiary flex-1"
+            >
+              Go back
+            </a>
 
-          <button type="submit" class="button button--success">
-            Continue
-          </button>
+            <button type="submit" class="button button--success flex-1">
+              Continue
+            </button>
+          <div>
         </form>
       {% endif %}
     </div>

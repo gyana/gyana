@@ -51,10 +51,14 @@ support:
     description: Chat with us in app
     icon: chat-alt-2
     note: We'll get to the bottom of it
-  - heading: Get a demo
+  - heading: Customized onboarding
     description: Discuss your use case with us
     icon: video-camera
     note: It's free
+  - heading: Hire an expert
+    description: Get your custom report built by a Gyana architect
+    icon: video-camera
+    note: If you can imagine it, we can build it
   - heading: Follow our development
     description: We release changes every week
     icon: clipboard-list

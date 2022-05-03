@@ -12,7 +12,7 @@ pytestmark = pytest.mark.django_db
 @pytest.fixture
 def setup(bigquery):
     mock_bq_client_with_schema(
-        bigquery, [(name, type_.name) for name, type_ in TABLE.schema().items()]
+        bigquery, [(name, str(type_)) for name, type_ in TABLE.schema().items()]
     )
 
 

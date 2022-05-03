@@ -40,3 +40,11 @@ def default_json_encoder(obj):
     if isinstance(obj, (dt.date, dt.datetime, dt.time)):
         return obj.isoformat()
     raise TypeError("Object of type '%s' is not JSON serializable" % type(obj).__name__)
+
+
+def excel_colnum_string(n):
+    string = ""
+    while n > 0:
+        n, remainder = divmod(n - 1, 26)
+        string = chr(65 + remainder) + string
+    return string

@@ -1,0 +1,25 @@
+<div class="bg-white border-t border-gray">
+  <div>
+    <div class="max-w-7xl mx-auto text-left py-16 px-4 sm:py-20 sm:px-6 lg:px-8">
+      <h2 class="text-3xl font-extrabold text-gray-900">
+        Do More With Your {{ service.name }} Metrics
+      </h2>
+      <div class="mt-12 grid grid-cols-1 gap-y-12 gap-x-12 sm:grid-cols-3">
+
+        {% for benefit in content.benefits %}
+          <div>
+            <h3 class="text-lg font-medium text-gray-900">
+              {{ benefit.h3 }}
+            </h3>
+            {% for p in benefit.p %}
+              <p class="mt-2 block text-base text-gray-600">
+                {{ p }}
+              </p>
+            {% endfor %}
+          </div>
+        {% endfor %}
+
+      </div>
+    </div>
+  </div>
+</div>

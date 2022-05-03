@@ -1,8 +1,7 @@
-
 import analytics
 from django.db.models.query import QuerySet
 from django.http import HttpResponseRedirect
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.urls.base import reverse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
@@ -20,14 +19,14 @@ from apps.base.analytics import (
     DASHBOARD_DUPLICATED_EVENT,
 )
 from apps.base.views import TurboCreateView, TurboUpdateView
-from apps.dashboards.mixins import DashboardMixin
+from apps.dashboards.mixins import DashboardMixin, PageMixin
 from apps.dashboards.tables import DashboardTable
 from apps.integrations.models import Integration
 from apps.projects.mixins import ProjectMixin
 from apps.widgets.models import WIDGET_CHOICES_ARRAY, Widget
 
 from .forms import DashboardCreateForm, DashboardLoginForm, DashboardNameForm
-from .models import Dashboard, Page
+from .models import Dashboard, DashboardUpdate, DashboardVersion, Page
 
 
 class DashboardList(ProjectMixin, SingleTableView):
@@ -39,6 +38,7 @@ class DashboardList(ProjectMixin, SingleTableView):
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
 
+        context_data["object_name"] = "dashboard"
         context_data["dashboard_count"] = Dashboard.objects.filter(
             project=self.project
         ).count()
@@ -67,7 +67,7 @@ class DashboardCreate(ProjectMixin, TurboCreateView):
 
     def form_valid(self, form):
         r = super().form_valid(form)
-        # Create page
+        # Create page and first update entry
         form.instance.pages.create()
 
         analytics.track(
@@ -159,7 +159,7 @@ class DashboardDuplicate(TurboUpdateView):
 
         clone = self.object.make_clone(
             attrs={
-                "name": "Copy of " + self.object.name,
+                "name": f"Copy of {self.object.name}",
                 "shared_id": None,
                 "shared_status": Dashboard.SharedStatus.PRIVATE,
             }
@@ -245,7 +245,7 @@ class DashboardLogout(TemplateView):
         )
 
 
-class PageCreate(DashboardMixin, CreateView):
+class PageCreate(PageMixin, CreateView):
     model = Page
     fields = []
     # Not used
@@ -260,7 +260,7 @@ class PageCreate(DashboardMixin, CreateView):
         return f"{reverse('project_dashboards:detail', args=(self.project.id, self.dashboard.id))}?dashboardPage={self.object.position}"
 
 
-class PageDelete(DashboardMixin, DeleteView):
+class PageDelete(PageMixin, DeleteView):
     model = Page
     fields = []
     # Not used
@@ -286,3 +286,81 @@ class PageDelete(DashboardMixin, DeleteView):
 
     def get_success_url(self) -> str:
         return f"{reverse('project_dashboards:detail', args=(self.project.id, self.dashboard.id))}?dashboardPage={min(self.object.position, self.dashboard.pages.count()-1)}"
+
+
+class DashboardRestore(TurboUpdateView):
+    model = DashboardVersion
+    fields = []
+    template_name = "components/dummy.html"
+
+    def form_valid(self, form):
+        instance = form.instance
+        instance.dashboard.restore_as_of(instance.created)
+        instance.dashboard.updates.create(content_object=instance.dashboard)
+
+        return redirect(
+            reverse(
+                "project_dashboards:detail",
+                args=(instance.dashboard.project.id, instance.dashboard.id),
+            )
+        )
+
+
+class DashboardUpdateRestore(DashboardRestore):
+    model = DashboardUpdate
+
+
+class PageMove(PageMixin, TurboUpdateView):
+    model = Page
+    fields = []
+    template_name = "dashboards/forms/move_page.html"
+
+    def form_valid(self, form):
+        page = self.get_object()
+        destination = int(form.data["position"])
+
+        if page.position == destination:
+            return HttpResponseRedirect(self.get_success_url())
+
+        if page.position < destination:
+            following_pages = list(
+                self.dashboard.pages.filter(
+                    position__gt=page.position, position__lte=destination
+                )
+            )
+
+            for dashboard_page in following_pages:
+                dashboard_page.position = dashboard_page.position - 1
+
+            page.position = destination
+            Page.objects.bulk_update(following_pages + [page], ["position"])
+
+        elif page.position > destination:
+            preceding_pages = list(
+                self.dashboard.pages.filter(
+                    position__gte=destination, position__lt=page.position
+                )
+            )
+
+            for dashboard_page in preceding_pages:
+                dashboard_page.position = dashboard_page.position + 1
+
+            page.position = destination
+            Page.objects.bulk_update(preceding_pages + [page], ["position"])
+
+        return HttpResponseRedirect(self.get_success_url())
+
+    def get_success_url(self) -> str:
+        return f"{reverse('project_dashboards:detail', args=(self.project.id, self.dashboard.id),)}?dashboardPage={self.get_object().position}"
+
+
+class PageName(PageMixin, TurboUpdateView):
+    model = Page
+    fields = ["name"]
+    template_name = "dashboards/forms/name_page.html"
+
+    def get_success_url(self) -> str:
+        return reverse(
+            "project_dashboards:page-name",
+            args=(self.project.id, self.dashboard.id, self.page.id),
+        )

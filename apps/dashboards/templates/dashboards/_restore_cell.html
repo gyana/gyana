@@ -1,0 +1,17 @@
+<form 
+  method="POST"
+  class="form--no-layout"
+  action="{% url href object.id %}"
+  data-turbo-frame="_top"
+>
+  {% csrf_token %}
+
+  <button
+    class="table__action"
+    type="submit" 
+    data-controller="tooltip"
+    data-tooltip-content="Restore current dashboard to this version"
+  >
+    <i class="fa fa-fw fa-undo"></i>
+  </button>
+</form>

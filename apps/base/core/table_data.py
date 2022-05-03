@@ -6,7 +6,6 @@ from django.template.loader import get_template
 from django_tables2 import Column, Table
 from django_tables2.config import RequestConfig as BaseRequestConfig
 from django_tables2.data import TableData
-from django_tables2.templatetags.django_tables2 import QuerystringNode
 
 from apps.base import clients
 from apps.base.core.utils import md5
@@ -49,9 +48,11 @@ class BigQueryTableData(TableData):
 
     def __getitem__(self, page: slice):
         """Fetches the data for the current page"""
-        if not self._page_selected:
-            return self._get_query_results().rows_dict_by_md5[: page.stop - page.start]
-        return self._get_query_results(page.start, page.stop).rows_dict_by_md5
+        return (
+            self._get_query_results(page.start, page.stop).rows_dict_by_md5
+            if self._page_selected
+            else self._get_query_results().rows_dict_by_md5[: page.stop - page.start]
+        )
 
     def __len__(self):
         """Fetches the total size from BigQuery"""
@@ -101,8 +102,14 @@ def get_type_name(type_):
         return "String"
     if isinstance(type_, dt.Boolean):
         return "Boolean"
-    if isinstance(type_, (dt.Date, dt.Time, dt.Timestamp)):
+    if isinstance(type_, (dt.Time)):
         return "Time"
+    if isinstance(type_, dt.Date):
+        return "Date"
+    if isinstance(type_, dt.Timestamp):
+        return "Date & Time"
+    if isinstance(type_, dt.Struct):
+        return "Dictionary"
 
 
 def get_type_class(type_):
@@ -112,13 +119,26 @@ def get_type_class(type_):
         return "column column--string"
     if isinstance(type_, dt.Boolean):
         return "column column--boolean"
-    if isinstance(type_, (dt.Date, dt.Time, dt.Timestamp)):
+    if isinstance(type_, dt.Time):
         return "column column--time"
+    if isinstance(type_, dt.Date):
+        return "column column--date"
+    if isinstance(type_, dt.Timestamp):
+        return "column column--datetime"
+    if isinstance(type_, dt.Struct):
+        return "column column--dict"
 
 
 class BigQueryColumn(Column):
     def __init__(self, **kwargs):
         settings = kwargs.pop("settings") or {}
+        self.summary = kwargs.pop("footer") or None
+
+        # If hasattr(self, 'render_footer') returns True django-tables2 always
+        # renders the footer, even if there are no values.
+        if self.summary:
+            self.render_footer = self._render_footer
+
         super().__init__(**kwargs)
 
         self.verbose_name = settings.get("name") or self.verbose_name
@@ -130,6 +150,8 @@ class BigQueryColumn(Column):
         if value is None:
             return get_template("columns/empty_cell.html").render()
         if isinstance(value, (float, int)) and self.currency:
+            self.attrs["td"] = {"style": "text-align: right;"}
+            self.attrs["tf"] = {"style": "text-align: right;"}
             return get_template("columns/currency_cell.html").render(
                 {
                     "value": value,
@@ -139,6 +161,7 @@ class BigQueryColumn(Column):
             )
         if isinstance(value, float):
             self.attrs["td"] = {"style": "text-align: right;"}
+            self.attrs["tf"] = {"style": "text-align: right;"}
             value = value * 100 if self.is_percentage else value
             return get_template("columns/float_cell.html").render(
                 {
@@ -151,6 +174,7 @@ class BigQueryColumn(Column):
             return get_template("columns/bool_cell.html").render({"value": value})
         if isinstance(value, int):
             self.attrs["td"] = {"style": "text-align: right;"}
+            self.attrs["tf"] = {"style": "text-align: right;"}
             return get_template("columns/int_cell.html").render(
                 {"value": value, "is_percentage": self.is_percentage}
             )
@@ -160,9 +184,12 @@ class BigQueryColumn(Column):
                 "data-controller": "tooltip",
                 "data-tooltip-content": value,
             }
-            return super().render("{}...".format(value[:61]))
+            return super().render(f"{value[:61]}...")
 
         return super().render(value)
+
+    def _render_footer(self, bound_column, table):
+        return self.render(self.summary)
 
 
 def get_table(schema, query, footer=None, settings=None, **kwargs):
@@ -170,11 +197,13 @@ def get_table(schema, query, footer=None, settings=None, **kwargs):
 
     See https://django-tables2.readthedocs.io/en/stable/_modules/django_tables2/views.html
     """
+    attrs = {}
     settings = settings or {}
     url = kwargs.pop("url", None)
+
     # Inspired by https://stackoverflow.com/questions/16696066/django-tables2-dynamically-adding-columns-to-table-not-adding-attrs-to-table
-    attrs = {
-        md5(name): BigQueryColumn(
+    for name, type_ in schema.items():
+        attrs[md5(name)] = BigQueryColumn(
             empty_values=(),
             settings=settings.get(name),
             verbose_name=name,
@@ -187,8 +216,7 @@ def get_table(schema, query, footer=None, settings=None, **kwargs):
             },
             footer=footer.get(name) if footer else None,
         )
-        for name, type_ in schema.items()
-    }
+
     attrs["Meta"] = type(
         "Meta",
         (),

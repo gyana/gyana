@@ -1,10 +1,13 @@
 import pytest
 from django.http import QueryDict
 
+from apps.filters.tests.test_forms import COLUMN_LENGTH
 from apps.nodes.forms import KIND_TO_FORM
 from apps.nodes.models import Node
 
 pytestmark = pytest.mark.django_db
+
+COLUMN_LENGTH = 9
 
 
 def create_and_connect(kind, node_factory, table, workflow):
@@ -47,7 +50,7 @@ def test_select_form(setup, node_factory):
     form = KIND_TO_FORM[node.kind](instance=node)
 
     assert set(form.fields.keys()) == {"select_mode", "select_columns"}
-    assert get_choice_len(form, "select_columns") == 8
+    assert get_choice_len(form, "select_columns") == COLUMN_LENGTH
 
     # Test custom save
     data = QueryDict(mutable=True)
@@ -72,7 +75,7 @@ def test_distinct_form(setup, node_factory):
     form = KIND_TO_FORM[node.kind](instance=node)
 
     assert set(form.fields.keys()) == {"distinct_columns"}
-    assert get_choice_len(form, "distinct_columns") == 8
+    assert get_choice_len(form, "distinct_columns") == COLUMN_LENGTH
 
     # Test custom save
     data = QueryDict(mutable=True)
@@ -115,7 +118,7 @@ def test_pivot_form(setup, node_factory):
         "pivot_index",
         "pivot_column",
     }
-    assert get_choice_len(form, "pivot_column") == 9
+    assert get_choice_len(form, "pivot_column") == COLUMN_LENGTH + 1
 
     # Test that pivot_aggregation is added to fields
     data = QueryDict(mutable=True)

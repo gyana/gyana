@@ -1,6 +1,11 @@
 from django.db import models
+from django.urls import reverse
 
-from apps.base.models import BaseModel
+from apps.base.models import HistoryModel
+
+# Need to be a multiple of GRID_SIZE found in GyWidget.tsx
+DEFAULT_WIDTH = 270
+DEFAULT_HEIGHT = 60
 
 
 class DateRange(models.TextChoices):
@@ -36,7 +41,7 @@ class CustomChoice(models.TextChoices):
     CUSTOM = "custom", "Custom"
 
 
-class Control(BaseModel):
+class Control(HistoryModel):
     class Kind(models.TextChoices):
         DATE_RANGE = "date_range", "Date range"
 
@@ -59,14 +64,28 @@ class Control(BaseModel):
     def __str__(self):
         return self.pk
 
+    def save(self, **kwargs):
+        skip_dashboard_update = kwargs.pop("skip_dashboard_update", False)
+        super().save(**kwargs)
+        if self.widget and not skip_dashboard_update:
+            self.widget.page.dashboard.updates.create(content_object=self.widget)
 
-class ControlWidget(BaseModel):
+    def delete(self, **kwargs):
+        skip_dashboard_update = kwargs.pop("skip_dashboard_update", False)
+        if self.widget and not skip_dashboard_update:
+            self.page.dashboard.updates.create(content_object=self)
+        return super().delete(**kwargs)
+
+
+class ControlWidget(HistoryModel):
+
     page = models.ForeignKey(
         "dashboards.Page", on_delete=models.CASCADE, related_name="control_widgets"
     )
     control = models.ForeignKey(
         Control, on_delete=models.CASCADE, related_name="widgets"
     )
+
     x = models.IntegerField(
         default=0,
         help_text="The x field is in absolute pixel value.",
@@ -75,3 +94,25 @@ class ControlWidget(BaseModel):
         default=0,
         help_text="The y field is in absolute pixel value.",
     )
+    width = models.IntegerField(
+        default=DEFAULT_WIDTH,
+        help_text="The width is in absolute pixel value.",
+    )
+    height = models.IntegerField(
+        default=DEFAULT_HEIGHT,
+        help_text="The height is in absolute pixel value.",
+    )
+
+    def save(self, **kwargs):
+        skip_dashboard_update = kwargs.pop("skip_dashboard_update", False)
+        super().save(**kwargs)
+        if not skip_dashboard_update:
+            self.page.dashboard.updates.create(content_object=self)
+
+    def delete(self, using=None, keep_parents=False, skip_dashboard_update=False):
+        if not skip_dashboard_update:
+            self.page.dashboard.updates.create(content_object=self)
+        return super().delete(using, keep_parents)
+
+    def get_absolute_url(self):
+        return f'reverse("project_dashboards:detail", args=(self.page.dashboard.project.id, self.page.dashboard.id))?page={self.page.position}'

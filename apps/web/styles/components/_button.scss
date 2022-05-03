@@ -1,4 +1,4 @@
-$button-colors: ('primary', 'secondary', 'transparent') !default;
+$button-colors: ('primary', 'secondary', 'tertiary', 'transparent') !default;
 
 %primary {
   --button-color: var(--c-white);
@@ -10,6 +10,12 @@ $button-colors: ('primary', 'secondary', 'transparent') !default;
   --button-color: var(--c-indigo-900);
   --button-background: var(--c-indigo-200);
   --button-background--hover: var(--c-indigo-300);
+}
+
+%tertiary {
+  --button-color: var(--c-gray-600);
+  --button-background: var(--c-gray-200);
+  --button-background--hover: var(--c-gray-300);
 }
 
 %transparent {

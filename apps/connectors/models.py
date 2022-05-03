@@ -1,3 +1,5 @@
+import logging
+import uuid
 from datetime import datetime
 
 from dirtyfields import DirtyFieldsMixin
@@ -5,7 +7,9 @@ from django import forms
 from django.conf import settings
 from django.db import models
 from django.urls import reverse
+from django.utils import timezone
 from django.utils.functional import cached_property
+from honeybadger import honeybadger
 
 from apps.base import clients
 from apps.base.fields import ChoiceArrayField
@@ -32,6 +36,7 @@ class Connector(DirtyFieldsMixin, BaseModel):
 
     class SetupState(models.TextChoices):
         BROKEN = "broken", "Broken - the connector setup config is broken"
+        NOT_FOUND = "not-found", "Fivetran couldn't find this connector"
         INCOMPLETE = (
             "incomplete",
             "Incomplete - the setup config is incomplete, the setup tests never succeeded",
@@ -45,6 +50,10 @@ class Connector(DirtyFieldsMixin, BaseModel):
         RESCHEDULED = (
             "rescheduled",
             "Rescheduled - the sync is waiting until more API calls are available in the source service",
+        )
+        SUNSET = (
+            "sunset",
+            "Sunset - this connector is no longer supported and won't sync.",
         )
 
     class UpdateState(models.TextChoices):
@@ -78,6 +87,7 @@ class Connector(DirtyFieldsMixin, BaseModel):
         # TODO: right now this needs to be falsely copied
         # otherwise the integration won't be shown on the overview page.
         # "fivetran_authorized",
+        "fivetran_id",
         "fivetran_sync_started",
         "bigquery_succeeded_at",
         # TODO: should this be added later or do we need to replace the schema during duplication
@@ -100,13 +110,13 @@ class Connector(DirtyFieldsMixin, BaseModel):
     # https://fivetran.com/docs/rest-api/connectors#fields
 
     # unique identifier for API requests in fivetran
-    fivetran_id = models.TextField()
+    fivetran_id = models.TextField(unique=True, default=uuid.uuid4)
     group_id = models.TextField()
     # service name, see services.yaml
     service = models.TextField(max_length=255)
     service_version = models.IntegerField()
     # schema or schema_prefix for storage in bigquery
-    schema = models.TextField()
+    schema = models.TextField(unique=True)
     paused = models.BooleanField()
     pause_after_trial = models.BooleanField()
     connected_by = models.TextField()
@@ -278,25 +288,57 @@ class Connector(DirtyFieldsMixin, BaseModel):
 
     @staticmethod
     def sync_all_updates_from_fivetran():
+        from apps.connectors.fivetran.client import FivetranClientError
 
         # until Fivetran implements webhooks, the most reliable syncing method
         # is to list all connectors via /groups/{{ group_id }}/connectors and
         # sync changes locally every 10 minutes
 
-        connectors = Connector.objects.all()
+        connectors = Connector.objects.exclude(
+            sync_state=Connector.SyncState.SUNSET
+        ).all()
         connectors_dict = {c.fivetran_id: c for c in connectors}
 
         for data in clients.fivetran().list():
             # ignore orphaned connectors
-            if data["id"] in connectors_dict:
-                connector = connectors_dict[data["id"]]
-                connector.sync_updates_from_fivetran(data)
+            try:
+                if data["id"] in connectors_dict:
+                    connector = connectors_dict[data["id"]]
+                    connector.sync_updates_from_fivetran(data)
+            except FivetranClientError as e:
+                honeybadger.notify(e)
 
     def sync_updates_from_fivetran(self, data=None):
+        from apps.connectors.fivetran.client import FivetranConnectorNotFound
         from apps.connectors.sync import end_connector_sync
 
-        data = data or clients.fivetran().get(self)
-        self.update_kwargs_from_fivetran(data)
+        client = clients.fivetran()
+        try:
+            data = data or client.get(self)
+        except FivetranConnectorNotFound as err:
+            # It's not clear how this can happen but it happens
+            self.integration.state = Integration.State.ERROR
+            self.integration.save()
+            self.setup_state = self.SetupState.NOT_FOUND
+            self.save()
+            logging.error(err, exc_info=err)
+            return
+
+        if (
+            data["succeeded_at"]
+            and (
+                timezone.now()
+                - datetime.fromisoformat(data["succeeded_at"].replace("Z", "+00:00"))
+            ).days
+            > 7
+        ):
+            client.update(self, paused=True)
+            data["paused"] = True
+            self.paused = True
+            self.sync_state = self.SyncState.PAUSED
+
+        if self.sync_state != self.SyncState.SUNSET:
+            self.update_kwargs_from_fivetran(data)
 
         # update fivetran sync time if user has updated timezone/daily sync time
         # or daylight savings time is going in/out tomorrow
@@ -369,6 +411,6 @@ class Connector(DirtyFieldsMixin, BaseModel):
     def make_clone(self, attrs=None, sub_clone=False, using=None):
         attrs = update_schema(attrs, self)
         clone = super().make_clone(attrs=attrs, sub_clone=sub_clone, using=using)
-        create_fivetran(clone)
+        create_fivetran(self, clone)
 
         return clone

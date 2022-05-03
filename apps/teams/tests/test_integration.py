@@ -11,6 +11,7 @@ from apps.base.tests.asserts import (
     assertFormRenders,
     assertLink,
     assertNotFound,
+    assertNotLink,
     assertOK,
     assertSelectorLength,
     assertSelectorText,
@@ -21,16 +22,41 @@ from apps.users.models import CustomUser
 pytestmark = pytest.mark.django_db
 
 
+def upgrade_to_pro(logged_in_user, team, pro_plan):
+
+    checkout = Checkout.objects.create(
+        id=uuid4(),
+        completed=True,
+        passthrough=json.dumps({"user_id": logged_in_user.id, "team_id": team.id}),
+    )
+    return Subscription.objects.create(
+        id=uuid4(),
+        subscriber=team,
+        cancel_url="https://cancel.url",
+        checkout_id=checkout.id,
+        currency="USD",
+        email=logged_in_user.email,
+        event_time=timezone.now(),
+        marketing_consent=True,
+        next_bill_date=timezone.now() + timedelta(weeks=4),
+        passthrough=json.dumps({"user_id": logged_in_user.id, "team_id": team.id}),
+        quantity=1,
+        source="test.url",
+        status=Subscription.STATUS_ACTIVE,
+        plan=pro_plan,
+        unit_price=99,
+        update_url="https://update.url",
+        created_at=timezone.now(),
+        updated_at=timezone.now(),
+    )
+
+
 def test_team_crudl(client, logged_in_user, bigquery, flag_factory, settings):
 
     team = logged_in_user.teams.first()
     flag = flag_factory(name="beta")
     pro_plan = Plan.objects.create(name="Pro", billing_type="month", billing_period=1)
-    business_plan = Plan.objects.create(
-        name="Pro", billing_type="month", billing_period=1
-    )
     settings.DJPADDLE_PRO_PLAN_ID = pro_plan.id
-    settings.DJPADDLE_BUSINESS_PLAN_ID = business_plan.id
     # the fixture creates a new team
     bigquery.reset_mock()
 
@@ -48,13 +74,16 @@ def test_team_crudl(client, logged_in_user, bigquery, flag_factory, settings):
     r = client.post("/teams/new", data={"name": "Neera"})
     assert logged_in_user.teams.count() == 2
     new_team = logged_in_user.teams.first()
-    assertRedirects(r, f"/teams/{new_team.id}/plans", status_code=303)
+    assertRedirects(r, f"/teams/{new_team.id}/pricing", status_code=303)
 
     assert bigquery.create_dataset.call_count == 1
     assert bigquery.create_dataset.call_args.args == (new_team.tables_dataset_id,)
 
     # choose plan
-    r = client.get(f"/teams/{new_team.id}/plans")
+    r = client.get(f"/teams/{new_team.id}/pricing")
+    assertOK(r)
+    # in turn, loads web pricing via iframe
+    r = client.get(f"/pricing?iframe=true&team_id={new_team.id}")
     assertOK(r)
     assertLink(r, f"/teams/{new_team.id}", "Continue")
 
@@ -77,7 +106,7 @@ def test_team_crudl(client, logged_in_user, bigquery, flag_factory, settings):
     # update
     r = client.get(f"/teams/{new_team.id}/update")
     assertOK(r)
-    assertFormRenders(r, ["icon", "name", "timezone", "beta"])
+    assertFormRenders(r, ["icon", "name", "color", "timezone", "beta"])
 
     r = client.post(
         f"/teams/{new_team.id}/update",
@@ -194,7 +223,7 @@ def test_account_limit_warning_and_disabled(client, project_factory):
 
     r = client.get(f"/teams/{team.id}")
     assertOK(r)
-    assertContains(r, "You're exceeding your row count limit.")
+    assertContains(r, "You've exceeded your row count limit.")
 
     team.row_count = 15
     team.save()
@@ -213,24 +242,18 @@ def test_team_subscriptions(client, logged_in_user, settings, paddle):
 
     team = logged_in_user.teams.first()
     pro_plan = Plan.objects.create(name="Pro", billing_type="month", billing_period=1)
-    business_plan = Plan.objects.create(
-        name="Business", billing_type="month", billing_period=1
-    )
     settings.DJPADDLE_PRO_PLAN_ID = pro_plan.id
-    settings.DJPADDLE_BUSINESS_PLAN_ID = business_plan.id
-    paddle.get_plan.side_effect = lambda id_: {
-        "recurring_price": {"USD": 30 if id_ == pro_plan.id else 150}
-    }
+    paddle.get_plan.side_effect = lambda id_: {"recurring_price": {"USD": 99}}
     paddle.list_subscription_payments.return_value = [
         {
             "payout_date": "2021-11-01",
-            "amount": 30,
+            "amount": 99,
             "currency": "USD",
             "receipt_url": "https://receipt-1.url",
         },
         {
             "payout_date": "2021-12-01",
-            "amount": 30,
+            "amount": 99,
             "currency": "USD",
             "receipt_url": "https://receipt-2.url",
         },
@@ -238,18 +261,15 @@ def test_team_subscriptions(client, logged_in_user, settings, paddle):
 
     r = client.get(f"/teams/{team.id}/account")
     assertOK(r)
-    assertLink(r, f"/teams/{team.id}/plans", "Upgrade")
+    assertLink(r, f"/teams/{team.id}/pricing", "Upgrade")
 
-    r = client.get(f"/teams/{team.id}/plans")
+    r = client.get(f"/teams/{team.id}/pricing")
+    assertOK(r)
+
+    # in turn, loads web pricing via iframe
+    r = client.get(f"/pricing?iframe=true&team_id={team.id}")
     assertOK(r)
     assertLink(r, f"/teams/{team.id}/checkout?plan={pro_plan.id}", "Upgrade to Pro")
-    assertLink(
-        r, f"/teams/{team.id}/checkout?plan={business_plan.id}", "Upgrade to Business"
-    )
-    # check for paddle attributes on prices
-    assertSelectorLength(r, f"[data-product='{pro_plan.id}']", 1)
-    assertSelectorLength(r, f"[data-product='{business_plan.id}']", 1)
-    assertSelectorLength(r, ".paddle-gross", 2)
 
     r = client.get(f"/teams/{team.id}/checkout?plan={pro_plan.id}")
     assertOK(r)
@@ -262,31 +282,7 @@ def test_team_subscriptions(client, logged_in_user, settings, paddle):
 
     # the inline checkout is inserted by Paddle JS, and the subscription is added via webhook
 
-    checkout = Checkout.objects.create(
-        id=uuid4(),
-        completed=True,
-        passthrough=json.dumps({"user_id": logged_in_user.id, "team_id": team.id}),
-    )
-    subscription = Subscription.objects.create(
-        id=uuid4(),
-        subscriber=team,
-        cancel_url="https://cancel.url",
-        checkout_id=checkout.id,
-        currency="USD",
-        email=logged_in_user.email,
-        event_time=timezone.now(),
-        marketing_consent=True,
-        next_bill_date=timezone.now() + timedelta(weeks=4),
-        passthrough=json.dumps({"user_id": logged_in_user.id, "team_id": team.id}),
-        quantity=1,
-        source="test.url",
-        status=Subscription.STATUS_ACTIVE,
-        plan=pro_plan,
-        unit_price=30,
-        update_url="https://update.url",
-        created_at=timezone.now(),
-        updated_at=timezone.now(),
-    )
+    subscription = upgrade_to_pro(logged_in_user, team, pro_plan)
 
     r = client.get(f"/teams/{team.id}/account")
     assertOK(r)
@@ -295,30 +291,8 @@ def test_team_subscriptions(client, logged_in_user, settings, paddle):
     assertLink(r, f"/teams/{team.id}/payments", "View Payments & Receipts")
     assertLink(r, "https://update.url", "Update Payment Method")
 
-    # upgrade to business
-    r = client.get(f"/teams/{team.id}/subscription")
-    assertFormRenders(r, ["plan"])
-
-    r = client.post(
-        f"/teams/{team.id}/subscription",
-        data={"hidden_live": True, "plan": str(business_plan.id)},
-    )
-    # the new price is calculated and shown
-    assert paddle.get_plan.call_count == 2
-    assert paddle.get_plan.call_args.args == (business_plan.id,)
-    assertContains(r, "150")
-
-    r = client.post(
-        f"/teams/{team.id}/subscription",
-        data={"plan": str(business_plan.id)},
-    )
-    assertRedirects(r, f"/teams/{team.id}/account", status_code=303)
-    assert paddle.update_subscription.call_count == 1
-    assert paddle.update_subscription.call_args.args == (str(subscription.id),)
-    assert paddle.update_subscription.call_args.kwargs == {"plan_id": business_plan.id}
-
     # redirect
-    r = client.get(f"/teams/{team.id}/plans")
+    r = client.get(f"/teams/{team.id}/pricing")
     assertRedirects(r, f"/teams/{team.id}/subscription")
 
     # cancel
@@ -333,3 +307,46 @@ def test_team_subscriptions(client, logged_in_user, settings, paddle):
     assert paddle.list_subscription_payments.call_count == 1
     assert paddle.list_subscription_payments.call_args.args == (str(subscription.id),)
     assert paddle.list_subscription_payments.call_args.kwargs == {"is_paid": True}
+
+
+def test_pro_upgrade_with_limits(
+    client, logged_in_user, settings, project_factory, connector_factory
+):
+
+    team = logged_in_user.teams.first()
+    pro_plan = Plan.objects.create(name="Pro", billing_type="month", billing_period=1)
+    settings.DJPADDLE_PRO_PLAN_ID = pro_plan.id
+
+    project = project_factory(team=team)
+
+    LIST = f"/projects/{project.id}/integrations"
+
+    # free tier have no access to connector and custom API
+
+    r = client.get(f"{LIST}/")
+    assertOK(r)
+    assertNotLink(r, f"{LIST}/connectors/new", "Add a connector")
+    assertNotLink(r, f"{LIST}/connectors/customapi", "Use a Custom API")
+
+    upgrade_to_pro(logged_in_user, team, pro_plan)
+
+    # zero state
+    r = client.get(f"{LIST}/")
+    assertLink(r, f"{LIST}/connectors/new", "Add a connector")
+    assertLink(r, f"{LIST}/customapis/new", "Use a Custom API")
+
+    r = client.get(f"{LIST}/connectors/new")
+    assertOK(r)
+    assertLink(r, f"{LIST}/connectors/new?service=facebook_ads", "Import with Fivetran")
+
+    connector_factory(integration__project=project, service="facebook_ads")
+
+    # dropdown
+    r = client.get(f"{LIST}/")
+    assertLink(r, f"{LIST}/connectors/new", "New Connector")
+    assertLink(r, f"{LIST}/customapis/new", "Custom API")
+
+    # pro tier cannot create two connectors in account
+    r = client.get(f"{LIST}/connectors/new")
+    assertOK(r)
+    assertNotLink(r, f"{LIST}/connectors/new?service=facebook_ads", "Import with Fivetran")

@@ -6,26 +6,25 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.forms.widgets import HiddenInput, PasswordInput
 from django.utils import timezone
 
+from apps.base.fields import ColorField, ColorInput
 from apps.base.forms import BaseModelForm, LiveModelForm
 
 from .models import DASHBOARD_SETTING_TO_CATEGORY, Dashboard
 
 
 class PaletteColorsWidget(forms.MultiWidget):
+    widgets = [
+        ColorInput(),
+        ColorInput(),
+        ColorInput(),
+        ColorInput(),
+        ColorInput(),
+        ColorInput(),
+        ColorInput(),
+    ]
+
     def __init__(self, *args, **kwargs):
-        super(PaletteColorsWidget, self).__init__(
-            [
-                forms.TextInput(attrs={"type": "color"}),
-                forms.TextInput(attrs={"type": "color"}),
-                forms.TextInput(attrs={"type": "color"}),
-                forms.TextInput(attrs={"type": "color"}),
-                forms.TextInput(attrs={"type": "color"}),
-                forms.TextInput(attrs={"type": "color"}),
-                forms.TextInput(attrs={"type": "color"}),
-            ],
-            *args,
-            **kwargs
-        )
+        super().__init__(widgets=self.widgets, *args, **kwargs)
 
     def decompress(self, value):
         if value:
@@ -36,24 +35,28 @@ class PaletteColorsWidget(forms.MultiWidget):
 
 class PaletteColorsField(forms.MultiValueField):
     widget = PaletteColorsWidget
+    fields = (
+        ColorField(),
+        ColorField(),
+        ColorField(),
+        ColorField(),
+        ColorField(),
+        ColorField(),
+        ColorField(),
+    )
 
     def __init__(self, *args, **kwargs):
-        super(PaletteColorsField, self).__init__(
-            (
-                forms.CharField(),
-                forms.CharField(),
-                forms.CharField(),
-                forms.CharField(),
-                forms.CharField(),
-                forms.CharField(),
-                forms.CharField(),
-            ),
+        super().__init__(
+            fields=self.fields,
             *args,
-            **kwargs
+            **kwargs,
         )
 
     def compress(self, data_list):
         return data_list
+
+    def has_changed(self, initial, data):
+        return super().has_changed(initial, map(lambda x: x.upper(), data))
 
 
 class DashboardCreateForm(BaseModelForm):
@@ -88,16 +91,8 @@ class DashboardForm(BaseModelForm):
         widget=forms.NumberInput(attrs={"unit_suffix": "pixels"}),
     )
     palette_colors = PaletteColorsField(required=False)
-    background_color = forms.CharField(
-        required=False,
-        initial="#ffffff",
-        widget=forms.TextInput(attrs={"type": "color"}),
-    )
-    font_color = forms.CharField(
-        required=False,
-        initial="#6a6b77",
-        widget=forms.TextInput(attrs={"type": "color"}),
-    )
+    background_color = ColorField(required=False, initial="#ffffff")
+    font_color = ColorField(required=False, initial="#6a6b77")
     font_size = forms.IntegerField(
         required=False,
         initial=14,
@@ -107,27 +102,23 @@ class DashboardForm(BaseModelForm):
     )
     widget_header_font_size = forms.IntegerField(
         required=False,
+        initial=18,
         widget=forms.NumberInput(
             attrs={"class": "label--third", "unit_suffix": "pixels"}
         ),
     )
-    widget_background_color = forms.CharField(
-        required=False,
-        initial="#ffffff",
-        widget=forms.TextInput(attrs={"type": "color"}),
-    )
-    widget_border_color = forms.CharField(
-        required=False,
-        widget=forms.TextInput(attrs={"type": "color"}),
-    )
+    widget_background_color = ColorField(required=False, initial="#ffffff")
+    widget_border_color = ColorField(required=False, initial="#e6e6e6")
     widget_border_radius = forms.IntegerField(
         required=False,
+        initial=5,
         widget=forms.NumberInput(
             attrs={"class": "label--third", "unit_suffix": "pixels"}
         ),
     )
     widget_border_thickness = forms.IntegerField(
         required=False,
+        initial=1,
         widget=forms.NumberInput(
             attrs={"class": "label--third", "unit_suffix": "pixels"}
         ),
@@ -224,3 +215,16 @@ class DashboardLoginForm(forms.Form):
             raise ValidationError("Wrong password")
 
         return password
+
+
+class DashboardVersionSaveForm(BaseModelForm):
+
+    version_name = forms.CharField(required=False)
+
+    class Meta:
+        model = Dashboard
+        fields = []
+
+    def save(self, commit=True):
+        self.instance.versions.create(name=self.cleaned_data["version_name"])
+        return self.instance

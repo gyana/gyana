@@ -1,10 +1,12 @@
+import itertools
+
 import django_tables2 as tables
 from django.template import Context
 from django.template.loader import get_template
 
-from apps.base.tables import ICONS, DuplicateColumn, NaturalDatetimeColumn
+from apps.base.tables import ICONS, NaturalDatetimeColumn, TemplateColumn
 
-from .models import Dashboard
+from .models import Dashboard, DashboardUpdate, DashboardVersion
 
 
 class StatusColumn(tables.TemplateColumn):
@@ -32,8 +34,59 @@ class DashboardTable(tables.Table):
     status = StatusColumn(template_name="columns/status.html", orderable=False)
     created = NaturalDatetimeColumn()
     updated = NaturalDatetimeColumn()
-    duplicate = DuplicateColumn(
-        template_name="components/_duplicate.html",
+    actions = TemplateColumn(
+        template_name="components/_actions.html",
         orderable=False,
-        verbose_name="Actions",
+    )
+
+
+class DashboardHistoryTable(tables.Table):
+    class Meta:
+        model = DashboardVersion
+        fields = ("name", "created")
+        attrs = {"class": "table"}
+        order_by = ("-created",)
+
+    created = NaturalDatetimeColumn()
+    name = tables.Column(
+        empty_values=(),
+        orderable=False,
+        attrs={"th": {"style": "min-width: 50%; width: 50%;"}},
+    )
+    action = TemplateColumn(
+        template_name="dashboards/_restore_cell.html",
+        orderable=False,
+        extra_context={"href": "dashboards:restore"},
+    )
+
+    def render_name(self, record, table, **kwargs):
+        self.row_counter = getattr(self, "row_counter", itertools.count())
+
+        context = getattr(table, "context", Context())
+        context["object"] = record
+        context["placeholder"] = f"Version {next(self.row_counter)+1}"
+        return get_template("dashboards/columns/name_cell.html").render(
+            context.flatten()
+        )
+
+
+class DashboardUpdateTable(tables.Table):
+    class Meta:
+        model = DashboardUpdate
+        fields = ("created", "content_object")
+        attrs = {"class": "table"}
+        order_by = ("-created",)
+
+    created = NaturalDatetimeColumn()
+    content_object = tables.Column(
+        verbose_name="Changed",
+        linkify=lambda value: value.get_absolute_url() if value else None,
+        orderable=False,
+        attrs={"a": {"target": "_top"}},
+        default="Deleted",
+    )
+    action = TemplateColumn(
+        template_name="dashboards/_restore_cell.html",
+        orderable=False,
+        extra_context={"href": "dashboards:restore-update"},
     )

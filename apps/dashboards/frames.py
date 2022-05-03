@@ -1,4 +1,5 @@
 from django.db.models import Count, Q
+from django.shortcuts import redirect
 from django.urls.base import reverse
 from django_tables2 import SingleTableMixin, SingleTableView
 from turbo_response import TurboStream
@@ -10,12 +11,12 @@ from apps.base.frames import (
     TurboFrameUpdateView,
 )
 from apps.dashboards.forms import DashboardShareForm
+from apps.dashboards.tables import DashboardHistoryTable, DashboardUpdateTable
 from apps.projects.mixins import ProjectMixin
 from apps.widgets.models import Widget
-from apps.widgets.tables import WidgetHistory
 
-from .forms import DashboardForm
-from .models import Dashboard
+from .forms import DashboardForm, DashboardVersionSaveForm
+from .models import Dashboard, DashboardVersion
 
 
 class DashboardOverview(ProjectMixin, TurboFrameTemplateView):
@@ -29,9 +30,16 @@ class DashboardOverview(ProjectMixin, TurboFrameTemplateView):
         widgets = Widget.objects.filter(page__dashboard__project=self.project)
         # equivalent to is_valid, but efficient query
         incomplete = widgets.annotate(agg_count=Count("aggregations")).exclude(
-            Q(kind=Widget.Kind.TEXT)
+            (Q(kind=Widget.Kind.TEXT) & ~Q(text_content=None))
+            | (Q(kind=Widget.Kind.IMAGE) & ~Q(image=None))
+            | (Q(kind=Widget.Kind.IFRAME) & ~Q(url=None))
             | (Q(kind=Widget.Kind.TABLE) & ~Q(table=None))
-            | (Q(kind=Widget.Kind.RADAR) & ~Q(agg_count__lte=3))
+            | (Q(kind__in=[Widget.Kind.METRIC, Widget.Kind.GAUGE]) & Q(agg_count=1))
+            | (Q(kind=Widget.Kind.RADAR) & Q(agg_count__gte=3))
+            | (
+                Q(kind__in=[Widget.Kind.FUNNEL, Widget.Kind.PYRAMID])
+                & Q(agg_count__gte=2)
+            )
             | (~Q(table=None) & ~Q(dimension=None) & ~Q(aggregations__column=None))
         )
         dashboards_incomplete = (
@@ -118,12 +126,37 @@ class DashboardSettings(ProjectMixin, TurboFrameUpdateView):
         )
 
 
-class DashboardHistory(ProjectMixin, SingleTableMixin, TurboFrameDetailView):
+class DashboardHistory(ProjectMixin, SingleTableMixin, TurboFrameUpdateView):
     template_name = "dashboards/history.html"
     model = Dashboard
-    table_class = WidgetHistory
+    table_class = DashboardHistoryTable
     paginate_by = 20
     turbo_frame_dom_id = "dashboard:history"
+    form_class = DashboardVersionSaveForm
 
     def get_table_data(self):
-        return self.object.widget_history
+        if self.request.GET.get("tab") == "history":
+            return self.object.updates
+        return self.object.versions
+
+    def get_table_class(self):
+        if self.request.GET.get("tab") == "history":
+            return DashboardUpdateTable
+        return super().get_table_class()
+
+    def get_success_url(self) -> str:
+        return reverse(
+            "project_dashboards:history", args=(self.project.id, self.object.id)
+        )
+
+
+class DashboardVersionRename(TurboFrameUpdateView):
+    model = DashboardVersion
+    fields = ("name",)
+    template_name = "dashboards/version_name.html"
+
+    def get_turbo_frame_dom_id(self):
+        return f"version-name-{self.object.id}"
+
+    def get_success_url(self) -> str:
+        return reverse("dashboards:version-rename", args=(self.object.id,))

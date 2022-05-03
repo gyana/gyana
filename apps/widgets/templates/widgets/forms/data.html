@@ -1,0 +1,5 @@
+{% if widget.kind == "table" %}
+  {% include 'widgets/forms/default.html' %}
+{% else %}
+  {% include 'widgets/forms/chart.html' %}
+{% endif %} 

@@ -18,7 +18,7 @@ def test_widget_crudl(
     bigquery,
 ):
     mock_bq_client_with_schema(
-        bigquery, [(name, type_.name) for name, type_ in TABLE.schema().items()]
+        bigquery, [(name, str(type_)) for name, type_ in TABLE.schema().items()]
     )
     table = integration_table_factory(project=project)
     dashboard = dashboard_factory(project=project)
@@ -58,6 +58,15 @@ def test_widget_crudl(
         f"{dashboard_url}/widgets/{widget.id}/update",
         data={
             "table": table.id,
+        },
+    )
+    widget.refresh_from_db()
+    assert isinstance(r, TurboStreamResponse)
+    assert widget.table == table
+
+    r = client.post(
+        f"{dashboard_url}/widgets/{widget.id}/update",
+        data={
             "kind": Widget.Kind.COLUMN,
             "dimension": "athlete",
             "sort_by": "dimension",
@@ -70,7 +79,6 @@ def test_widget_crudl(
     )
     widget.refresh_from_db()
     assert isinstance(r, TurboStreamResponse)
-    assert widget.table == table
     assert widget.dimension == "athlete"
 
     # delete
