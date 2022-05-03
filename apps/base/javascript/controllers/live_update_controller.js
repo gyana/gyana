@@ -127,7 +127,7 @@ export default class extends Controller {
     this.element.addEventListener('change', (event) => {
       // Ignore custom events dispatched by SortableJS
       // https://developer.mozilla.org/en-US/docs/Web/API/Event/isTrusted
-      if (event.isTrusted) this.listener()
+      if (event.isTrusted) this.listener(event)
     })
     this.element.addEventListener('mousedown', (event) => {
       this.clicked_button = event.target.nodeName == 'BUTTON'

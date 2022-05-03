@@ -3,33 +3,11 @@ import { GyanaEvents } from 'apps/base/javascript/events'
 import Sortable from 'sortablejs'
 
 /*
-Get the new sort index for each element, based on the insertion index.
-
+Everytime a form is moved all forms a renumbered in the new order
 Elements are sorted by big integers, in reverse numeric order, with the final element
 at "0". This enables the backend to add new elements without knowing about
 the other elements.
 */
-
-const getSortOrder = (sortOrder, idx) => {
-  if (idx === 0) {
-    // prepend to start of array with +1n
-    return [sortOrder[1] + 1n, ...sortOrder.slice(1)]
-  } else if (idx === sortOrder.length - 1) {
-    // append with 0n, shift everything else back by +1n
-    return [...sortOrder.slice(0, -1).map((idx) => idx + 1n), 0n]
-  } else {
-    // insert, doubling all indexes if required
-    let newSortOrder = [...sortOrder]
-
-    if (newSortOrder[idx - 1] - newSortOrder[idx + 1] === 1n) {
-      newSortOrder = newSortOrder.map((index) => index * 2n)
-    }
-
-    newSortOrder[idx] = newSortOrder[idx - 1] - 1n
-
-    return newSortOrder
-  }
-}
 
 // Dynamically add and remove formset in Django
 // Inspired by https://github.com/stimulus-components/stimulus-rails-nested-form
@@ -50,11 +28,10 @@ export default class extends Controller {
           this.element.querySelectorAll('input[name*=sort_index]')
         )
 
-        const sortOrder = sortIndexInputs.map((el) => BigInt(el.value))
-        const newSortOrder = getSortOrder(sortOrder, event.newIndex)
+        const numInputs = sortIndexInputs.length
 
         for (const [idx, el] of sortIndexInputs.entries()) {
-          el.value = newSortOrder[idx]
+          el.value = numInputs - idx
         }
       },
     })

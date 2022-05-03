@@ -201,7 +201,7 @@ class SortColumn(SaveParentModel):
     )
     # formset sort index, elements sorted in reverse order with the final element at "0"
     # text field for arbitrary length integer, parsed at BigInt in javascript
-    sort_index = models.TextField(default="0")
+    sort_index = models.BigIntegerField(default=0)
 
 
 class EditColumn(AbstractOperationColumn):
