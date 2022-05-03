@@ -15,9 +15,10 @@ describe('uploads', () => {
     cy.url().should('contain', '/projects/1/integrations/uploads/new')
     cy.get('input[type=file]').attachFile('store_info.csv')
 
-    cy.url().should('contain', `/projects/1/integrations/${id}/configure`)
-    cy.get('button[type=submit]').click()
+    cy.url().should('contain', `/projects/1/integrations/${id}/load`)
     cy.contains('Validating and importing your upload...')
+    cy.contains('Upload successfully imported', { timeout: BIGQUERY_TIMEOUT })
+
     cy.contains('Upload successfully imported', { timeout: BIGQUERY_TIMEOUT })
 
     // review the table and approve
@@ -50,8 +51,6 @@ describe('uploads', () => {
 
     cy.get('input[type=file]').attachFile('fifa.csv')
 
-    // wait for entire process to happen successfully
-    cy.get('button[type=submit]').click()
     cy.contains('Confirm', { timeout: BIGQUERY_TIMEOUT }).click()
     cy.get('#tabbar').contains('Overview')
     // 2250 lines of CSV including header

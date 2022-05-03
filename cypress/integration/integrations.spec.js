@@ -36,7 +36,7 @@ describe('integrations', () => {
     // edit the configuration
     cy.get('#main').within(() => cy.contains('Configure').click())
     cy.get('input[name=cell_range]').clear().type('A1:D11')
-    cy.get('button[type=submit]').click()
+    cy.get('button[type=submit]').contains('Import').click()
 
     cy.contains('Confirm', { timeout: BIGQUERY_TIMEOUT }).click()
     // only 10/15 rows imported
