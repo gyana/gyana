@@ -90,8 +90,11 @@
 
     {% if object.ready or object.state == 'done' %}
       <p class="ml-4">
-        <strong>{{ integration.num_rows|intcomma }}</strong> row{{ integration.num_rows|pluralize }} •
-        <strong>{{ integration.num_tables|intcomma }}</strong> table{{ integration.num_tables|pluralize }}
+        <strong>{{ integration.num_rows|intcomma }}</strong> row{{ integration.num_rows|pluralize }}
+
+        {% if object.kind == "connector" %}
+         • <strong>{{ integration.num_tables|intcomma }}</strong> table{{ integration.num_tables|pluralize }}
+        {% endif %}
       </p>
     {% endif %}
   </div>
