@@ -113,17 +113,12 @@ class IntegrationSettings(ProjectMixin, TurboUpdateView):
     template_name = "integrations/settings.html"
     model = Integration
 
-    def get_form_instance(self):
-        return self.object.source_obj
-
     def get_form_class(self):
         return KIND_TO_FORM_CLASS[self.object.kind]
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs.update({"instance": self.object.source_obj})
-
-        return kwargs
+        return {**kwargs, "instance": self.object.source_obj}
 
     def form_valid(self, form):
         with transaction.atomic():
