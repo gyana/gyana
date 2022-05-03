@@ -46,11 +46,11 @@
       &--string a::before {
         content: '\f031';
       }
-      
+
       &--time a::before {
         content: '\f017';
       }
-      
+
       &--date a::before {
         content: '\f073';
       }
@@ -292,7 +292,6 @@
   font-weight: bold;
   height: u.size('lg');
   justify-content: center;
-  margin-right: auto;
   padding: 0;
   width: u.size('lg');
 
@@ -301,10 +300,15 @@
     background-color: var(--c-blue);
     border: 1px solid var(--c-transparent);
     color: var(--c-white);
+    text-decoration: none;
   }
 
   &--danger:hover,
   &--danger:focus {
     background-color: var(--c-red);
+  }
+
+  &:last-child {
+    margin-right: auto;
   }
 }

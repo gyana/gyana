@@ -3,6 +3,10 @@
     {% include "components/_sync.html" %}
   {% endif %}
 
+  {% if object.is_shared and object.public_url %}
+    {% include "components/_preview.html" %}
+  {% endif %}
+
   {% include "components/_duplicate.html" %}
   {% include "components/_delete.html" %}
 </div>

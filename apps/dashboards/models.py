@@ -130,6 +130,13 @@ class Dashboard(DashboardSettings, HistoryModel):
         return is_password_usable(self.password)
 
     @property
+    def is_shared(self):
+        return self.shared_status in [
+            self.SharedStatus.PUBLIC,
+            self.SharedStatus.PASSWORD_PROTECTED,
+        ]
+
+    @property
     def public_url(self):
         domain = (
             f"https://{self.project.cname.domain}"
