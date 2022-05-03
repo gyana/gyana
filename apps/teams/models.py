@@ -146,10 +146,6 @@ class Team(DirtyFieldsMixin, BaseModel, SafeDeleteModel):
         return self.active_codes > 0
 
     @property
-    def is_pro(self):
-        return self.has_subscription or self.recently_completed_checkout
-
-    @property
     def plan(self):
         from apps.appsumo.account import get_deal
 

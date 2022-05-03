@@ -2,7 +2,7 @@
 
 <div
   class="card card--sm connector__card"
-  {% if team.is_pro and service.id in disabled_services %}
+  {% if not team.is_free and service.id in disabled_services %}
     disabled
   {% endif %}
   >
@@ -16,7 +16,7 @@
     
     <a
       class="connector__card__button button button--sm ml-auto"
-      {% if team.is_pro and service.id in disabled_services %}
+      {% if not team.is_free and service.id in disabled_services %}
         disabled
       {% else %}
         href="{% url 'project_integrations_connectors:create' project.id %}?service={{ service.id }}"
