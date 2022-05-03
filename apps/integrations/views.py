@@ -114,34 +114,14 @@ class IntegrationSettings(ProjectMixin, TurboUpdateView):
     model = Integration
 
     def get_form_instance(self):
-        if self.object.kind in [
-            Integration.Kind.SHEET,
-            Integration.Kind.CUSTOMAPI,
-            Integration.Kind.UPLOAD,
-        ]:
-            return self.object.source_obj
-
-        return self.object
+        return self.object.source_obj
 
     def get_form_class(self):
-        if self.object.kind in [
-            Integration.Kind.SHEET,
-            Integration.Kind.CUSTOMAPI,
-            Integration.Kind.UPLOAD,
-        ]:
-            return KIND_TO_FORM_CLASS[self.object.kind]
-
-        return IntegrationUpdateForm
+        return KIND_TO_FORM_CLASS[self.object.kind]
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-
-        if self.object.kind in [
-            Integration.Kind.SHEET,
-            Integration.Kind.CUSTOMAPI,
-            Integration.Kind.UPLOAD,
-        ]:
-            kwargs.update({"instance": self.object.source_obj})
+        kwargs.update({"instance": self.object.source_obj})
 
         return kwargs
 
