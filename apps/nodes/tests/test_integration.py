@@ -1,4 +1,3 @@
-
 import pytest
 
 from apps.base.tests.asserts import (
@@ -305,6 +304,7 @@ def test_sort_node(client, node_factory, setup):
             "sort_columns-0-id",
             "sort_columns-0-DELETE",
             "sort_columns-0-ascending",
+            "sort_columns-0-sort_index",
         ],
     )
 
@@ -317,6 +317,7 @@ def test_sort_node(client, node_factory, setup):
             "sort_columns-0-column": "birthday",
             "sort_columns-0-node": sort_node.id,
             "sort_columns-0-ascending": False,
+            "sort_columns-0-sort_index": 0,
         },
     )
     sort_node.refresh_from_db()
