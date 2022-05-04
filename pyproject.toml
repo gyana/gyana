@@ -70,7 +70,6 @@ hashids = "^1.3.1"
 honeybadger = "^0.8.0"
 django-hijack = "^3.0.0"
 django-admin-tools = "^0.9.1"
-honeycomb-beeline = "^2.17.1"
 # https://github.com/jazzband/django-silk/issues/465
 django-silk = {git = "https://github.com/jazzband/django-silk", rev = "21a4058c2a758fac687f837cb523175c64c567c3"}
 heroku3 = {git = "https://github.com/martyzz1/heroku3.py", rev = "81c996929e37450e1e65f28eb43fc28533a79048"}
@@ -95,6 +94,7 @@ PyYAML = "^6.0"
 # Until https://github.com/jazzband/django-simple-history/pull/866 is released
 django-simple-history = {git = "https://github.com/jazzband/django-simple-history", branch="master"}
 google-cloud-language = "^2.4.1"
+libhoney = "^2.1.0"
   
 [tool.poetry.dev-dependencies]
 isort = "^5.7.0"
