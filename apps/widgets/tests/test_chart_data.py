@@ -15,9 +15,9 @@ ONE_DIMENSION_DF = pd.DataFrame(
         "count": [2, 4] * 5,
     }
 )
-AGGREGATION_1 = {"column": "medals", "function": "mean"}
-AGGREGATION_2 = {"column": "points", "function": "sum"}
-AGGREGATION_3 = {"column": "wins", "function": "count"}
+AGGREGATION_1 = {"column": "medals", "function": "mean", "sort_index": 2}
+AGGREGATION_2 = {"column": "points", "function": "sum", "sort_index": 1}
+AGGREGATION_3 = {"column": "wins", "function": "count", "sort_index": 0}
 
 SINGLE_VALUE_DATA = {
     "data": [
@@ -253,9 +253,9 @@ NO_DIMENSION_DF = pd.DataFrame({"medals": [10], "points": [20], "wins": [30]})
                 "data": [
                     {"label": label, "value": value}
                     for label, value in [
-                        ("wins", 30),
-                        ("points", 20),
                         ("medals", 10),
+                        ("points", 20),
+                        ("wins", 30),
                     ]
                 ]
             },
@@ -402,7 +402,14 @@ def test_chart_data(widget_factory, kind, df, aggregations, data_expected):
 
 def test_chart_combo_data(widget_factory):
     widget = widget_factory(kind=Widget.Kind.COMBO, dimension="dimension")
-    widget.charts.create(**AGGREGATION_1)
-    widget.charts.create(**AGGREGATION_2, kind="line", on_secondary=True)
+    widget.charts.create(
+        column=AGGREGATION_1["column"], function=AGGREGATION_1["function"]
+    )
+    widget.charts.create(
+        column=AGGREGATION_2["column"],
+        function=AGGREGATION_2["function"],
+        kind="line",
+        on_secondary=True,
+    )
     data = CHART_DATA[widget.kind](widget, ONE_DIMENSION_DF)
     assert data == COMBO_DATA

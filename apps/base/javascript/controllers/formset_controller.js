@@ -22,6 +22,12 @@ export default class extends Controller {
   connect() {
     this.wrapperSelector = this.wrapperSelectorValue || '.formset-wrapper'
 
+    if (this.element.querySelectorAll('input[name*=sort_index]').length) {
+      Array.from(this.element.querySelectorAll(this.wrapperSelector)).forEach(
+        (el) => el.classList.add('formset-wrapper--grab')
+      )
+    }
+
     this.sortable = Sortable.create(this.targetTarget, {
       onEnd: (event) => {
         const sortIndexInputs = Array.from(

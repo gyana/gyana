@@ -84,16 +84,26 @@ class ColumnFormWithFormatting(ColumnForm):
 
     class Meta:
         model = Column
-        fields = ("column", "part", "name", "rounding", "currency", "is_percentage")
+        fields = (
+            "column",
+            "part",
+            "name",
+            "rounding",
+            "currency",
+            "is_percentage",
+            "sort_index",
+        )
+
         widgets = {
             "currency": Datalist(attrs={"data-live-update-ignore": ""}),
             "name": forms.TextInput(attrs={"data-live-update-ignore": ""}),
             "rounding": forms.NumberInput(attrs={"data-live-update-ignore": ""}),
+            "sort_index": forms.HiddenInput(),
         }
 
     def get_live_fields(self):
         fields = super().get_live_fields()
-
+        fields += ["sort_index"]
         if self.column_type:
             fields += ["name", "formatting_unfolded"]
 
@@ -143,7 +153,15 @@ class AggregationFormWithFormatting(AggregationColumnForm):
     )
 
     class Meta:
-        fields = ("column", "function", "name", "rounding", "currency", "is_percentage")
+        fields = (
+            "column",
+            "function",
+            "name",
+            "rounding",
+            "currency",
+            "is_percentage",
+            "sort_index",
+        )
         help_texts = {
             "column": "Select the column to aggregate over",
             "function": "Select the aggregation function",
@@ -154,11 +172,12 @@ class AggregationFormWithFormatting(AggregationColumnForm):
             "name": forms.TextInput(attrs={"data-live-update-ignore": ""}),
             "rounding": forms.NumberInput(attrs={"data-live-update-ignore": ""}),
             "is_percentage": forms.CheckboxInput(attrs={"data-live-update-ignore": ""}),
+            "sort_index": forms.HiddenInput(),
         }
 
     def get_live_fields(self):
         fields = super().get_live_fields()
-
+        fields += ["sort_index"]
         if self.column_type:
             if not (
                 isinstance(self.parent_instance, Widget)

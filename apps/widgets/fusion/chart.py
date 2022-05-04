@@ -217,9 +217,7 @@ def to_single_value(widget, df):
 
 
 def to_segment(widget, df):
-    aggregations = widget.aggregations.order_by(
-        "created" if widget.kind == Widget.Kind.FUNNEL else "-created"
-    ).all()
+    aggregations = widget.aggregations.all()
     unique_names = get_unique_column_names(aggregations, [])
     df = df.melt(value_vars=[unique_names.get(col, col.column) for col in aggregations])
     return {
