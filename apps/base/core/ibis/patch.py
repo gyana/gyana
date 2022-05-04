@@ -15,8 +15,8 @@ class Difference(SetOp):
         return ["EXCEPT DISTINCT"] * (len(self.tables) - 1)
 
 
-# query_builder.Intersection = Intersection
-# query_builder.Difference = Difference
+query_builder.Intersection = Intersection
+query_builder.Difference = Difference
 
 _DTYPE_TO_IBIS_TYPE["BIGNUMERIC"] = dt.Decimal(76, 38)
 

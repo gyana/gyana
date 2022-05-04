@@ -23,7 +23,6 @@ class HoneycombMiddleware:
         libhoney.init(
             writekey=settings.HONEYCOMB_API_KEY,
             dataset=settings.ENVIRONMENT,
-            debug=True,
         )
 
         self.get_response = get_response
