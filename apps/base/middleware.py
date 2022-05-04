@@ -19,12 +19,14 @@ class HoneybadgerUserContextMiddleware:
 
 
 class HoneycombMiddleware:
-    def __init__(self):
+    def __init__(self, get_response):
         libhoney.init(
             writekey=settings.HONEYCOMB_API_KEY,
             dataset=settings.ENVIORNMENT,
             debug=True,
         )
+
+        self.get_response = get_response
 
     def process_request(self, request):
         request.start_time = time.time()
