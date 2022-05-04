@@ -30,18 +30,11 @@ class ControlUpdate(UpdateWidgetsMixin, TurboFrameUpdateView):
             }
             streams.append(
                 TurboStream(f"control-widget-{control_widget.id}")
-                .replace.template("controls/control-widget.html", context)
+                .update.template("controls/control-widget.html", context)
                 .render(request=self.request)
             )
 
-        return TurboStreamResponse(
-            [
-                *streams,
-                TurboStream("controls:update-widget-stream")
-                .replace.template(self.template_name, current_context)
-                .render(request=self.request),
-            ]
-        )
+        return TurboStreamResponse(streams)
 
     def form_valid(self, form):
         r = super().form_valid(form)
