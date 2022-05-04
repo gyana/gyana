@@ -138,6 +138,7 @@ INSTALLED_APPS = (
 MIDDLEWARE = [
     "apps.cnames.middleware.HostMiddleware",
     "honeybadger.contrib.DjangoHoneybadgerMiddleware",
+    "beeline.middleware.django.HoneyMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
