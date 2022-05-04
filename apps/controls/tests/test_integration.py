@@ -76,7 +76,6 @@ def test_control_crudl(
         data={"date_range": CustomChoice.CUSTOM},
     )
     assertOK(r)
-    assertFormRenders(r, ["date_range", "start", "end"])
 
     r = client.post(
         control_url + f"{control.id}/update-widget",
@@ -85,7 +84,6 @@ def test_control_crudl(
     assertOK(r)
     control.refresh_from_db()
     assert isinstance(r, TurboStreamResponse)
-    assertContains(r, "controls:update-widget")
 
     # is sending the widget output
     assertContains(r, f"widgets-output-{widget.id}")

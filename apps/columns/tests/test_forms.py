@@ -28,7 +28,7 @@ def test_column_form_with_formatting(column_factory, node_factory):
     column = column_factory(node=node_factory())
     form = ColumnFormWithFormatting(instance=column, schema=TABLE.schema())
 
-    assert set(form.fields.keys()) == {"column"}
+    assert set(form.fields.keys()) == {"column", "sort_index"}
     assertFormChoicesLength(form, "column", COLUMNS_LENGTH)
 
     data = QueryDict(mutable=True)
@@ -36,6 +36,7 @@ def test_column_form_with_formatting(column_factory, node_factory):
     form = ColumnFormWithFormatting(instance=column, schema=TABLE.schema(), data=data)
     assert set(form.fields.keys()) == {
         "column",
+        "sort_index",
         "currency",
         "name",
         "rounding",
@@ -47,6 +48,7 @@ def test_column_form_with_formatting(column_factory, node_factory):
     form = ColumnFormWithFormatting(instance=column, schema=TABLE.schema(), data=data)
     assert set(form.fields.keys()) == {
         "column",
+        "sort_index",
         "name",
         "formatting_unfolded",
     }
@@ -72,7 +74,7 @@ def test_aggregation_form_with_formatting(aggregation_column_factory, node_facto
     column = aggregation_column_factory(node=node_factory())
     form = AggregationFormWithFormatting(instance=column, schema=TABLE.schema())
 
-    assert set(form.fields.keys()) == {"column"}
+    assert set(form.fields.keys()) == {"column", "sort_index"}
     assertFormChoicesLength(form, "column", COLUMNS_LENGTH)
 
     data = QueryDict(mutable=True)
@@ -82,6 +84,7 @@ def test_aggregation_form_with_formatting(aggregation_column_factory, node_facto
     )
     assert set(form.fields.keys()) == {
         "column",
+        "sort_index",
         "function",
         "currency",
         "name",
@@ -96,6 +99,7 @@ def test_aggregation_form_with_formatting(aggregation_column_factory, node_facto
     )
     assert set(form.fields.keys()) == {
         "column",
+        "sort_index",
         "function",
         "name",
         "formatting_unfolded",

@@ -15,9 +15,9 @@ ONE_DIMENSION_DF = pd.DataFrame(
         "count": [2, 4] * 5,
     }
 )
-AGGREGATION_1 = {"column": "medals", "function": "mean"}
-AGGREGATION_2 = {"column": "points", "function": "sum"}
-AGGREGATION_3 = {"column": "wins", "function": "count"}
+AGGREGATION_1 = {"column": "medals", "function": "mean", "sort_index": 2}
+AGGREGATION_2 = {"column": "points", "function": "sum", "sort_index": 1}
+AGGREGATION_3 = {"column": "wins", "function": "count", "sort_index": 0}
 
 SINGLE_VALUE_DATA = {
     "data": [
@@ -253,9 +253,9 @@ NO_DIMENSION_DF = pd.DataFrame({"medals": [10], "points": [20], "wins": [30]})
                 "data": [
                     {"label": label, "value": value}
                     for label, value in [
-                        ("wins", 30),
-                        ("points", 20),
                         ("medals", 10),
+                        ("points", 20),
+                        ("wins", 30),
                     ]
                 ]
             },
