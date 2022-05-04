@@ -1,5 +1,6 @@
 import re
 
+import beeline
 import pandas as pd
 from django.conf import settings
 from google.cloud import bigquery
@@ -82,6 +83,7 @@ class QueryResults(_QueryResults):
         return pd.DataFrame(self.rows_dict)
 
 
+@beeline.traced(name="bigquery_query_results")
 def get_query_results(client, query, max_results=100) -> QueryResults:
     # run a synchronous query and retrieve results in one API call
     # this is not implemented in the python client, it is less sophisticated but
