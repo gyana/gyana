@@ -1,6 +1,6 @@
 {% load site_tags static socialaccount heroicons %}
 
-<div class="bg-gray-20 pt-16 lg:pt-24 xl:pt-32 px-4 sm:px-6 lg:px-8 overflow-hidden">
+<div class="bg-gray-20 pt-16 lg:pt-24 xl:pt-32 pb-8 lg:pb-12 px-4 sm:px-6 lg:px-8 overflow-hidden">
   <div class="mx-auto max-w-7xl relative">
     <p class="absolute right-4 lg:right-24 -top-8 lg:-top-12 text-indigo-600 text-lg lg:text-2xl text-right text-caveat" style="z-index: 3;">
       * yes, we really mean <a class="link underline" href="{% url 'web:integrations' %}">any!</a>
@@ -30,25 +30,23 @@
       </form>
     </div>
 
-    <p class="absolute left-8 -bottom-16 text-indigo-600 text-lg lg:text-2xl text-right text-caveat" style="z-index: 3;">
-      <span class="inline-flex">Built with Gyana {% heroicon 'arrow-down' class="ml-2 mt-2 h-5 w-5" style="solid" %}</span>
+    <p class="text-xs sm:text-sm text-gray-600 px-4 inline-flex items-center gap-1">
+      Turn your
+      <span class="border border-gray inline-flex items-center gap-1 bg-white px-2 py-1 rounded-md">
+        Google Analytics <img class="w-4 h-4" src="{% static 'images/integrations/fivetran/google_analytics.svg' %}" alt="">
+      </span> data into this
+      {% heroicon 'arrow-down' class="h-5 w-5" style="solid" %}
     </p>
   </div>
 
-  <div class="-mx-8 sm:mx-0 overflow-hidden mt-16">
+  <div class="-mx-8 sm:mx-0 overflow-hidden">
     <div class="max-w-7xl mx-auto relative">
-      <iframe id='dashboard-demo' class="w-full h-full" scrolling="no" style="height: 400px;" src="{% external_url 'demo_dashboard' %}?embed=true" frameborder="0" style="position:width:100%;height:100%;"></iframe>
+      <iframe id='dashboard-demo' class="w-full hero-demo" scrolling="no" src="{% external_url 'demo_dashboard' %}?embed=true" frameborder="0"></iframe>
       <div class="fade-bottom"></div>
-      <div id='dashboard-demo-toggle' class="absolute bottom-8 left-8 right-8 text-center z-10">
-        <button onclick="openDashboard()" class="hidden sm:inline-flex items-center gap-2 text-sm text-gray-600 bg-white px-4 py-2 bg-gray-20 border border-gray rounded-full">
+      <div id='dashboard-demo-toggle' class="absolute -bottom-0 left-8 right-8 text-center z-10">
+        <button onclick="openDashboard()" class="inline-flex items-center gap-2 text-sm text-gray-600 bg-white px-4 py-2 bg-gray-20 border border-gray rounded-full">
           Expand {% heroicon 'arrow-down' class="h-4 w-4" style="solid" %}
         </button>
-      </div>
-      <div class="absolute bottom-8 right-8 z-10">
-        <span class="inline-flex gap-2 text-sm text-gray-600 bg-white px-4 py-2 bg-gray-20 border border-gray rounded-full">
-          Powered by
-          <img class="w-4 h-4" src="{% static 'images/integrations/fivetran/google_analytics.svg' %}" alt="">
-        </span>
       </div>
     </div>
   </div>
@@ -58,7 +56,7 @@
   const openDashboard = (event) => {
     const iframe = document.getElementById('dashboard-demo')
     iframe.scrolling = "yes"
-    iframe.style = 'height: 800px;'
+    iframe.classList.add('hero-demo--expand')
 
     const arrow = document.getElementById('dashboard-demo-toggle')
     arrow.hidden = true
@@ -66,5 +64,4 @@
     const fade = document.querySelector('.fade-bottom')
     fade.hidden = true
   }
-
 </script>
