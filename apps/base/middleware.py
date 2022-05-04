@@ -22,7 +22,7 @@ class HoneycombMiddleware:
     def __init__(self, get_response):
         libhoney.init(
             writekey=settings.HONEYCOMB_API_KEY,
-            dataset=settings.ENVIORNMENT,
+            dataset=settings.ENVIRONMENT,
             debug=True,
         )
 
