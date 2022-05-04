@@ -402,7 +402,14 @@ def test_chart_data(widget_factory, kind, df, aggregations, data_expected):
 
 def test_chart_combo_data(widget_factory):
     widget = widget_factory(kind=Widget.Kind.COMBO, dimension="dimension")
-    widget.charts.create(**AGGREGATION_1)
-    widget.charts.create(**AGGREGATION_2, kind="line", on_secondary=True)
+    widget.charts.create(
+        column=AGGREGATION_1["column"], function=AGGREGATION_1["function"]
+    )
+    widget.charts.create(
+        column=AGGREGATION_2["column"],
+        function=AGGREGATION_2["function"],
+        kind="line",
+        on_secondary=True,
+    )
     data = CHART_DATA[widget.kind](widget, ONE_DIMENSION_DF)
     assert data == COMBO_DATA
