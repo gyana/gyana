@@ -15,6 +15,8 @@ EXTERNAL_URLS = {
     "university": "/learn",
     "careers": "https://gyanalimited.recruitee.com/",
     "appsumo": "https://appsumo.com/products/gyana/",
+    "demo_dashboard": "https://www.gyana.com/dashboards/a7b7458f-8162-4ec9-b92b-5b6911e02d49",
+    # "demo_dashboard": "/dashboards/78fa3e0e-3ee2-4a31-b049-e2cca1a44786",
     # social
     "facebook": "https://www.facebook.com/GyanaHQ",
     "twitter": "https://twitter.com/GyanaHQ",
