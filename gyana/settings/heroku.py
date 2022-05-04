@@ -10,6 +10,8 @@ from .base import *
 
 DEBUG = False
 
+MIDDLEWARE += ["apps.base.middleware.HoneycombMiddleware"]
+
 django_heroku.settings(locals())
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
