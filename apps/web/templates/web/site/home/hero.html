@@ -43,7 +43,7 @@
     <div class="max-w-7xl mx-auto relative">
       <iframe id='dashboard-demo' class="w-full hero-demo" scrolling="no" src="{% external_url 'demo_dashboard' %}?embed=true" frameborder="0"></iframe>
       <div class="fade-bottom"></div>
-      <div id='dashboard-demo-toggle' class="absolute -bottom-0 left-8 right-8 text-center z-10">
+      <div id='dashboard-demo-toggle' class="absolute -bottom-0 left-8 right-8 text-center" style="z-index: 3;">
         <button onclick="openDashboard()" class="inline-flex items-center gap-2 text-sm text-gray-600 bg-white px-4 py-2 bg-gray-20 border border-gray rounded-full">
           Expand {% heroicon 'arrow-down' class="h-4 w-4" style="solid" %}
         </button>
