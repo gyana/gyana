@@ -28,23 +28,21 @@ class HoneycombMiddleware:
 
         self.get_response = get_response
 
-    def process_request(self, request):
-        request.start_time = time.time()
+    def __call__(self, request):
+        start_time = time.time()
+        response = self.get_response(request)
+        response_time = time.time() - start_time
 
-        return None
-
-    def process_response(self, request, response):
-        response_time = time.time() - request.start_time
-
-        ev = libhoney.Event(
+        is_ajax = request.headers.get("x-requested-with") == "XMLHttpRequest"
+        ev = libhoney.new_event(
             data={
                 "method": request.method,
                 "scheme": request.scheme,
                 "path": request.path,
                 "query": request.GET,
                 "isSecure": request.is_secure(),
-                "isAjax": request.is_ajax(),
-                "isUserAuthenticated": request.user.is_authenticated(),
+                "isAjax": is_ajax,
+                "isUserAuthenticated": request.user.is_authenticated,
                 "username": request.user.username,
                 "host": request.get_host(),
                 "ip": request.META["REMOTE_ADDR"],
