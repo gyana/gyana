@@ -4,7 +4,14 @@ from djpaddle.models import Plan
 from pytest_django.asserts import assertContains, assertNotContains
 from wagtail.core.models import Locale, Site
 
-from apps.base.tests.asserts import assertLink, assertOK
+from apps.base.tests.asserts import (
+    assertFormRenders,
+    assertLink,
+    assertOK,
+    assertSelectorHasAttribute,
+    assertSelectorLength,
+    assertSelectorText,
+)
 from apps.users.models import CustomUser
 
 pytestmark = pytest.mark.django_db
@@ -14,7 +21,7 @@ def test_site_pages(client, settings):
 
     pro_plan = Plan.objects.create(name="Pro", billing_type="month", billing_period=1)
     settings.DJPADDLE_PRO_PLAN_ID = pro_plan.id
-    
+
     r = client.get("/")
     assertOK(r)
 
@@ -85,8 +92,8 @@ def test_site_links(client, settings):
     assertLink(r, "/terms-of-use", "Terms")
 
     # app links
-    assertLink(r, "/signup/", "Sign up", total=4)
-    assertLink(r, "/book-a-demo", "Book a demo", total=4)
+    assertLink(r, "/signup/", "Sign up", total=3)
+    assertLink(r, "/book-a-demo", "Book a demo", total=3)
     assertLink(r, "/login/", "Sign in", total=2)
 
     user = CustomUser.objects.create_user("test", email="test@gyana.com")
@@ -131,3 +138,14 @@ def test_sitemap(client):
     # sitemap
     r = client.get("/sitemap.xml")
     assertOK(r)
+
+
+def test_signup_from_website(client):
+
+    r = client.get("/")
+    assertOK(r)
+    assertFormRenders(r, ["email"])
+
+    r = client.get("/signup/?email=test@gyana.com")
+    assertOK(r)
+    assertSelectorLength(r, 'input[value="test@gyana.com"]', 1)
