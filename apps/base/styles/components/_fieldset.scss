@@ -15,7 +15,6 @@ fieldset {
   }
 
   .formset-wrapper {
-    cursor: grab;
     padding: 1.6rem;
     background-color: var(--c-gray-10);
     border: 1px solid var(--c-gray);
@@ -29,6 +28,10 @@ fieldset {
       position: absolute;
       top: -0.8rem;
       right: -0.8rem;
+    }
+
+    &--grab{
+      cursor: grab;
     }
   }
 
