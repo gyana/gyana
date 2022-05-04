@@ -1335,18 +1335,6 @@ psutil = "*"
 six = "*"
 
 [[package]]
-name = "honeycomb-beeline"
-version = "2.18.0"
-description = "Honeycomb library for easy instrumentation"
-category = "main"
-optional = false
-python-versions = ">=2.7"
-
-[package.dependencies]
-libhoney = ">=1.7.0"
-wrapt = ">=1.12.1,<2.0.0"
-
-[[package]]
 name = "html5lib"
 version = "1.1"
 description = "HTML parser based on the WHATWG HTML specification"
@@ -2679,7 +2667,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "3.9.*"
-content-hash = "c04d798b06691df105184f6f2388b40d7c666782cb1347d3ed1e1d16e594de57"
+content-hash = "a016dc1973b67da619df9c08b5600fd1f4a91e9a92f308df15e83adb76f51793"
 
 [metadata.files]
 amqp = [
@@ -3269,10 +3257,6 @@ hashids = [
 heroku3 = []
 honeybadger = [
     {file = "honeybadger-0.8.0-py3-none-any.whl", hash = "sha256:b443f0e6f982ce11fc10adce3f054da08f8b264632b39e733606c4cb64c1287f"},
-]
-honeycomb-beeline = [
-    {file = "honeycomb-beeline-2.18.0.tar.gz", hash = "sha256:53a694c42107f98167a2c610a3029a930f7e648c20641a07c6a401fd7990ff18"},
-    {file = "honeycomb_beeline-2.18.0-py2.py3-none-any.whl", hash = "sha256:934e12987641faec7c56f831506d341a3e639a46c6fde3f8e83183bb2a3c212f"},
 ]
 html5lib = [
     {file = "html5lib-1.1-py2.py3-none-any.whl", hash = "sha256:0d78f8fde1c230e99fe37986a60526d7049ed4bf8a9fadbad5f00e22e58e041d"},
