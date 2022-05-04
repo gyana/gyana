@@ -41,7 +41,7 @@ def test_sign_up(client):
     r = client.post(
         "/signup/", data={"email": "new@gyana.com", "password1": "seewhatmatters"}
     )
-    assertRedirects(r, "/", status_code=303, target_status_code=302)
+    assertRedirects(r, "/", status_code=302, target_status_code=302)
 
     r = client.get("/")
     assertRedirects(r, "/users/onboarding/")

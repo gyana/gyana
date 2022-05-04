@@ -52,7 +52,7 @@ def test_invite_new_user_to_team(client, logged_in_user):
     r = client.post(
         "/signup/", data={"email": "invite@gyana.com", "password1": "password"}
     )
-    assertRedirects(r, "/", status_code=303, target_status_code=302)
+    assertRedirects(r, "/", status_code=302, target_status_code=302)
     assertRedirects(client.get("/"), "/users/onboarding/")
 
     invite.refresh_from_db()
