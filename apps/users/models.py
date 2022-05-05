@@ -21,10 +21,12 @@ class CustomUser(AbstractUser):
 
     class SourceChannel(models.TextChoices):
         NONE = "", "Select..."
+        ONLINE_ADS = "onlineads", "Online ad"
         SEARCH_ENGINE = "searchengine", "Search engine"
         SOCIAL_MEDIA = "socialmedia", "Social media"
         WORD_OF_MOUTH = "wordofmouth", "Recommended by someone"
         BLOG = "blog", "Blog or publication"
+        PRODUCT_HUNT = "producthunt", "Product Hunt "
         OTHER = "other", "Other"
 
     class CompanyIndustry(models.TextChoices):
