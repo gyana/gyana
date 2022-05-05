@@ -3,13 +3,5 @@
     &[disabled] {
       background-color: var(--c-gray-50);
     }
-
-    &__button {
-      opacity: 0.1;
-    }
-
-    &:hover &__button {
-      opacity: 1;
-    }
   }
 }
