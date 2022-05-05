@@ -2,6 +2,7 @@ import functools
 
 import ibis.expr.datatypes as dt
 from django.core.cache import cache
+from django.core.validators import URLValidator
 from django.template.loader import get_template
 from django_tables2 import Column, Table
 from django_tables2.config import RequestConfig as BaseRequestConfig
@@ -116,6 +117,8 @@ def get_type_class(type_):
     if isinstance(type_, (dt.Floating, dt.Integer, dt.Decimal)):
         return "column column--numeric"
     if isinstance(type_, dt.String):
+
+
         return "column column--string"
     if isinstance(type_, dt.Boolean):
         return "column column--boolean"
