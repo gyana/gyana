@@ -42,57 +42,59 @@
 <body class="pad">
   {% block body %}
   <div class="widgets flex items-center justify-center">
-    <header class="flex w-full justify-between mb-7">
-      <div class="flex justify-center items-center self-start">
-        {% if project.team.plan.white_labeling and project.team.icon %}
-          <img src="{{ project.team.icon.url }}" class="h-24 w-24 mr-5" alt="">
-        {% endif %}
-
-        <div class="flex flex-col">
-          <p>{{ project.team.name }}</p>
-          <div class="flex items-center gap-4">
-            <h1>{{ dashboard.name }}</h1> 
-
-            {% if page.name %}
-              - <p class="h1">{{ page.name }}</p>
-            {% endif %}
-          </div>
-
-          {% if page_count > 1 %}
-
-          <small class="mt-3">
-            {% if previous_page == 0 %}
-        
-              <i class="fa fa-chevron-left text-gray"></i>
-        
-            {% else %}
-        
-              <a href="{% url 'dashboards:public' object.shared_id %}?dashboardPage={{ previous_page }}"><i class="fa fa-chevron-left"></i></a>
-            
-            {% endif %}
-        
-            Page {{page.position}} of {{page_count}}
-        
-            {% if next_page > page_count %}
-        
-              <i class="fa fa-chevron-right text-gray"></i>
-        
-            {% else %}
-          
-              <a href="{% url 'dashboards:public' object.shared_id %}?dashboardPage={{ next_page }}"><i class="fa fa-chevron-right"></i></a>
-            
-            {% endif %}
-          </small>
-
+    {% if not request.GET.embed %}
+      <header class="flex w-full justify-between mb-7">
+        <div class="flex justify-center items-center self-start">
+          {% if project.team.plan.white_labeling and project.team.icon %}
+            <img src="{{ project.team.icon.url }}" class="h-24 w-24 mr-5" alt="">
           {% endif %}
 
-        </div>
-      </div>
+          <div class="flex flex-col">
+            <p>{{ project.team.name }}</p>
+            <div class="flex items-center gap-4">
+              <h1>{{ dashboard.name }}</h1> 
 
-      {% if not project.team.plan.custom_branding %}
-        <p class="self-end">Powered by <a href="/" class="link">Gyana</a></p>
-      {% endif %}
-    </header>
+              {% if page.name %}
+                - <p class="h1">{{ page.name }}</p>
+              {% endif %}
+            </div>
+
+            {% if page_count > 1 %}
+
+            <small class="mt-3">
+              {% if previous_page == 0 %}
+          
+                <i class="fa fa-chevron-left text-gray"></i>
+          
+              {% else %}
+          
+                <a href="{% url 'dashboards:public' object.shared_id %}?dashboardPage={{ previous_page }}"><i class="fa fa-chevron-left"></i></a>
+              
+              {% endif %}
+          
+              Page {{page.position}} of {{page_count}}
+          
+              {% if next_page > page_count %}
+          
+                <i class="fa fa-chevron-right text-gray"></i>
+          
+              {% else %}
+            
+                <a href="{% url 'dashboards:public' object.shared_id %}?dashboardPage={{ next_page }}"><i class="fa fa-chevron-right"></i></a>
+              
+              {% endif %}
+            </small>
+
+            {% endif %}
+
+          </div>
+        </div>
+
+        {% if not project.team.plan.custom_branding %}
+          <p class="self-end">Powered by <a href="/" class="link">Gyana</a></p>
+        {% endif %}
+      </header>
+    {% endif %}
     <div
       class="widgets__canvas"
       style="--background-color:{{ object.background_color }};"
@@ -154,15 +156,17 @@
       </div>
     </div>
 
-    <footer class="widget__public-footer">
-      <p class="small">
-        Last updated <abbr>{% include "columns/natural_datetime.html" with datetime=dashboard.updated %}</abbr>
-      </p>
+    {% if not request.GET.embed %}
+      <footer class="widget__public-footer">
+        <p class="small">
+          Last updated <abbr>{% include "columns/natural_datetime.html" with datetime=dashboard.updated %}</abbr>
+        </p>
 
-      {% if dashboard.shared_status == 'password_protected' %}
-      <a class="link small" href="{% url 'dashboards:logout' dashboard.shared_id %}">Forget me on this browser</a>
-      {% endif %}
-    </footer>
+        {% if dashboard.shared_status == 'password_protected' %}
+        <a class="link small" href="{% url 'dashboards:logout' dashboard.shared_id %}">Forget me on this browser</a>
+        {% endif %}
+      </footer>
+    {% endif %}
   </div>
 
   {% comment %}

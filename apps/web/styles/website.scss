@@ -19,6 +19,44 @@ body {
   background: rgba(255, 255, 255, 0.1);
 }
 
+// Hero fade
+
+.fade-bottom:after {
+  content: '';
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  height: 24%;
+  width: 100%;
+  pointer-events: none;
+  background: linear-gradient(0deg, #fafafa 2.52%, rgba(255, 255, 255, 0) 100%);
+  z-index: 2;
+}
+
+.hero-demo {
+  height: 24rem;
+
+  @include mixins.respond-to(lg) {
+    height: 32rem;
+  }
+
+  @include mixins.respond-to(xl) {
+    height: 48rem;
+  }
+
+  &--expand {
+    height: 32rem;
+
+    @include mixins.respond-to(lg) {
+      height: 48rem;
+    }
+
+    @include mixins.respond-to(xl) {
+      height: 64rem;
+    }
+  }
+}
+
 // Integrations animation
 .fade-left:after {
   content: '';

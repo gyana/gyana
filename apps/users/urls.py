@@ -32,7 +32,7 @@ accounts_urlpatterns = [
     path("signin/", RedirectView.as_view(pattern_name="account_login")),
     path(
         "signup/",
-        xframe_options_sameorigin_allowlist(account.signup),
+        xframe_options_sameorigin_allowlist(views.AccountSignupView.as_view()),
         name="account_signup",
     ),
     path("", include("turbo_allauth.urls")),
