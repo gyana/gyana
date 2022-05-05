@@ -114,7 +114,9 @@ def test_code_signup_with_email_verification_and_onboarding(client, settings):
 
     r = client.get("/users/onboarding/")
     assertOK(r)
-    assertFormRenders(r, ["company_industry", "company_role", "company_size"])
+    assertFormRenders(
+        r, ["source_channel", "company_industry", "company_role", "company_size"]
+    )
 
     r = client.post(
         "/users/onboarding/",
@@ -122,6 +124,7 @@ def test_code_signup_with_email_verification_and_onboarding(client, settings):
             "company_industry": "agency",
             "company_role": "marketing",
             "company_size": "2-10",
+            "source_channel": "other",
         },
     )
     assertRedirects(r, "/", status_code=303, target_status_code=302)

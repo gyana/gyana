@@ -130,7 +130,9 @@ def get_type_class(type_):
     if isinstance(type_, dt.Struct):
         return "column column--dict"
 
+
 validateURL = URLValidator()
+
 
 class BigQueryColumn(Column):
     def __init__(self, **kwargs):
@@ -184,7 +186,7 @@ class BigQueryColumn(Column):
         # First checking if a string is a link to hyperlink it.
         if isinstance(value, str):
             try:
-                validateURL(value) # Will error if not a link.
+                validateURL(value)  # Will error if not a link.
                 return get_template("columns/link_cell.html").render({"value": value})
             except ValidationError:
                 pass
