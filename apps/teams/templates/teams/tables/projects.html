@@ -12,30 +12,30 @@
           <a href="{% url 'projects:detail' project.record.id %}">{{ project.record.name }}</a>
 
           {% if project.record.access == "everyone" %}
-          <i data-controller="tooltip" class="fas fa-fw fa-lock-open ml-auto">
-            <span data-tooltip-target="body">All team members have access</span>
-          </i>
-          {% else %}
-          <div class="flex items-center ml-auto">
-            {% for member in project.record.members.all %}
-              <img
-                class="h-7 w-7 rounded-full ml-2"
-                src="{{ member.avatar_url }}"
-                alt="{{ member.get_display_name }}"
-              />
-            {% endfor %}
-
-            <i data-controller="tooltip"  class="fas fa-fw fa-lock ml-4">
-              <span data-tooltip-target="body">Only permitted members have access</span>
+            <i data-controller="tooltip" class="fas fa-fw small fa-lock-open ml-auto">
+              <span data-tooltip-target="body">All team members have access</span>
             </i>
-          </div>
+          {% else %}
+            <div class="flex items-center ml-auto">
+              {% for member in project.record.members.all %}
+                <img
+                  class="h-7 w-7 rounded-full ml-2"
+                  src="{{ member.avatar_url }}"
+                  alt="{{ member.get_display_name }}"
+                />
+              {% endfor %}
+
+              <i data-controller="tooltip"  class="fas fa-fw fa-lock ml-4">
+                <span data-tooltip-target="body">Only permitted members have access</span>
+              </i>
+            </div>
           {% endif %}
         </header>
 
         {% if project.record.description %}
         <p>{{ project.record.description }}</p>
         {% else %}
-        <p class="text-black-20">No project description</p>
+        <p class="invisible">No project description</p>
         {% endif %}
 
         <footer>
@@ -45,6 +45,8 @@
             <span data-tooltip-target="body">
               <i>~{{ project.record.row_percentage }}</i>% of your quota
             </span>
+
+            <span class="project-card__quota" style="width:{{ project.record.row_percentage}}%;"></span>
           </p>
 
           <a href="{% url 'project_integrations:list' project.record.id %}">

@@ -2,6 +2,7 @@
   display: flex;
   flex-flow: column;
   padding: 1.6rem;
+  position: relative;
 
   & + & {
     border-top: 1px solid var(--c-gray);
@@ -15,6 +16,7 @@
 
   header {
     display: flex;
+    align-items: center;
 
     i {
       color: var(--c-black-50);
@@ -42,5 +44,14 @@
       color: var(--c-blue-50);
       transition: color 0.1s ease;
     }
+  }
+
+  &__quota {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    background-color: var(--c-blue-20);
+    width: attr(data-percentage, "%");
+    height: 3px;
   }
 }
