@@ -69,7 +69,10 @@ class TeamUpdateForm(BaseModelForm):
     class Meta:
         model = Team
         fields = ("icon", "name", "color", "timezone")
-        widgets = {"icon": forms.ClearableFileInput(attrs={"accept": "image/*"}), "name": forms.TextInput(attrs={"class": "label--half"})}
+        widgets = {
+            "icon": forms.ClearableFileInput(attrs={"accept": "image/*"}),
+            "name": forms.TextInput(attrs={"class": "label--half"}),
+        }
         help_texts = {
             "icon": "For best results use a square image",
             "timezone": "We use this to display time information and to schedule workflows",
@@ -78,9 +81,7 @@ class TeamUpdateForm(BaseModelForm):
     color = ColorField(
         label="Color",
         required=False,
-        widget=ColorInput(
-            attrs={"class": "label--third"}
-        ),
+        widget=ColorInput(attrs={"class": "label--third"}),
     )
     beta = forms.BooleanField(
         required=False,
