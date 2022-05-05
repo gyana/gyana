@@ -4,6 +4,7 @@ from itertools import chain
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.functional import cached_property
 
 from apps.base.models import BaseModel
 from apps.base.tables import ICONS
@@ -145,7 +146,11 @@ class Integration(BaseModel):
     def source_obj(self):
         return getattr(self, self.kind)
 
-    @property
+    @cached_property
+    def row_percentage(self):
+        return round((self.num_rows / self.project.team.row_limit) * 100, 3)
+
+    @cached_property
     def num_rows(self):
         return (
             self.table_set.all().aggregate(models.Sum("num_rows"))["num_rows__sum"] or 0

@@ -90,7 +90,13 @@
 
     {% if object.ready or object.state == 'done' %}
       <p class="ml-4">
-        <strong>{{ integration.num_rows|intcomma }}</strong> row{{ integration.num_rows|pluralize }}
+        <span data-controller="tooltip">
+          <strong>{{ integration.num_rows|intcomma }}</strong> row{{ integration.num_rows|pluralize }}
+
+          <span data-tooltip-target="body">
+            <i>~{{ integration.row_percentage }}</i>% of your quota
+          </span>
+        </span>
 
         {% if object.kind == "connector" %}
          • <strong>{{ integration.num_tables|intcomma }}</strong> table{{ integration.num_tables|pluralize }}

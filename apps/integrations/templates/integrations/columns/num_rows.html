@@ -1,8 +1,20 @@
 {% load humanize %}
+
 {% if record.num_rows == 0 %}
-    —
+  —
 {% elif record.ready %}
+  <p data-controller="tooltip">
     {{ record.num_rows|intcomma }}
+
+    <span data-tooltip-target="body">
+      <i>~{{ record.row_percentage }}</i>% of your quota
+    </span>
+  </p>
 {% else %}
+  <p
+    data-controller="tooltip"
+    data-tooltip-content="Does not count towards your quota"
+  >
     <i>{{ record.num_rows|intcomma }}*</i>
+  </p>
 {% endif %}

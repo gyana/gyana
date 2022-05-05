@@ -83,6 +83,10 @@ class Project(DirtyFieldsMixin, BaseModel):
     @property
     def dashboard_count(self):
         return self.dashboard_set.count()
+    
+    @cached_property
+    def row_percentage(self):
+        return round((self.num_rows / self.team.row_limit) * 100, 3)
 
     @cached_property
     def num_rows(self):
