@@ -28,7 +28,7 @@ class WidgetStyle(models.Model):
     background_color = models.CharField(max_length=7, null=True)
 
     # Fusionchart configuration
-    show_tooltips = models.BooleanField(null=True)
+    show_tooltips = models.BooleanField(default=True, blank=True)
     font_size = models.IntegerField(null=True)
     font_color = models.CharField(null=True, max_length=7)
     currency = models.CharField(
@@ -39,13 +39,16 @@ class WidgetStyle(models.Model):
         help_text="Select a currency",
     )
 
-    # Widget specific configuration
+    # Metric specific configuration
     metric_font_size = models.IntegerField(null=True)
     metric_font_color = models.CharField(null=True, max_length=7)
     metric_header_font_size = models.IntegerField(null=True)
     metric_header_font_color = models.CharField(null=True, max_length=7)
     metric_comparison_font_size = models.IntegerField(null=True)
     metric_comparison_font_color = models.CharField(null=True, max_length=7)
+
+    # Table specific configuration
+    table_show_header = models.BooleanField(default=True, blank=True)
 
     # Gauge specific configuration
     lower_limit = models.IntegerField(default=0)

@@ -8,6 +8,11 @@
     background: {{ widget.computed_background_color }};
     {% endif %}
   "
+  class="
+    {% if widget.kind == "table" and not widget.table_show_header|default_if_none:True %}
+      hide-header
+    {% endif %}
+  "
 >
   {% if widget.is_valid and not error_template %}
     {% if widget.kind == "table" %}

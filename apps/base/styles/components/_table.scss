@@ -159,6 +159,17 @@
       border-top-right-radius: 10px;
     }
   }
+
+  .hide-header & {
+    thead {
+      visibility: hidden;
+    }
+
+    tbody {
+      position: relative;
+      top: -4.2rem;
+    }
+  }
 }
 
 .table-data {

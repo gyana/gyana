@@ -395,6 +395,7 @@ class TableStyleForm(StyleMixin, BaseModelForm):
     class Meta:
         model = Widget
         fields = [
+            "table_show_header",
             "background_color",
         ]
 
