@@ -2,6 +2,7 @@ import functools
 
 import ibis.expr.datatypes as dt
 from django.core.cache import cache
+from django.core.exceptions import ValidationError
 from django.core.validators import URLValidator
 from django.template.loader import get_template
 from django_tables2 import Column, Table
@@ -117,8 +118,6 @@ def get_type_class(type_):
     if isinstance(type_, (dt.Floating, dt.Integer, dt.Decimal)):
         return "column column--numeric"
     if isinstance(type_, dt.String):
-
-
         return "column column--string"
     if isinstance(type_, dt.Boolean):
         return "column column--boolean"
@@ -131,6 +130,7 @@ def get_type_class(type_):
     if isinstance(type_, dt.Struct):
         return "column column--dict"
 
+validateURL = URLValidator()
 
 class BigQueryColumn(Column):
     def __init__(self, **kwargs):
@@ -181,8 +181,15 @@ class BigQueryColumn(Column):
             return get_template("columns/int_cell.html").render(
                 {"value": value, "is_percentage": self.is_percentage}
             )
+        # First checking if a string is a link to hyperlink it.
+        if isinstance(value, str):
+            try:
+                validateURL(value) # Will error if not a link.
+                return get_template("columns/link_cell.html").render({"value": value})
+            except ValidationError:
+                pass
         if isinstance(value, str) and len(value) >= 64:
-            # Truncate row values above 61 characters (61 + 3 ellipsis = 64)
+            # Truncate row values above 61 characters (61 + 3 ellipsis = 64).
             self.attrs["td"] = {
                 "data-controller": "tooltip",
                 "data-tooltip-content": value,
