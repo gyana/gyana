@@ -19,7 +19,16 @@ class CustomUser(AbstractUser):
     https://docs.djangoproject.com/en/3.2/topics/auth/customizing/#extending-django-s-default-user
     """
 
+    class SourceChannel(models.TextChoices):
+        NONE = "", "Select..."
+        SEARCH_ENGINE = "searchengine", "Search engine"
+        SOCIAL_MEDIA = "socialmedia", "Social media"
+        WORD_OF_MOUTH = "wordofmouth", "Recommended by someone"
+        BLOG = "blog", "Blog or publication"
+        OTHER = "other", "Other"
+
     class CompanyIndustry(models.TextChoices):
+        NONE = "", "Select..."
         AGENCY = "agency", "Agency"
         SOFTWARE = "software", "Software"
         ECOMMERCE = "ecommerce", "E-commerce"
@@ -30,6 +39,7 @@ class CustomUser(AbstractUser):
         OTHER = "other", "Other"
 
     class CompanyRole(models.TextChoices):
+        NONE = "", "Select..."
         LEADERSHIP = "leadership", "Leadership"
         MARKETING = "marketing", "Marketing"
         BUSINESS_ANALYST = "business analyst", "Business Analyst"
@@ -41,6 +51,7 @@ class CustomUser(AbstractUser):
         OTHER = "other", "Other"
 
     class CompanySize(models.TextChoices):
+        NONE = "", "Select..."
         ONE = "1", "Just me"
         TWO_TO_TEN = "2-10", "2-10"
         ELEVEN_TO_FIFTY = "11-50", "11-50"
@@ -67,6 +78,9 @@ class CustomUser(AbstractUser):
     )
     company_size = models.CharField(
         max_length=16, null=True, choices=CompanySize.choices
+    )
+    source_channel = models.CharField(
+        max_length=32, null=True, choices=SourceChannel.choices
     )
     marketing_allowed = models.BooleanField(null=True)
 

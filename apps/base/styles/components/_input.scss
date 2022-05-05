@@ -133,7 +133,11 @@ textarea {
 select {
   @extend %input;
 
-  option {
+  &:invalid {
+    color: var(--c-black-50);
+  }
+
+  option:first-child {
     color: var(--c-black-50);
   }
 }
@@ -185,6 +189,11 @@ select {
       max-height: 4.3rem;
       align-items: center;
     }
+  }
+
+  > input,
+  select {
+    margin-top: 0.3rem;
   }
 }
 

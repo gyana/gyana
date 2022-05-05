@@ -9,8 +9,10 @@ from .models import CustomUser
 
 
 class UserNameForm(BaseModelForm):
-    first_name = forms.CharField(required=True)
-    last_name = forms.CharField(required=True)
+    first_name = forms.CharField(
+        required=True, widget=forms.TextInput(attrs={"class": "label--half"})
+    )
+    last_name = forms.CharField(widget=forms.TextInput(attrs={"class": "label--half"}))
     marketing_allowed = forms.TypedChoiceField(
         coerce=lambda x: x == "True",
         choices=((True, "Yes"), (False, "No")),
@@ -35,11 +37,13 @@ class UserOnboardingForm(BaseModelForm):
             "company_industry",
             "company_role",
             "company_size",
+            "source_channel",
         ]
         labels = {
             "company_industry": "What's your industry?",
             "company_role": "What's your role?",
             "company_size": "Company size",
+            "source_channel": "How did you hear about us?",
         }
 
     def pre_save(self, instance):
