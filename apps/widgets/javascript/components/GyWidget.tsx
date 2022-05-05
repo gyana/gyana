@@ -88,6 +88,22 @@ const GyWidget_: React.FC<{ children: React.ReactElement; root: HTMLElement }> =
           height: height,
         })
       }}
+      onMouseDown={(e) => {
+        // Prevent scrolling when dragging the scrollbar.
+        // This checks if the event is happening "outside" the target element,
+        // if true it indicates that a shadow dom element is being used.
+        const isScrollbarClicked = (e): boolean => {
+          const target = e.target as Element
+          return (
+            e.nativeEvent.offsetX > target.clientWidth ||
+            e.nativeEvent.offsetY > target.clientHeight
+          )
+        }
+
+        if (isScrollbarClicked(e))  {
+          e.stopPropagation()
+        }
+      }}
       onDragStop={(e, { node, x, y, ...rest }) => {
         const parent = root
         // Snaps the x value within bounds of the parent
