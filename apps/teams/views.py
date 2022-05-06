@@ -61,7 +61,6 @@ class TeamCheckout(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["plan"] = self.plan
-        context["paddle_pro_plan"] = Plan.objects.get(pk=settings.DJPADDLE_PRO_PLAN_ID)
         context["DJPADDLE_VENDOR_ID"] = settings.DJPADDLE_VENDOR_ID
         context["DJPADDLE_SANDBOX"] = settings.DJPADDLE_SANDBOX
         return context
