@@ -152,10 +152,7 @@ class Team(DirtyFieldsMixin, BaseModel, SafeDeleteModel):
         if self.active_codes > 0:
             return {**PLANS["appsumo"], **get_deal(self.appsumocode_set.all())}
 
-        if (
-            self.has_subscription
-            and self.active_subscription.plan.id == settings.DJPADDLE_PRO_PLAN_ID
-        ) or self.has_free_trial:
+        if self.has_subscription or self.has_free_trial:
             return PLANS["pro"]
 
         return PLANS["free"]
