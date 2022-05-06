@@ -2,7 +2,7 @@ from django.db import models
 
 from .models import CreditTransaction, Team
 
-DEFAULT_ROW_LIMIT = 50_000
+DEFAULT_ROW_LIMIT = 100_000
 DEFAULT_CREDIT_LIMIT = 100
 
 

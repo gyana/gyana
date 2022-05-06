@@ -13,6 +13,7 @@ from djpaddle.views import PaddlePostCheckoutApiView as BasePaddlePostCheckoutAp
 from apps.base.analytics import CHECKOUT_COMPLETED_EVENT, CHECKOUT_OPENED_EVENT
 from apps.base.views import TurboCreateView, TurboUpdateView
 
+from .config import PLANS
 from .forms import MembershipUpdateForm, TeamCreateForm, TeamUpdateForm
 from .mixins import TeamMixin
 from .models import Membership, Team
@@ -61,6 +62,15 @@ class TeamCheckout(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["plan"] = self.plan
+        needs_custom = (
+            self.plan.id != settings.DJPADDLE_PRO_PLAN_ID
+            and self.object.override_row_limit
+        )
+        context["rows_per_integration"] = (
+            self.object.override_row_limit
+            if needs_custom
+            else PLANS["pro"]["rows_per_integration"]
+        )
         context["DJPADDLE_VENDOR_ID"] = settings.DJPADDLE_VENDOR_ID
         context["DJPADDLE_SANDBOX"] = settings.DJPADDLE_SANDBOX
         return context

@@ -1,5 +1,5 @@
 {% extends "teams/base.html" %}
-{% load waffle_tags %}
+{% load waffle_tags humanize %}
 
 {% block head.extra %}
   <meta name="turbo-visit-control" content="reload">
@@ -28,6 +28,7 @@
 
         <ul class="flex flex-col gap-7">
           <li><p> <i class="fas fa-fw fa-check text-green"></i> All our integrations</p></li>
+          <li><p> <i class="fas fa-fw fa-check text-green"></i> <strong>{{ rows_per_integration|intcomma }}</strong> rows synced per integration</p></li>
           <li><p> <i class="fas fa-fw fa-check text-green"></i> Daily report automation</p></li>
           <li><p> <i class="fas fa-fw fa-check text-green"></i> Dedicated support</p></li>
           <li><p> <i class="fas fa-fw fa-check text-green"></i> Cancel anytime</p></li>

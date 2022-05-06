@@ -73,6 +73,13 @@
         </div>
         {% endif %}
 
+        {% if not team.is_ltd %}
+          <div class="w-1/3">
+            <p>Rows synced per integration</p>
+            <h4 class="h4">{{ team.row_limit|intcomma }}</h4>
+          </div>
+        {% endif %}
+
         <footer>
           <div>
             <p>Chat support <i class="fa fa-check text-green"></i></p>
