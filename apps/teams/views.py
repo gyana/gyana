@@ -64,10 +64,10 @@ class TeamCheckout(DetailView):
         context["plan"] = self.plan
         needs_custom = (
             self.plan.id != settings.DJPADDLE_PRO_PLAN_ID
-            and self.object.override_row_limit
+            and self.object.override_rows_per_integration_limit
         )
         context["rows_per_integration"] = (
-            self.object.override_row_limit
+            self.object.override_rows_per_integration_limit
             if needs_custom
             else PLANS["pro"]["rows_per_integration"]
         )
