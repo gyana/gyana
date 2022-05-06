@@ -21,7 +21,7 @@
     <div class="account__billing">
       <header class="account__title">
         <div class="flex items-center mb-4">
-          <h2>Gyana - <span>{{ team.plan.name }}</span></h2>
+          <h2>Gyana - <span>{{ team.plan.name }}</span> {% if team.has_free_trial %} - Free Trial{% endif %}</h2>
 
           {% if team.is_free %}
             <a href="{% url 'teams:pricing' team.id %}" class="button button--sm button--success">Upgrade your plan</a>
