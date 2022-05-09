@@ -5,6 +5,7 @@
   <input
     type="{{ widget.type }}"
     name="{{ widget.name }}"
+    {%if widget.value %}value="{{ widget.value }}"{% endif %}
     data-live-update-ignore
     {% include "django/forms/widgets/attrs.html" %}
   />
