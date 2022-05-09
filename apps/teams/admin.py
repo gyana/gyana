@@ -97,9 +97,6 @@ class TeamAdmin(SafeDeleteAdmin):
     def has_add_permission(self, request, obj=None):
         return False
 
-    def has_delete_permission(self, request, obj=None):
-        return False
-
 
 class FlagAdmin(WaffleFlagAdmin):
     raw_id_fields = tuple(list(WaffleFlagAdmin.raw_id_fields) + ["teams"])

@@ -10,7 +10,8 @@
       "request": "launch",
       "program": "${workspaceFolder}/manage.py",
       "args": ["runserver"],
-      "django": true
+      "django": true,
+      "justMyCode": false
     },
     {
       "name": "Gyana-Migration",
