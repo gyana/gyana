@@ -18,7 +18,7 @@ from apps.columns.bigquery import (
     get_groups,
 )
 from apps.filters.bigquery import get_query_from_filters
-from apps.nodes.exceptions import NodeResultNone
+from apps.nodes.exceptions import JoinTypeError, NodeResultNone
 from apps.tables.bigquery import get_query_from_table
 from apps.teams.models import OutOfCreditsException
 
@@ -122,7 +122,15 @@ def get_join_query(node, left, right, *queries):
         try:
             query = query.join(right, left[left_col] == right[right_col], how=join.how)
         except TypeError:
-            raise JoinTypeError()
+            # We don't to display the original column names (instead of the potentiall
+            # suffixed left_col or right_col)
+            # but need to fetch the type from the right table
+            raise JoinTypeError(
+                left_column_name=join.left_column,
+                right_column_name=join.right_column,
+                left_column_type=left[left_col].type(),
+                right_column_type=right[right_col].type(),
+            )
 
         if join.how == "inner":
             drops.add(right_col)

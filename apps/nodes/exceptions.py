@@ -19,10 +19,19 @@ class CreditException(Exception):
 
 
 class JoinTypeError(Exception):
-    def __init__(self, left_column, right_column, *args):
+    def __init__(
+        self,
+        left_column_type,
+        right_column_type,
+        left_column_name,
+        right_column_name,
+        *args,
+    ):
         super().__init__(*args)
-        self.left_column = left_column
-        self.right_column = right_column
+        self.left_column_type = left_column_type
+        self.right_column_type = right_column_type
+        self.left_column_name = left_column_name
+        self.right_column_name = right_column_name
 
 
 class NodeResultNone(Exception):
@@ -59,7 +68,9 @@ def _(e):
 @handle_node_exception.register(JoinTypeError)
 def _(e):
     return {
-        "error_template": "nodes/errors/visit_error.html",
-        "left_column": e.left_column,
-        "right_column": e.right_column,
+        "error_template": "nodes/errors/join_type_error.html",
+        "left_column_type": e.left_column_type,
+        "right_column_type": e.right_column_type,
+        "right_column_name": e.right_column_name,
+        "left_column_name": e.left_column_name,
     }

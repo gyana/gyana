@@ -1,8 +1,8 @@
 <h2>You are about to exceed your credit limit</h2>
 <p class="mt-12">
-  This action requires <strong>{{node.uses_credits}}</strong> credits.
+  This action requires <strong>{{object.uses_credits}}</strong> credits.
 </p>
-{% with node.workflow.project.team as team%}
+{% with object.workflow.project.team as team%}
   <p>
     You have already used
     <strong>{{team.current_credit_balance}}</strong> of

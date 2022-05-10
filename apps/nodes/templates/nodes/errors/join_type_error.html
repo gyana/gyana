@@ -1,6 +1,6 @@
 {% extends 'nodes/errors/default.html' %}
 {% block error_message %}
-  Cannot join column {{ left_column.name }} with {{ right_column.name }} 
-  because {{ left_column.name }} is of type {{ left_column.type }} and {{ right_column.name }}
-  is of type {{ right_column.type }}.
+  Cannot join column {{ left_column_name }} with {{ right_column_name }} 
+  because {{ left_column_name }} is of type {{ left_column_type }} and {{ right_column.name }}
+  is of type {{ right_column_type }}.
 {% endblock %}
