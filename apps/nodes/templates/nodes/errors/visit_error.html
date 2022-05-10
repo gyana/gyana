@@ -1,4 +1,5 @@
 {% extends 'nodes/errors/default.html' %}
+{% block header %}Formula error{% endblock %}
 {% block error_message %}
-    There seems to be an error in your Formula
+    {{ message }}
 {% endblock %}

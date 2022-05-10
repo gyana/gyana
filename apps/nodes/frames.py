@@ -1,9 +1,7 @@
 import json
-import logging
 
 from django.urls import reverse
 from django.utils import timezone
-from django_tables2.tables import Table
 from django_tables2.views import SingleTableMixin
 from fuzzywuzzy import process
 
@@ -16,6 +14,7 @@ from apps.base.analytics import (
 from apps.base.core.table_data import RequestConfig, get_table
 from apps.base.frames import TurboFrameDetailView, TurboFrameUpdateView
 from apps.base.templates import template_exists
+from apps.nodes.exceptions import handle_node_exception
 
 from .bigquery import NodeResultNone, get_query_from_node
 from .forms import KIND_TO_FORM
@@ -95,25 +94,29 @@ class NodeGrid(SingleTableMixin, TurboFrameDetailView):
     paginate_by = 15
     turbo_frame_dom_id = "nodes:grid"
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["show_docs"] = self.request.GET.get("show_docs", False) == "true"
-        context["preview_node"] = self.preview_node
-        # Node-specific documentation
-        if self.object.kind == Node.Kind.FORMULA:
-            context["help_template"] = "nodes/help/formula.html"
+    def get_additional_context(self):
+        additional_context = {
+            "show_docs": self.request.GET.get("show_docs", False) == "true",
+            "preview_node": self.preview_node,
+        }
 
-        if self.object.error:
-            error_template = f"nodes/errors/{self.object.kind}_{self.object.error}.html"
-            if template_exists(error_template):
-                context["error_template"] = error_template
-            elif (
-                error_template := f"nodes/errors/{self.object.error}.html"
-            ) and template_exists(error_template):
-                context["error_template"] = error_template
-            else:
-                context["error_template"] = "nodes/errors/default.html"
-        return context
+        if self.object.kind == Node.Kind.FORMULA:
+            additional_context["help_template"] = "nodes/help/formula.html"
+        return additional_context
+
+    def get_context_data(self, **kwargs):
+        try:
+            return {
+                **super().get_context_data(**kwargs),
+                **self.get_additional_context(),
+            }
+        except Exception as e:
+            context = {"object": self.get_object()}
+            return {
+                **context,
+                **handle_node_exception(e),
+                **self.get_additional_context(),
+            }
 
     @property
     def preview_node(self):
@@ -124,18 +127,14 @@ class NodeGrid(SingleTableMixin, TurboFrameDetailView):
         return Node.objects.get(pk=preview_id)
 
     def get_table(self, **kwargs):
-        try:
-            query = get_query_from_node(self.preview_node)
-            schema = query.schema()
-            table = get_table(schema, query, None, **kwargs)
 
-            return RequestConfig(
-                self.request, paginate=self.get_table_pagination(table)
-            ).configure(table)
-        except Exception as err:
-            logging.error(err, exc_info=err)
-            # We have to return
-            return type("DynamicTable", (Table,), {})(data=[])
+        query = get_query_from_node(self.preview_node)
+        schema = query.schema()
+        table = get_table(schema, query, None, **kwargs)
+
+        return RequestConfig(
+            self.request, paginate=self.get_table_pagination(table)
+        ).configure(table)
 
 
 class NodeCreditConfirmation(TurboFrameUpdateView):

@@ -2,9 +2,11 @@ import json
 
 import ibis
 import ibis.expr.datatypes as dt
+from ibis.common.exceptions import IbisTypeError
 from lark import Transformer, v_args
 
 from apps.base.core.ibis.compiler import today
+from apps.columns.exceptions import ColumnNotFound, FunctionNotFound
 
 from .types import TYPES
 
@@ -113,11 +115,18 @@ class TreeToIbis(Transformer):
         return token.value.strip("'")
 
     def column(self, token):
-        return self.query[token.value]
+        try:
+            return self.query[token.value]
+        except IbisTypeError:
+            raise ColumnNotFound(token.value)
 
     def function(self, token, *args):
         function_name = token.value.lower()
-        function = next(filter(lambda f: f["name"] == function_name, FUNCTIONS))
+
+        try:
+            function = next(filter(lambda f: f["name"] == function_name, FUNCTIONS))
+        except StopIteration:
+            raise FunctionNotFound(function_name)
         args = list(args)
         if not args:
             return NO_CALLER[function_name]()

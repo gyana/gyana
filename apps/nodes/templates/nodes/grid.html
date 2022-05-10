@@ -6,15 +6,9 @@
 
   {% include 'nodes/_zero_state.html' %}
 
-{% elif preview_node.error %}
+{% elif error_template %}
 
-  <div class='node__visual'>
-    {% if error_template %}
-      {% include error_template %}
-    {% else %}
-      {% include 'nodes/errors/default.html' %}
-    {% endif %}
-  </div>
+  {% include error_template %}
 
 {% else %}
 

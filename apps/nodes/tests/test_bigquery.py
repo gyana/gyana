@@ -27,8 +27,9 @@ from apps.nodes.bigquery import (
     get_query_from_node,
     get_unpivot_query,
 )
+from apps.nodes.exceptions import CreditException
 from apps.nodes.models import Node
-from apps.teams.models import CreditTransaction
+from apps.teams.models import CreditTransaction, OutOfCreditsException
 
 pytestmark = pytest.mark.django_db
 
@@ -647,7 +648,7 @@ def test_sentiment_query(mocker, logged_in_user, setup):
     sentiment_node = _create_sentiment_node(input_node, workflow)
     team = logged_in_user.teams.first()
 
-    with pytest.raises(NodeResultNone) as err:
+    with pytest.raises(CreditException) as err:
         get_query_from_node(sentiment_node)
 
     # Should error and not charge any credits
@@ -729,7 +730,7 @@ def test_sentiment_query_out_of_credits(logged_in_user, setup):
         amount=99,
         user=logged_in_user,
     )
-    with pytest.raises(NodeResultNone) as err:
+    with pytest.raises(OutOfCreditsException) as err:
         get_query_from_node(sentiment_node)
 
     assert sentiment_node.error == "out_of_credits_exception"

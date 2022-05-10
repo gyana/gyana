@@ -1,4 +1,6 @@
 {% extends 'nodes/errors/default.html' %}
 {% block error_message %}
-  Column types are not compatible to join tables.
+  Cannot join column {{ left_column.name }} with {{ right_column.name }} 
+  because {{ left_column.name }} is of type {{ left_column.type }} and {{ right_column.name }}
+  is of type {{ right_column.type }}.
 {% endblock %}
