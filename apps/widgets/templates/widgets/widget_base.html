@@ -6,156 +6,158 @@ apps/dashboards/templates/dashboards/preview.html to reflect the changes in
 preview mode.
 {% endcomment %}
 <gy-widget id="{% block widget.id %}widget-{{ object.id }}{% endblock widget.id %}">
-  <div
-    class="h-full w-full"
-    data-id="{{ object.id }}"
-    data-x="{{ object.x }}"
-    data-y="{{ object.y }}"
-    data-width="{{ object.width }}"
-    data-height="{{ object.height }}"
-    {% if dashboard.snap_to_grid %}
-    data-grid-size="{{ dashboard.grid_size }}"
-    {% else %}
-    data-grid-size="1"
-    {% endif %}
-    {% if object.kind == "image" %}
-    data-min-width="15"
-    {% endif %}
-    {% block widget.attrs %}{% endblock widget.attrs %}
-  >
-    <div class="widget-card h-full">
-      <div
-        class="
-          widget-card__visual
-          {% if object.page.dashboard.show_widget_border %}widget-card__visual--border{% endif %}
-        "
-        style="
-          {% if object.page.dashboard.widget_border_color %}border-color: {{ object.page.dashboard.widget_border_color }};{% endif %}
-          {% if object.page.dashboard.widget_border_radius is not None %}border-radius: {{ object.page.dashboard.widget_border_radius }}px;{% endif %}
-          {% if object.page.dashboard.widget_border_thickness is not None %}border-width: {{ object.page.dashboard.widget_border_thickness }}px;{% endif %}
-        "
-      >
-        {% block widget %}
-        {% endblock widget %}
-      </div>
-
-      {% if not request.GET.mode or request.GET.mode == "edit" %}
-      <div class='widget-card__commands'>
-        {% block widget.commands %}
+  <template id="widget-{{ object.id }}-template">
+    <div
+      class="h-full w-full"
+      data-id="{{ object.id }}"
+      data-x="{{ object.x }}"
+      data-y="{{ object.y }}"
+      data-width="{{ object.width }}"
+      data-height="{{ object.height }}"
+      {% if dashboard.snap_to_grid %}
+      data-grid-size="{{ dashboard.grid_size }}"
+      {% else %}
+      data-grid-size="1"
+      {% endif %}
+      {% if object.kind == "image" %}
+      data-min-width="15"
+      {% endif %}
+      {% block widget.attrs %}{% endblock widget.attrs %}
+    >
+      <div class="widget-card h-full">
         <div
-          data-controller="popover" 
-          data-placement="bottom-start"
-          data-theme="popover-menu"
+          class="
+            widget-card__visual
+            {% if object.page.dashboard.show_widget_border %}widget-card__visual--border{% endif %}
+          "
+          style="
+            {% if object.page.dashboard.widget_border_color %}border-color: {{ object.page.dashboard.widget_border_color }};{% endif %}
+            {% if object.page.dashboard.widget_border_radius is not None %}border-radius: {{ object.page.dashboard.widget_border_radius }}px;{% endif %}
+            {% if object.page.dashboard.widget_border_thickness is not None %}border-width: {{ object.page.dashboard.widget_border_thickness }}px;{% endif %}
+          "
         >
-          <button
-            id="widget-card__more-button"
-            class="widget-card__button"
-            data-popover-target="trigger" 
+          {% block widget %}
+          {% endblock widget %}
+        </div>
+
+        {% if not request.GET.mode or request.GET.mode == "edit" %}
+        <div class='widget-card__commands'>
+          {% block widget.commands %}
+          <div
+            data-controller="popover"
+            data-placement="bottom-start"
+            data-theme="popover-menu"
           >
-            <i class="fas fa-fw fa-ellipsis-v"></i>
-          </button>
-
-          <div data-popover-target="body">
-            <form
-              method="POST"
-              action="{% url 'dashboard_widgets:detail' project.id dashboard.id object.pk %}"
-              class="form--no-layout"
+            <button
+              id="widget-card__more-button"
+              class="widget-card__button"
+              data-popover-target="trigger"
             >
-              {% csrf_token %}
+              <i class="fas fa-fw fa-ellipsis-v"></i>
+            </button>
 
-              <button
-                id="widget-duplicate-{{ object.id }}"
-                class="list__item list__item--interactive w-full"
-                data-loading-false
+            <div data-popover-target="body">
+              <form
+                method="POST"
+                action="{% url 'dashboard_widgets:detail' project.id dashboard.id object.pk %}"
+                class="form--no-layout"
               >
-                Duplicate
-              </button>
-            </form>
-    
-            <form
-              method="POST"
-              action="{% url 'dashboard_widgets:delete' project.id dashboard.id object.id %}"
-              class="form--no-layout"
-            >
-              {% csrf_token %}
-    
-              <button
-                id="widget-delete-{{ object.id }}"
-                class="list__item list__item--interactive w-full"
-              >
-                Delete
-              </button>
-            </form>
-            <div
-              data-controller="popover" 
-              data-placement="right"
-              data-theme="popover-menu"
-            >
-              <button 
-                class="list__item list__item--interactive w-full"
-                data-popover-target="trigger"
-              >
-                Move to page
-              </button>
+                {% csrf_token %}
 
-              <div data-popover-target="body">
-                {% include 'widgets/forms/move_page.html' %}
+                <button
+                  id="widget-duplicate-{{ object.id }}"
+                  class="list__item list__item--interactive w-full"
+                  data-loading-false
+                >
+                  Duplicate
+                </button>
+              </form>
+      
+              <form
+                method="POST"
+                action="{% url 'dashboard_widgets:delete' project.id dashboard.id object.id %}"
+                class="form--no-layout"
+              >
+                {% csrf_token %}
+      
+                <button
+                  id="widget-delete-{{ object.id }}"
+                  class="list__item list__item--interactive w-full"
+                >
+                  Delete
+                </button>
+              </form>
+              <div
+                data-controller="popover"
+                data-placement="right"
+                data-theme="popover-menu"
+              >
+                <button
+                  class="list__item list__item--interactive w-full"
+                  data-popover-target="trigger"
+                >
+                  Move to page
+                </button>
+
+                <div data-popover-target="body">
+                  {% include 'widgets/forms/move_page.html' %}
+                </div>
               </div>
             </div>
           </div>
+
+          {% if object.kind != "text" %}
+          <button
+            class="widget-card__button"
+            data-controller="tooltip"
+            data-action="click->tf-modal#open"
+            id="widget-update-{{ object.id }}"
+            data-modal-item="{{ object.id }}"
+            data-modal-src="{% url "dashboard_widgets:update" project.id dashboard.id object.pk %}"
+            data-modal-id="widget-modal"
+            {% if request.GET.modal_item == object.id|stringformat:"i" %}
+            data-tf-modal-target="onParam"
+            {% endif %}
+            {% if object.kind in "iframe,image" %}
+            data-modal-classes="tf-modal--auto"
+            {% else %}
+            data-modal-classes="tf-modal--full"
+            {% endif %}
+          >
+            <i class="fas fa-fw fa-edit"></i>
+            <span data-tooltip-target="body">Edit</span>
+          </button>
+          {% endif %}
+
+          {% if object.kind != "text" and object.kind != "iframe" and object.kind != "image" %}
+          <button
+            class="widget-card__button"
+            data-controller="tooltip"
+            data-action="click->tf-modal#open"
+            id="widget-update-{{ object.id }}"
+            data-modal-item="{{ object.id }}"
+            data-modal-src="{% url "dashboard_widgets:update" project.id dashboard.id object.pk %}?tab=style"
+            data-modal-id="widget-modal"
+            data-modal-classes="tf-modal--full"
+          >
+            <i class="fas fa-fw fa-paint-brush"></i>
+            <span data-tooltip-target="body">Change style</span>
+          </button>
+          {% endif %}
+
+          <button
+            class="widget-card__drag-handle widget-card__button cursor-move"
+            data-controller="tooltip"
+            data-tooltip-content="Drag"
+          >
+            <i class="fas fa-fw fa-arrows"></i>
+          </button>
+          {% endblock widget.commands %}
         </div>
-
-        {% if object.kind != "text" %}
-        <button  
-          class="widget-card__button"
-          data-controller="tooltip"
-          data-action="click->tf-modal#open"
-          id="widget-update-{{ object.id }}"
-          data-modal-item="{{ object.id }}"
-          data-modal-src="{% url "dashboard_widgets:update" project.id dashboard.id object.pk %}"
-          data-modal-id="widget-modal"
-          {% if request.GET.modal_item == object.id|stringformat:"i" %}
-          data-tf-modal-target="onParam"
-          {% endif %}
-          {% if object.kind in "iframe,image" %}
-          data-modal-classes="tf-modal--auto"
-          {% else %}
-          data-modal-classes="tf-modal--full"
-          {% endif %}
-        >
-          <i class="fas fa-fw fa-edit"></i>
-          <span data-tooltip-target="body">Edit</span>
-        </button>
         {% endif %}
-
-        {% if object.kind != "text" and object.kind != "iframe" and object.kind != "image" %}
-        <button
-          class="widget-card__button"
-          data-controller="tooltip"
-          data-action="click->tf-modal#open"
-          id="widget-update-{{ object.id }}"  
-          data-modal-item="{{ object.id }}"
-          data-modal-src="{% url "dashboard_widgets:update" project.id dashboard.id object.pk %}?tab=style"
-          data-modal-id="widget-modal"
-          data-modal-classes="tf-modal--full"
-        >
-          <i class="fas fa-fw fa-paint-brush"></i>
-          <span data-tooltip-target="body">Change style</span>
-        </button>
-        {% endif %}
-
-        <button
-          class="widget-card__drag-handle widget-card__button cursor-move"
-          data-controller="tooltip"
-          data-tooltip-content="Drag"
-        >
-          <i class="fas fa-fw fa-arrows"></i>
-        </button>
-        {% endblock widget.commands %}
       </div>
-      {% endif %}
-    </div>
 
-    {% block widget.extra %}{% endblock widget.extra %}
-  </div>
+      {% block widget.extra %}{% endblock widget.extra %}
+    </div>
+  </template>
 </gy-widget>

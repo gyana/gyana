@@ -135,8 +135,16 @@ const GyWidget_: React.FC<{ children: React.ReactElement; root: HTMLElement }> =
 
 class GyWidget extends HTMLElement {
   connectedCallback() {
+    const gyWidgetTemplate = document.getElementById(`${this.id}-template`)
+    console.assert(
+      gyWidgetTemplate && gyWidgetTemplate.nodeName === "TEMPLATE",
+      'gy-widget requires a template element'
+    )
+
     console.assert(!!this.parentElement, 'gy-widget requires a container element')
-    const children = ReactHtmlParser(this.innerHTML)
+    const children = ReactHtmlParser(
+      (gyWidgetTemplate as HTMLTemplateElement).content.firstElementChild?.outerHTML
+    )
     console.assert(children.length === 1, 'gy-widget requires only one child element')
 
     ReactDOM.render(
