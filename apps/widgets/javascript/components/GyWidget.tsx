@@ -101,6 +101,7 @@ const GyWidget_: React.FC<{ children: React.ReactElement; root: HTMLElement }> =
         }
 
         if (isScrollbarClicked(e))  {
+          e.preventDefault()
           e.stopPropagation()
         }
       }}
