@@ -141,7 +141,8 @@ faqs:
     a: Gyana is a no-code tool for building custom reports for any source.
       It replaces workflows that are typically done with files, spreadsheets and traditional dashboard tools.
   - q: How long does it take to learn Gyana?
-    a: Gyana only has a handful of core concepts. It takes ~30 minutes to learn them,
+    a:
+      Gyana only has a handful of core concepts. It takes ~30 minutes to learn them,
       and a couple of hours of building to really understand the "Gyana way" of doing things.
   - q: Who typically uses Gyana?
     a: Marketing analysts are the biggest users of Gyana, but every team in a company has use-cases for building reports — operations, product, engineering, etc.
@@ -150,13 +151,16 @@ faqs:
       See <a class="link" href="/integrations">Integrations</a> for a full list of data sources that we support.
       Can't find yours? We'll build it for you.
   - q: Is Gyana secure?
-    a: Security and privacy are of paramount important to us, and we are ISO 27001 compliant.
+    a:
+      Security and privacy are of paramount importance to us, and we are ISO 27001 compliant.
       Gyana is hosted on Google Cloud. Reach out to us if you'd like to learn more.
   - q: What about GDPR?
-    a: Gyana is committed to GDPR compliance. Your data is always located in the UK and
+    a:
+      Gyana is committed to GDPR compliance. Your data is always located in the UK and
       EU, and we act as your data processing partner.
   - q: Do you offer 1-on-1 training/support?
-    a: We offer hands-on training and support as part of our Elite and Agency plans.
+    a:
+      We offer hands-on training and support as part of our Elite and Agency plans.
       We typically run training sessions as part of the onboarding, and use shared Slack channels for priority support.
   - q: Can you replicate my Data Studio / Power BI report?
     a: Yes — we have a team of data analytics specialists who can build your existing report in Gyana.
