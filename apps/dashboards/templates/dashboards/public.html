@@ -106,46 +106,7 @@
         data-widget-list-target="dashboard"
       >
         {% for widget in page.widgets.all %}
-        <gy-widget id="widget-{{ widget.id }}">
-          <div
-            class="h-full w-full"
-            data-id="{{ widget.id }}"
-            data-x="{{ widget.x }}"
-            data-y="{{ widget.y }}"
-            data-width="{{ widget.width }}"
-            data-height="{{ widget.height }}"
-            data-grid-size="{{ object.grid_size }}"
-          >
-            <div class="widget-card h-full">
-              <div
-                class="
-                  widget-card__visual
-                  widget-card__visual--view
-                  {% if widget.page.dashboard.show_widget_border %}widget-card__visual--border{% endif %}
-                "
-                style="
-                  {% if widget.page.dashboard.widget_border_color %}border-color: {{ widget.page.dashboard.widget_border_color }};{% endif %}
-                  {% if widget.page.dashboard.widget_border_radius %}border-radius: {{ widget.page.dashboard.widget_border_radius }}px;{% endif %}
-                  {% if widget.page.dashboard.widget_border_thickness %}border-width: {{ widget.page.dashboard.widget_border_thickness }}px;{% endif %}
-                "
-              >
-                {% if widget.page.dashboard.show_widget_headers %}
-                  {% include 'widgets/_widget_title.html' with object=widget%}
-                {% endif %}
-
-                <turbo-frame
-                  id="widgets-output-{{ widget.id }}"
-                  src="{% url 'dashboard_widgets:output' project.id dashboard.id widget.id %}"
-                  style="display: flex; flex: 1 1 0%; min-height: 0;"
-                >
-                  <div class='placeholder-scr placeholder-scr--fillscreen'>
-                    <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
-                  </div>
-                </turbo-frame>
-              </div>
-            </div>
-          </div>
-        </gy-widget>
+          {% include 'widgets/widget_public.html' with object=widget %}
         {% endfor %}
 
       {% for object in page.control_widgets.all %}
