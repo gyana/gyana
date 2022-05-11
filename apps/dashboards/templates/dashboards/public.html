@@ -34,7 +34,8 @@
   <script src="{% static 'js/stimulus-bundle.js' %}"></script>
   <script src="{% static 'rest_framework/js/coreapi-0.1.1.js' %}"></script>
   <script src="{% url 'api_schemajs' %}"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js" integrity="sha512-YcsIPGdhPK4P/uRW6/sruonlYj+Q7UHWeKfTAkBW+g83NKM+jMJFJ4iAPfSnVp7BKD4dKMHmVSvICUbE/V1sSw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="{% static 'js/html2pdf-bundle.js' %}"></script>
+
 
   <!-- Include the Quill library -->
   <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
@@ -103,6 +104,7 @@
     > 
       <div
         id="dashboard-widget-container"
+        data-height={{ object.height }}
         style="width:{{ object.width }}px;height:{{object.height}}px;"
         data-widget-list-target="dashboard"
       >
