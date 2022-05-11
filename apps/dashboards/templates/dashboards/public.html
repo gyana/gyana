@@ -34,8 +34,6 @@
   <script src="{% static 'js/stimulus-bundle.js' %}"></script>
   <script src="{% static 'rest_framework/js/coreapi-0.1.1.js' %}"></script>
   <script src="{% url 'api_schemajs' %}"></script>
-  <script src="{% static 'js/html2pdf-bundle.js' %}"></script>
-
 
   <!-- Include the Quill library -->
   <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
@@ -104,6 +102,7 @@
     > 
       <div
         id="dashboard-widget-container"
+        data-width={{ object.width }}
         data-height={{ object.height }}
         style="width:{{ object.width }}px;height:{{object.height}}px;"
         data-widget-list-target="dashboard"
@@ -126,7 +125,7 @@
           Last updated <abbr>{% include "columns/natural_datetime.html" with datetime=dashboard.updated %}</abbr>
         </p>
 
-        <button onclick="html2pdf(document.body, {filename: '{{ dashboard.name|slugify }}.pdf', enableLinks: false, jsPDF: {compress: true}, html2canvas: {width: 1232, windowWidth: 1366, scale: 2.2}})" class="link small">
+        <button data-controller="pdf-export" data-filename="{{ dashboard.name|slugify }}.pdf" class="link small">
           Download as PDF
         </button>
 
