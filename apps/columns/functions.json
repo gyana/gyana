@@ -719,7 +719,11 @@
     "categories": ["math"],
     "arguments": [
       { "name": "number", "description": "a numeric scalar or column" },
-      { "name": "digits", "description": "an integer scalar or column" }
+      {
+        "name": "digits",
+        "description": "an integer scalar or column",
+        "optional": true
+      }
     ],
     "keywords": [],
     "description": "Round number to digit decimal positon"

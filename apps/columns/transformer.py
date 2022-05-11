@@ -150,8 +150,10 @@ class TreeToIbis(Transformer):
         ):
             return func(args)
 
-        if len(args) + 1 > len(function["arguments"]) or len(args) + 1 < len(
-            [f for f in function["arguments"] if not f.get("optional")]
+        if function["id"] != "coalesce" and (
+            len(args) + 1 > len(function["arguments"])
+            or len(args) + 1
+            < len([f for f in function["arguments"] if not f.get("optional")])
         ):
             raise ArgumentError(function=function, args=[caller, *args])
         return func(*args)
