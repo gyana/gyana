@@ -6,7 +6,12 @@ from ibis.common.exceptions import IbisTypeError
 from lark import Transformer, v_args
 
 from apps.base.core.ibis.compiler import today
-from apps.columns.exceptions import ColumnNotFound, FunctionNotFound
+from apps.columns.exceptions import (
+    ArgumentError,
+    ColumnAttributeError,
+    ColumnNotFound,
+    FunctionNotFound,
+)
 
 from .types import TYPES
 
@@ -118,7 +123,7 @@ class TreeToIbis(Transformer):
         try:
             return self.query[token.value]
         except IbisTypeError:
-            raise ColumnNotFound(token.value)
+            raise ColumnNotFound(token.value, list(self.query.schema()))
 
     def function(self, token, *args):
         function_name = token.value.lower()
@@ -136,11 +141,19 @@ class TreeToIbis(Transformer):
 
         if odd_func := ODD_FUNCTIONS.get(function["id"]):
             return odd_func(caller, args)
-        func = getattr(caller, function["id"])
+        try:
+            func = getattr(caller, function["id"])
+        except AttributeError:
+            raise ColumnAttributeError(caller, function)
         if function["id"] != "coalesce" and any(
             arg.get("repeatable") for arg in function["arguments"]
         ):
             return func(args)
+
+        if len(args) + 1 > len(function["arguments"]) or len(args) + 1 < len(
+            [f for f in function["arguments"] if not f.get("optional")]
+        ):
+            raise ArgumentError(function=function, args=[caller, *args])
         return func(*args)
 
     # -----------------------------------------------------------------------

@@ -31,12 +31,22 @@ def create_node(table, workflow, kind, node_factory, **kwargs):
         ),
         pytest.param(
             "join('_', athlete, does_not_exist)",
-            "Column does_not_exist does not exist on input.",
+            "Column does_not_exist does not exist on input",
             id="column does not exist",
+        ),
+        pytest.param(
+            "abs(medals, medals)",
+            "Function abs expected at least",
+            id="argument error",
+        ),
+        pytest.param(
+            "abs(athlete)",
+            "You cannot use abs on column athlete",
+            id="column attribute error",
         ),
     ],
 )
-def test_formula_visit_error(formula, message, client, setup, node_factory):
+def test_formula_error(formula, message, client, setup, node_factory):
     table, workflow = setup
 
     formula_node = create_node(

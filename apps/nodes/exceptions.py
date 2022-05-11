@@ -1,10 +1,13 @@
 from functools import singledispatch
 
+from fuzzywuzzy import process
 from lark.exceptions import VisitError
 
+from apps.base.core.table_data import get_type_name
 from apps.base.core.utils import error_name_to_snake
 from apps.base.templates import template_exists
-from apps.columns.transformer import ColumnNotFound, FunctionNotFound
+from apps.columns.exceptions import ArgumentError, ColumnAttributeError
+from apps.columns.transformer import FUNCTIONS, ColumnNotFound, FunctionNotFound
 from apps.nodes.models import Node
 
 
@@ -53,15 +56,49 @@ def handle_node_exception(e):
     }
 
 
+FUNCTION_NAMES = [f["name"] for f in FUNCTIONS]
+
+
 @handle_node_exception.register(VisitError)
 def _(e):
     if isinstance(e.orig_exc, ColumnNotFound):
-        message = f"Column {e.orig_exc.column} does not exist on input."
+        suggestion = process.extractOne(e.orig_exc.column, e.orig_exc.columns)
+        return {
+            "error_template": "nodes/errors/column_not_found.html",
+            "column": e.orig_exc.column,
+            "suggestion": suggestion[0] if suggestion else None,
+        }
     elif isinstance(e.orig_exc, FunctionNotFound):
-        message = f"Function {e.orig_exc.function} does not exist."
+        suggestion = process.extractOne(e.orig_exc.function, FUNCTION_NAMES)
+        return {
+            "error_template": "nodes/errors/function_not_found.html",
+            "function": e.orig_exc.function,
+            "suggestion": suggestion[0] if suggestion else None,
+        }
+    elif isinstance(e.orig_exc, ArgumentError):
+        expected = (
+            len(e.orig_exc.function["arguments"])
+            if len(e.orig_exc.args) > len(e.orig_exc.function["arguments"])
+            else len(
+                f for f in e.orig_exc.function["arguments"] if not f.get("optional")
+            )
+        )
+        return {
+            "error_template": "nodes/errors/argument_error.html",
+            "function": e.orig_exc.function["name"],
+            "arg_length": len(e.orig_exc.args),
+            "expected": expected,
+        }
+    elif isinstance(e.orig_exc, ColumnAttributeError):
+        return {
+            "error_template": "nodes/errors/column_attribute_error.html",
+            "column": e.orig_exc.column.get_name(),
+            "column_type": get_type_name(e.orig_exc.column.type()),
+            "function": e.orig_exc.function,
+        }
     return {
         "error_template": "nodes/errors/visit_error.html",
-        "message": message,
+        "message": "There was an error in your formula.",
     }
 
 
@@ -69,8 +106,8 @@ def _(e):
 def _(e):
     return {
         "error_template": "nodes/errors/join_type_error.html",
-        "left_column_type": e.left_column_type,
-        "right_column_type": e.right_column_type,
+        "left_column_type": get_type_name(e.left_column_type),
+        "right_column_type": get_type_name(e.right_column_type),
         "right_column_name": e.right_column_name,
         "left_column_name": e.left_column_name,
     }
