@@ -84,7 +84,7 @@ class CustomUser(AbstractUser):
     source_channel = models.CharField(
         max_length=32, null=True, choices=SourceChannel.choices
     )
-    marketing_allowed = models.BooleanField(null=True)
+    marketing_allowed = models.BooleanField()
 
     def __str__(self):
         return self.email
