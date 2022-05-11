@@ -1,20 +1,39 @@
-{% extends "widgets/widget_base.html" %}
+<div
+  style="
+    position: absolute;
+    left: {{ object.x }}px;
+    top: {{ object.y }}px;
+    width: {{ object.width }}px;
+    height: {{ object.height }}px;
+  "
+  {% block widget.attrs %}{% endblock widget.attrs %}
+>
+  <div class="widget-card h-full">
+    <div
+      class="
+        widget-card__visual
+        {% if object.page.dashboard.show_widget_border %}widget-card__visual--border{% endif %}
+      "
+      style="
+        {% if object.page.dashboard.widget_border_color %}border-color: {{ object.page.dashboard.widget_border_color }};{% endif %}
+        {% if object.page.dashboard.widget_border_radius is not None %}border-radius: {{ object.page.dashboard.widget_border_radius }}px;{% endif %}
+        {% if object.page.dashboard.widget_border_thickness is not None %}border-width: {{ object.page.dashboard.widget_border_thickness }}px;{% endif %}
+      "
+    >
+      {% include 'widgets/_date_range_indicator.html' %}
 
-{% block widget %}
-  {% include 'widgets/_date_range_indicator.html' %}
-
-  {% include 'widgets/_widget_title.html' %}
-
-  <turbo-frame 
-    id="widgets-output-{{ object.id }}"
-    src="{% url 'dashboard_widgets:output' project.id dashboard.id object.id %}?mode={{ request.GET.mode|default:"edit" }}"
-    style="display: flex;flex: 1 1 0%;min-height: 0;overflow: auto;height: 100%;"
-  >
-    <div class='placeholder-scr placeholder-scr--fillscreen'>
-      <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
-      <p class='placeholder-scr__title'>Loading widget...</p>
+      {% include 'widgets/_widget_title.html' %}
+    
+      <turbo-frame 
+        id="widgets-output-{{ object.id }}"
+        src="{% url 'dashboard_widgets:output' project.id dashboard.id object.id %}?mode={{ request.GET.mode|default:"edit" }}"
+        style="display: flex;flex: 1 1 0%;min-height: 0;overflow: auto;height: 100%;"
+      >
+        <div class='placeholder-scr placeholder-scr--fillscreen'>
+          <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+          <p class='placeholder-scr__title'>Loading widget...</p>
+        </div>
+      </turbo-frame>
     </div>
-  </turbo-frame>
-{% endblock widget %}
-
-{% block widget.commands %}{% endblock widget.commands %}
+  </div>
+</div>
