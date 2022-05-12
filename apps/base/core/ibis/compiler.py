@@ -24,7 +24,8 @@ compiles = BigQueryExprTranslator.compiles
 class StartsWith(ValueOp):
     value = rlz.string
     start_string = rlz.string
-    output_type = rlz.shape_like("value")
+    output_dtype = rlz.dtype_like("value")
+    output_shape = rlz.shape_like("value")
 
 
 def startswith(value, start_string):
@@ -34,7 +35,8 @@ def startswith(value, start_string):
 class EndsWith(ValueOp):
     value = rlz.string
     end_string = rlz.string
-    output_type = rlz.shape_like("value")
+    output_dtype = rlz.dtype_like("value")
+    output_shape = rlz.shape_like("value")
 
 
 def endswith(value, start_string):
@@ -275,7 +277,8 @@ def _today(t, expr):
 class SubtractDays(ValueOp):
     date = rlz.date
     days = rlz.integer
-    output_type = rlz.shape_like("args")
+    output_shape = rlz.shape_like("args")
+    output_type = rlz.dtype_like("args")
 
 
 def subtract_days(date, days):
@@ -296,7 +299,8 @@ def _subtract_days(translator, expr):
 
 class Date(ValueOp):
     date = rlz.date
-    output_type = rlz.shape_like("date")
+    output_shape = rlz.shape_like("date")
+    output_dtype = rlz.dtype_like("date")
 
 
 def date(d):

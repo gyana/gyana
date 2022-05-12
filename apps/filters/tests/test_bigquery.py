@@ -271,7 +271,7 @@ PARAMS = [
     ),
     pytest.param(
         create_string_filter(Filter.StringPredicate.NOTCONTAINS),
-        QUERY.format("NOT (STRPOS(`athlete`, 'Adam Ondra') - 1 >= 0)"),
+        QUERY.format("NOT STRPOS(`athlete`, 'Adam Ondra') - 1 >= 0"),
         id="String not contains",
     ),
     pytest.param(
@@ -338,32 +338,32 @@ PARAMS = [
     # Time filter
     pytest.param(
         create_time_filter(Filter.TimePredicate.ON),
-        QUERY.format("`lunch` = TIME '11:11:11.1111'"),
+        QUERY.format("`lunch` = '11:11:11.1111'"),
         id="Time on",
     ),
     pytest.param(
         create_time_filter(Filter.TimePredicate.NOTON),
-        QUERY.format("(`lunch` != TIME '11:11:11.1111') OR (`lunch` IS NULL)"),
+        QUERY.format("(`lunch` != '11:11:11.1111') OR (`lunch` IS NULL)"),
         id="Time not on",
     ),
     pytest.param(
         create_time_filter(Filter.TimePredicate.BEFORE),
-        QUERY.format("`lunch` < TIME '11:11:11.1111'"),
+        QUERY.format("`lunch` < '11:11:11.1111'"),
         id="Time before",
     ),
     pytest.param(
         create_time_filter(Filter.TimePredicate.BEFOREON),
-        QUERY.format("`lunch` <= TIME '11:11:11.1111'"),
+        QUERY.format("`lunch` <= '11:11:11.1111'"),
         id="Time before on",
     ),
     pytest.param(
         create_time_filter(Filter.TimePredicate.AFTER),
-        QUERY.format("`lunch` > TIME '11:11:11.1111'"),
+        QUERY.format("`lunch` > '11:11:11.1111'"),
         id="Time after",
     ),
     pytest.param(
         create_time_filter(Filter.TimePredicate.AFTERON),
-        QUERY.format("`lunch` >= TIME '11:11:11.1111'"),
+        QUERY.format("`lunch` >= '11:11:11.1111'"),
         id="Time after on",
     ),
     pytest.param(
@@ -379,32 +379,32 @@ PARAMS = [
     # Date filters
     pytest.param(
         create_date_filter(Filter.TimePredicate.ON),
-        QUERY.format("`birthday` = DATE '1993-07-26'"),
+        QUERY.format("`birthday` = '1993-07-26'"),
         id="Date on",
     ),
     pytest.param(
         create_date_filter(Filter.TimePredicate.NOTON),
-        QUERY.format("(`birthday` != DATE '1993-07-26') OR (`birthday` IS NULL)"),
+        QUERY.format("(`birthday` != '1993-07-26') OR (`birthday` IS NULL)"),
         id="Date not on",
     ),
     pytest.param(
         create_date_filter(Filter.TimePredicate.BEFORE),
-        QUERY.format("`birthday` < DATE '1993-07-26'"),
+        QUERY.format("`birthday` < '1993-07-26'"),
         id="Date before",
     ),
     pytest.param(
         create_date_filter(Filter.TimePredicate.BEFOREON),
-        QUERY.format("`birthday` <= DATE '1993-07-26'"),
+        QUERY.format("`birthday` <= '1993-07-26'"),
         id="Date before on",
     ),
     pytest.param(
         create_date_filter(Filter.TimePredicate.AFTER),
-        QUERY.format("`birthday` > DATE '1993-07-26'"),
+        QUERY.format("`birthday` > '1993-07-26'"),
         id="Date after",
     ),
     pytest.param(
         create_date_filter(Filter.TimePredicate.AFTERON),
-        QUERY.format("`birthday` >= DATE '1993-07-26'"),
+        QUERY.format("`birthday` >= '1993-07-26'"),
         id="Date after on",
     ),
     pytest.param(
@@ -460,7 +460,7 @@ PARAMS = [
     pytest.param(
         create_date_filter(DateRange.THIS_WEEK),
         QUERY.format(
-            f"(EXTRACT(year from `birthday`) = {YEAR}) AND\n      (EXTRACT(ISOWEEK from `birthday`) = {WEEK})"
+            f"(EXTRACT(year from `birthday`) = {YEAR}) AND (EXTRACT(ISOWEEK from `birthday`) = {WEEK})"
         ),
         id="Date on this week",
     ),
@@ -474,7 +474,7 @@ PARAMS = [
     pytest.param(
         create_date_filter(DateRange.LAST_WEEK),
         QUERY.format(
-            f"(EXTRACT(year from `birthday`) = {LAST_WEEK_YEAR}) AND\n      (EXTRACT(ISOWEEK from `birthday`) = {LAST_WEEK})"
+            f"(EXTRACT(year from `birthday`) = {LAST_WEEK_YEAR}) AND (EXTRACT(ISOWEEK from `birthday`) = {LAST_WEEK})"
         ),
         id="Date on last week",
     ),
@@ -487,7 +487,7 @@ PARAMS = [
     pytest.param(
         create_date_filter(DateRange.THIS_MONTH),
         QUERY.format(
-            f"(EXTRACT(year from `birthday`) = {YEAR}) AND\n      (EXTRACT(month from `birthday`) = {MONTH})"
+            f"(EXTRACT(year from `birthday`) = {YEAR}) AND (EXTRACT(month from `birthday`) = {MONTH})"
         ),
         id="Date on this month",
     ),
@@ -501,7 +501,7 @@ PARAMS = [
     pytest.param(
         create_date_filter(DateRange.LAST_MONTH),
         QUERY.format(
-            f"(EXTRACT(year from `birthday`) = {LAST_MONTH_YEAR}) AND\n      (EXTRACT(month from `birthday`) = {LAST_MONTH})"
+            f"(EXTRACT(year from `birthday`) = {LAST_MONTH_YEAR}) AND (EXTRACT(month from `birthday`) = {LAST_MONTH})"
         ),
         id="Date on last month",
     ),
@@ -513,7 +513,7 @@ PARAMS = [
     pytest.param(
         create_date_filter(DateRange.THIS_YEAR_UP_TO_DATE),
         QUERY.format(
-            f"(EXTRACT(year from `birthday`) = {YEAR }) AND\n      (`birthday` <= DATE '{TODAY.strftime('%Y-%m-%d')}')"
+            f"(EXTRACT(year from `birthday`) = {YEAR }) AND (`birthday` <= DATE '{TODAY.strftime('%Y-%m-%d')}')"
         ),
         id="Date on this year up to date",
     ),
@@ -525,7 +525,7 @@ PARAMS = [
     pytest.param(
         create_date_filter(DateRange.THIS_QUARTER),
         QUERY.format(
-            f"(EXTRACT(year from `birthday`) = {YEAR}) AND\n      (EXTRACT(quarter from `birthday`) = {QUARTER})"
+            f"(EXTRACT(year from `birthday`) = {YEAR}) AND (EXTRACT(quarter from `birthday`) = {QUARTER})"
         ),
         id="Date on this quarter",
     ),
@@ -539,7 +539,7 @@ PARAMS = [
     pytest.param(
         create_date_filter(DateRange.LAST_QUARTER),
         QUERY.format(
-            f"(EXTRACT(year from `birthday`) = {LAST_QUARTER_YEAR}) AND\n      (EXTRACT(quarter from `birthday`) = {LAST_QUARTER})"
+            f"(EXTRACT(year from `birthday`) = {LAST_QUARTER_YEAR}) AND (EXTRACT(quarter from `birthday`) = {LAST_QUARTER})"
         ),
         id="Date on last quarter",
     ),
@@ -560,34 +560,32 @@ PARAMS = [
     # Datetime filters
     pytest.param(
         create_datetime_filter(Filter.TimePredicate.ON),
-        QUERY.format("`when` = TIMESTAMP '1993-07-26T06:30:12.1234'"),
+        QUERY.format("`when` = '1993-07-26T06:30:12.1234'"),
         id="Dateime on",
     ),
     pytest.param(
         create_datetime_filter(Filter.TimePredicate.NOTON),
-        QUERY.format(
-            "(`when` != TIMESTAMP '1993-07-26T06:30:12.1234') OR (`when` IS NULL)"
-        ),
+        QUERY.format("(`when` != '1993-07-26T06:30:12.1234') OR (`when` IS NULL)"),
         id="Dateime not on",
     ),
     pytest.param(
         create_datetime_filter(Filter.TimePredicate.BEFORE),
-        QUERY.format("`when` < TIMESTAMP '1993-07-26T06:30:12.1234'"),
+        QUERY.format("`when` < '1993-07-26T06:30:12.1234'"),
         id="Dateime before",
     ),
     pytest.param(
         create_datetime_filter(Filter.TimePredicate.BEFOREON),
-        QUERY.format("`when` <= TIMESTAMP '1993-07-26T06:30:12.1234'"),
+        QUERY.format("`when` <= '1993-07-26T06:30:12.1234'"),
         id="Dateime before on",
     ),
     pytest.param(
         create_datetime_filter(Filter.TimePredicate.AFTER),
-        QUERY.format("`when` > TIMESTAMP '1993-07-26T06:30:12.1234'"),
+        QUERY.format("`when` > '1993-07-26T06:30:12.1234'"),
         id="Dateime after",
     ),
     pytest.param(
         create_datetime_filter(Filter.TimePredicate.AFTERON),
-        QUERY.format("`when` >= TIMESTAMP '1993-07-26T06:30:12.1234'"),
+        QUERY.format("`when` >= '1993-07-26T06:30:12.1234'"),
         id="Dateime after on",
     ),
     pytest.param(
