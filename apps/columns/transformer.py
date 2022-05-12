@@ -55,7 +55,7 @@ def _cast_string(py_scalar_or_column):
     return (
         ibis.literal(py_scalar_or_column).cast(dt.string)
         if isinstance(py_scalar_or_column, int)
-        else ibis.cast(py_scalar_or_column, dt.string)
+        else py_scalar_or_column.cast(dt.string)
     )
 
 

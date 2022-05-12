@@ -260,8 +260,7 @@ def _parse_datetime(t, expr):
 
 
 class Today(Constant):
-    def output_type(self):
-        return dt.date.scalar_type()
+    output_dtype = dt.date
 
 
 def today():
