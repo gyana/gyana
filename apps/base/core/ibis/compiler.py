@@ -71,9 +71,7 @@ def _endswith(t, expr):
 
 class AnyValue(Reduction):
     arg = rlz.column(rlz.any)
-
-    def output_type(self):
-        return self.arg.type().scalar_type()
+    output_dtype = rlz.dtype_like("arg")
 
 
 def any_value(arg):
