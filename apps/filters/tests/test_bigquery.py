@@ -189,7 +189,7 @@ PARAMS = [
             numeric_predicate=Filter.NumericPredicate.NOTIN,
             integer_values=[42, 43],
         ),
-        QUERY.format("`id` NOT IN (42, 43)"),
+        QUERY.format("`id` NOT IN (42, 43) OR (`id` IS NULL)"),
         id="Integer not in",
     ),
     # Float filters
@@ -250,7 +250,7 @@ PARAMS = [
             numeric_predicate=Filter.NumericPredicate.NOTIN,
             float_values=[42.0, 42.3],
         ),
-        QUERY.format("`stars` NOT IN (42.0, 42.3)"),
+        QUERY.format("`stars` NOT IN (42.0, 42.3) OR (`stars` IS NULL)"),
         id="Float not in",
     ),
     # String filters
@@ -311,7 +311,7 @@ PARAMS = [
             string_predicate=Filter.StringPredicate.NOTIN,
             string_values=["Janja Garnbret"],
         ),
-        QUERY.format("`athlete` NOT IN ('Janja Garnbret')"),
+        QUERY.format("`athlete` NOT IN ('Janja Garnbret') OR (`athlete` IS NULL)"),
         id="String not in",
     ),
     pytest.param(
