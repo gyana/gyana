@@ -1,4 +1,5 @@
 import json
+import logging
 
 from django.urls import reverse
 from django.utils import timezone
@@ -110,11 +111,12 @@ class NodeGrid(SingleTableMixin, TurboFrameDetailView):
                 **super().get_context_data(**kwargs),
                 **self.get_additional_context(),
             }
-        except Exception as e:
+        except Exception as err:
             context = {"object": self.get_object()}
+            logging.error(err, exc_info=err)
             return {
                 **context,
-                **handle_node_exception(e),
+                **handle_node_exception(err),
                 **self.get_additional_context(),
             }
 
