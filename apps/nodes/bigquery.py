@@ -134,9 +134,10 @@ def get_join_query(node, left, right, *queries):
         if join.how == "inner":
             drops.add(right_col)
             relabels[left_col] = join.left_column
+
     return (
         query.materialize()
-        .drop(drops)
+        .drop(list(drops))
         .relabel({key: value for key, value in relabels.items() if key not in drops})
     )
 
@@ -247,7 +248,7 @@ def get_pivot_query(node, parent):
     names_query = (
         _format_literal(row[node.pivot_column], column_type)
         for row in client.get_query_results(
-            parent[node.pivot_column].distinct().compile()
+            parent[[node.pivot_column]].distinct().compile()
         ).rows_dict
     )
     # `pivot_index` is optional and won't be displayed if not selected
