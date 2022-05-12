@@ -359,6 +359,11 @@ class PageName(PageMixin, TurboUpdateView):
     fields = ["name"]
     template_name = "dashboards/forms/name_page.html"
 
+    @property
+    def page(self):
+        # Doesnt take the page parameter
+        return self.object
+
     def get_success_url(self) -> str:
         return reverse(
             "project_dashboards:page-name",
