@@ -113,7 +113,7 @@ def test_join_node(setup):
     # Mocking the table conditionally requires a little bit more work
     # So we simply join the table with itself which leads to duplicate columns that
     # Are aliased
-    join_query = "SELECT `id_1` AS `id`, `athlete_1`, `birthday_1`, `athlete_2`, `birthday_2`\nFROM (\n  SELECT *\n  FROM (\n    SELECT `id` AS `id_1`, `athlete` AS `athlete_1`, `birthday` AS `birthday_1`\n    FROM `project.dataset.table`\n  ) t1\n    INNER JOIN (\n      SELECT `id` AS `id_2`, `athlete` AS `athlete_2`, `birthday` AS `birthday_2`\n      FROM `project.dataset.table`\n    ) t2\n      ON t1.`id_1` = t2.`id_2`\n) t0"
+    join_query = "SELECT `id_1` AS `id`, `athlete_1`, `birthday_1`, `athlete_2`, `birthday_2`\nFROM (\n  SELECT `id_1`, `athlete_1`, `birthday_1`, `athlete_2`, `birthday_2`\n  FROM (\n    SELECT `id` AS `id_1`, `athlete` AS `athlete_1`, `birthday` AS `birthday_1`\n    FROM `project.dataset.table`\n  ) t1\n    INNER JOIN (\n      SELECT `id` AS `id_2`, `athlete` AS `athlete_2`, `birthday` AS `birthday_2`\n      FROM `project.dataset.table`\n    ) t2\n      ON t1.`id_1` = t2.`id_2`\n) t0"
     assert query.compile() == join_query
 
     join_node.join_how = "outer"
@@ -123,7 +123,7 @@ def test_join_node(setup):
         == """\
 SELECT `id_1` AS `id`, `athlete_1`, `birthday_1`, `athlete_2`, `birthday_2`
 FROM (
-  SELECT *
+  SELECT `id_1`, `athlete_1`, `birthday_1`, `athlete_2`, `birthday_2`
   FROM (
     SELECT `id` AS `id_1`, `athlete` AS `athlete_1`, `birthday` AS `birthday_1`
     FROM `project.dataset.table`
