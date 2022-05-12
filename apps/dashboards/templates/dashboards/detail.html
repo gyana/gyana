@@ -102,11 +102,9 @@
           >
             Delete
           </a>
+
           {% flag 'beta' %}
-          
             <button
-              data-controller="tooltip"
-              data-tooltip-content="Show dashboard history"
               data-action="click->tf-modal#open"
               data-modal-id="dashboard:history"
               data-modal-classes="tf-modal--auto tf-modal--wide tf-modal--tall"
@@ -115,7 +113,6 @@
             >
               <span class='beta mr-4'>History</span>
             </button>
-
           {% endflag %}
 
             <p

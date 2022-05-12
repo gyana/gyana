@@ -1,4 +1,4 @@
-{% load static %}
+{% load static waffle_tags %}
 
 <!DOCTYPE html>
 <html>
@@ -125,9 +125,11 @@
           Last updated <abbr>{% include "columns/natural_datetime.html" with datetime=dashboard.updated %}</abbr>
         </p>
 
-        <button data-controller="pdf-export" data-filename="{{ dashboard.name|slugify }}.pdf" class="link small">
-          Download as PDF
-        </button>
+        {% flag 'beta' %}
+          <button data-controller="pdf-export" data-filename="{{ dashboard.name|slugify }}.pdf" class="link small">
+            Download as PDF
+          </button>
+        {% endflag %}
 
         {% if dashboard.shared_status == "password_protected" %}
           <a class="link small" href="{% url 'dashboards:logout' dashboard.shared_id %}">Forget me on this browser</a>
