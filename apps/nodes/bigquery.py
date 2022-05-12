@@ -248,7 +248,7 @@ def get_pivot_query(node, parent):
     names_query = (
         _format_literal(row[node.pivot_column], column_type)
         for row in client.get_query_results(
-            parent[node.pivot_column].distinct().compile()
+            parent[[node.pivot_column]].distinct().compile()
         ).rows_dict
     )
     # `pivot_index` is optional and won't be displayed if not selected
