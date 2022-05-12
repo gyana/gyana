@@ -5,8 +5,6 @@ from apps.base.tests.mock_data import TABLE
 from apps.columns.bigquery import compile_formula
 from apps.columns.transformer import FUNCTIONS
 
-UNNAMED_QUERY = "SELECT {} AS `{}`\nFROM olympians"
-
 QUERY = "SELECT {} AS `tmp`\nFROM olympians"
 
 
@@ -37,9 +35,7 @@ def create_datetime_unary_param(func_name, sql_name=None):
 def create_extract_unary_param(func_name, sql_name=None):
     return pytest.param(
         f"{func_name}(when)",
-        UNNAMED_QUERY.format(
-            f"EXTRACT({sql_name or func_name} from `when`)", sql_name or func_name
-        ),
+        QUERY.format(f"EXTRACT({sql_name or func_name} from `when`)"),
         id=func_name,
     )
 
@@ -62,19 +58,17 @@ PARAMS = [
     ),
     pytest.param(
         'convert(medals, "float")',
-        UNNAMED_QUERY.format("CAST(`medals` AS FLOAT64)", "cast(medals, float64)"),
+        QUERY.format("CAST(`medals` AS FLOAT64)"),
         id="convert int to float",
     ),
     pytest.param(
         'convert(athlete, "timestamp")',
-        UNNAMED_QUERY.format(
-            "CAST(`athlete` AS TIMESTAMP)", "cast(athlete, timestamp)"
-        ),
+        QUERY.format("CAST(`athlete` AS TIMESTAMP)"),
         id="convert string to datetime",
     ),
     pytest.param(
         'convert(birthday, "str")',
-        UNNAMED_QUERY.format("CAST(`birthday` AS STRING)", "cast(birthday, string)"),
+        QUERY.format("CAST(`birthday` AS STRING)"),
         id="convert date to string",
     ),
     pytest.param(
@@ -399,7 +393,7 @@ PARAMS = [
     ),
     pytest.param(
         "weekday(birthday)",
-        "SELECT\n  CASE EXTRACT(DAYOFWEEK FROM `birthday`)\n    WHEN 1 THEN 'Sunday'\n    WHEN 2 THEN 'Monday'\n    WHEN 3 THEN 'Tuesday'\n    WHEN 4 THEN 'Wednesday'\n    WHEN 5 THEN 'Thursday'\n    WHEN 6 THEN 'Friday'\n    WHEN 7 THEN 'Saturday'\n    ELSE NULL\n  END AS `tmp`\nFROM olympians",
+        "SELECT\n  CASE EXTRACT(DAYOFWEEK FROM `birthday`)\n    WHEN 1 THEN 'Sunday'\n    WHEN 2 THEN 'Monday'\n    WHEN 3 THEN 'Tuesday'\n    WHEN 4 THEN 'Wednesday'\n    WHEN 5 THEN 'Thursday'\n    WHEN 6 THEN 'Friday'\n    WHEN 7 THEN 'Saturday'\n    ELSE CAST(NULL AS STRING)\n  END AS `tmp`\nFROM olympians",
         id="weekday",
     ),
     # Test boolean functions and and or

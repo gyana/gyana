@@ -12,10 +12,6 @@ from apps.columns.models import EditColumn
 
 pytestmark = pytest.mark.django_db
 
-
-UNNAMED_QUERY = """SELECT {} AS `{}`
-FROM olympians"""
-
 QUERY = """SELECT {} AS `tmp`
 FROM olympians"""
 
@@ -23,7 +19,7 @@ FROM olympians"""
 def create_extract_edit(column, extraction, type_):
     return pytest.param(
         EditColumn(column=column, **{f"{type_.lower()}_function": extraction}),
-        UNNAMED_QUERY.format(f"EXTRACT({extraction} from `{column}`)", extraction),
+        QUERY.format(f"EXTRACT({extraction} from `{column}`)"),
         id=f"{type_} {extraction}",
     )
 
