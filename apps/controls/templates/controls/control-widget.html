@@ -1,6 +1,7 @@
 {% extends 'widgets/widget_base.html' %}
 
 {% block widget.id %}control-widget-{{ object.id }}{% endblock widget.id %}
+{% block widget.templateId %}control-widget-{{ object.id }}{% endblock widget.templateId %}
 
 {% block widget.attrs %}
   data-is-control="true"

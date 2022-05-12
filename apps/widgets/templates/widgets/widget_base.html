@@ -5,8 +5,12 @@ IMPORTANT: Any style/layout changs here should also be made to
 apps/dashboards/templates/dashboards/preview.html to reflect the changes in
 preview mode.
 {% endcomment %}
-<gy-widget id="{% block widget.id %}widget-{{ object.id }}{% endblock widget.id %}">
-  <template id="widget-{{ object.id }}-template">
+<gy-widget
+  id="{% block widget.id %}widget-{{ object.id }}{% endblock widget.id %}"
+>
+  <template
+    id="{% block widget.templateId %}widget-{{ object.id }}{% endblock widget.templateId %}-template"
+  >
     <div
       class="h-full w-full"
       data-id="{{ object.id }}"
