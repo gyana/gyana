@@ -65,6 +65,11 @@ class UserLoginForm(LoginForm):
         del self.fields["login"].widget.attrs["placeholder"]
         del self.fields["password"].widget.attrs["placeholder"]
 
+    def login(self, *args, **kwargs):
+        identify_user(self.user)
+
+        return super(UserLoginForm, self).login(*args, **kwargs)
+
 
 class CustomUserChangeForm(UserChangeForm):
     email = forms.EmailField(required=True, label="Email Address")
