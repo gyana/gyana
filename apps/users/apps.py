@@ -10,7 +10,5 @@ class UserConfig(AppConfig):
         from allauth.account.admin import EmailAddress
         from django.contrib import admin
 
-        from . import signals  # noqa
-
         # remove app registered automatically by allauth
         admin.site.unregister(EmailAddress)
