@@ -1,5 +1,7 @@
+from django.conf import settings
 from django.core.cache import cache
 from ibis.expr.types import TableExpr
+from ibis_bigquery.client import BigQueryTable
 
 from apps.base import clients
 from apps.base.clients import ibis_client
@@ -25,13 +27,6 @@ def _get_cache_key_for_table(table):
     return f"cache-ibis-table-{md5_kwargs(id=table.id, data_updated=str(table.data_updated))}"
 
 
-def _set_source(table, source):
-    bq_table = table.op()
-    kwargs = dict(zip(bq_table.op.argnames, bq_table.args))
-    bq_table = bq_table.__class__(**kwargs, source=source)
-    table._arg = bq_table
-
-
 def get_query_from_table(table: Table) -> TableExpr:
     """
     Queries a bigquery table through Ibis client.
@@ -41,14 +36,20 @@ def get_query_from_table(table: Table) -> TableExpr:
     conn = ibis_client()
 
     key = _get_cache_key_for_table(table)
-    tbl = cache.get(key)
+    schema = cache.get(key)
 
-    if tbl is None:
+    if schema is None:
         tbl = conn.table(table.bq_table, database=table.bq_dataset)
-        _set_source(tbl, None)
-        cache.set(key, tbl, 24 * 3600)
 
-    _set_source(tbl, conn)
+        cache.set(key, tbl.schema(), 24 * 3600)
+    else:
+        tbl = TableExpr(
+            BigQueryTable(
+                name=f"{settings.GCP_PROJECT}.{table.bq_dataset}.{table.bq_table}",
+                schema=schema,
+                source=conn,
+            )
+        )
 
     if (
         table.integration is not None
