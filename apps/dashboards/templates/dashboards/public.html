@@ -28,9 +28,7 @@
   <link rel="stylesheet" href="{% static 'css/tailwind.css' %}">
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
-  <script type="module">
-    import * as hotwiredTurbo from '{% static 'js/turbo-bundle.js' %}';
-  </script>
+  <script src="{% static 'js/turbo-bundle.js' %}"></script>
   <script src="{% static 'js/stimulus-bundle.js' %}"></script>
   <script src="{% static 'rest_framework/js/coreapi-0.1.1.js' %}"></script>
   <script src="{% url 'api_schemajs' %}"></script>
@@ -39,7 +37,10 @@
   <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
   <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 </head>
-<body class="pad">
+<body
+  class="pad"
+  data-controller="tf-modal on-submit-loading turbo-loading"
+>
   {% block body %}
   <div class="widgets flex items-center justify-center">
     {% if not request.GET.embed %}
@@ -143,6 +144,32 @@
     }
   </style>
   {% endblock %}
+
+  {% comment %}
+  For use with the `tf_modal_controller.js` controller.
+  {% endcomment %}
+  {% block body.modal %}
+    <div
+      data-tf-modal-target="modal"
+      class="tf-modal"
+      hidden
+    >
+      <div class="card card--none card--modal">
+        {% block modal.body %}
+          <turbo-frame
+            class="overflow-hidden flex-1"
+            data-tf-modal-target="turboFrame"
+          >
+            <div class="placeholder-scr placeholder-scr--fillscreen">
+              <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-2x"></i>
+            </div>
+          </turbo-frame>
+        {% endblock modal.body %}
+      </div>
+    </div>
+
+    {% include "components/modal_closing_warning.html" %}
+  {% endblock body.modal %}
 
   {% comment %} Has to be loaded once GyWidgets are rendered {% endcomment %}
   {% include 'components/fusionchart_scripts.html' %}
