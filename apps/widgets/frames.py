@@ -150,8 +150,13 @@ class WidgetUpdate(DashboardMixin, TurboFrameUpdateView):
     def get_form_class(self):
         if self.tab == "style":
             return STYLE_FORMS.get(self.object.kind, DefaultStyleForm)
-        if self.tab == "source":
+
+        if self.tab == "source" and self.object.kind not in [
+            Widget.Kind.IFRAME,
+            Widget.Kind.IMAGE,
+        ]:
             return WidgetSourceForm
+
         return FORMS[self.request.POST.get("kind", self.object.kind)]
 
     def get_form_kwargs(self):
