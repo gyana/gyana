@@ -453,7 +453,7 @@ def test_window_node(setup):
     window.save()
     assert get_query_from_node(window_node).compile() == INPUT_QUERY.replace(
         "*",
-        "*,\n       count(`athlete`) OVER (PARTITION BY `birthday` ORDER BY `id`) AS `window`",
+        "*,\n       count(`athlete`) OVER (PARTITION BY `birthday` ORDER BY `id` DESC) AS `window`",
     )
 
     window_node.window_columns.create(
@@ -462,7 +462,7 @@ def test_window_node(setup):
     assert get_query_from_node(window_node).compile() == INPUT_QUERY.replace(
         "*",
         """*,
-       count(`athlete`) OVER (PARTITION BY `birthday` ORDER BY `id`) AS `window`,
+       count(`athlete`) OVER (PARTITION BY `birthday` ORDER BY `id` DESC) AS `window`,
        count(`id`) OVER (PARTITION BY `athlete`) AS `door`""",
     )
 
