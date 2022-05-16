@@ -49,6 +49,9 @@ class WidgetStyle(models.Model):
 
     # Table specific configuration
     table_show_header = models.BooleanField(default=True, blank=True)
+    table_hide_data_type = models.BooleanField(
+        default=False, verbose_name="Hide data type icon", blank=True
+    )
 
     # Gauge specific configuration
     lower_limit = models.IntegerField(default=0)

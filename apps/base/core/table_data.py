@@ -224,8 +224,10 @@ def get_table(schema, query, footer=None, settings=None, **kwargs):
                     "class": get_type_class(type_),
                     "data-controller": "tooltip",
                     "data-tooltip-content": get_type_name(type_),
-                },
-            },
+                }
+            }
+            if not settings.get("hide_data_type")
+            else {},
             footer=footer.get(name) if footer else None,
         )
 

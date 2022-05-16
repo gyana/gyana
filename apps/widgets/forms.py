@@ -396,6 +396,7 @@ class TableStyleForm(StyleMixin, BaseModelForm):
         model = Widget
         fields = [
             "table_show_header",
+            "table_hide_data_type",
             "background_color",
         ]
 
