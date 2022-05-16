@@ -65,7 +65,9 @@ def add_output_context(context, widget, request, control, url=None):
         context["column"] = column
         if column.currency:
             context["currency"] = CURRENCY_SYMBOLS_MAP[column.currency]
-        context["metric"] = metric
+        context["metric"] = (
+            metric if isinstance(metric, int) else round(metric, column.rounding)
+        )
     else:
         chart, chart_id = chart_to_output(widget, control)
         context.update(chart)
