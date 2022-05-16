@@ -25,6 +25,13 @@ def _get_cache_key_for_table(table):
     return f"cache-ibis-table-{md5_kwargs(id=table.id, data_updated=str(table.data_updated))}"
 
 
+def _set_source(table, source):
+    bq_table = table.op()
+    kwargs = dict(zip(bq_table.op.argnames, bq_table.args))
+    bq_table = bq_table.__class__(**kwargs, source=source)
+    table._arg = bq_table
+
+
 def get_query_from_table(table: Table) -> TableExpr:
     """
     Queries a bigquery table through Ibis client.
@@ -38,8 +45,10 @@ def get_query_from_table(table: Table) -> TableExpr:
 
     if tbl is None:
         tbl = conn.table(table.bq_table, database=table.bq_dataset)
-
+        _set_source(tbl, None)
         cache.set(key, tbl, 24 * 3600)
+
+    _set_source(tbl, conn)
 
     if (
         table.integration is not None
