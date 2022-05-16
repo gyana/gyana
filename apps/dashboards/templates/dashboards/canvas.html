@@ -46,6 +46,7 @@
         height:{{ dashboard.height }}px;
         --grid-size:{{ dashboard.grid_size }}px;
       "
+      data-grid-size="{{ dashboard.grid_size }}"
     >
       {% for object in page.control_widgets.all %}
         {% include 'controls/control-widget.html' with object=object control=object.control %}
@@ -91,8 +92,4 @@
       {% endif %}
     </div>
   </div>
-  {% comment %}
-  The modal needs to be below the container because otherwise the
-  updated output turbo-stream would update the chart inside the modal.
-  {% endcomment %}
 </div>
