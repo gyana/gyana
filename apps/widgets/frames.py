@@ -295,6 +295,7 @@ class WidgetOutput(DashboardMixin, SingleTableMixin, TurboFrameDetailView):
 
     def get_table(self, **kwargs):
         if self.object.is_valid and self.object.kind == Widget.Kind.TABLE:
+            self.paginate_by = self.object.table_paginate_by
             table = table_to_output(
                 self.object,
                 self.object.page.control if self.object.page.has_control else None,

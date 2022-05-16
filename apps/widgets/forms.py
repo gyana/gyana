@@ -397,6 +397,7 @@ class TableStyleForm(StyleMixin, BaseModelForm):
         fields = [
             "table_show_header",
             "table_hide_data_type",
+            "table_paginate_by",
             "background_color",
         ]
 

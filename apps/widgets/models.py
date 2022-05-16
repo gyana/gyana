@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
+from django.core.validators import MaxValueValidator
 from django.db import models
 from django.urls import reverse
 
@@ -51,6 +52,9 @@ class WidgetStyle(models.Model):
     table_show_header = models.BooleanField(default=True, blank=True)
     table_hide_data_type = models.BooleanField(
         default=False, verbose_name="Hide data type icon", blank=True
+    )
+    table_paginate_by = models.PositiveIntegerField(
+        default=15, validators=[MaxValueValidator(100)], verbose_name="Rows per page"
     )
 
     # Gauge specific configuration
