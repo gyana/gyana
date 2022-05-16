@@ -53,7 +53,7 @@ def _format_string(value):
     if not re.compile("^[a-zA-Z_].*").match(value):
         value = f"_{value}"
 
-    value = re.sub(re.compile("[\(\) @€$%&^*+-]"), "_", value)
+    value = re.sub(re.compile("[\(\) \\\/@€$%&^*+-]"), "_", value)
     return value
 
 
