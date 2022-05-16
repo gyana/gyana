@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.core.cache import cache
 from ibis.expr.types import TableExpr
 from ibis_bigquery.client import BigQueryTable
@@ -44,7 +45,9 @@ def get_query_from_table(table: Table) -> TableExpr:
     else:
         tbl = TableExpr(
             BigQueryTable(
-                name=f"{table.bq_dataset}.{table.bq_table}", schema=schema, source=conn
+                name=f"{settings.GCP_PROJECT}.{table.bq_dataset}.{table.bq_table}",
+                schema=schema,
+                source=conn,
             )
         )
 
