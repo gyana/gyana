@@ -2,9 +2,16 @@ import json
 
 import ibis
 import ibis.expr.datatypes as dt
+from ibis.common.exceptions import IbisTypeError
 from lark import Transformer, v_args
 
 from apps.base.core.ibis.compiler import today
+from apps.columns.exceptions import (
+    ArgumentError,
+    ColumnAttributeError,
+    ColumnNotFound,
+    FunctionNotFound,
+)
 
 from .types import TYPES
 
@@ -48,7 +55,7 @@ def _cast_string(py_scalar_or_column):
     return (
         ibis.literal(py_scalar_or_column).cast(dt.string)
         if isinstance(py_scalar_or_column, int)
-        else ibis.cast(py_scalar_or_column, dt.string)
+        else py_scalar_or_column.cast(dt.string)
     )
 
 
@@ -113,11 +120,18 @@ class TreeToIbis(Transformer):
         return token.value.strip("'")
 
     def column(self, token):
-        return self.query[token.value]
+        try:
+            return self.query[token.value]
+        except IbisTypeError:
+            raise ColumnNotFound(token.value, list(self.query.schema()))
 
     def function(self, token, *args):
         function_name = token.value.lower()
-        function = next(filter(lambda f: f["name"] == function_name, FUNCTIONS))
+
+        try:
+            function = next(filter(lambda f: f["name"] == function_name, FUNCTIONS))
+        except StopIteration:
+            raise FunctionNotFound(function_name)
         args = list(args)
         if not args:
             return NO_CALLER[function_name]()
@@ -127,11 +141,21 @@ class TreeToIbis(Transformer):
 
         if odd_func := ODD_FUNCTIONS.get(function["id"]):
             return odd_func(caller, args)
-        func = getattr(caller, function["id"])
+        try:
+            func = getattr(caller, function["id"])
+        except AttributeError:
+            raise ColumnAttributeError(caller, function)
         if function["id"] != "coalesce" and any(
             arg.get("repeatable") for arg in function["arguments"]
         ):
             return func(args)
+
+        if function["id"] != "coalesce" and (
+            len(args) + 1 > len(function["arguments"])
+            or len(args) + 1
+            < len([f for f in function["arguments"] if not f.get("optional")])
+        ):
+            raise ArgumentError(function=function, args=[caller, *args])
         return func(*args)
 
     # -----------------------------------------------------------------------

@@ -1,4 +1,7 @@
 {% extends 'nodes/errors/default.html' %}
 {% block error_message %}
-  Column types are not compatible to join tables.
+  Cannot join column <strong class="text-pink">{{ left_column_name }}</strong> with <strong class='text-pink'>{{ right_column_name }}</strong>
+  because <strong class="text-pink">{{ left_column_name }}</strong> is of type <strong class="text-black-50">{{ left_column_type }}</strong> 
+  and <strong class="text-pink">{{ right_column_name }}</strong>
+  is of type <strong class="text-black-50">{{ right_column_type }}</strong>.
 {% endblock %}

@@ -13,7 +13,12 @@ const functions = require('../../functions.json')
 
 export default class extends Controller {
   static targets = ['textarea']
+
   connect() {
+    if (this.textareaTarget.dataset.codemirrorIgnore) {
+      return
+    }
+
     const columns = JSON.parse(
       this.element.querySelector('#columns').innerHTML
     ).map((column) => ({

@@ -39,15 +39,15 @@
         {% endif %}
 
         <footer>
-          <p data-controller="tooltip">
-            {{ project.record.num_rows|intcomma }} rows used
+          {% if team.is_ltd %}
+            <p data-controller="tooltip">
+              {{ project.record.num_rows|intcomma }} rows used
 
-            <span data-tooltip-target="body">
-              <i>~{{ project.record.row_percentage }}</i>% of your quota
-            </span>
-
-            <span class="project-card__quota" style="width:{{ project.record.row_percentage}}%;"></span>
-          </p>
+              <span data-tooltip-target="body">
+                <i>~{{ project.record.row_percentage }}</i>% of your quota
+              </span>
+            </p>
+          {% endif %}
 
           <a href="{% url 'project_integrations:list' project.record.id %}">
             <i class="far fa-fw fa-database"></i>{{ project.record.integration_count }}

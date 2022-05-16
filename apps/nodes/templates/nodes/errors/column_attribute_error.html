@@ -1,0 +1,6 @@
+{% extends 'nodes/errors/default.html' %}
+{% block header %}Formula error{% endblock %}
+{% block error_message %}
+  You cannot use <strong class='text-blue'>{{ function.name }}</strong> on column <strong class='text-pink'>{{ column  }}</strong> 
+  because it is a <strong class='text-black-50'>{{column_type}}</strong> column.
+{% endblock %}

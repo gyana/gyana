@@ -1,0 +1,6 @@
+{% extends 'nodes/errors/default.html' %}
+{% block header %}Formula error{% endblock %}
+{% block error_message %}
+  Function <strong class='text-orange'>{{ function }}</strong> does not exist.<br />
+  {% if suggestion %}Did you maybe mean <strong class='text-blue'>{{suggestion}}</strong>?{% endif %}
+{% endblock %}

@@ -15,6 +15,7 @@ from google.cloud.language import (
 )
 
 from apps.base import clients
+from apps.nodes.exceptions import CreditException
 from apps.nodes.models import Node
 from apps.tables.models import Table
 from apps.teams.models import CreditTransaction, OutOfCreditsException
@@ -44,16 +45,6 @@ SCORES_ROUND_DP = 1
 
 TEXT_COLUMN_NAME = "text"
 SENTIMENT_COLUMN_NAME = "sentiment"
-
-
-class CreditException(Exception):
-    def __init__(self, node_id, uses_credits) -> None:
-        self.node_id = node_id
-        self.uses_credits = uses_credits
-
-    @property
-    def node(self):
-        return Node.objects.get(pk=self.node_id)
 
 
 def _remove_unicode(string: str) -> str:
