@@ -32,7 +32,7 @@
   <p class="metric__comparison">
     {% if zero_division %}
     No value in previous period
-    {% elif change %}
+    {% elif change != None %}
     
     <span class="
       {% if change < 0 and not widget.positive_decrease %}
