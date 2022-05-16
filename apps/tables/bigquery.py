@@ -56,7 +56,7 @@ def get_query_from_table(table: Table) -> TableExpr:
         and table.integration.kind == table.integration.Kind.CONNECTOR
     ):
         # Drop the intersection of fivetran cols and schema cols
-        tbl = tbl.drop(set(tbl.schema().names) & FIVETRAN_COLUMNS)
+        tbl = tbl.drop(list(set(tbl.schema().names) & FIVETRAN_COLUMNS))
 
     return tbl
 
