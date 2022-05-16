@@ -8,17 +8,23 @@ from apps.base.analytics import WIDGET_CREATED_EVENT, WIDGET_DUPLICATED_EVENT
 from apps.base.views import TurboCreateView, TurboUpdateView
 from apps.dashboards.mixins import DashboardMixin
 
-from .forms import WidgetDuplicateForm
+from .forms import WidgetCreateForm, WidgetDuplicateForm
 from .models import Widget
 
 
 class WidgetCreate(DashboardMixin, TurboCreateView):
     template_name = "widgets/create.html"
     model = Widget
-    fields = ["kind", "x", "y", "page"]
+    form_class = WidgetCreateForm
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+
+        kwargs["dashboard"] = self.dashboard
+
+        return kwargs
 
     def form_valid(self, form):
-
         # give different dimensions to text widget
         # TODO: make an abstraction with default values per widget kind
         if form.instance.kind == Widget.Kind.TEXT:
