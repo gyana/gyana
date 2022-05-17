@@ -1,12 +1,11 @@
 import logging
 
 import analytics
-from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django_tables2.tables import Table as DjangoTable
 from django_tables2.views import SingleTableMixin
 from honeybadger import honeybadger
-from turbo_response import TurboFrame, TurboStream
+from turbo_response import TurboStream
 from turbo_response.response import TurboStreamResponse
 
 from apps.base.analytics import (
@@ -43,7 +42,7 @@ def add_output_context(context, widget, request, control, url=None):
         if "table" not in context:
             table = table_to_output(widget, control, url)
             context["table"] = RequestConfig(
-                request,
+                request, paginate={"per_page": widget.table_paginate_by}
             ).configure(table)
     elif widget.kind == Widget.Kind.METRIC:
         metric = metric_to_output(widget, control)
@@ -301,7 +300,11 @@ class WidgetOutput(DashboardMixin, SingleTableMixin, TurboFrameDetailView):
                 self.object.page.control if self.object.page.has_control else None,
             )
             return RequestConfig(
-                self.request, paginate=self.get_table_pagination(table)
+                self.request,
+                paginate={
+                    **self.get_table_pagination(table),
+                    "per_page": self.object.table_paginate_by,
+                },
             ).configure(table)
         return type("DynamicTable", (DjangoTable,), {})(data=[])
 

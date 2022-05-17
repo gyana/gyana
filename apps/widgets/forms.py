@@ -1,5 +1,6 @@
 import copy
 import re
+import math
 
 from django import forms
 from django.db.models import Case, Q, When
@@ -18,7 +19,7 @@ from apps.dashboards.forms import PaletteColorsField
 from apps.tables.models import Table
 
 from .formsets import FORMSETS, AggregationColumnFormset, ControlFormset, FilterFormset
-from .models import COUNT_COLUMN_NAME, WIDGET_KIND_TO_WEB, Widget
+from .models import COUNT_COLUMN_NAME, WIDGET_KIND_TO_WEB, DEFAULT_WIDTH, DEFAULT_HEIGHT, Widget
 
 
 def get_not_deleted_entries(data, regex):
@@ -27,6 +28,44 @@ def get_not_deleted_entries(data, regex):
         for key, value in data.items()
         if re.match(re.compile(regex), key) and data.get(key[:-6] + "DELETE") != "on"
     ]
+
+
+class WidgetCreateForm(BaseModelForm):
+    class Meta:
+        model = Widget
+        fields = ["kind", "x", "y", "page"]
+
+    def __init__(self, *args, **kwargs):
+        self.dashboard = kwargs.pop("dashboard", None)
+        super().__init__(*args, **kwargs)
+
+    def clean_x(self):
+        value = self.cleaned_data["x"]
+
+        # Keep widget within canvas bounds
+        value = max(min(value, self.dashboard.width), 0)
+
+        if (value + DEFAULT_WIDTH > self.dashboard.width):
+            value = self.dashboard.width - DEFAULT_WIDTH
+
+        if self.dashboard.snap_to_grid:
+            value = math.ceil(value / self.dashboard.grid_size) * self.dashboard.grid_size
+
+        return value
+
+    def clean_y(self):
+        value = self.cleaned_data["y"]
+        
+        # Keep widget within canvas bounds
+        value = max(min(value, self.dashboard.height), 0)
+
+        if (value + DEFAULT_HEIGHT > self.dashboard.height):
+            value = self.dashboard.height - DEFAULT_HEIGHT
+
+        if self.dashboard.snap_to_grid:
+            value = math.ceil(value / self.dashboard.grid_size) * self.dashboard.grid_size
+
+        return value
 
 
 class WidgetSourceForm(IntegrationSearchMixin, BaseModelForm):
