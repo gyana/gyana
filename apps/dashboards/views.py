@@ -183,8 +183,13 @@ class DashboardDuplicate(TurboUpdateView):
 # This allows a shared dashboard to be embeded in an iFrame
 @method_decorator(xframe_options_exempt, name="dispatch")
 class DashboardPublic(DetailView):
-    template_name = "dashboards/public.html"
     model = Dashboard
+
+    def get_template_names(self):
+        if self.request.GET.get("printPreview"):
+            return "dashboards/print.html"
+
+        return "dashboards/public.html"
 
     def get_object(self):
         return self.kwargs["dashboard"]

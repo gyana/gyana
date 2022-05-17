@@ -145,3 +145,22 @@
   display: block;
   visibility: visible;
 }
+
+.widgets__export-header {
+  align-items: center;
+  background-color: var(--c-white);
+  border-bottom: 1px solid var(--c-gray);
+  display: flex;
+  gap: 3.2rem;
+  height: 4.2rem;
+  left: 0;
+  padding: 0.3rem 0.3rem 0.3rem 0.9rem;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: var(--z-modal);
+  
+  & + .widgets {
+    margin-top: 4.2rem;
+  }
+}

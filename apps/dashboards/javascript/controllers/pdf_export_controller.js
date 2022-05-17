@@ -18,6 +18,12 @@ export default class extends Controller {
   }
 
   async handleClick() {
+    let placeholder = this.createPlaceholder()
+
+    this.element.dataset.disabled = true
+    this.element.style.color = "transparent"
+    placeholder = this.element.appendChild(placeholder)
+
     const html2pdfWorker = html2pdf()
     
     await html2pdfWorker
@@ -64,5 +70,19 @@ export default class extends Controller {
       })
       // html2pdf fills this gap with all the necessary steps, like converting to image etc.
       .save(this.element.dataset.filename)
+      .then(() => {
+        placeholder.remove()
+        this.element.style.color = null
+      })
+  }
+
+  createPlaceholder() {
+    const placeholder = document.createElement('template')
+    placeholder.innerHTML = `
+      <div class='placeholder-scr--inline'>
+        <i class="fad fa-spinner-third fa-spin bg-blue text-white"></i>
+      </div>
+    `.trim()
+    return placeholder.content.firstChild
   }
 }

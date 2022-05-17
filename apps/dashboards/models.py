@@ -157,6 +157,10 @@ class Dashboard(DashboardSettings, HistoryModel):
 
         return Widget.history.filter(page__dashboard=self).all()
 
+    @property
+    def page_set(self):
+        return Page.objects.filter(dashboard=self).all()
+
     def make_clone(self, attrs=None, sub_clone=False, using=None):
         if self.shared_id:
             attrs["shared_id"] = uuid4()

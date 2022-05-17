@@ -98,13 +98,13 @@
     {% endif %}
     <div
       class="widgets__canvas"
-      style="--background-color:{{ object.background_color }};"
+      style="--background-color:{{ object.background_color }};overflow:hidden;"
       data-controller="widget-list"
     > 
       <div
         id="dashboard-widget-container"
-        data-width={{ object.width }}
-        data-height={{ object.height }}
+        data-width="{{ object.width }}"
+        data-height="{{ object.height }}"
         style="width:{{ object.width }}px;height:{{object.height}}px;"
         data-widget-list-target="dashboard"
       >
@@ -127,9 +127,9 @@
         </p>
 
         {% flag 'beta' %}
-          <button data-controller="pdf-export" data-filename="{{ dashboard.name|slugify }}.pdf" class="link small">
-            Download as PDF
-          </button>
+          <a class="link small" href="{% url 'dashboards:public' object.shared_id %}?printPreview=1">
+            Preview print
+          </a>
         {% endflag %}
 
         {% if dashboard.shared_status == "password_protected" %}
