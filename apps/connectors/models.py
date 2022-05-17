@@ -306,7 +306,8 @@ class Connector(DirtyFieldsMixin, BaseModel):
                     connector = connectors_dict[data["id"]]
                     connector.sync_updates_from_fivetran(data)
             except FivetranClientError as e:
-                honeybadger.notify(e)
+                if connector.setup_state != Connector.SetupState.BROKEN:
+                    honeybadger.notify(e)
 
     def sync_updates_from_fivetran(self, data=None):
         from apps.connectors.fivetran.client import FivetranConnectorNotFound
