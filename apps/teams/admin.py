@@ -54,6 +54,7 @@ class TeamAdmin(SafeDeleteAdmin):
                 "fields": [
                     "override_row_limit",
                     "override_credit_limit",
+                    "override_rows_per_integration_limit",
                     "has_free_trial",
                 ]
             },
