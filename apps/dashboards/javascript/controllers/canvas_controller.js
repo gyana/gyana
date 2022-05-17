@@ -12,8 +12,8 @@ export default class extends Controller {
     this.element.ondrop = (event) => {
       // Get offset relative to canvas, not drop target (which could be any widget).
       const {top, left} = this.element.getBoundingClientRect()
-      const offsetX = event.clientX - left
-      const offsetY = event.clientY - top
+      const offsetX = Math.round(event.clientX - left)
+      const offsetY = Math.round(event.clientY - top)
 
       if (event.dataTransfer.getData('application/gycontrol')) {
         // Default widths is 300
