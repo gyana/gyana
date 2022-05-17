@@ -88,16 +88,20 @@ class FivetranSchema:
 
 class FivetranSchemaObj:
     def __init__(self, schemas_dict, service, service_type, schema_prefix):
-        self.schemas = [
-            FivetranSchema(
-                key=key,
-                service=service,
-                service_type=service_type,
-                schema_prefix=schema_prefix,
-                **schema,
-            )
-            for key, schema in schemas_dict.items()
-        ]
+        self.schemas = (
+            [
+                FivetranSchema(
+                    key=key,
+                    service=service,
+                    service_type=service_type,
+                    schema_prefix=schema_prefix,
+                    **schema,
+                )
+                for key, schema in schemas_dict.items()
+            ]
+            if schemas_dict
+            else []
+        )
 
     def to_dict(self):
         return {schema.key: schema.asdict() for schema in self.schemas}
