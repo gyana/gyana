@@ -171,7 +171,9 @@ class BigQueryColumn(Column):
             return get_template("columns/float_cell.html").render(
                 {
                     "value": value,
-                    "clean_value": round(value, self.rounding),
+                    "clean_value": int(value)
+                    if self.rounding == 0
+                    else round(value, self.rounding),
                     "is_percentage": self.is_percentage,
                 }
             )
