@@ -103,6 +103,7 @@ class SourceSelect(ChoiceWidget):
                 "icon": ICONS[option.source],
                 "id": option.id,
                 "image": option.integration.icon if option.integration else None,
+                "outOfDate": option.out_of_date,
                 "label": option.owner_name,
                 "usedIn": option.is_used_in,
             }

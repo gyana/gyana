@@ -1,33 +1,44 @@
 {% load static %}
 
 <fieldset name="{{ widget.name }}">
- {% for option in widget.options %}
- <label 
-    class="checkbox checkbox--radio checkbox--icon {% if option.id == widget.selected %}checkbox--checked{% endif %}"
-    id="{{ option.id }}"
-  >
-    <input 
-      type="radio"
-      id="id_{{ widget.name }}_{{ option.id }}"
-      name="{{ widget.name }}" 
-      value="{{ option.id }}" 
-      class="checkbox__hidden"
-      data-action="click->tf-modal#preview"
-    />
+  {% for option in widget.options %}
+    <label 
+      class="checkbox checkbox--radio checkbox--icon {% if option.id == widget.selected %}checkbox--checked{% endif %}"
+      id="{{ option.id }}"
+    >
+      <input 
+        type="radio"
+        id="id_{{ widget.name }}_{{ option.id }}"
+        name="{{ widget.name }}" 
+        value="{{ option.id }}" 
+        class="checkbox__hidden"
+        data-action="click->tf-modal#preview"
+      />
 
-    {% if option.image %}
-    <img src="{% static option.image %}" style="width: 1.6rem;">
-    {% else %}
-    <i class="{{ option.icon }}" style="font-size: 1.6rem;"></i>
-    {% endif %}
-
-    <div>
-      {{ option.label }}
-      {% if option.usedIn %}
-      <br>
-      <p class="small text-black-50">Used in this {{ parent }}</p>
+      {% if option.image %}
+        <img src="{% static option.image %}" style="width: 1.6rem;">
+      {% else %}
+        <i class="{{ option.icon }}" style="font-size: 1.6rem;"></i>
       {% endif %}
-    </div>
-  </label>
+
+      <div>
+        {{ option.label }}
+
+        {% if option.usedIn %}
+          <br>
+          <p class="small text-black-50">Used in this {{ parent }}</p>
+        {% endif %}
+      </div>
+
+      {% if option.outOfDate %}
+        <div class="opacity-50 ml-auto">
+          <i
+            data-controller="tooltip"
+            data-tooltip-content="Integration is out of date"
+            class="fas fa-exclamation-triangle"
+          ></i>
+        </div>
+      {% endif %}
+    </label>
   {% endfor %}
 </fieldset>
