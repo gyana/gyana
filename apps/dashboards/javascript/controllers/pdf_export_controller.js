@@ -31,7 +31,8 @@ export default class extends Controller {
       .set({
         enableLinks: false,
         jsPDF: {
-          compress: true
+          compress: true,
+          hotfixes: ["px_scaling"]
         },
       })
       // Prepare the "fake" container copy so we can adjust it.
@@ -39,10 +40,27 @@ export default class extends Controller {
       
     // This is the container created by html2pdf when we use .toContainer()
     const html2pdfOverlay = document.querySelector('.html2pdf__overlay');
-    const container = html2pdfOverlay.querySelector('#dashboard-widget-container')
+    const container = html2pdfOverlay.querySelector('[id*=dashboard-widget-container]')
+    const containerWidth = parseInt(container.dataset.width)
+    const containerHeight = parseInt(container.dataset.height)
     const { height: windowHeight } = html2pdfOverlay.querySelector('.widgets').getBoundingClientRect()
-      
+
+    // PDF is weird and will swap your widths and heights around if you don't
+    // explicitly tell it one should be longer than the other.
+    if (containerWidth > containerHeight) {
+      html2pdfWorker.set({ jsPDF: { orientation: "landscape" } })
+    } else {
+      html2pdfWorker.set({ jsPDF: { orientation: "portrait" } })
+    }
+
     html2pdfWorker
+      .set({
+        jsPDF: {
+          // 112px between containers.
+          format: [containerWidth, containerHeight + 112],
+          unit: "px"
+        },
+      })
       .set({
         /**
          * There's quite a lot of magic numbering to explain here.
@@ -56,8 +74,7 @@ export default class extends Controller {
          * can potentially be increased at some point for increased quality.
          */
         html2canvas: {
-          width: parseInt(container.dataset.width) + 32,
-          height: windowHeight + 32,
+          width: containerWidth + 32,
           windowWidth: 1366,
           windowHeight: 656,
           scale: 2.2,
@@ -65,11 +82,13 @@ export default class extends Controller {
       })
       .then(() => {
         // We reset all scaling here so that the fake canvas adjusts to the "true" size of the dashboard.
-        container.style.transform = ''
-        container.style.height = container.dataset.height + 'px'
+        html2pdfOverlay.querySelectorAll('[id*=dashboard-widget-container]').forEach((el) => {
+          el.style.transform = ''
+          el.style.height = container.dataset.height + 'px'
+        })
       })
       // html2pdf fills this gap with all the necessary steps, like converting to image etc.
-      .save(this.element.dataset.filename)
+      .save(document.querySelector('input[name=filename]').value || this.element.dataset.filename)
       .then(() => {
         placeholder.remove()
         this.element.style.color = null

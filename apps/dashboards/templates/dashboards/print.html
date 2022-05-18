@@ -97,7 +97,7 @@
           data-controller="widget-list"
         > 
           <div
-            id="dashboard-widget-container"
+            id="dashboard-widget-container-{{ forloop.counter }}"
             data-width="{{ object.width }}"
             data-height="{{ object.height }}"
             style="width:{{ object.width }}px;height:{{object.height}}px;"
