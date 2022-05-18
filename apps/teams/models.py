@@ -45,6 +45,7 @@ class Team(DirtyFieldsMixin, BaseModel, SafeDeleteModel):
 
     override_row_limit = models.BigIntegerField(null=True, blank=True)
     override_credit_limit = models.BigIntegerField(null=True, blank=True)
+    override_rows_per_integration_limit = models.BigIntegerField(null=True, blank=True)
 
     # row count is recalculated on a daily basis, or re-counted in certain situations
     # calculating every view is too expensive
@@ -176,7 +177,9 @@ class Team(DirtyFieldsMixin, BaseModel, SafeDeleteModel):
 
     @property
     def rows_per_integration_limit(self):
-        return self.plan.get("rows_per_integration", 0)
+        return self.override_rows_per_integration_limit or self.plan.get(
+            "rows_per_integration", 0
+        )
 
     @property
     def credits(self):

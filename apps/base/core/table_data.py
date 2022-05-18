@@ -171,7 +171,9 @@ class BigQueryColumn(Column):
             return get_template("columns/float_cell.html").render(
                 {
                     "value": value,
-                    "clean_value": round(value, self.rounding),
+                    "clean_value": int(value)
+                    if self.rounding == 0
+                    else round(value, self.rounding),
                     "is_percentage": self.is_percentage,
                 }
             )
@@ -224,8 +226,10 @@ def get_table(schema, query, footer=None, settings=None, **kwargs):
                     "class": get_type_class(type_),
                     "data-controller": "tooltip",
                     "data-tooltip-content": get_type_name(type_),
-                },
-            },
+                }
+            }
+            if not settings.get("hide_data_type")
+            else {},
             footer=footer.get(name) if footer else None,
         )
 

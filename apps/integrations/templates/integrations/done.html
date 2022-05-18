@@ -4,41 +4,45 @@
 {% block tab %}
 <div class="pad flex flex-1 justify-center items-center">
   <div class='flex flex-col flex-1 max-w-3xl'>
-    <h1 class="flex items-center justify-center gap-3 mb-7">
-      {% if exceeds_row_limit %}
-      Insufficient rows
-      {% else %}
-      Success
-      {% endif %}
+
     </h1>
 
     <div class="flex flex-col flex-1 justify-center gap-3">
-      {% if not integration.ready %}
-        {% if team.is_ltd and exceeds_row_limit %}
-          <p>
-            Adding this data will bring your total rows to <strong>{{ projected_num_rows|intcomma }}</strong>,
-            which exceeds your row limit of <strong>{{ project.team.row_limit|intcomma }}</strong>.
-          </p>
+    
+      {% if team.is_ltd and exceeds_row_limit %}
+        <h1 class="flex items-center justify-center gap-3 mb-7">
+          Insufficient rows
+        </h1>
+        <p>
+          Adding this data will bring your total rows to <strong>{{ projected_num_rows|intcomma }}</strong>,
+          which exceeds your row limit of <strong>{{ project.team.row_limit|intcomma }}</strong>.
+        </p>
 
-          <p class="alert">
-            You can either reduce your row count, or reach out for an upgrade.
-          </p>
-        {% elif not team.is_ltd and exceeds_per_integration_row_limit %}
-          <p>
-            The total rows synced is <strong>{{ object.num_rows }}</strong>,
-            which exceeds your rows per integration limit of <strong>{{ project.team.rows_per_integration_limit|intcomma }}</strong>.
-          </p>
+        <p class="alert">
+          You can either reduce your row count, or reach out for an upgrade.
+        </p>
+      {% elif not team.is_ltd and exceeds_per_integration_row_limit %}
+        <h1 class="flex items-center justify-center gap-3 mb-7">
+          Insufficient rows
+        </h1>
+        <p>
+          The total rows synced is <strong>{{ object.num_rows }}</strong>,
+          which exceeds your rows per integration limit of <strong>{{ project.team.rows_per_integration_limit|intcomma }}</strong>.
+        </p>
 
-          <p class="alert">
-            You can either reduce your row count, or reach out for an upgrade.
-          </p>
-        {% endif %}
+        <p class="alert">
+          You can either reduce your row count, or reach out for an upgrade.
+        </p>
+
       {% else %}
-      <p>
-        <strong>Your data is ready.</strong> You can still edit your
-        <a class="link" href="{% url 'project_integrations:configure' project.id object.id %}">configuration</a> 
-        if you want to make more changes or trigger an import.
-      </p>
+        <h1 class="flex items-center justify-center gap-3 mb-7">
+          Success
+        </h1>
+        <p>
+          <strong>Your data is ready.</strong> You can still edit your
+          <a class="link" href="{% url 'project_integrations:configure' project.id object.id %}">configuration</a> 
+          if you want to make more changes or trigger an import.
+        </p>
       {% endif %}
     </div>
   </div>

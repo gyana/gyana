@@ -4,6 +4,7 @@ from functools import wraps
 from itertools import chain
 
 import ibis
+import ibis.expr.operations as ops
 from ibis.expr.datatypes import String
 
 from apps.base import clients
@@ -52,7 +53,7 @@ def _format_string(value):
     if not re.compile("^[a-zA-Z_].*").match(value):
         value = f"_{value}"
 
-    value = re.sub(re.compile("[\(\) @€$%&^*+-]"), "_", value)
+    value = re.sub(re.compile("[\(\) \\\/@€$%&^*+-]"), "_", value)
     return value
 
 
@@ -287,7 +288,10 @@ def get_window_query(node, query):
         ).name(window.label)
 
         w = ibis.window(
-            group_by=window.group_by or None, order_by=window.order_by or None
+            group_by=window.group_by or None,
+            order_by=ops.SortKey(query[window.order_by], window.ascending).to_expr()
+            if window.order_by
+            else None,
         )
         aggregation = aggregation.over(w)
         aggregations.append(aggregation)

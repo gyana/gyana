@@ -25,6 +25,16 @@ from .requests.authorization import get_authorization
 from .requests.body import get_body
 
 
+def sanitize_nested_fields(d):
+    if isinstance(d, list):
+        return [sanitize_nested_fields(f) for f in d]
+    if isinstance(d, dict):
+        return {
+            sanitize_bq_column_name(k): sanitize_nested_fields(v) for k, v in d.items()
+        }
+    return d
+
+
 @shared_task(bind=True, time_limit=request.REQUEST_TIMEOUT)
 def run_customapi_sync_task(self, run_id):
     run = JobRun.objects.get(pk=run_id)
@@ -76,16 +86,15 @@ def run_customapi_sync_task(self, run_id):
 
         # Merge results for JSON Path expression with multiple matches
         # e.g. airtable API $.records[*].fields
-        parsed_data = chain.from_iterable(
-            [match.value] if not isinstance(match.value, list) else match.value
-            for match in jsonpath_matches
+        parsed_data = list(
+            chain.from_iterable(
+                match.value if isinstance(match.value, list) else [match.value]
+                for match in jsonpath_matches
+            )
         )
 
         # bigquery does not automatically sanitize
-        sanitized_data = [
-            {sanitize_bq_column_name(k): v for k, v in record.items()}
-            for record in parsed_data
-        ]
+        sanitized_data = sanitize_nested_fields(parsed_data)
 
         ndjson = "\n".join([json.dumps(item) for item in sanitized_data])
         customapi.ndjson_file.save(
