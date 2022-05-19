@@ -16,7 +16,7 @@
     
     <a
       class="connector__card__button button button--sm ml-auto"
-      {% if team.is_free and service.id in disabled_services %}
+      {% if not team.is_free and service.id in disabled_services %}
         data-controller="tooltip"
         data-tooltip-content="This connector is disabled"
         disabled
