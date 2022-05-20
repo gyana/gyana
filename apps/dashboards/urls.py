@@ -23,17 +23,17 @@ urlpatterns = [
         name="duplicate",
     ),
     path(
-        "<str:shared_id>",
+        "<uuid:shared_id>",
         dashboard_is_public(views.DashboardPublic.as_view()),
         name="public",
     ),
     path(
-        "<str:shared_id>/login",
+        "<uuid:shared_id>/login",
         dashboard_is_password_protected(views.DashboardLogin.as_view()),
         name="login",
     ),
     path(
-        "<str:shared_id>/logout",
+        "<uuid:shared_id>/logout",
         dashboard_is_password_protected(views.DashboardLogout.as_view()),
         name="logout",
     ),
