@@ -126,6 +126,9 @@ class Table(BaseModel):
 
         return False
 
+    def get_source_url(self):
+        return self.source_obj.get_absolute_url()        
+
     @property
     def used_in_workflows(self):
         from apps.workflows.models import Workflow

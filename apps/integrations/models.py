@@ -214,7 +214,6 @@ class Integration(BaseModel):
         return f"Integration:{self.name}"
 
     def get_absolute_url(self):
-
         from apps.integrations.mixins import STATE_TO_URL_REDIRECT
 
         if not self.ready:

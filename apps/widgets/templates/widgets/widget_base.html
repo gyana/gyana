@@ -91,6 +91,17 @@ preview mode.
                   Delete
                 </button>
               </form>
+
+              {% if object.table %}
+                <a
+                  id="widget-source-{{ object.id }}"
+                  href="{{ object.table.get_source_url }}"
+                  class="list__item list__item--interactive w-full"
+                >
+                  Go to source
+                </a>
+              {% endif %}
+
               <div
                 data-controller="popover"
                 data-placement="right"
