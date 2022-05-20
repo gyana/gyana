@@ -26,20 +26,24 @@
 
       <template data-popover-target="body">
         {% for column in table.columns.iterorderable %}
-        <a
-          class="list__item list__item--interactive w-full {{ column.attrs.th.class }} "
-          {% if column.is_ordered %}
-          href="{% querystring table.prefixed_order_by_field='' %}"
-          {% else %}
-          href="{% querystring table.prefixed_order_by_field=column.order_by_alias.opposite %}"
-          {% endif %}
-        >
-          <span class="mr-7">
-            {{ column.header }}
-          </span>
+          <a
+            class="list__item list__item--interactive w-full {{ column.attrs.th.class }}"
+            {% if "desc" in column.attrs.th.class %}
+              href="{% querystring table.prefixed_order_by_field='' %}"
+            {% else %}
+              href="{% querystring table.prefixed_order_by_field=column.order_by_alias.next %}"
+            {% endif %}
+          >
+            <span class="mr-7">
+              {{ column.header }}
+            </span>
 
-          <i class="fas fa-fw fa-check ml-auto {% if not column.is_ordered %}invisible{% endif %}"></i>
-        </a>
+            {% if "desc" in column.attrs.th.class %}
+              <i class="fas fa-fw fa-sort-down ml-auto"></i>
+            {% elif "asc" in column.attrs.th.class %}
+              <i class="fas fa-fw fa-sort-up ml-auto"></i>
+            {% endif %}
+          </a>
         {% endfor %}
       </template>
     </div>
