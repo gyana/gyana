@@ -98,6 +98,7 @@ class AbstractOperationColumn(SaveParentModel):
             or self.date_function
             or self.time_function
             or self.datetime_function
+            or self.boolean_function
         )
 
 
