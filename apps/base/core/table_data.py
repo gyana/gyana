@@ -1,4 +1,5 @@
 import functools
+import math
 
 import ibis.expr.datatypes as dt
 from django.core.cache import cache
@@ -152,6 +153,12 @@ class BigQueryColumn(Column):
         self.is_percentage = settings.get("is_percentage")
 
     def render(self, value):
+        # TODO: Add a tooltip to explain this or find a better label.
+        if isinstance(value, float) and (math.isnan(value) or math.isinf(value)):
+            self.attrs["td"] = {"style": "text-align: right;"}
+            self.attrs["tf"] = {"style": "text-align: right;"}
+            value = "NaN/Infinity"
+
         if value is None:
             return get_template("columns/empty_cell.html").render()
         if isinstance(value, (float, int)) and self.currency:
@@ -168,6 +175,7 @@ class BigQueryColumn(Column):
             self.attrs["td"] = {"style": "text-align: right;"}
             self.attrs["tf"] = {"style": "text-align: right;"}
             value = value * 100 if self.is_percentage else value
+
             return get_template("columns/float_cell.html").render(
                 {
                     "value": value,
