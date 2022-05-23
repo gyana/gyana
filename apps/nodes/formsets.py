@@ -11,6 +11,7 @@ from apps.columns.forms import (
     FormulaColumnForm,
     JoinColumnForm,
     OperationColumnForm,
+    RenameColumnForm,
     SortColumnForm,
     WindowColumnForm,
 )
@@ -97,8 +98,7 @@ FormulaColumnFormSet = forms.inlineformset_factory(
 RenameColumnFormSet = forms.inlineformset_factory(
     Node,
     RenameColumn,
-    form=BaseLiveSchemaForm,
-    fields=("column", "new_name"),
+    form=RenameColumnForm,
     can_delete=True,
     extra=0,
     formset=RequiredInlineFormset,
