@@ -100,7 +100,8 @@ def get_select_query(node, parent):
     columns = [col.column for col in node.columns.all()]
 
     if node.select_mode == "keep":
-        return parent.projection(columns or [])
+        columns = columns or parent.columns
+        return parent.projection([parent[column] for column in columns])
 
     return parent.drop(columns)
 
