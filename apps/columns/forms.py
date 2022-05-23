@@ -197,6 +197,12 @@ class AggregationFormWithFormatting(AggregationColumnForm):
             "rounding": forms.NumberInput(attrs={"data-live-update-ignore": ""}),
             "is_percentage": forms.CheckboxInput(attrs={"data-live-update-ignore": ""}),
             "sort_index": forms.HiddenInput(),
+            "positive_threshold": forms.NumberInput(
+                attrs={"data-live-update-ignore": ""}
+            ),
+            "negative_threshold": forms.NumberInput(
+                attrs={"data-live-update-ignore": ""}
+            ),
         }
 
     def get_live_fields(self):
