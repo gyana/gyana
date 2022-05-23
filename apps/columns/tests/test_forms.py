@@ -1,4 +1,5 @@
 import pytest
+from django.forms import ValidationError
 from django.http import QueryDict
 
 from apps.base.core.aggregations import AggregationFunctions
@@ -14,6 +15,7 @@ from apps.columns.forms import (
     FormulaColumnForm,
     JoinColumnForm,
     OperationColumnForm,
+    RenameColumnForm,
     WindowColumnForm,
 )
 from apps.nodes.models import Node
@@ -270,3 +272,47 @@ def test_join_form(
 def test_edit_live_fields(edit, fields):
     form = OperationColumnForm(schema=TABLE.schema(), instance=edit)
     assert form.get_live_fields() == fields
+
+
+def test_rename_form(rename_column_factory):
+    column = rename_column_factory()
+    form = RenameColumnForm(instance=column, schema=TABLE.schema())
+
+    assert set(form.fields.keys()) == {"column", "new_name"}
+    assertFormChoicesLength(form, "column", COLUMNS_LENGTH)
+
+    # test validation errors
+    prefix = "rename_column-0"
+    data = QueryDict(mutable=True)
+    data[f"{prefix}-column"] = "lunch"
+    data[f"{prefix}-new_name"] = "athlete"
+
+    form = RenameColumnForm(
+        instance=column, schema=TABLE.schema(), prefix=prefix, data=data
+    )
+    form.is_valid()
+    assert form.errors["new_name"] == ["This column already exists"]
+
+    data[f"{prefix}-new_name"] = "Athlete"
+    form = RenameColumnForm(
+        instance=column, schema=TABLE.schema(), prefix=prefix, data=data
+    )
+    form.is_valid()
+    assert form.errors["new_name"] == [
+        "This column already exists with a different capitalisation"
+    ]
+
+    # Test whether it works with virtual columns
+    prefix = "rename_column-1"
+    first_prefix = "rename_column-0"
+    data = QueryDict(mutable=True)
+    data[f"{first_prefix}-column"] = "athlete"
+    data[f"{first_prefix}-new_name"] = "brunch"
+    data[f"{prefix}-column"] = "lunch"
+    data[f"{prefix}-new_name"] = "brunch"
+
+    form = RenameColumnForm(
+        instance=column, schema=TABLE.schema(), prefix=prefix, data=data
+    )
+    form.is_valid()
+    assert form.errors["new_name"] == ["This column already exists"]

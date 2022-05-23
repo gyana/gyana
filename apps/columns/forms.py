@@ -431,13 +431,13 @@ def column_naming_validation(new_name, schema, prefix, data, field_name):
         and int(key.split("-")[1]) < idx
     )
     if new_name in (existing_columns + renamed_before):
-        raise forms.ValidationError("This column already exists")
+        raise forms.ValidationError("This column already exists", code="invalid")
 
     if new_name.lower() in [
         column.lower() for column in (existing_columns + renamed_before)
     ]:
         raise forms.ValidationError(
-            "This column already exists with a different capitalisation"
+            "This column already exists with a different capitalisation", code="invalid"
         )
     return new_name
 
