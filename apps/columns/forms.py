@@ -93,12 +93,21 @@ class ColumnFormWithFormatting(ColumnForm):
             "currency",
             "is_percentage",
             "sort_index",
+            "conditional_formatting",
+            "positive_threshold",
+            "negative_threshold",
         )
 
         widgets = {
             "currency": Datalist(attrs={"data-live-update-ignore": ""}),
             "name": forms.TextInput(attrs={"data-live-update-ignore": ""}),
             "rounding": forms.NumberInput(attrs={"data-live-update-ignore": ""}),
+            "positive_threshold": forms.NumberInput(
+                attrs={"data-live-update-ignore": ""}
+            ),
+            "negative_threshold": forms.NumberInput(
+                attrs={"data-live-update-ignore": ""}
+            ),
             "sort_index": forms.HiddenInput(),
         }
 
@@ -109,13 +118,24 @@ class ColumnFormWithFormatting(ColumnForm):
             fields += ["name", "formatting_unfolded"]
 
         if isinstance(self.column_type, (Floating, Integer)):
-            fields += ["rounding", "currency", "is_percentage"]
+            fields += [
+                "rounding",
+                "currency",
+                "is_percentage",
+                "conditional_formatting",
+                "positive_threshold",
+                "negative_threshold",
+            ]
+
         return fields
 
 
 class AggregationColumnForm(BaseLiveSchemaForm):
     class Meta:
-        fields = ("column", "function")
+        fields = (
+            "column",
+            "function",
+        )
         help_texts = {
             "column": "Select the column to aggregate over",
             "function": "Select the aggregation function",
@@ -162,6 +182,9 @@ class AggregationFormWithFormatting(AggregationColumnForm):
             "currency",
             "is_percentage",
             "sort_index",
+            "conditional_formatting",
+            "positive_threshold",
+            "negative_threshold",
         )
         help_texts = {
             "column": "Select the column to aggregate over",
@@ -186,7 +209,15 @@ class AggregationFormWithFormatting(AggregationColumnForm):
             ):
                 fields += ["name"]
             # For aggregation column the numeric type of the output is guaranteed
-            fields += ["formatting_unfolded", "rounding", "currency", "is_percentage"]
+            fields += [
+                "formatting_unfolded",
+                "rounding",
+                "currency",
+                "is_percentage",
+                "conditional_formatting",
+                "positive_threshold",
+                "negative_threshold",
+            ]
 
         return fields
 

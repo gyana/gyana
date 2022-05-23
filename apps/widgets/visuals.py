@@ -76,6 +76,9 @@ def table_to_output(widget: Widget, control, url=None) -> Dict[str, Any]:
             "rounding": col.rounding,
             "currency": col.currency,
             "is_percentage": col.is_percentage,
+            "conditional_formatting": col.conditional_formatting,
+            "positive_threshold": col.positive_threshold,
+            "negative_threshold": col.negative_threshold,
         }
         for col in [*widget.columns.all(), *widget.aggregations.all()]
     }

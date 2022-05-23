@@ -7,7 +7,7 @@
 {% for bound_field in form.visible_fields %}
   {% if bound_field.name in form.extra_fields %}
   {% comment %} Ignore these fields because they are going to be rendered in an extendable manner further down {% endcomment %}
-  {% elif form.formatting_unfolded and bound_field.label in 'Currency, Rounding, Name, Formatting unfolded, Show in %'%}
+  {% elif form.formatting_unfolded and bound_field.label in 'Currency, Rounding, Name, Formatting unfolded, Show in %, Conditional formatting, Positive threshold, Negative threshold'%}
   {% elif bound_field.widget_type == "palettecolors" %}
     <div class="label">
       <label>
@@ -175,7 +175,7 @@
         {% if not form.formatting_unfolded.value %}hidden{% endif %}
       >
         {% for field in form.visible_fields  %}
-          {% if field.label in 'Currency, Rounding, Name, Show in %'%}
+          {% if field.label in 'Currency, Rounding, Name, Show in %, Conditional formatting, Positive threshold, Negative threshold'%}
             {% include 'django/forms/field.html'%}
           {% endif %}
         {% endfor %}
