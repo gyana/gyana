@@ -267,7 +267,7 @@ class Node(DirtyFieldsMixin, BaseModel):
 
     @property
     def parents_ordered(self):
-        return self.parents.order_by("child_edges")
+        return self.parents.order_by("child_edges").cache()
 
     def get_absolute_url(self):
         workflow = self.workflow

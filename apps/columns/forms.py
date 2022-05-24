@@ -99,17 +99,18 @@ class ColumnFormWithFormatting(ColumnForm):
         )
 
         widgets = {
-            "currency": Datalist(attrs={"data-live-update-ignore": ""}),
-            "name": forms.TextInput(attrs={"data-live-update-ignore": ""}),
-            "rounding": forms.NumberInput(attrs={"data-live-update-ignore": ""}),
-            "positive_threshold": forms.NumberInput(
-                attrs={"data-live-update-ignore": ""}
-            ),
-            "negative_threshold": forms.NumberInput(
-                attrs={"data-live-update-ignore": ""}
-            ),
+            "currency": Datalist(),
             "sort_index": forms.HiddenInput(),
         }
+
+    ignore_live_update_fields = [
+        "currency",
+        "name",
+        "rounding",
+        "positive_treshold",
+        "negative_treshold",
+        "conditional_formatting",
+    ]
 
     def get_live_fields(self):
         fields = super().get_live_fields()
@@ -192,18 +193,18 @@ class AggregationFormWithFormatting(AggregationColumnForm):
         }
         model = AggregationColumn
         widgets = {
-            "currency": Datalist(attrs={"data-live-update-ignore": ""}),
-            "name": forms.TextInput(attrs={"data-live-update-ignore": ""}),
-            "rounding": forms.NumberInput(attrs={"data-live-update-ignore": ""}),
-            "is_percentage": forms.CheckboxInput(attrs={"data-live-update-ignore": ""}),
+            "currency": Datalist(),
             "sort_index": forms.HiddenInput(),
-            "positive_threshold": forms.NumberInput(
-                attrs={"data-live-update-ignore": ""}
-            ),
-            "negative_threshold": forms.NumberInput(
-                attrs={"data-live-update-ignore": ""}
-            ),
         }
+
+    ignore_live_update_fields = [
+        "currency",
+        "name",
+        "rounding",
+        "positive_treshold",
+        "negative_treshold",
+        "conditional_formatting",
+    ]
 
     def get_live_fields(self):
         fields = super().get_live_fields()
@@ -414,6 +415,8 @@ class JoinColumnForm(BaseLiveSchemaForm):
     class Meta:
         model = JoinColumn
         fields = ["how", "left_column", "right_column"]
+
+    ignore_live_update_fields = ["how", "left_column", "right_column"]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
