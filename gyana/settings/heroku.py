@@ -65,3 +65,5 @@ CACHES = {
         },
     },
 }
+
+CACHEOPS_REDIS = os.environ.get("REDIS_URL")
