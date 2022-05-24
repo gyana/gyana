@@ -1,17 +1,17 @@
 [tool.poetry]
+authors = ["Gyana Developers <developers@gyana.com>"]
+description = "No-Code Data Analytics"
 name = "gyana"
 version = "0.1.0"
-description = "No-Code Data Analytics"
-authors = ["Gyana Developers <developers@gyana.com>"]
 
 [tool.djlint]
-profile = "django"
-ignore = "T003,H021,H006,H013,H016"
-use_gitignore = true
-indent = 2
 blank_line_after_tag = "load,extends"
 custom_blocks = "timezone,flag"
+ignore = "T003,H021,H006,H013,H016"
+indent = 2
 max_line_length = 100
+profile = "django"
+use_gitignore = true
 
 [tool.black]
 extend-exclude = '''
@@ -25,94 +25,97 @@ extend-exclude = '''
 '''
 
 [tool.isort]
-profile = "black"
 extend_skip = ['migrations', 'migrate', 'apps/cookiecutter-app']
+profile = "black"
 
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "gyana.settings.development"
 
 [tool.coverage.run]
 branch = true
-plugins = [ "django_coverage_plugin" ]
-source = [ "apps" ]
-omit = [ "*/migrations/*", "apps/cookiecutter-app/*" ]
+omit = ["*/migrations/*", "apps/cookiecutter-app/*"]
+plugins = ["django_coverage_plugin"]
+source = ["apps"]
 
 [tool.poetry.dependencies]
-python = "3.9.*"
-attrs = "^20.3.0"
-Django = "^3.1.7"
-django-allauth = "^0.50.0"
-psycopg2-binary = "^2.8.6"
-djangorestframework = "^3.12.2"
-coreapi = "^2.3.3"
-django-anymail = {extras = ["mailgun"], version = "^8.2"}
-celery = {extras = ["redis"], version = "^5.0.5"}
-gunicorn = "^20.0.4"
-django-heroku = "^0.3.1"
-google-cloud-bigquery = "^2.14.0"
-django-turbo-response = "^0.0.52"
-django-turbo-allauth = "^0.0.10"
-pandas = "^1.2.4"
-ibis-bigquery = "^2.1.2"
-django-storages = {extras = ["google"], version = "^1.11.1"}
-django-filter = "^2.4.0"
-backoff = "^1.10.0"
-inflection = "^0.5.1"
-django-tables2 = "^2.4.1"
-google-api-python-client = "^2.4.0"
+Django = "^4.0.4"
 analytics-python = "^1.3.1"
+attrs = "^20.3.0"
+backoff = "^1.10.0"
+celery = {extras = ["redis"], version = "^5.0.5"}
+coreapi = "^2.3.3"
+django-allauth = "^0.50.0"
+django-anymail = {extras = ["mailgun"], version = "^8.2"}
 django-clone = "^3.0.1"
-lark = "^0.11.3"
 django-dirtyfields = "^1.7.0"
+django-filter = "^2.4.0"
+django-heroku = "^0.3.1"
+django-storages = {extras = ["google"], version = "^1.11.1"}
+django-tables2 = "^2.4.1"
+django-turbo-allauth = "^0.0.10"
+django-turbo-response = "^0.0.52"
+djangorestframework = "^3.13.1"
+google-api-python-client = "^2.4.0"
+google-cloud-bigquery = "^2.14.0"
+gunicorn = "^20.0.4"
+ibis-bigquery = "^2.1.2"
+inflection = "^0.5.1"
+lark = "^0.11.3"
+pandas = "^1.2.4"
 pathvalidate = "^2.4.1"
-django-invitations = "^1.9.3"
+psycopg2-binary = "^2.8.6"
+python = "3.9.*"
+# Until this is merged https://github.com/bee-keeper/django-invitations/pull/169
+django-admin-tools = "^0.9.1"
+django-hijack = "^3.0.0"
+django-invitations = {git = "https://github.com/gyana/django-invitations.git", branch = "patch-1"}
 hashids = "^1.3.1"
 honeybadger = "^0.8.0"
-django-hijack = "^3.0.0"
-django-admin-tools = "^0.9.1"
 honeycomb-beeline = "^2.17.1"
 # https://github.com/jazzband/django-silk/issues/465
-django-silk = {git = "https://github.com/jazzband/django-silk", rev = "21a4058c2a758fac687f837cb523175c64c567c3"}
-heroku3 = {git = "https://github.com/martyzz1/heroku3.py", rev = "81c996929e37450e1e65f28eb43fc28533a79048"}
-django-waffle = "^2.2.1"
-pytest-mock = "^3.6.1"
-django-safedelete = "^1.1.0"
 dj-paddle = {git = "https://github.com/paddle-python/dj-paddle", rev = "8945137c9ff70ae00d519625f81b10d1bc6bf071"}
-fuzzywuzzy = "^0.18.0"
-python-Levenshtein = "^0.12.2"
-django-timezone-field = "^4.2.1"
 django-redis = "^5.0.0"
-django-celery-beat = "^2.2.1"
+django-safedelete = "^1.1.0"
+django-silk = {git = "https://github.com/jazzband/django-silk", rev = "21a4058c2a758fac687f837cb523175c64c567c3"}
+django-timezone-field = "^4.2.1"
+django-waffle = "^2.2.1"
+fuzzywuzzy = "^0.18.0"
+heroku3 = {git = "https://github.com/martyzz1/heroku3.py", rev = "81c996929e37450e1e65f28eb43fc28533a79048"}
+pytest-mock = "^3.6.1"
+python-Levenshtein = "^0.12.2"
+# Use until this closed https://github.com/celery/django-celery-beat/issues/465
+PyYAML = "^6.0"
 celery-progress = "^0.1.1"
+django-celery-beat = {git = "https://github.com/celery/django-celery-beat.git", rev = "fa73034be892052893e4ef17926ef3a5d4a21ea2"}
 django-celery-results = "^2.2.0"
-jsonpath-ng = "^1.5.3"
 django-cryptography = "^1.0"
 django-heroicons = {git = "https://github.com/geoffbeier/django-heroicons"}
-wagtail = "2.15.1"
+jsonpath-ng = "^1.5.3"
 readtime = "^1.1.1"
-wagtailmenus = "^3.0.2"
-PyYAML = "^6.0"
+wagtail = "2.16"
+# Until this is done use git branch https://github.com/jazzband/wagtailmenus/pull/404
+wagtailmenus = {git = "https://github.com/jazzband/wagtailmenus", rev = "8be2790c01688dd3c9ef7298bdebe94575c0a76a"}
 # Until https://github.com/jazzband/django-simple-history/pull/866 is released
-django-simple-history = {git = "https://github.com/jazzband/django-simple-history", branch="master"}
+
+django-simple-history = {git = "https://github.com/jazzband/django-simple-history", branch = "master"}
 google-cloud-language = "^2.4.1"
-  
 [tool.poetry.dev-dependencies]
-isort = "^5.7.0"
 autoflake = "^1.4"
-ipython = "^7.21.0"
-cookiecutter = "^1.7.3"
-pytest = "^6.2.4"
-pytest-django = "^4.4.0"
-factory-boy = "^3.2.0"
-pytest-factoryboy = "^2.1.0"
-pytest-cov = "^3.0.0"
-django-coverage-plugin = "^2.0.1"
-wagtail-factories = "^2.0.1"
 black = "^22.1.0"
+cookiecutter = "^1.7.3"
 deepdiff = "^5.7.0"
+django-coverage-plugin = "^2.0.1"
 djlint = "^0.7.5"
+factory-boy = "^3.2.0"
+ipython = "^7.21.0"
+isort = "^5.7.0"
 mypy = "^0.942"
+pytest = "^6.2.4"
+pytest-cov = "^3.0.0"
+pytest-django = "^4.4.0"
+pytest-factoryboy = "^2.1.0"
+wagtail-factories = "^2.0.1"
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core>=1.0.0"]
