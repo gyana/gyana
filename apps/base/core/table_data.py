@@ -165,9 +165,9 @@ class BigQueryColumn(Column):
         if isinstance(value, (float, int)) and self.conditional_formatting:
             self.attrs["td"] = {
                 **self.attrs.get("td", {}),
-                "class": "bg-green"
+                "class": "bg-green-50"
                 if value > self.positive_threshold
-                else "bg-red"
+                else "bg-red-50"
                 if value < self.negative_threshold
                 else None,
             }
