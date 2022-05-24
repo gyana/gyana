@@ -68,7 +68,10 @@ def table_to_output(widget: Widget, control, url=None) -> Dict[str, Any]:
             # TODO: add sorting and limit
             summary = get_summary_row(query, widget)
         groups = get_groups(query, widget)
-        query = aggregate_columns(query, widget, groups)
+        if widget.aggregations.exists():
+            query = aggregate_columns(query, widget, groups)
+        else:
+            query = query[groups]
 
     settings = {
         col.column: {
