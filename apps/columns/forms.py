@@ -107,8 +107,8 @@ class ColumnFormWithFormatting(ColumnForm):
         "currency",
         "name",
         "rounding",
-        "positive_treshold",
-        "negative_treshold",
+        "positive_threshold",
+        "negative_threshold",
         "conditional_formatting",
     ]
 
@@ -201,8 +201,8 @@ class AggregationFormWithFormatting(AggregationColumnForm):
         "currency",
         "name",
         "rounding",
-        "positive_treshold",
-        "negative_treshold",
+        "positive_threshold",
+        "negative_threshold",
         "conditional_formatting",
     ]
 

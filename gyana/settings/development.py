@@ -49,3 +49,5 @@ CACHES = {
     "default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"},
     "site": {"BACKEND": "django.core.cache.backends.dummy.DummyCache"},
 }
+
+CACHEOPS_ENABLED = False
