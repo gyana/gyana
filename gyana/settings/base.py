@@ -70,6 +70,7 @@ THIRD_PARTY_APPS = [
     "celery_progress",
     "django_filters",
     "django_tables2",
+    "cacheops",
     "invitations",
     "hijack",
     "hijack.contrib.admin",
@@ -478,3 +479,7 @@ WAGTAILSEARCH_BACKENDS = {
         "BACKEND": "wagtail.search.backends.database",
     }
 }
+
+
+CACHEOPS_REDIS = CELERY_BROKER_URL
+CACHEOPS = {"*.*": {"timeout": 60 * 60}}

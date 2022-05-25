@@ -97,6 +97,8 @@ wagtail = "2.16"
 wagtailmenus = {git = "https://github.com/jazzband/wagtailmenus", rev = "8be2790c01688dd3c9ef7298bdebe94575c0a76a"}
 # Until https://github.com/jazzband/django-simple-history/pull/866 is released
 
+
+django-cacheops = "^6.0"
 django-simple-history = {git = "https://github.com/jazzband/django-simple-history", branch = "master"}
 google-cloud-language = "^2.4.1"
 [tool.poetry.dev-dependencies]

@@ -5,6 +5,7 @@ from itertools import chain
 
 import ibis
 import ibis.expr.operations as ops
+from cacheops import cached_as
 from ibis.expr.datatypes import String
 
 from apps.base import clients
@@ -19,6 +20,7 @@ from apps.columns.bigquery import (
 )
 from apps.filters.bigquery import get_query_from_filters
 from apps.nodes.exceptions import JoinTypeError, NodeResultNone
+from apps.nodes.models import Node
 from apps.tables.bigquery import get_query_from_table
 from apps.teams.models import OutOfCreditsException
 
@@ -137,10 +139,8 @@ def get_join_query(node, left, right, *queries):
             drops.add(right_col)
             relabels[left_col] = join.left_column
 
-    return (
-        query.materialize()
-        .drop(list(drops))
-        .relabel({key: value for key, value in relabels.items() if key not in drops})
+    return query.drop(list(drops)).relabel(
+        {key: value for key, value in relabels.items() if key not in drops}
     )
 
 
@@ -374,6 +374,7 @@ def _validate_arity(func, len_args):
     return len_args >= min_arity if variable_args else len_args == min_arity
 
 
+@cached_as(Node, timeout=60)
 def get_query_from_node(node):
 
     nodes = _get_all_parents(node)

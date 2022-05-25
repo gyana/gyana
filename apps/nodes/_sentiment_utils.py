@@ -182,7 +182,7 @@ def _update_intermediate_table(ibis_client, node, current_values):
     query = current_values.left_join(
         cache_query,
         current_values[TEXT_COLUMN_NAME] == cache_query[f"{TEXT_COLUMN_NAME}_right"],
-    ).materialize()[TEXT_COLUMN_NAME, SENTIMENT_COLUMN_NAME]
+    )[TEXT_COLUMN_NAME, SENTIMENT_COLUMN_NAME]
     return create_or_replace_intermediate_table(
         node,
         query.compile(),

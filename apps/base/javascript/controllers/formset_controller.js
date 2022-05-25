@@ -29,6 +29,8 @@ export default class extends Controller {
     }
 
     this.sortable = Sortable.create(this.targetTarget, {
+      filter: ".CodeMirror",
+      preventOnFilter: false,
       onChoose: (event) => {
         const chosenFormset = this.element.querySelector(`[data-formset-index="${event.oldIndex}"]`)
         const textareaTarget = chosenFormset.querySelector(`[data-codemirror-target="textarea"]`)

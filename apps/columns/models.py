@@ -124,6 +124,16 @@ class ColumnSettings(models.Model):
         default=False, blank=True, verbose_name="Show in %"
     )
 
+    conditional_formatting = models.BooleanField(
+        default=False, help_text="Select whether or not to show background color"
+    )
+    positive_threshold = models.IntegerField(
+        default=0, blank=True, help_text="Set a threshold for positive value"
+    )
+    negative_threshold = models.IntegerField(
+        default=0, blank=True, help_text="Set a threshold for negative value"
+    )
+
 
 class SortableColumn(SaveParentModel):
     class Meta:

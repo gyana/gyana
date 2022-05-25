@@ -151,19 +151,27 @@ class BigQueryColumn(Column):
         self.rounding = settings.get("rounding", 2)
         self.currency = settings.get("currency")
         self.is_percentage = settings.get("is_percentage")
+        self.conditional_formatting = settings.get("conditional_formatting")
+        self.positive_threshold = settings.get("positive_threshold")
+        self.negative_threshold = settings.get("negative_threshold")
 
     def render(self, value):
         # TODO: Add a tooltip to explain this or find a better label.
         if isinstance(value, float) and (math.isnan(value) or math.isinf(value)):
-            self.attrs["td"] = {"style": "text-align: right;"}
-            self.attrs["tf"] = {"style": "text-align: right;"}
             value = "NaN/Infinity"
-
         if value is None:
             return get_template("columns/empty_cell.html").render()
+
+        if isinstance(value, (float, int)) and self.conditional_formatting:
+            self.attrs["td"] = {
+                **self.attrs.get("td", {}),
+                "class": "bg-green-50"
+                if value > self.positive_threshold
+                else "bg-red-50"
+                if value < self.negative_threshold
+                else None,
+            }
         if isinstance(value, (float, int)) and self.currency:
-            self.attrs["td"] = {"style": "text-align: right;"}
-            self.attrs["tf"] = {"style": "text-align: right;"}
             return get_template("columns/currency_cell.html").render(
                 {
                     "value": value,
@@ -172,8 +180,6 @@ class BigQueryColumn(Column):
                 }
             )
         if isinstance(value, float):
-            self.attrs["td"] = {"style": "text-align: right;"}
-            self.attrs["tf"] = {"style": "text-align: right;"}
             value = value * 100 if self.is_percentage else value
 
             return get_template("columns/float_cell.html").render(
@@ -188,8 +194,6 @@ class BigQueryColumn(Column):
         if isinstance(value, bool) or value == "True" or value == "False":
             return get_template("columns/bool_cell.html").render({"value": value})
         if isinstance(value, int):
-            self.attrs["td"] = {"style": "text-align: right;"}
-            self.attrs["tf"] = {"style": "text-align: right;"}
             return get_template("columns/int_cell.html").render(
                 {"value": value, "is_percentage": self.is_percentage}
             )
@@ -202,11 +206,9 @@ class BigQueryColumn(Column):
                 pass
         if isinstance(value, str) and len(value) >= 64:
             # Truncate row values above 61 characters (61 + 3 ellipsis = 64).
-            self.attrs["td"] = {
-                "data-controller": "tooltip",
-                "data-tooltip-content": value,
-            }
-            return super().render(f"{value[:61]}...")
+            return get_template("columns/string_cell.html").render(
+                {"value": f"{value[:61]}...", "tooltip": value}
+            )
 
         return super().render(value)
 
@@ -234,7 +236,15 @@ def get_table(schema, query, footer=None, settings=None, **kwargs):
                     "class": get_type_class(type_),
                     "data-controller": "tooltip",
                     "data-tooltip-content": get_type_name(type_),
-                }
+                },
+                **(
+                    {
+                        "td": {"style": "text-align: right;"},
+                        "tf": {"style": "text-align: right;"},
+                    }
+                    if isinstance(type_, (dt.Floating, dt.Integer))
+                    else {}
+                ),
             }
             if not settings.get("hide_data_type")
             else {},

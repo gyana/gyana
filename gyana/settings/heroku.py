@@ -65,3 +65,5 @@ CACHES = {
         },
     },
 }
+
+CACHEOPS_REDIS = f'{os.environ.get("REDIS_URL")}?ssl_cert_reqs=none'
