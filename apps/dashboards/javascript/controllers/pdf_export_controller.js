@@ -45,20 +45,15 @@ export default class extends Controller {
     const containerHeight = parseInt(container.dataset.height)
     const { height: windowHeight } = html2pdfOverlay.querySelector('.widgets').getBoundingClientRect()
 
-    // PDF is weird and will swap your widths and heights around if you don't
-    // explicitly tell it one should be longer than the other.
-    if (containerWidth > containerHeight) {
-      html2pdfWorker.set({ jsPDF: { orientation: "landscape" } })
-    } else {
-      html2pdfWorker.set({ jsPDF: { orientation: "portrait" } })
-    }
-
     html2pdfWorker
       .set({
         jsPDF: {
-          // 112px between containers.
-          format: [containerWidth, containerHeight + 112],
-          unit: "px"
+          format: [containerWidth + 2 + 16 + 16, containerHeight + 2 + 16 + 16 + 16 + 68],
+          unit: "px",
+          // PDFs are weird and will swap your widths and heights around if you don't
+          // explicitly tell it one should be longer than the other.
+          orientation: containerWidth > containerHeight ? 'l' : 'p',
+          putOnlyUsedFonts: true,
         },
       })
       .set({
@@ -68,16 +63,16 @@ export default class extends Controller {
          * We parse the set dashboard width as an int so that the pdf
          * output is consistent.
          * 
-         * 32 is the pixel value of the padding around the dashboard.
-         * 
          * windowWidth and windowHeight are set to consistent values, they
          * can potentially be increased at some point for increased quality.
          */
         html2canvas: {
-          width: containerWidth + 32,
-          windowWidth: 1366,
+          backgroundColor: '#fafafc',
+          width: containerWidth + 2 + 16 + 16,
+          height: (containerHeight + 2 + 16 + 16 + 16 + 68) * 2,
+          windowWidth: containerWidth + 16,
           windowHeight: 656,
-          scale: 2.2,
+          scale: 2,
         }
       })
       .then(() => {

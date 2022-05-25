@@ -1,7 +1,10 @@
 {% load static %}
 {% load waffle_tags %}
 
-<div class="widgets">
+<div
+  class="widgets"
+  style="padding-right: calc({{ dashboard.width }}px + 1.6rem);"
+>
   <div
     class="widgets__canvas"
     style="--background-color:{{ dashboard.background_color }};"
