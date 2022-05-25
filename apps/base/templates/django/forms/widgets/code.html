@@ -1,0 +1,7 @@
+<div data-controller="code-input" class="w-full">
+  <textarea
+    name="{{ widget.name }}"
+    data-code-input-target="textarea"
+    {% include "django/forms/widgets/attrs.html" %}
+  >{% if widget.value %}{{ widget.value }}{% endif %}</textarea>
+</div>
