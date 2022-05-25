@@ -20,7 +20,7 @@ export default class extends Controller {
   initialize() {
     this.boundHandleClick = this.handleClick.bind(this)
     this.boundHandleChange = this.handleChange.bind(this)
-    this.inputElement = this.element.querySelector('input') || this.element.querySelector('select')
+    this.inputElement = this.element.querySelector('input, select, textarea')
   }
 
   connect() {
