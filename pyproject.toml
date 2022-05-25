@@ -92,7 +92,7 @@ django-cryptography = "^1.0"
 django-heroicons = {git = "https://github.com/geoffbeier/django-heroicons"}
 jsonpath-ng = "^1.5.3"
 readtime = "^1.1.1"
-wagtail = "2.16"
+wagtail = "^3.0"
 # Until this is done use git branch https://github.com/jazzband/wagtailmenus/pull/404
 wagtailmenus = {git = "https://github.com/jazzband/wagtailmenus", rev = "8be2790c01688dd3c9ef7298bdebe94575c0a76a"}
 # Until https://github.com/jazzband/django-simple-history/pull/866 is released
