@@ -36,6 +36,18 @@
   <!-- Include the Quill library -->
   <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
   <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+
+  {% if dashboard.extra_html_head %}
+    <!-- User-specified head elements -->
+    {{ dashboard.extra_html_head|safe }}
+  {% endif %}
+
+  {% if dashboard.extra_css %}
+    <!-- User-specified styling -->
+    <style>
+      {{ dashboard.extra_css|safe }}
+    </style>
+  {% endif %}
 </head>
 <body
   data-controller="tf-modal on-submit-loading turbo-loading"
@@ -153,6 +165,11 @@
   {% endblock body.modal %}
 
   {% comment %} Has to be loaded once GyWidgets are rendered {% endcomment %}
-  {% include 'components/fusionchart_scripts.html' %}
+  <script src="{% static "fusioncharts/fusioncharts.js" %}"></script>
+  <script src="{% static "fusioncharts/fusioncharts.charts.js" %}"></script>
+  <script src="{% static "fusioncharts/fusioncharts.widgets.js" %}"></script>
+  <script src="{% static "fusioncharts/fusioncharts.powercharts.js" %}"></script>
+  <script src="{% static "fusioncharts/fusioncharts.timeseries.js" %}"></script>
+  <script src="{% static "fusioncharts/themes/fusioncharts.theme.fusion.js" %}"></script>
 </body>
 </html>

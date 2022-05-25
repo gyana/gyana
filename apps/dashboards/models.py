@@ -29,6 +29,7 @@ class DashboardSettings(models.Model):
         GENERAL = "general", "General"
         WIDGET = "widget", "Widget"
         CANVAS = "canvas", "Canvas"
+        ADVANCED = "advanced", "Advanced"
 
     class FontFamily(models.TextChoices):
         BOOGALOO = "Boogaloo"
@@ -39,6 +40,8 @@ class DashboardSettings(models.Model):
         ROBOTO = "Roboto"
         UBUNTU = "Ubuntu"
 
+    extra_html_head = models.TextField(null=True)
+    extra_css = models.TextField(null=True)
     grid_size = models.IntegerField(default=15)
     width = models.IntegerField(default=1200)
     height = models.IntegerField(default=840)
@@ -235,6 +238,8 @@ class DashboardUpdate(BaseModel):
 
 
 DASHBOARD_SETTING_TO_CATEGORY = {
+    "extra_html_head": Dashboard.Category.ADVANCED,
+    "extra_css": Dashboard.Category.ADVANCED,
     "grid_size": Dashboard.Category.CANVAS,
     "width": Dashboard.Category.CANVAS,
     "height": Dashboard.Category.CANVAS,

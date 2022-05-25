@@ -10,6 +10,7 @@ from apps.base.fields import ColorField, ColorInput
 from apps.base.forms import BaseModelForm, LiveModelForm
 
 from .models import DASHBOARD_SETTING_TO_CATEGORY, Dashboard
+from .widgets import TextareaCode
 
 
 class PaletteColorsWidget(forms.MultiWidget):
@@ -73,6 +74,18 @@ class DashboardNameForm(BaseModelForm):
 
 
 class DashboardForm(BaseModelForm):
+    extra_html_head = forms.CharField(
+        label="HTML <head>",
+        required=False,
+        help_text="When published, your dashboard will include everything here in the HTML head tag",
+        widget=TextareaCode,
+    )
+    extra_css = forms.CharField(
+        label="Extra CSS",
+        required=False,
+        help_text="Custom CSS to use for your published dashboard",
+        widget=TextareaCode,
+    )
     width = forms.IntegerField(
         required=False,
         widget=forms.NumberInput(
@@ -127,6 +140,8 @@ class DashboardForm(BaseModelForm):
     class Meta:
         model = Dashboard
         fields = [
+            "extra_html_head",
+            "extra_css",
             "font_size",
             "font_family",
             "font_color",
