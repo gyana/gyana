@@ -47,7 +47,9 @@
         <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-fw fa-2x"></i>
       </span>
 
-      {% include "django/forms/default_form.html" with optional=False %}
+      {% with optional=False %}
+          {{ form }}
+        {% endwith %}
 
       <button
         type="submit"

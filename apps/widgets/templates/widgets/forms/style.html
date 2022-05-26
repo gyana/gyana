@@ -11,7 +11,9 @@
   {% csrf_token %}
 
   <div class="widget-update__body">
-    {% include "django/forms/default_form.html" with optional=False %}
+    {% with optional=False %}
+          {{ form }}
+        {% endwith %}
   </div>
 
   <div class="widget-update__footer">

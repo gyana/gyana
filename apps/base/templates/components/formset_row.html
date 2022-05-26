@@ -9,8 +9,9 @@
     {% endwith %}
   {% endif %}
 
-  {% include "django/forms/default_form.html" with formsets=None%}
-
+  {% with formsets=None  %}
+    {{ form }}
+  {% endwith %}
   {% if not formset.hide_delete_button %}
     <button
       class="button button--sm button--circle button--tertiary ml-4" 
