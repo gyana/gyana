@@ -4,7 +4,20 @@
   display: flex;
   flex-direction: column;
   margin: 0 auto;
-  padding: 0 1.6rem 0 0;
+  padding: 0 1.6rem 0 1.6rem;
+
+  header {
+    display: flex;
+    align-items: flex-end;
+    align-self: flex-start;
+    height: 6.8rem;
+    margin-top: 1.6rem;
+    margin-bottom: 1.6rem;
+
+    &:first-of-type {
+      align-items: flex-start;
+    }
+  }
 
   &__canvas {
     --background-color: var(--c-white);
@@ -16,10 +29,6 @@
     position: relative;
 
     @include mixins.shadow;
-
-    & + header {
-      margin-top: 3.2rem;
-    }
   }
 
   &__grid {
