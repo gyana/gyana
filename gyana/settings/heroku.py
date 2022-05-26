@@ -67,3 +67,7 @@ CACHES = {
 }
 
 CACHEOPS_REDIS = f'{os.environ.get("REDIS_URL")}?ssl_cert_reqs=none'
+
+# After django 4.0 update ManifestStaticFilesStorage would fail
+# Collecting the sourcemaps for fusioncharts
+STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
