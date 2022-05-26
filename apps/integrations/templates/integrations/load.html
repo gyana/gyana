@@ -62,7 +62,7 @@
                 class="form--no-layout"
               >
                 {% csrf_token %}
-                {% include "django/forms/default_form.html" %}
+                {{ form }}
 
                 <div class="flex gap-3 w-full">
                   <button type="submit" class="button button--tertiary flex-1">

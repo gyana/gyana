@@ -49,7 +49,7 @@
         </span>
         {% csrf_token %}
 
-        {% include "django/forms/default_form.html" %}
+        {{ form }}
 
         {% if node.kind == 'sentiment' %}
           <div class="mt-6">

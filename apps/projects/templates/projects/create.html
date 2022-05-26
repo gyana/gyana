@@ -17,7 +17,7 @@
     >
       {% csrf_token %}
 
-      {% include "django/forms/default_form.html" %}
+      {{ form }}
 
       <button
         type="submit"

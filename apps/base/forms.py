@@ -66,6 +66,8 @@ class SchemaFormMixin:
 
 
 class BaseModelForm(forms.ModelForm):
+    template_name = "django/forms/default_form.html"
+
     def pre_save(self, instance):
         # override in child to add behaviour on commit save
         pass
