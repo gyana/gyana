@@ -6,8 +6,6 @@
 <div class="input-group">
 {% for bound_field in form.visible_fields %}
   {% if bound_field.name in form.extra_fields %}
-  {% comment %} Ignore these fields because they are going to be rendered in an extendable manner further down {% endcomment %}
-  {% elif form.formatting_unfolded and bound_field.label in 'Currency, Rounding, Name, Formatting unfolded, Show in %, Conditional formatting, Positive threshold, Negative threshold'%}
   {% elif bound_field.widget_type == "palettecolors" %}
     <div class="label">
       <label>
@@ -22,6 +20,7 @@
 
       <div class="palette-colors">{{ bound_field }}</div>
     </div>
+    {{ bound_field.errors }}
   {% elif bound_field.widget_type == "connectorschemamultiselect" %}
     <div
       data-controller="multi-select"
@@ -54,6 +53,7 @@
 
       {{ bound_field }}
     </div>
+    {{ bound_field.errors }}
   {% elif bound_field.widget_type == "radioselect" %}
     <div class="{{ bound_field.field.widget.attrs.class }}">
       <label class="block mb-2">
@@ -73,6 +73,7 @@
     
       {{ bound_field }}
     </div>
+    {{ bound_field.errors }}
   {% elif bound_field.widget_type == "checkbox" %}
     <label  
       class="flex flex-row items-center gap-4 w-full"
@@ -88,6 +89,7 @@
         {% endif %}
       </span>
     </label>
+    {{ bound_field.errors }}
   {% elif bound_field.subwidgets|length == 1 and bound_field.widget_type != "codemirror" and bound_field.widget_type != "textareacode" %}
     <div
       {% if bound_field.field.initial %}
@@ -128,12 +130,11 @@
         {{ bound_field }}
       </div>
     </div>
-    
+    {{ bound_field.errors }}
   {% else %}
     {% include 'django/forms/field.html' with field=bound_field%}
   {% endif %}
 
-  {{ bound_field.errors }}
   {% endfor %}
 
   {% if form.extra_fields %}
@@ -156,32 +157,6 @@
   </details>
   {% endif %}
 
-  {% if form.formatting_unfolded %}
-    <div class='formatting' data-controller='column-format'>
-      <button 
-        type='button'
-        class="small link link--foldable {% if form.formatting_unfolded.value %}link--unfolded {% endif %} ml-auto"
-        data-action='column-format#handle'
-        data-column-format-target='button'
-      >
-        Formatting
-      </button>
-
-      {{ form.formatting_unfolded }}
-
-      <div
-        class="input-group"
-        data-column-format-target='inputs' 
-        {% if not form.formatting_unfolded.value %}hidden{% endif %}
-      >
-        {% for field in form.visible_fields  %}
-          {% if field.label in 'Currency, Rounding, Name, Show in %, Conditional formatting, Positive threshold, Negative threshold'%}
-            {% include 'django/forms/field.html'%}
-          {% endif %}
-        {% endfor %}
-      </div>
-    </div>
-  {% endif %}
 
 </div>
 

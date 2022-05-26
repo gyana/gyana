@@ -1,0 +1,42 @@
+{% include 'django/forms/field.html' with field=form.column %}
+{% include 'django/forms/field.html' with field=form.part %}
+{% include 'django/forms/field.html' with field=form.function %}
+
+<div class='formatting' data-controller='column-format'>
+  <button 
+    type='button'
+    class="small link link--foldable {% if form.formatting_unfolded.value %}link--unfolded {% endif %} ml-auto"
+    data-action='column-format#handle'
+    data-column-format-target='button'
+  >
+    Formatting
+  </button>
+
+  {{ form.formatting_unfolded }}
+
+  <div
+    class="input-group"
+    data-column-format-target='inputs' 
+    {% if not form.formatting_unfolded.value %}hidden{% endif %}
+  >
+    {% include 'django/forms/field.html' with field=form.name %}
+
+    {% if form.currency %}
+      <div class='flex flex-row w-full gap-2'>
+        {% include 'django/forms/field.html' with field=form.currency %}
+        {% include 'django/forms/field.html' with field=form.rounding %}
+        {% include 'django/forms/field.html' with field=form.show_percentage %}
+      </div>
+    {% endif %}
+    {% include 'django/forms/field.html' with field=form.conditional_formatting %}
+    <div class='flex flex-row w-full gap-2'>
+      {% include 'django/forms/field.html' with field=form.positive_threshold %}
+      {% include 'django/forms/field.html' with field=form.negative_threshold %}
+    </div>
+  </div>
+</div>
+
+
+{% for hidden_field in form.hidden_fields %}
+  {{ hidden_field }}
+{% endfor %}
