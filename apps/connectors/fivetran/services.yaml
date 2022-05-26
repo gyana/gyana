@@ -89,6 +89,7 @@ freshdesk: {}
 front: {}
 github: {}
 adwords:
+  hide: true
   static_config:
     sync_mode: AllAccounts
     timeframe_months: TWELVE

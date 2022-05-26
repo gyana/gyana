@@ -57,14 +57,17 @@
           <p>{{ services_query_count }} sources</p>
         </div>
         {% for service in services_query %}
-          {% if service.is_beta %}
-            {%flag 'beta'%}
-              {% include 'connectors/_connector_card.html' %}
-            {% endflag %}
-          {% else %}
-            {% include 'connectors/_connector_card.html' %}
-          {% endif %}
+          {% if not service.hide %}
 
+            {% if service.is_beta %}
+              {%flag 'beta'%}
+                {% include 'connectors/_connector_card.html' %}
+              {% endflag %}
+            {% else %}
+              {% include 'connectors/_connector_card.html' %}
+            {% endif %}
+
+          {% endif %}
         {% endfor %}
       </div>
     </div>

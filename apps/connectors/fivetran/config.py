@@ -37,6 +37,7 @@ class Service:
     sunset: bool = False
     alias: Optional[str] = None
     is_beta: bool = False
+    hide: bool = False
 
     # fivetran metadata
     id: str = ""
