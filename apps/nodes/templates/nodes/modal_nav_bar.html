@@ -3,7 +3,7 @@
 {% with parents=object.parents_ordered.all %}
 
 <nav class="tabbar">
-  {% if node.kind == "formula" %}
+  {% if object.kind == "formula" %}
   <a class="tabbar__link {% if show_docs %}tabbar__link--active{% endif %}"
     href="{% url 'nodes:formula' object.id %}?show_docs=true"
   >
