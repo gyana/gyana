@@ -41,12 +41,14 @@ class DashboardForm(BaseModelForm):
     )
     width = forms.IntegerField(
         required=False,
+        initial=1200,
         widget=forms.NumberInput(
             attrs={"class": "label--half", "unit_suffix": "pixels"}
         ),
     )
     height = forms.IntegerField(
         required=False,
+        initial=840,
         widget=forms.NumberInput(
             attrs={"class": "label--half", "unit_suffix": "pixels"}
         ),
