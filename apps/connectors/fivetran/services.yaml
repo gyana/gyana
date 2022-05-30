@@ -24,66 +24,23 @@ facebook_ads:
   static_config:
     timeframe_months: TWELVE
     custom_tables:
-      - table_name: action_canvas_component
-        config_type: Prebuilt
-        prebuilt_report_name: ACTION_CANVAS_COMPONENT
-      - table_name: action_carousel_card
-        config_type: Prebuilt
-        prebuilt_report_name: ACTION_CAROUSEL_CARD
-      - table_name: action_conversion_device
-        config_type: Prebuilt
-        prebuilt_report_name: ACTION_CONVERSION_DEVICE
-      - table_name: action_product_id
-        config_type: Prebuilt
-        prebuilt_report_name: ACTION_PRODUCT_ID
-      - table_name: action_reactions
-        config_type: Prebuilt
-        prebuilt_report_name: ACTION_REACTIONS
-      - table_name: action_video_sound
-        config_type: Prebuilt
-        prebuilt_report_name: ACTION_VIDEO_SOUND
-      - table_name: action_video_view_type
-        config_type: Prebuilt
-        prebuilt_report_name: ACTION_VIDEO_VIEW_TYPE
-      - table_name: basic_ad
-        config_type: Prebuilt
-        prebuilt_report_name: BASIC_AD
-      - table_name: basic_ad_set
-        config_type: Prebuilt
-        prebuilt_report_name: BASIC_AD_SET
-      - table_name: basic_all_levels
-        config_type: Prebuilt
-        prebuilt_report_name: BASIC_ALL_LEVELS
-      - table_name: basic_campaign
-        config_type: Prebuilt
-        prebuilt_report_name: BASIC_CAMPAIGN
-      - table_name: delivery_platform
-        config_type: Prebuilt
-        prebuilt_report_name: DELIVERY_PLATFORM
-      - table_name: delivery_platform_and_device
-        config_type: Prebuilt
-        prebuilt_report_name: DELIVERY_PLATFORM_AND_DEVICE
-      - table_name: delivery_purchase_roas
-        config_type: Prebuilt
-        prebuilt_report_name: DELIVERY_PURCHASE_ROAS
-      - table_name: demographics_age
-        config_type: Prebuilt
-        prebuilt_report_name: DEMOGRAPHICS_AGE
-      - table_name: demographics_age_and_gender
-        config_type: Prebuilt
-        prebuilt_report_name: DEMOGRAPHICS_AGE_AND_GENDER
-      - table_name: demographics_country
-        config_type: Prebuilt
-        prebuilt_report_name: DEMOGRAPHICS_COUNTRY
-      - table_name: demographics_dma_region
-        config_type: Prebuilt
-        prebuilt_report_name: DEMOGRAPHICS_DMA_REGION
-      - table_name: demographics_gender
-        config_type: Prebuilt
-        prebuilt_report_name: DEMOGRAPHICS_GENDER
-      - table_name: demographics_region
-        config_type: Prebuilt
-        prebuilt_report_name: DEMOGRAPHICS_REGION
+      - table_name: campaign
+        config_type: Custom
+        aggregation: Day
+        level: campaign
+        action_breakdowns:
+          - action_type
+        fields:
+          - spend
+          - campaign_id
+          - campaign_name
+          - actions
+          - action_values
+          - account_id
+          - impressions
+          - clicks
+          - inline_link_clicks
+          - frequency
 facebook_pages: {}
 freshdesk: {}
 front: {}
@@ -97,11 +54,54 @@ google_ads:
   static_config:
     sync_mode: AllAccounts
     timeframe_months: TWELVE
+    reports:
+      - table: campaign
+        config_type: Custom
+        report_type: campagin
+        fields:
+          - segments.date
+          - segments.device
+          - segments.ad_network_type
+          - campaign.name
+          - campaign.id
+          - metrics.conversions
+          - metrics.conversions_value
+          - metrics.clicks
+          - metrics.cost_micros
+      - table: adgroup
+        config_type: Custom
+        report_type: ad_group
+        fields:
+          - segments.date
+          - segments.device
+          - segments.ad_network_type
+          - ad_group.id
+          - ad_group.name
+          - campaign.name
+          - campaign.id
+          - metrics.conversions
+          - metrics.conversions_value
+          - metrics.clicks
+          - metrics.cost_micros
 google_analytics:
   static_config:
     sync_mode: AllAccounts
     timeframe_months: TWELVE
     reports:
+      - table: campaign_stats
+        config_type: Custom
+        dimensions:
+          - date
+          - country
+          - deviceCategory
+          - campaign
+          - userType
+          - region
+        metrics:
+          - transactions
+          - transactionRevenue
+          - users
+          - impressions
       - table: adwords_campaigns
         config_type: Prebuilt
         prebuilt_report: ADWORDS_CAMPAIGNS
