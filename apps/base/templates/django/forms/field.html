@@ -1,6 +1,10 @@
 {% if field %}
   <div class="label {{ field.field.widget.attrs.class }}">
-    <label for="{{ field.id_for_label }}">
+    <label
+      {% if field.field.widget.widgets|length == 0 %}
+        for="{{ field.id_for_label }}"
+      {% endif %}
+    >
       <span class="block">
         {{ field.label }}
 
@@ -10,13 +14,14 @@
       </span>
 
       {% if field.help_text %}
-      <p class="input__help-text">
-        {{ field.help_text }}
-      </p>
+        <p class="input__help-text">
+          {{ field.help_text }}
+        </p>
       {% endif %}
-      
-      {{ field }}
     </label>
+
+    {{ field }}
+
+    {{ field.errors }}
   </div>
-  {{ field.errors }}
 {% endif %}
