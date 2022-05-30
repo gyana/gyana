@@ -138,11 +138,13 @@
           Last updated <abbr>{% include "columns/natural_datetime.html" with datetime=dashboard.updated %}</abbr>
         </p>
 
-        {% flag 'beta' %}
+        {% if not user.is_anonymous %}
+          {% flag 'beta' %}
           <a class="link small" href="{% url 'dashboards:public' object.shared_id %}?printPreview=1">
             Preview print
           </a>
-        {% endflag %}
+          {% endflag %}
+        {% endif %}
 
         {% if dashboard.shared_status == "password_protected" %}
           <a class="link small" href="{% url 'dashboards:logout' dashboard.shared_id %}">Forget me on this browser</a>
