@@ -68,11 +68,12 @@ class Datalist(Select):
 
     def __init__(self, attrs=None, options=()) -> None:
         super().__init__(attrs=attrs)
-        self.options = options
+        # self.options conflicts with Select methods.
+        self.options_ = options
 
     def get_context(self, name, value, attrs):
         context = super().get_context(name, value, attrs)
-        context["options"] = self.options
+        context["options"] = self.options_
         context["widget"]["type"] = self.input_type
         return context
 
