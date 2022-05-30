@@ -404,7 +404,7 @@ class WidgetDuplicateForm(BaseModelForm):
 
 class StyleMixin:
     def get_initial_for_field(self, field, field_name):
-        if self.initial.get(field_name) != None and getattr(self.instance, field_name):
+        if self.initial.get(field_name) != None and hasattr(self.instance, field_name):
             return self.initial.get(field_name)
 
         # Field has no value but dashboard has set a value.
