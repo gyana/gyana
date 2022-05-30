@@ -44,12 +44,7 @@ class PaletteColorsField(forms.MultiValueField):
             ColorField(),
         )
 
-        super().__init__(
-            fields=fields,
-            require_all_fields=False,
-            **kwargs
-        )
-
+        super().__init__(fields=fields, require_all_fields=False, **kwargs)
 
     def compress(self, data_list):
         return data_list

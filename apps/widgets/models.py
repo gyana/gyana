@@ -49,7 +49,9 @@ class WidgetStyle(models.Model):
     metric_comparison_font_color = models.CharField(null=True, max_length=7)
 
     # Table specific configuration
-    table_show_header = models.BooleanField(default=True, blank=True)
+    table_show_header = models.BooleanField(
+        default=True, verbose_name="Show table header", blank=True
+    )
     table_hide_data_type = models.BooleanField(
         default=False, verbose_name="Hide data type icon", blank=True
     )

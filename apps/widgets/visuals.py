@@ -86,8 +86,10 @@ def table_to_output(widget: Widget, control, url=None) -> Dict[str, Any]:
         for col in [*widget.columns.all(), *widget.aggregations.all()]
     }
     settings["hide_data_type"] = widget.table_hide_data_type
+
     if widget.sort_column:
         query = query.sort_by([(widget.sort_column, widget.sort_ascending)])
+
     return get_table(query.schema(), query, summary, settings, url=url)
 
 

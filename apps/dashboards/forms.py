@@ -9,9 +9,8 @@ from django.utils import timezone
 from apps.base.fields import ColorField, ColorInput
 from apps.base.forms import BaseModelForm, LiveModelForm
 
-
 from .models import DASHBOARD_SETTING_TO_CATEGORY, Dashboard
-from .widgets import TextareaCode, PaletteColorsField
+from .widgets import PaletteColorsField, TextareaCode
 
 
 class DashboardCreateForm(BaseModelForm):
