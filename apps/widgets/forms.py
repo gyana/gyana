@@ -15,7 +15,7 @@ from apps.base.forms import (
     LiveFormsetMixin,
 )
 from apps.base.widgets import Datalist, SelectWithDisable, SourceSelect
-from apps.dashboards.forms import PaletteColorsField
+from apps.dashboards.widgets import PaletteColorsField
 from apps.tables.models import Table
 
 from .formsets import FORMSETS, AggregationColumnFormset, ControlFormset, FilterFormset

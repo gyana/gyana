@@ -1,26 +1,15 @@
-<!-- https://docs.djangoproject.com/en/2.2/_modules/django/forms/boundfield/#BoundField -->
+{% comment %} https://docs.djangoproject.com/en/4.0/ref/forms/api/#attributes-of-boundfield {% endcomment %}
 {% if form.form_description %}
-<div class="form__description">{{ form.form_description }}</div>
+  <div class="form__description">{{ form.form_description }}</div>
 {% endif %}
+
+{% for hidden_field in form.hidden_fields %}
+  {{ hidden_field }}
+{% endfor %}
 
 <div class="input-group">
 {% for bound_field in form.visible_fields %}
   {% if bound_field.name in form.extra_fields %}
-  {% elif bound_field.widget_type == "palettecolors" %}
-    <div class="label">
-      <label>
-        <span class="block">
-          {{ bound_field.label }}
-
-          {% if bound_field.help_text %}
-          <p class="input__help-text">{{ bound_field.help_text }}</p>
-          {% endif %}
-        </span>
-      </label>
-
-      <div class="palette-colors">{{ bound_field }}</div>
-    </div>
-    {{ bound_field.errors }}
   {% elif bound_field.widget_type == "connectorschemamultiselect" %}
     <div
       data-controller="multi-select"
@@ -90,14 +79,14 @@
       </span>
     </label>
     {{ bound_field.errors }}
-  {% elif bound_field.subwidgets|length == 1 and bound_field.widget_type != "codemirror" and bound_field.widget_type != "textareacode" %}
+  {% elif bound_field.field.widget.widgets|length == 0 and bound_field.widget_type != "codemirror" and bound_field.widget_type != "textareacode" %}
     <div
       {% if bound_field.field.initial %}
       data-controller="reset-default"
       data-reset-default-initial-value="{{ bound_field.field.initial }}"
       {% endif %}
       class="label {{ bound_field.field.widget.attrs.class }}"
-    > 
+    >
       <label for="{{ bound_field.id_for_label}}">
         <span class="block">
           {{ bound_field.label }}
@@ -132,7 +121,7 @@
     </div>
     {{ bound_field.errors }}
   {% else %}
-    {% include 'django/forms/field.html' with field=bound_field%}
+    {% include 'django/forms/field.html' with field=bound_field %}
   {% endif %}
 
   {% endfor %}
@@ -156,23 +145,18 @@
     </div>
   </details>
   {% endif %}
-
-
 </div>
 
 {% for label, formset in form.get_formsets.items %}
-<fieldset>
-  <label>{{ label }}</label>
-  {% include "components/formset.html" with formset=formset %}
-</fieldset>
+  <fieldset>
+    <label>{{ label }}</label>
+
+    {% include "components/formset.html" with formset=formset %}
+  </fieldset>
 {% endfor %}
 
 {% for error in form.non_field_errors %}
-<p class="text-red">
-  {{ error|escape }}
-</p>
-{% endfor %}
-
-{% for hidden_field in form.hidden_fields %}
-{{ hidden_field }}
+  <p class="text-red">
+    {{ error|escape }}
+  </p>
 {% endfor %}
