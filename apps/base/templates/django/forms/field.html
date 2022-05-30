@@ -1,5 +1,11 @@
 {% if field %}
-  <div class="label {{ field.field.widget.attrs.class }}">
+  <div
+    class="label {{ field.field.widget.attrs.class }}"
+    {% if field.field.initial %}
+      data-controller="reset-default"
+      data-reset-default-initial-value="{{ field.field.initial }}"
+    {% endif %}
+  >
     <label
       {% if field.field.widget.widgets|length == 0 %}
         for="{{ field.id_for_label }}"
@@ -8,9 +14,18 @@
       <span class="block">
         {{ field.label }}
 
-        {% if not field.field.required and not optional == False %}
+        {% comment %} TODO: Figure out better "optional" solution {% endcomment %}
+        {% comment %} {% if not field.field.required and not optional == False %}
           <span class="text-black-50">- optional</span>
-        {% endif %}
+        {% endif %} {% endcomment %}
+
+        <a
+          class="small link float-right"
+          data-reset-default-target="control"
+          hidden
+        >
+          Reset to default
+        </a>
       </span>
 
       {% if field.help_text %}
@@ -20,7 +35,15 @@
       {% endif %}
     </label>
 
-    {{ field }}
+    <div class="flex flex-row-reverse mt-auto">
+      {% if bound_field.field.widget.attrs.unit_suffix %}
+      <div class="label__unit">
+        <p>{{ bound_field.field.widget.attrs.unit_suffix }}</p>
+      </div>
+      {% endif %}
+
+      {{ field }}
+    </div>
 
     {{ field.errors }}
   </div>
