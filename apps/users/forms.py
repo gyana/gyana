@@ -66,7 +66,7 @@ class UserLoginForm(LoginForm):
         del self.fields["password"].widget.attrs["placeholder"]
 
 
-class CustomUserChangeForm(UserChangeForm):
+class CustomUserChangeForm(BaseModelForm, UserChangeForm):
     email = forms.EmailField(required=True, label="Email Address")
     password = forms.CharField(widget=forms.HiddenInput(), required=False)
     marketing_allowed = forms.TypedChoiceField(
