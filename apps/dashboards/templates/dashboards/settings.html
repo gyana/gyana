@@ -1,3 +1,5 @@
+{% load waffle_tags %}
+
 <section class="flex flex-col h-full whitespace-normal">
   <div class="workflow-detail__header">
     <h3 class="mr-auto">Theme and Layout</h3>
@@ -14,13 +16,29 @@
   <div class="modal__body flex flex-row whitespace-normal">
     <div class="modal__sidebar">
       {% for category_id, category in categories %}
-        <a
-          class="sidebar__link {% if request.GET.category == category_id %}sidebar__link--active{% endif %}"
-          href="{% url "project_dashboards:settings" project.id object.id %}?category={{ category_id }}"
-          data-turbo-frame="dashboard:settings"
-        >
-          {{ category }}
-        </a>
+        {% if category == "Advanced" %}
+          {% flag 'beta' %}
+            <a
+              class="sidebar__link {% if request.GET.category == category_id %}sidebar__link--active{% endif %}"
+              href="{% url "project_dashboards:settings" project.id object.id %}?category={{ category_id }}"
+              data-turbo-frame="dashboard:settings"
+            > 
+              <span {% if category == "Advanced" %}class="beta"{% endif %}>
+                {{ category }} 
+              </span>
+            </a>
+          {% endflag %}
+        {% else %}
+          <a
+            class="sidebar__link {% if request.GET.category == category_id %}sidebar__link--active{% endif %}"
+            href="{% url "project_dashboards:settings" project.id object.id %}?category={{ category_id }}"
+            data-turbo-frame="dashboard:settings"
+          > 
+            <span {% if category == "Advanced" %}class="beta"{% endif %}>
+              {{ category }} 
+            </span>
+          </a>
+        {% endif %}
       {% endfor %}
     </div>
 
