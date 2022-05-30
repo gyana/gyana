@@ -165,14 +165,20 @@ LOGGING = {
             "formatter": "simple",
         }
     },
-    # uncomment to debug segment
-    # "loggers": {
-    #     "segment": {
-    #         "handlers": ["console"],
-    #         "level": "DEBUG",
-    #         "propagate": True,
-    #     }
-    # },
+    "loggers": {
+        # uncomment to debug segment
+        # "segment": {
+        #     "handlers": ["console"],
+        #     "level": "DEBUG",
+        #     "propagate": True,
+        # },
+        # uncomment to debug django
+        # "django": {
+        #     "handlers": ["console"],
+        #     "level": "DEBUG",
+        #     "propagate": True,
+        # }
+    },
 }
 
 ROOT_URLCONF = "gyana.urls"
