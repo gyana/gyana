@@ -58,11 +58,6 @@ class BaseConnectorUpdateMixin:
                 if self.instance.conf.service_type == ServiceTypeEnum.DATABASE
                 else HiddenInput()
             )
-            table_widget = ConnectorSchemaMultiSelect
-            # disabled fields that cannot be patched
-            table_widget._schema_dict = {
-                t.name_in_destination: t for t in schema.tables
-            }
 
             self.fields[schema_field] = forms.BooleanField(
                 initial=schema.enabled,
@@ -75,7 +70,9 @@ class BaseConnectorUpdateMixin:
                 choices=[
                     (t.name_in_destination, t.display_name) for t in schema.tables
                 ],
-                widget=ConnectorSchemaMultiSelect,
+                widget=ConnectorSchemaMultiSelect(
+                    schema_dict={t.name_in_destination: t for t in schema.tables}
+                ),
                 initial=[t.name_in_destination for t in schema.tables if t.enabled],
                 label="Tables",
                 help_text="Select specific tables (you can change this later)",
