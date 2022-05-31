@@ -44,6 +44,14 @@ class NodeResultNone(Exception):
         self.node = node
 
 
+class ColumnNamesDontMatch(Exception):
+    def __init__(self, index, left_columns, right_columns, *args):
+        super().__init__(*args)
+        self.index = index
+        self.left_columns = left_columns
+        self.right_columns = right_columns
+
+
 @singledispatch
 def handle_node_exception(e):
 
@@ -110,4 +118,14 @@ def _(e):
         "right_column_type": get_type_name(e.right_column_type),
         "right_column_name": e.right_column_name,
         "left_column_name": e.left_column_name,
+    }
+
+
+@handle_node_exception.register(ColumnNamesDontMatch)
+def _(e):
+    return {
+        "error_template": "nodes/errors/columnnames_dont_match.html",
+        "left_columns": e.left_columns,
+        "right_columns": e.right_columns,
+        "index": e.index,
     }
