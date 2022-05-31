@@ -1,5 +1,7 @@
 import functools
 import math
+from decimal import Decimal
+from numbers import Number
 
 import ibis.expr.datatypes as dt
 from django.core.cache import cache
@@ -157,12 +159,14 @@ class BigQueryColumn(Column):
 
     def render(self, value):
         # TODO: Add a tooltip to explain this or find a better label.
-        if isinstance(value, float) and (math.isnan(value) or math.isinf(value)):
+        if isinstance(value, (float, Decimal)) and (
+            math.isnan(value) or math.isinf(value)
+        ):
             value = "NaN/Infinity"
         if value is None:
             return get_template("columns/empty_cell.html").render()
 
-        if isinstance(value, (float, int)) and self.conditional_formatting:
+        if isinstance(value, Number) and self.conditional_formatting:
             self.attrs["td"] = {
                 **self.attrs.get("td", {}),
                 "class": "bg-green-50"
@@ -171,7 +175,7 @@ class BigQueryColumn(Column):
                 if value < self.negative_threshold
                 else None,
             }
-        if isinstance(value, (float, int)) and self.currency:
+        if isinstance(value, Number) and self.currency:
             return get_template("columns/currency_cell.html").render(
                 {
                     "value": value,
@@ -179,7 +183,7 @@ class BigQueryColumn(Column):
                     "rounding": self.rounding,
                 }
             )
-        if isinstance(value, float):
+        if isinstance(value, (float, Decimal)):
             value = value * 100 if self.is_percentage else value
 
             return get_template("columns/float_cell.html").render(
