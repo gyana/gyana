@@ -44,41 +44,6 @@
         {{ bound_field }}
       </div>
       {{ bound_field.errors }}
-    {% elif bound_field.widget_type == "radioselect" %}
-      <div class="{{ bound_field.field.widget.attrs.class }}">
-        <label class="block mb-2">
-          {{ bound_field.label }}
-
-          {% if not bound_field.field.required and not optional == False %}
-          <span class="text-black-50">- optional</span>
-          {% endif %}
-      
-          {% if bound_field.help_text %}
-          <p class="input__help-text">
-            {{ bound_field.help_text }}
-          </p>
-          {% endif %}
-        </label>
-      
-        {{ bound_field }}
-      </div>
-      {{ bound_field.errors }}
-    {% elif bound_field.widget_type == "checkbox" %}
-      <label  
-        class="flex flex-row items-center gap-4 w-full"
-        {% if bound_field.name == 'DELETE' %}style="display: none;"{% endif %}
-      >
-        {{ bound_field }}
-        
-        <span>
-          {{ bound_field.label }}
-
-          {% if bound_field.help_text %}
-          <p class="input__help-text">{{ bound_field.help_text }}</p>
-          {% endif %}
-        </span>
-      </label>
-      {{ bound_field.errors }}
     {% else %}
       {% include 'django/forms/field.html' with field=bound_field %}
     {% endif %}

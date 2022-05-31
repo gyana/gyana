@@ -1,6 +1,9 @@
 {% if field %}
   <div
     class="label {{ field.field.widget.attrs.class }}"
+    {% if field.name == 'DELETE' %}
+      style="display: none;"
+    {% endif %}
     {% if field.field.initial %}
       data-controller="reset-default"
       data-reset-default-initial-value="{{ field.field.initial }}"
@@ -35,15 +38,17 @@
       {% endif %}
     </label>
 
-    <div class="flex flex-row-reverse mt-auto">
-      {% if bound_field.field.widget.attrs.unit_suffix %}
-      <div class="label__unit">
-        <p>{{ bound_field.field.widget.attrs.unit_suffix }}</p>
+    {% if bound_field.field.widget.attrs.unit_suffix %}
+      <div class="flex flex-row-reverse mt-auto">
+        <div class="label__unit">
+          <p>{{ bound_field.field.widget.attrs.unit_suffix }}</p>
+        </div>
+        
+        {{ field }}
       </div>
-      {% endif %}
-
+    {% else %}
       {{ field }}
-    </div>
+    {% endif %}
 
     {{ field.errors }}
   </div>

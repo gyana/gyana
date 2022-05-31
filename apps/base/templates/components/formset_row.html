@@ -2,7 +2,6 @@
   style="display: none;" {% endif %}
   data-formset-index="{{ forloop.counter0 }}"
 >
-  
   {% if formset.names %}
     {% with forloop.counter0 as index  %}
       <span class="text-black-50">{{ formset.names|list_item:index }}</span>
@@ -12,6 +11,7 @@
   {% with formsets=None  %}
     {{ form }}
   {% endwith %}
+
   {% if not formset.hide_delete_button %}
     <button
       class="button button--sm button--circle button--tertiary ml-4" 

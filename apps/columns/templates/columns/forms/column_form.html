@@ -28,7 +28,9 @@
         {% include 'django/forms/field.html' with field=form.show_percentage %}
       </div>
     {% endif %}
+
     {% include 'django/forms/field.html' with field=form.conditional_formatting %}
+
     <div class='flex flex-row w-full gap-2'>
       {% include 'django/forms/field.html' with field=form.positive_threshold %}
       {% include 'django/forms/field.html' with field=form.negative_threshold %}
