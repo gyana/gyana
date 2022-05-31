@@ -73,7 +73,10 @@ class BaseConnectorUpdateMixin:
             )
             self.fields[tables_field] = forms.MultipleChoiceField(
                 choices=[
-                    (t.name_in_destination, t.display_name) for t in schema.tables
+                    (t.name_in_destination, t.display_name)
+                    for t in sorted(
+                        schema.tables, key=lambda t: t.enabled, reverse=True
+                    )
                 ],
                 widget=ConnectorSchemaMultiSelect,
                 initial=[t.name_in_destination for t in schema.tables if t.enabled],
