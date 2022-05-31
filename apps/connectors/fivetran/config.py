@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from enum import Enum
 from functools import lru_cache
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 
 import yaml
 
@@ -48,6 +48,7 @@ class Service:
     link_to_erd: str = ""
     name: str = ""
     type: str = ""
+    default_tables: List[str] = field(default_factory=list)
 
     def __post_init__(self):
         self.service_type = ServiceTypeEnum(self.service_type)

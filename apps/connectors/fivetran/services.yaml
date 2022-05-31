@@ -21,6 +21,8 @@ dynamodb: {}
 facebook_ad_account:
   sunset: true
 facebook_ads:
+  default_tables:
+    - campaign
   static_config:
     timeframe_months: TWELVE
     custom_tables:
@@ -51,6 +53,8 @@ adwords:
     sync_mode: AllAccounts
     timeframe_months: TWELVE
 google_ads:
+  default_tables:
+    - campaign
   static_config:
     sync_mode: AllAccounts
     timeframe_months: TWELVE
@@ -87,6 +91,8 @@ google_analytics:
   static_config:
     sync_mode: AllAccounts
     timeframe_months: TWELVE
+    default_tables:
+      - campaign_stats
     reports:
       - table: campaign_stats
         config_type: Custom
