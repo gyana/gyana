@@ -18,6 +18,9 @@ from ibis.expr.types import (
 )
 from ibis_bigquery.compiler import BigQueryExprTranslator, _timestamp_units
 
+# Do not place compile functions and classes in a function as local variables
+# this will mess with cacheops and lead to cant pickle local object error
+
 compiles = BigQueryExprTranslator.compiles
 
 
@@ -88,32 +91,76 @@ def _any_value(t, expr):
     return f"ANY_VALUE({t.translate(arg)})"
 
 
-def _add_timestamp_diff_with_unit(value_class, bq_func, data_type):
-    class Difference(ValueOp):
-        left = data_type
-        right = data_type
-        unit = rlz.string
-        output_shape = rlz.shape_like("left")
-        output_dtype = dt.int64
-
-    def difference(left, right, unit):
-        return Difference(left, right, unit).to_expr()
-
-    value_class.timestamp_diff = difference
-
-    def _difference(translator, expr):
-        left, right, unit = expr.op().args
-        t_left = translator.translate(left)
-        t_right = translator.translate(right)
-        t_unit = _timestamp_units[translator.translate(unit).replace("'", "")]
-        return f"{bq_func}({t_left}, {t_right}, {t_unit})"
-
-    return compiles(Difference)(_difference)
+class TimestampDifference(ValueOp):
+    left = rlz.timestamp
+    right = rlz.timestamp
+    unit = rlz.string
+    output_shape = rlz.shape_like("left")
+    output_dtype = dt.int64
 
 
-_add_timestamp_diff_with_unit(TimestampValue, "TIMESTAMP_DIFF", rlz.timestamp)
-_add_timestamp_diff_with_unit(DateValue, "DATE_DIFF", rlz.date)
-_add_timestamp_diff_with_unit(TimeValue, "TIME_DIFF", rlz.time)
+def timestamp_difference(left, right, unit):
+    return TimestampDifference(left, right, unit).to_expr()
+
+
+TimestampValue.timestamp_diff = timestamp_difference
+
+
+@compiles(TimestampDifference)
+def _timestamp_difference(translator, expr):
+    left, right, unit = expr.op().args
+    t_left = translator.translate(left)
+    t_right = translator.translate(right)
+    t_unit = _timestamp_units[translator.translate(unit).replace("'", "")]
+    return f"TIMESTAMP_DIFF({t_left}, {t_right}, {t_unit})"
+
+
+class DateDifference(ValueOp):
+    left = rlz.date
+    right = rlz.date
+    unit = rlz.string
+    output_shape = rlz.shape_like("left")
+    output_dtype = dt.int64
+
+
+def date_difference(left, right, unit):
+    return DateDifference(left, right, unit).to_expr()
+
+
+DateValue.timestamp_diff = date_difference
+
+
+@compiles(DateDifference)
+def _date_difference(translator, expr):
+    left, right, unit = expr.op().args
+    t_left = translator.translate(left)
+    t_right = translator.translate(right)
+    t_unit = _timestamp_units[translator.translate(unit).replace("'", "")]
+    return f"Date_DIFF({t_left}, {t_right}, {t_unit})"
+
+
+class TimeDifference(ValueOp):
+    left = rlz.time
+    right = rlz.time
+    unit = rlz.string
+    output_shape = rlz.shape_like("left")
+    output_dtype = dt.int64
+
+
+def time_difference(left, right, unit):
+    return TimeDifference(left, right, unit).to_expr()
+
+
+TimeValue.timestamp_diff = time_difference
+
+
+@compiles(TimeDifference)
+def _time_difference(translator, expr):
+    left, right, unit = expr.op().args
+    t_left = translator.translate(left)
+    t_right = translator.translate(right)
+    t_unit = _timestamp_units[translator.translate(unit).replace("'", "")]
+    return f"TIME_DIFF({t_left}, {t_right}, {t_unit})"
 
 
 def _compiles_timestamp_diff_op(op, bq_func, unit):
