@@ -113,8 +113,12 @@ class DashboardForm(BaseModelForm):
             "widget_border_color",
             "widget_border_radius",
             "widget_border_thickness",
+            "preview_by_default",
         ]
-        labels = {"snap_to_grid": "Snap widgets to grid"}
+        labels = {
+            "snap_to_grid": "Snap widgets to grid",
+            "preview_by_default": "Use preview mode as default",
+        }
 
     def __init__(self, *args, **kwargs):
         self.category = kwargs.pop("category")

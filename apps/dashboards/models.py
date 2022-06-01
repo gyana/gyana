@@ -42,6 +42,7 @@ class DashboardSettings(models.Model):
 
     extra_html_head = models.TextField(null=True)
     extra_css = models.TextField(null=True)
+    preview_by_default = models.BooleanField(default=False)
     grid_size = models.IntegerField(default=15)
     width = models.IntegerField(default=1200)
     height = models.IntegerField(default=840)
@@ -90,6 +91,11 @@ class Dashboard(DashboardSettings, HistoryModel):
         return self.name
 
     def get_absolute_url(self):
+        if self.preview_by_default:
+            return "%s?mode=view" % (
+                reverse("project_dashboards:detail", args=(self.project.id, self.id))
+            )
+
         return reverse("project_dashboards:detail", args=(self.project.id, self.id))
 
     def save(self, *args, **kwargs):
@@ -240,6 +246,7 @@ class DashboardUpdate(BaseModel):
 DASHBOARD_SETTING_TO_CATEGORY = {
     "extra_html_head": Dashboard.Category.ADVANCED,
     "extra_css": Dashboard.Category.ADVANCED,
+    "preview_by_default": Dashboard.Category.GENERAL,
     "grid_size": Dashboard.Category.CANVAS,
     "width": Dashboard.Category.CANVAS,
     "height": Dashboard.Category.CANVAS,
