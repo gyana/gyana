@@ -51,6 +51,8 @@ class UserOnboardingForm(BaseModelForm):
 
 
 class UserLoginForm(LoginForm):
+    template_name = "django/forms/default_form.html"
+
     error_messages = {
         "account_inactive": "This account is currently inactive.",
         "email_password_mismatch": "The e-mail address and/or password you specified are not correct.",
