@@ -136,7 +136,7 @@ def _date_difference(translator, expr):
     t_left = translator.translate(left)
     t_right = translator.translate(right)
     t_unit = _timestamp_units[translator.translate(unit).replace("'", "")]
-    return f"Date_DIFF({t_left}, {t_right}, {t_unit})"
+    return f"DATE_DIFF({t_left}, {t_right}, {t_unit})"
 
 
 class TimeDifference(ValueOp):
