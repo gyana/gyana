@@ -170,14 +170,14 @@ def test_aggregation_node(setup):
 
 
 UNION_QUERY = (
-    f"SELECT `id`, `athlete`, `birthday`"
+    f"SELECT *"
     f"\nFROM (\n{textwrap.indent(INPUT_QUERY, '  ')}\n  UNION ALL"
     f"\n{textwrap.indent(INPUT_QUERY.replace('*', '`id`, `athlete`, `birthday`'), '  ')}\n) t0"
 )
 
 
 EXCEPT_QUERY = (
-    f"SELECT `id`, `athlete`, `birthday`"
+    f"SELECT *"
     f"\nFROM (\n{textwrap.indent(INPUT_QUERY, '  ')}\n  EXCEPT DISTINCT"
     f"\n{textwrap.indent(INPUT_QUERY, '  ')}\n) t0"
 )
@@ -200,6 +200,29 @@ def test_union_node(setup):
     union_node.union_distinct = True
     assert get_query_from_node(union_node).compile() == UNION_QUERY.replace(
         "UNION ALL", "UNION DISTINCT"
+    )
+
+
+def test_union_node_casts_int_to_float(setup):
+    input_node, workflow = setup
+
+    union_node = Node.objects.create(
+        kind=Node.Kind.UNION,
+        workflow=workflow,
+        **DEFAULT_X_Y,
+    )
+    convert_node = Node.objects.create(
+        kind=Node.Kind.CONVERT, workflow=workflow, **DEFAULT_X_Y
+    )
+    convert_node.parents.add(input_node)
+    convert_node.convert_columns.create(column="id", target_type="float")
+
+    union_node.parents.add(input_node)
+    union_node.parents.add(convert_node, through_defaults={"position": 1})
+
+    assert (
+        get_query_from_node(union_node).compile()
+        == "WITH t0 AS (\n  SELECT CAST(`id` AS FLOAT64) AS `id`, `athlete`, `birthday`\n  FROM `project.dataset.table`\n)\nSELECT t1.*\nFROM (\n  WITH t0 AS (\n    SELECT CAST(`id` AS FLOAT64) AS `id`, `athlete`, `birthday`\n    FROM `project.dataset.table`\n  )\n  SELECT *\n  FROM t0\n  UNION ALL\n  SELECT `id`, `athlete`, `birthday`\n  FROM t0\n) t1"
     )
 
 
@@ -264,7 +287,7 @@ def test_limit_node(setup):
     limit_node.parents.add(input_node)
 
     limit_query = (
-        f"SELECT `id`, `athlete`, `birthday`"
+        f"SELECT *"
         f"\nFROM (\n{textwrap.indent(INPUT_QUERY, '  ')}"
         f"\n  LIMIT 100\n) t0"
     )

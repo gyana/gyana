@@ -161,7 +161,7 @@ def get_union_query(node, query, *queries):
             )
 
         # Project to make sure columns are in the same order
-        parent = parent.projection(list(columns))
+        parent = parent.projection([parent[column] for column in columns])
         if parent.schema().types != query.schema().types:
             # We can cast integer columns to float columns to make the union possible
             # we need to do it for query or parent depending which source contains the
@@ -182,7 +182,7 @@ def get_union_query(node, query, *queries):
 
         query = query.union(parent, distinct=node.union_distinct)
     # Need to `select *` so we can operate on the query
-    return query.projection(columns)
+    return query[query]
 
 
 def get_except_query(node, query, *queries):
@@ -190,7 +190,7 @@ def get_except_query(node, query, *queries):
     for parent in queries:
         query = query.difference(parent)
     # Need to `select *` so we can operate on the query
-    return query.projection(colnames)
+    return query[query]
 
 
 def get_intersect_query(node, query, *queries):
@@ -199,7 +199,7 @@ def get_intersect_query(node, query, *queries):
         query = query.intersect(parent)
 
     # Need to `select *` so we can operate on the query
-    return query.projection(colnames)
+    return query[query]
 
 
 def get_sort_query(node, query):
@@ -211,9 +211,8 @@ def get_sort_query(node, query):
 
 def get_limit_query(node, query):
     # Need to project again to make sure limit isn't overwritten
-    return query.limit(node.limit_limit, offset=node.limit_offset or 0).projection(
-        query.schema()
-    )
+    query = query.limit(node.limit_limit, offset=node.limit_offset or 0)
+    return query[query]
 
 
 def get_filter_query(node, query):

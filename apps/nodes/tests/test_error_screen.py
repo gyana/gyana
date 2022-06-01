@@ -153,7 +153,7 @@ def test_join_type_error(client, setup, node_factory):
     assertSelectorText(r, "p", "Cannot join column athlete with birthday")
 
 
-def test_relation_error(client, setup, node_factory):
+def test_columns_dont_match_error(client, setup, node_factory):
     table, workflow = setup
     select_node = create_node(table, workflow, Node.Kind.SELECT, node_factory)
     select_node.columns.create(column="athlete")
@@ -164,8 +164,24 @@ def test_relation_error(client, setup, node_factory):
     assertOK(r)
     assertSelectorText(
         r,
+        ".node__visual",
+        "exist in\n  Input 1 but not in Input 2",
+    )
+
+
+def test_relation_error(client, setup, node_factory):
+    table, workflow = setup
+    convert_node = create_node(table, workflow, Node.Kind.CONVERT, node_factory)
+    convert_node.convert_columns.create(column="medals", target_type="date")
+    union_node = create_node(table, workflow, Node.Kind.UNION, node_factory)
+
+    union_node.parents.add(convert_node, through_defaults={"position": 1})
+    r = client.get(f"/nodes/{union_node.id}/grid")
+    assertOK(r)
+    assertSelectorText(
+        r,
         "p",
-        "The incoming tables need to have the same \n  columns in order to merge successfully.",
+        "The incoming tables need to have the same \n  column types in order to merge successfully.",
     )
 
 
