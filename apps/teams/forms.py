@@ -14,6 +14,8 @@ from .models import Flag, Membership, Team
 
 
 class TeamSignupForm(SignupForm):
+    template_name = "django/forms/default_form.html"
+
     def __init__(self, *args, **kwargs):
         super(TeamSignupForm, self).__init__(*args, **kwargs)
 
