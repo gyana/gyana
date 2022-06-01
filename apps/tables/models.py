@@ -119,8 +119,7 @@ class Table(BaseModel):
             if self.integration.kind == self.integration.Kind.SHEET:
                 return not self.integration.sheet.up_to_date_with_drive
             if self.integration.kind == self.integration.Kind.CONNECTOR:
-                # TODO: Out of date logic for connectors
-                return False
+                return self.integration.connector.latest_sync_failed
         elif self.source == self.Source.WORKFLOW_NODE:
             return self.workflow_node.workflow.out_of_date
 
