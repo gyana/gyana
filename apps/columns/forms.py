@@ -315,9 +315,7 @@ class AddColumnForm(BaseLiveSchemaForm):
         return fields
 
     def clean_label(self):
-        return column_naming_validation(
-            self.cleaned_data["label"], self.schema, self.prefix, self.data, "label"
-        )
+        return column_naming_validation(self.cleaned_data["label"], self.schema.names)
 
 
 class FormulaColumnForm(BaseLiveSchemaForm):
@@ -331,9 +329,7 @@ class FormulaColumnForm(BaseLiveSchemaForm):
         self.fields["formula"].widget = CodeMirror(self.schema)
 
     def clean_label(self):
-        return column_naming_validation(
-            self.cleaned_data["label"], self.schema, self.prefix, self.data, "label"
-        )
+        return column_naming_validation(self.cleaned_data["label"], self.schema.names)
 
 
 class WindowColumnForm(BaseLiveSchemaForm):
@@ -381,9 +377,7 @@ class WindowColumnForm(BaseLiveSchemaForm):
         return fields
 
     def clean_label(self):
-        return column_naming_validation(
-            self.cleaned_data["label"], self.schema, self.prefix, self.data, "label"
-        )
+        return column_naming_validation(self.cleaned_data["label"], self.schema.name)
 
 
 class ConvertColumnForm(BaseLiveSchemaForm):
@@ -461,27 +455,25 @@ class SortColumnForm(BaseLiveSchemaForm):
         widgets = {"sort_index": forms.HiddenInput()}
 
 
-def column_naming_validation(new_name, schema, prefix, data, field_name):
-    existing_columns = schema.names
-    formset_prefix, idx = prefix.split("-")
-    idx = int(idx)
-    renamed_before = tuple(
-        value
-        for key, value in data.items()
-        if key.startswith(formset_prefix)
-        and key.endswith(field_name)
-        and int(key.split("-")[1]) < idx
-    )
-    if new_name in (existing_columns + renamed_before):
+def column_naming_validation(new_name, existing_columns):
+    if new_name in (existing_columns):
         raise forms.ValidationError("This column already exists", code="invalid")
 
-    if new_name.lower() in [
-        column.lower() for column in (existing_columns + renamed_before)
-    ]:
+    if new_name.lower() in [column.lower() for column in (existing_columns)]:
         raise forms.ValidationError(
             "This column already exists with a different capitalisation", code="invalid"
         )
     return new_name
+
+
+def extract_values_from_data(prefix, data, field_name, idx=None):
+    return tuple(
+        value
+        for key, value in data.items()
+        if key.startswith(prefix)
+        and key.endswith(field_name)
+        and (idx is None or int(key.split("-")[1]) < idx)
+    )
 
 
 class RenameColumnForm(BaseLiveSchemaForm):
@@ -490,10 +482,13 @@ class RenameColumnForm(BaseLiveSchemaForm):
         fields = ("column", "new_name")
 
     def clean_new_name(self):
+        formset_prefix, idx = self.prefix.split("-")
+        idx = int(idx)
+        new_names = extract_values_from_data(formset_prefix, self.data, "new_name", idx)
+        old_names = extract_values_from_data(formset_prefix, self.data, "column")
+
+        existing_columns = set(self.schema.names) - set(old_names) | set(new_names)
         return column_naming_validation(
             self.cleaned_data["new_name"],
-            self.schema,
-            self.prefix,
-            self.data,
-            "new_name",
+            list(existing_columns),
         )
