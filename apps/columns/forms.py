@@ -377,7 +377,7 @@ class WindowColumnForm(BaseLiveSchemaForm):
         return fields
 
     def clean_label(self):
-        return column_naming_validation(self.cleaned_data["label"], self.schema.name)
+        return column_naming_validation(self.cleaned_data["label"], self.schema.names)
 
 
 class ConvertColumnForm(BaseLiveSchemaForm):
