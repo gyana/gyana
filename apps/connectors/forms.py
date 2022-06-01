@@ -100,6 +100,10 @@ class BaseConnectorUpdateMixin:
                 "Failed to update, please try again or reach out to support."
             )
 
+    def pre_save(self, instance):
+        instance.has_import_triggered = True
+        return super().pre_save(instance)
+
 
 class ConnectorUpdateForm(LiveFormsetMixin, BaseConnectorUpdateMixin, BaseModelForm):
     class Meta:

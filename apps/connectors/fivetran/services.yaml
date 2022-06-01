@@ -61,7 +61,7 @@ google_ads:
     reports:
       - table: campaign
         config_type: Custom
-        report_type: campagin
+        report_type: campaign
         fields:
           - segments.date
           - segments.device

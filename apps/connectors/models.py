@@ -138,6 +138,7 @@ class Connector(DirtyFieldsMixin, BaseModel):
     source_sync_details = models.JSONField(null=True)
     # https://fivetran.com/docs/rest-api/connectors#retrieveaconnectorschemaconfig
     schema_config = models.JSONField(null=True)
+    has_import_triggered = models.BooleanField(default=False, blank=True)
 
     # deprecated: track the celery task
     sync_task_id = models.UUIDField(null=True)
