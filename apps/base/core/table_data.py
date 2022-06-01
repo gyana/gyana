@@ -158,11 +158,13 @@ class BigQueryColumn(Column):
         self.negative_threshold = settings.get("negative_threshold")
 
     def render(self, value):
+        if isinstance(value, (float, Decimal)) and math.isinf(value):
+            value = "∞"
+
         # TODO: Add a tooltip to explain this or find a better label.
-        if isinstance(value, (float, Decimal)) and (
-            math.isnan(value) or math.isinf(value)
-        ):
-            value = "NaN/Infinity"
+        if isinstance(value, (float, Decimal)) and math.isnan(value):
+            value = "NaN"
+
         if value is None:
             return get_template("columns/empty_cell.html").render()
 
