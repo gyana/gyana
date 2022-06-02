@@ -151,19 +151,25 @@ class GenericWidgetForm(LiveFormsetForm):
 
         if self.get_live_field("kind") == Widget.Kind.TABLE:
             formsets = self.get_formsets()
-            group_columns = [
-                form.data[f"{form.prefix}-column"]
-                for form in formsets["Group columns"].forms
-                if not form.deleted and form.data.get(f"{form.prefix}-column")
-            ]
-            aggregations = [
-                form.data[f"{form.prefix}-column"]
-                for form in formsets["Aggregations"].forms
-                if not form.deleted and form.data.get(f"{form.prefix}-column")
-            ]
+            if self.data:
+                group_columns = [
+                    form.data[f"{form.prefix}-column"]
+                    for form in formsets["Group columns"].forms
+                    if not form.deleted and form.data.get(f"{form.prefix}-column")
+                ]
+                aggregations = [
+                    form.data[f"{form.prefix}-column"]
+                    for form in formsets["Aggregations"].forms
+                    if not form.deleted and form.data.get(f"{form.prefix}-column")
+                ]
+            else:
+                group_columns = [
+                    column.column for column in self.instance.columns.all()
+                ]
+                aggregations = [
+                    column.column for column in self.instance.aggregations.all()
+                ]
             if columns := group_columns + aggregations:
-                if not aggregations:
-                    columns += [COUNT_COLUMN_NAME]
                 self.fields["sort_column"].choices = [("", "No column selected")] + [
                     (name, name) for name in columns
                 ]
