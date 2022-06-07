@@ -128,10 +128,10 @@ class ColumnSettings(models.Model):
         default=False, help_text="Select whether or not to show background color"
     )
     positive_threshold = models.IntegerField(
-        default=0, blank=True, help_text="Set a threshold for positive value"
+        default=0, help_text="Set a threshold for positive value"
     )
     negative_threshold = models.IntegerField(
-        default=0, blank=True, help_text="Set a threshold for negative value"
+        default=0, help_text="Set a threshold for negative value"
     )
 
 
