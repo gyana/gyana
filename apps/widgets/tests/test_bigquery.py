@@ -1,5 +1,3 @@
-import textwrap
-
 import pytest
 
 from apps.base.tests.mock_data import TABLE
@@ -19,20 +17,14 @@ def setup(bigquery):
 
 
 SINGLE_DIMENSION_QUERY = """\
-SELECT `is_nice`, count(*) AS `count`
-FROM `project.dataset.table`
-GROUP BY 1\
-"""
-
-SORT_QUERY = """\
 SELECT *
 FROM (
-{}
+  SELECT `is_nice`, count(*) AS `count`
+  FROM `project.dataset.table`
+  GROUP BY 1
 ) t0
 ORDER BY `is_nice`\
-""".format(
-    textwrap.indent(SINGLE_DIMENSION_QUERY, "  ")
-)
+"""
 
 SINGLE_DIMENSION_SINGLE_AGGREGATION_QUERY = SINGLE_DIMENSION_QUERY.replace(
     "count(*) AS `count`", "sum(`stars`) AS `stars`"
@@ -93,10 +85,6 @@ def test_only_one_dimension(kind, setup, widget_factory):
     query = get_query_from_widget(widget, pre_filter(widget, None))
 
     assert query.compile() == SINGLE_DIMENSION_QUERY
-
-    widget.sort_column = "is_nice"
-    query = get_query_from_widget(widget, pre_filter(widget, None))
-    assert query.compile() == SORT_QUERY
 
 
 @simple_params
