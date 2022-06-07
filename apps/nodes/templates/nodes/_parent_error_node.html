@@ -1,23 +1,13 @@
 <p class='m-auto'>
   There is an error in the parent node 
-  <strong> 
-    {% if object.name %}
-      {{object.name}}
-    {% else %}
-      {{object.display_name}}
-    {% endif %}
-  </strong>.
+  <strong>{% if object.name %}{{object.name}}{% else %}{{object.display_name}}{% endif %}</strong>.
 
-  <button
+  <a
     class='link'
-    data-modal-src="/nodes/{{object.id}}"
-    data-modal-id="workflow-modal"
-    data-modal-classes='tf-modal--full'
-    data-action='click->tf-modal#open'
-    data-modal-item="{{ object.id }}"
+    href="{% url 'nodes:update' object.id %}"
   >
     Reconfigure
-  </button>
+  </a>
 
   it and try opening this node again.
 </p>

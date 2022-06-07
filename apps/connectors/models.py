@@ -418,7 +418,9 @@ class Connector(DirtyFieldsMixin, BaseModel):
     @property
     def latest_sync_failed(self):
         return (
-            self.failed_at is not None and self.failed_at > self.fivetran_sync_started
+            self.failed_at is not None
+            and self.fivetran_sync_started is not None
+            and self.failed_at > self.fivetran_sync_started
         )
 
     @property
