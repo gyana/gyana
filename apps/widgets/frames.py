@@ -1,4 +1,5 @@
 import logging
+from decimal import Decimal
 
 import analytics
 from django.urls import reverse
@@ -65,7 +66,9 @@ def add_output_context(context, widget, request, control, url=None):
         if column.currency:
             context["currency"] = CURRENCY_SYMBOLS_MAP[column.currency]
         context["metric"] = (
-            metric if isinstance(metric, int) else round(metric, column.rounding)
+            round(metric, column.rounding)
+            if isinstance(metric, (float, Decimal))
+            else metric
         )
     else:
         chart, chart_id = chart_to_output(widget, control)
