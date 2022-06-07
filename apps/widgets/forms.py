@@ -332,6 +332,14 @@ class StackedChartForm(GenericWidgetForm):
         self.fields["second_dimension"].label = "Stack dimension"
         self.fields["second_dimension"].required = False
 
+        if "sort_column" in self.fields:
+            columns = [self.get_live_field("dimension")] + (
+                self.get_aggregations() or [COUNT_COLUMN_NAME]
+            )
+            self.fields["sort_column"].choices = [("", "No column selected")] + [
+                (name, name) for name in columns
+            ]
+
     def get_live_fields(self):
         fields = super().get_live_fields()
 
@@ -353,6 +361,8 @@ class StackedChartForm(GenericWidgetForm):
         ):
             fields += ["part"]
 
+        if dimension:
+            fields += ["sort_column", "sort_ascending"]
         return fields
 
 

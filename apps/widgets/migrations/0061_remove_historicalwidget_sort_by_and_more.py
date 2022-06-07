@@ -12,7 +12,7 @@ def resort_widgets(widgets):
 
         if widget.sort_by == "dimension" and widget.dimension:
             widget.sort_column = widget.dimension
-        elif widget.aggregations.exist():
+        elif widget.aggregations.exists():
             aggregations = widget.aggregations.all()
             names = [column.column for column in aggregations]
             agg_names = [
@@ -38,24 +38,13 @@ def forward(apps, schema_editor):
     resort_widgets(widgets)
     Widget.objects.bulk_update(widgets, ["sort_column"])
 
-    HistoricalWidget = apps.get_model("widgets", "HistoricalWidget")
-    historical_widgets = HistoricalWidget.objects.all()
-
-    resort_widgets(historical_widgets)
-    HistoricalWidget.objects.bulk_update(historical_widgets, ["sort_column"])
-
 
 def backward(apps, schema_editor):
     Widget = apps.get_model("widgets", "Widget")
-    HistoricalWidget = apps.get_model("widgets", "HistoricalWidget")
 
     widgets = Widget.objects.all()
     backsort_widgets(widgets)
     Widget.objects.bulk_update(widgets, ["sort_by"])
-
-    historical_widgets = HistoricalWidget.objects.all()
-    backsort_widgets(historical_widgets)
-    HistoricalWidget.objects.bulk_update(historical_widgets, ["sort_by"])
 
 
 class Migration(migrations.Migration):

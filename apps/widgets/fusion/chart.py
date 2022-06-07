@@ -295,7 +295,7 @@ def to_stack(widget, df):
         index=widget.dimension,
         columns=widget.second_dimension,
         values=_get_first_value_or_count(widget),
-    )
+    ).reindex(df[widget.dimension].unique())
 
     return {
         "categories": [
