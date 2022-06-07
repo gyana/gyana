@@ -34,8 +34,10 @@
       border-bottom: 1px solid var(--c-gray);
     }
 
+    &[disabled],
     &.disabled {
       color: var(--c-black-20);
+      cursor: default;
     }
 
     &[data-controller*='popover']::after,

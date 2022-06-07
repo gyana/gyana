@@ -147,8 +147,8 @@
 
               <button
                 type="submit"
-                {% if page_count == 1 %}disabled{% endif %}
-                class="list__item list__item--interactive w-full {% if page_count == 1 %}disabled{% endif %}"
+                {% if page_count == 1 or page.position == 1 %}disabled{% endif %}
+                class="list__item list__item--interactive w-full"
                 id="dashboards-delete-page-{{ object.id }}"
                 data-loading-false
               >
