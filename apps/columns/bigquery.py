@@ -177,13 +177,12 @@ def get_groups(query, instance):
     return groups
 
 
-def aggregate_columns(query, instance, groups):
+def aggregate_columns(query, aggregations, groups):
     """Aggregates over multiple aggregations and resolves name conflicts"""
-    aggregations = instance.aggregations.all()
     column_names = [agg.column for agg in aggregations]
     aggregations = [
         get_aggregate_expr(query, agg.column, agg.function, column_names)
-        for agg in instance.aggregations.all()
+        for agg in aggregations
     ]
     if not groups and not aggregations:
         # query.count() returns a scalar

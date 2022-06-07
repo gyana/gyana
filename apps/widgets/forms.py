@@ -1,9 +1,7 @@
-import copy
 import math
 import re
 
 from django import forms
-from django.db.models import Case, Q, When
 from ibis.expr.datatypes import Date, Time, Timestamp
 
 from apps.base.core.utils import create_column_choices
@@ -15,8 +13,8 @@ from apps.base.forms import (
     LiveFormsetMixin,
 )
 from apps.base.widgets import Datalist, SelectWithDisable, SourceSelect
+from apps.columns.bigquery import resolve_colname
 from apps.dashboards.widgets import PaletteColorsField
-from apps.tables.models import Table
 
 from .formsets import FORMSETS, AggregationColumnFormset, ControlFormset, FilterFormset
 from .models import (
@@ -128,6 +126,40 @@ class GenericWidgetForm(LiveFormsetForm):
             "positive_decrease",
         ]
 
+    def get_aggregations(self):
+        formsets = self.get_formsets()
+        if self.data:
+            aggregations = [
+                (
+                    form.data[f"{form.prefix}-column"],
+                    form.data[f"{form.prefix}-function"],
+                )
+                for form in formsets["Aggregations"].forms
+                if not form.deleted and form.data.get(f"{form.prefix}-column")
+            ]
+            names = [aggregation[0] for aggregation in aggregations]
+            return [
+                resolve_colname(column, function, names)
+                for column, function in aggregations
+            ]
+        aggregations = self.instance.aggregations.all()
+        names = [column.column for column in aggregations]
+        return [
+            resolve_colname(column.column, column.function, names)
+            for column in aggregations
+        ]
+
+    def get_groups(self):
+        formsets = self.get_formsets()
+        if self.data:
+            return [
+                form.data[f"{form.prefix}-column"]
+                for form in formsets["Group columns"].forms
+                if not form.deleted and form.data.get(f"{form.prefix}-column")
+            ]
+
+        return [column.column for column in self.instance.columns.all()]
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -150,26 +182,7 @@ class GenericWidgetForm(LiveFormsetForm):
             )
 
         if self.get_live_field("kind") == Widget.Kind.TABLE:
-            formsets = self.get_formsets()
-            if self.data:
-                group_columns = [
-                    form.data[f"{form.prefix}-column"]
-                    for form in formsets["Group columns"].forms
-                    if not form.deleted and form.data.get(f"{form.prefix}-column")
-                ]
-                aggregations = [
-                    form.data[f"{form.prefix}-column"]
-                    for form in formsets["Aggregations"].forms
-                    if not form.deleted and form.data.get(f"{form.prefix}-column")
-                ]
-            else:
-                group_columns = [
-                    column.column for column in self.instance.columns.all()
-                ]
-                aggregations = [
-                    column.column for column in self.instance.aggregations.all()
-                ]
-            if columns := group_columns + aggregations:
+            if columns := self.get_groups() + self.get_aggregations():
                 self.fields["sort_column"].choices = [("", "No column selected")] + [
                     (name, name) for name in columns
                 ]
@@ -245,11 +258,21 @@ class OneDimensionForm(GenericWidgetForm):
                 )
             self.fields["dimension"].choices = create_column_choices(schema)
 
+        if "sort_column" in self.fields:
+            columns = [self.get_live_field("dimension")] + (
+                self.get_aggregations() or [COUNT_COLUMN_NAME]
+            )
+            self.fields["sort_column"].choices = [("", "No column selected")] + [
+                (name, name) for name in columns
+            ]
+
     def get_live_fields(self):
         fields = super().get_live_fields()
         fields += ["dimension"]
-        if self.get_live_field("kind") != Widget.Kind.COMBO:
-            fields += ["sort_by", "sort_ascending"]
+        if self.get_live_field("kind") != Widget.Kind.COMBO and self.get_live_field(
+            "dimension"
+        ):
+            fields += ["sort_column", "sort_ascending"]
 
         schema = self.instance.table.schema
 

@@ -81,4 +81,22 @@
 
 {% endif %}
 
+{% if form.sort_column %}
+  <fieldset>
+  <label>{{ form.sort_column.label}}</label>
+
+  <div class="formset-wrapper">
+    {{ form.sort_column }}
+
+    <div>
+      <label class="input__toggle" for="{{ form.sort_ascending.id_for_label }}">
+        <p class="input__help-text">{{ form.sort_ascending.label}}</p>
+
+        {{form.sort_ascending}}
+      </label>
+    </div>
+  </div>
+  </fieldset>
+{% endif %}
+
 {% endblock %}

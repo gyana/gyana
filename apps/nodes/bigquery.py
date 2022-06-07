@@ -147,7 +147,7 @@ def get_join_query(node, left, right, *queries):
 
 def get_aggregation_query(node, query):
     groups = get_groups(query, node)
-    return aggregate_columns(query, node, groups)
+    return aggregate_columns(query, node.aggregations.all(), groups)
 
 
 def get_union_query(node, query, *queries):

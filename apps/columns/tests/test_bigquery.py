@@ -299,7 +299,9 @@ def test_column_part_group(name, part, expected_sql, column_factory, node_factor
     node = node_factory()
     column_factory(column=name, part=part, node=node)
     groups = get_groups(TABLE, node)
-    sql = ibis_bigquery.compile(aggregate_columns(TABLE, node, groups))
+    sql = ibis_bigquery.compile(
+        aggregate_columns(TABLE, node.aggregations.all(), groups)
+    )
     assert sql == expected_sql
 
 

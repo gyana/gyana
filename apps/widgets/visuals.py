@@ -53,7 +53,7 @@ def get_summary_row(query, widget):
     # Only naming the first group column
     group = widget.columns.first()
 
-    query = aggregate_columns(query, widget, None)
+    query = aggregate_columns(query, widget.aggregations.all(), None)
     summary = clients.bigquery().get_query_results(query.compile()).rows_dict[0]
 
     return {**dict(summary.items()), group.column: "Total"}
@@ -69,7 +69,7 @@ def table_to_output(widget: Widget, control, url=None) -> Dict[str, Any]:
             summary = get_summary_row(query, widget)
         groups = get_groups(query, widget)
         if widget.aggregations.exists():
-            query = aggregate_columns(query, widget, groups)
+            query = aggregate_columns(query, widget.aggregations.all(), groups)
         else:
             query = query[groups]
 
