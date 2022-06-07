@@ -2,7 +2,7 @@ import { Controller } from '@hotwired/stimulus'
 import html2pdf from "html2pdf.js"
 
 /**
- * Exports a dashboard as a PDF file using html2pdf. 
+ * Exports a dashboard as a PDF file using html2pdf.
  */
 export default class extends Controller {
   initialize() {
@@ -64,7 +64,7 @@ export default class extends Controller {
         html2canvas: {
           backgroundColor: '#fafafc',
           width: containerWidth + 2 + 16 + 16,
-          height: (containerHeight + 2 + 16 + 16 + 16 + 68) * 2,
+          height: (containerHeight + 2 + 16 + 16 + 16 + 68) * html2pdfOverlay.querySelectorAll('.widgets__canvas').length,
           windowWidth: containerWidth + 16,
           windowHeight: 656,
           scale: 2,
@@ -72,15 +72,28 @@ export default class extends Controller {
       })
       .then(() => {
         html2pdfOverlay.querySelector('body').style.fontSize = "1.6rem"
+
         // We reset all scaling here so that the fake canvas adjusts to the "true" size of the dashboard.
         html2pdfOverlay.querySelectorAll('[id*=dashboard-widget-container]').forEach((el) => {
           el.style.transform = ''
           el.style.height = container.dataset.height + 'px'
         })
+
         html2pdfOverlay.querySelectorAll('.table-container').forEach((el) => {
-          el.style.overflow = "hidden"
+          el.parentElement.style.overflow = "hidden"
         })
+
         html2pdfOverlay.querySelector('.html2pdf__container').style.width = "auto"
+
+        html2pdfOverlay.querySelectorAll(
+          'td span, th a, .pagination li, .pagination input, .metric__title, .metric__value, .metric__comparison'
+        ).forEach((el) => {
+          el.style.position = "relative"
+          el.style.display = "block"
+          el.style.top = "-0.2em"
+          el.style.height = "1.2em"
+          el.style.lineHeight = "1.2em"
+        })
       })
       // html2pdf fills this gap with all the necessary steps, like converting to image etc.
       .save(document.querySelector('input[name=filename]').value || this.element.dataset.filename)

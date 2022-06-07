@@ -1,3 +1,5 @@
 {% load humanize %}
 
-{{ value|intcomma }}{% if is_percentage %}%{% endif %}
+<span>
+  {{ value|intcomma }}{% if is_percentage %}%{% endif %}
+</span>

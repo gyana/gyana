@@ -210,11 +210,16 @@ class BigQueryColumn(Column):
                 return get_template("columns/link_cell.html").render({"value": value})
             except ValidationError:
                 pass
-        if isinstance(value, str) and len(value) >= 64:
+        if isinstance(value, str):
             # Truncate row values above 61 characters (61 + 3 ellipsis = 64).
-            return get_template("columns/string_cell.html").render(
-                {"value": f"{value[:61]}...", "tooltip": value}
-            )
+            if len(value) >= 64:
+                return get_template("columns/string_cell.html").render(
+                    {"value": f"{value[:61]}...", "tooltip": value}
+                )
+            else:
+                return get_template("columns/string_cell.html").render(
+                    {"value": value}
+                )
 
         return super().render(value)
 
