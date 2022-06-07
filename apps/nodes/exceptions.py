@@ -88,7 +88,7 @@ def _(e):
             len(e.orig_exc.function["arguments"])
             if len(e.orig_exc.args) > len(e.orig_exc.function["arguments"])
             else len(
-                f for f in e.orig_exc.function["arguments"] if not f.get("optional")
+                [f for f in e.orig_exc.function["arguments"] if not f.get("optional")]
             )
         )
         return {
