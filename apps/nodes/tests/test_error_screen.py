@@ -44,6 +44,11 @@ def create_node(table, workflow, kind, node_factory, **kwargs):
             "You cannot use abs on column athlete",
             id="column attribute error",
         ),
+        pytest.param(
+            "001_athlete",
+            "We cannot parse the formula",
+            id="parsing error",
+        ),
     ],
 )
 def test_formula_error(formula, message, client, setup, node_factory):
