@@ -396,9 +396,9 @@ def _validate_arity(func, len_args):
 
 
 @cached_as(Node, timeout=60)
-def get_query_from_node(node):
+def get_query_from_node(current_node):
 
-    nodes = _get_all_parents(node)
+    nodes = _get_all_parents(current_node)
     # remove duplicates (python dicts are insertion ordered)
     nodes = list(dict.fromkeys(nodes))
 
@@ -423,7 +423,9 @@ def get_query_from_node(node):
             if isinstance(err, (CreditException, OutOfCreditsException)):
                 node.uses_credits = err.uses_credits
             node.save()
-            raise NodeResultNone(node=node) from err
+            if current_node != node:
+                raise NodeResultNone(node=node) from err
+            raise err
 
         # input node zero state
         if results.get(node) is None:
