@@ -9,8 +9,6 @@ def _sort(query, widget):
     """Sort widget data by label or value"""
     if widget.sort_column and widget.sort_column in query:
         column = query[widget.sort_column]
-    elif widget.sort_by == "dimension" and widget.dimension:
-        column = query[widget.dimension]
     elif first_aggregation := widget.aggregations.first():
         column = query[first_aggregation.column]
         if widget.kind in [Widget.Kind.STACKED_BAR, Widget.Kind.STACKED_COLUMN]:

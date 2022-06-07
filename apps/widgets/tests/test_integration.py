@@ -69,7 +69,6 @@ def test_widget_crudl(
         data={
             "kind": Widget.Kind.COLUMN,
             "dimension": "athlete",
-            "sort_by": "dimension",
             "submit": "Submit & Close",
             "filters-TOTAL_FORMS": 0,
             "filters-INITIAL_FORMS": 0,

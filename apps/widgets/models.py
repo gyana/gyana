@@ -157,11 +157,6 @@ class Widget(WidgetStyle, HistoryModel):
         max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH, null=True
     )
     name = models.CharField(max_length=255, null=True, blank=True)
-    sort_by = models.CharField(
-        max_length=12,
-        choices=(("dimension", "Dimension"), ("metric", "Metric")),
-        default="dimension",
-    )
     sort_column = models.CharField(
         max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH, blank=True, null=True
     )

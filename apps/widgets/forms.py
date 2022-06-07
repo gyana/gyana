@@ -116,7 +116,6 @@ class GenericWidgetForm(LiveFormsetForm):
             "dimension",
             "part",
             "second_dimension",
-            "sort_by",
             "sort_column",
             "sort_ascending",
             "stack_100_percent",

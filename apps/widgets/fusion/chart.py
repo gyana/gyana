@@ -297,8 +297,6 @@ def to_stack(widget, df):
         values=_get_first_value_or_count(widget),
     )
 
-    if widget.sort_by == "value":
-        pivoted = pivoted.reindex(df[widget.dimension].unique())
     return {
         "categories": [
             {
