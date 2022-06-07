@@ -25,3 +25,10 @@ class ColumnAttributeError(Exception):
         super().__init__()
         self.column = column
         self.function = function
+
+
+class ParseError(Exception):
+    def __init__(self, formula, columns):
+        super().__init__()
+        self.formula = formula
+        self.columns = columns

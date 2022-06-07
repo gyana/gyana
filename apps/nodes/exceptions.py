@@ -6,7 +6,7 @@ from lark.exceptions import VisitError
 from apps.base.core.table_data import get_type_name
 from apps.base.core.utils import error_name_to_snake
 from apps.base.templates import template_exists
-from apps.columns.exceptions import ArgumentError, ColumnAttributeError
+from apps.columns.exceptions import ArgumentError, ColumnAttributeError, ParseError
 from apps.columns.transformer import FUNCTIONS, ColumnNotFound, FunctionNotFound
 from apps.nodes.models import Node
 
@@ -128,4 +128,13 @@ def _(e):
         "left_columns": e.left_columns,
         "right_columns": e.right_columns,
         "index": e.index,
+    }
+
+
+@handle_node_exception.register(ParseError)
+def _(e):
+    return {
+        "error_template": "nodes/errors/parsing_error.html",
+        "formula": e.formula,
+        "columns": e.columns,
     }

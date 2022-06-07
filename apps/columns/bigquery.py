@@ -4,6 +4,7 @@ from django.db.models import TextChoices
 from ibis.expr import datatypes as idt
 from lark import Lark
 
+from apps.columns.exceptions import ParseError
 from apps.columns.transformer import TreeToIbis
 
 from .types import TYPES
@@ -97,7 +98,10 @@ def compile_function(query, edit):
 
 
 def compile_formula(query, formula):
-    tree = parser.parse(formula)
+    try:
+        tree = parser.parse(formula)
+    except Exception as err:
+        raise ParseError(formula=formula, columns=query.columns) from err
 
     return TreeToIbis(query).transform(tree)
 
