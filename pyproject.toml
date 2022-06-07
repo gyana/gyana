@@ -44,12 +44,14 @@ attrs = "^20.3.0"
 backoff = "^1.10.0"
 celery = {extras = ["redis"], version = "^5.0.5"}
 coreapi = "^2.3.3"
+django-admin-tools = "^0.9.1"
 django-allauth = "^0.50.0"
 django-anymail = {extras = ["mailgun"], version = "^8.2"}
 django-clone = "^3.0.1"
 django-dirtyfields = "^1.7.0"
 django-filter = "^2.4.0"
 django-heroku = "^0.3.1"
+django-hijack = "^3.0.0"
 django-storages = {extras = ["google"], version = "^1.11.1"}
 django-tables2 = "^2.4.1"
 django-turbo-allauth = "^0.0.10"
@@ -66,40 +68,35 @@ pathvalidate = "^2.4.1"
 psycopg2-binary = "^2.8.6"
 python = "3.9.*"
 # Until this is merged https://github.com/bee-keeper/django-invitations/pull/169
-django-admin-tools = "^0.9.1"
-django-hijack = "^3.0.0"
 django-invitations = {git = "https://github.com/gyana/django-invitations.git", branch = "patch-1"}
 hashids = "^1.3.1"
 honeybadger = "^0.8.0"
 honeycomb-beeline = "^2.17.1"
-# https://github.com/jazzband/django-silk/issues/465
-dj-paddle = {git = "https://github.com/paddle-python/dj-paddle", rev = "8945137c9ff70ae00d519625f81b10d1bc6bf071"}
-django-redis = "^5.0.0"
-django-safedelete = "^1.1.0"
-django-silk = {git = "https://github.com/jazzband/django-silk", rev = "21a4058c2a758fac687f837cb523175c64c567c3"}
-django-timezone-field = "^4.2.1"
-django-waffle = "^2.2.1"
-fuzzywuzzy = "^0.18.0"
-heroku3 = {git = "https://github.com/martyzz1/heroku3.py", rev = "81c996929e37450e1e65f28eb43fc28533a79048"}
-pytest-mock = "^3.6.1"
-python-Levenshtein = "^0.12.2"
-# Use until this closed https://github.com/celery/django-celery-beat/issues/465
+
 PyYAML = "^6.0"
 celery-progress = "^0.1.1"
-django-celery-beat = {git = "https://github.com/celery/django-celery-beat.git", rev = "fa73034be892052893e4ef17926ef3a5d4a21ea2"}
+dj-paddle = {git = "https://github.com/paddle-python/dj-paddle", rev = "8945137c9ff70ae00d519625f81b10d1bc6bf071"}
+django-celery-beat = "^2.3.0"
 django-celery-results = "^2.2.0"
 django-cryptography = "^1.0"
 django-heroicons = {git = "https://github.com/geoffbeier/django-heroicons"}
+django-redis = "^5.0.0"
+django-safedelete = "^1.1.0"
+django-silk = "^4.3.0"
+django-timezone-field = "^5.0"
+django-waffle = "^2.2.1"
+fuzzywuzzy = "^0.18.0"
+heroku3 = {git = "https://github.com/martyzz1/heroku3.py", rev = "81c996929e37450e1e65f28eb43fc28533a79048"}
 jsonpath-ng = "^1.5.3"
+pytest-mock = "^3.6.1"
+python-Levenshtein = "^0.12.2"
 readtime = "^1.1.1"
 wagtail = "^3.0"
-# Until this is done use git branch https://github.com/jazzband/wagtailmenus/pull/404
+# Until this is done use git branch https://github.com/jazzband/wagtailmenus/issues/403
 wagtailmenus = {git = "https://github.com/jazzband/wagtailmenus", rev = "8be2790c01688dd3c9ef7298bdebe94575c0a76a"}
-# Until https://github.com/jazzband/django-simple-history/pull/866 is released
-
 
 django-cacheops = "^6.0"
-django-simple-history = {git = "https://github.com/jazzband/django-simple-history", branch = "master"}
+django-simple-history = "^3.1.1"
 google-cloud-language = "^2.4.1"
 [tool.poetry.dev-dependencies]
 autoflake = "^1.4"
