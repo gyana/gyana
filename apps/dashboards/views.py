@@ -271,23 +271,15 @@ class PageDelete(PageMixin, DeleteView):
     # Not used
     template_name = "dashboards/delete.html"
 
-    def delete(self, request, *args, **kwargs):
-        page = self.get_object()
+    def form_valid(self, form):
         # The delete button should be disabled for the last page but just in case
         # this will not delete but return the same page
-        if page.position == 1:
+        if self.object.position == 1:
             return HttpResponseRedirect(
-                f"{reverse('project_dashboards:detail', args=(self.project.id, self.dashboard.id))}?dashboardPage={page.position}"
+                f"{reverse('project_dashboards:detail', args=(self.project.id, self.dashboard.id))}?dashboardPage={self.object.position}"
             )
-        r = super().delete(request, *args, **kwargs)
 
-        for follow_page in self.dashboard.pages.filter(
-            position__gt=page.position
-        ).iterator():
-            follow_page.position = follow_page.position - 1
-            follow_page.save()
-
-        return r
+        return super().form_valid(form)
 
     def get_success_url(self) -> str:
         return f"{reverse('project_dashboards:detail', args=(self.project.id, self.dashboard.id))}?dashboardPage={min(self.object.position, self.dashboard.pages.count()-1)}"

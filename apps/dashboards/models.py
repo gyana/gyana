@@ -216,9 +216,19 @@ class Page(HistoryModel):
 
     def delete(self, **kwargs):
         skip_dashboard_update = kwargs.pop("skip_dashboard_update", False)
+
         if not skip_dashboard_update:
             self.dashboard.updates.create(content_object=self)
-        return super().delete(**kwargs)
+
+        result = super().delete(**kwargs)
+
+        for follow_page in self.dashboard.pages.filter(
+            position__gt=self.position
+        ).iterator():
+            follow_page.position = follow_page.position - 1
+            follow_page.save()
+
+        return result
 
     def __str__(self) -> str:
         return f"Page {self.position}{f': {self.name}' if self.name else ''}"
