@@ -27,7 +27,7 @@ GROUP BY 1\
 SORT_QUERY = """\
 SELECT *
 FROM (
-  {}
+{}
 ) t0
 ORDER BY `is_nice`\
 """.format(
@@ -93,6 +93,10 @@ def test_only_one_dimension(kind, setup, widget_factory):
     query = get_query_from_widget(widget, pre_filter(widget, None))
 
     assert query.compile() == SINGLE_DIMENSION_QUERY
+
+    widget.sort_column = "is_nice"
+    query = get_query_from_widget(widget, pre_filter(widget, None))
+    assert query.compile() == SORT_QUERY
 
 
 @simple_params
