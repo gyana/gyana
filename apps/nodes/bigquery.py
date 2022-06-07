@@ -423,7 +423,7 @@ def get_query_from_node(node):
             if isinstance(err, (CreditException, OutOfCreditsException)):
                 node.uses_credits = err.uses_credits
             node.save()
-            raise err
+            raise NodeResultNone(node=node) from err
 
         # input node zero state
         if results.get(node) is None:
