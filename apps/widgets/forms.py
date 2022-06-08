@@ -170,6 +170,7 @@ class GenericWidgetForm(LiveFormsetForm):
             if choice[0]
             not in [Widget.Kind.TEXT, Widget.Kind.IMAGE, Widget.Kind.IFRAME]
         ]
+        self.fields["kind"].widget.total_aggregations = len(self.get_aggregations())
 
         schema = self.instance.table.schema
         if "date_column" in self.fields:

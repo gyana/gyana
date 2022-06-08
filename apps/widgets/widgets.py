@@ -18,7 +18,8 @@ class VisualSelect(ChoiceWidget):
                 "id": choice.value,
                 "name": choice.label,
                 "icon": WIDGET_KIND_TO_WEB[choice.value][0],
-                "maxMetrics": MAX_NUMS.get(choice.value) or -1,
+                "disabled": (MAX_NUMS.get(choice.value) is not None)
+                and (MAX_NUMS.get(choice.value) < self.total_aggregations),
             }
             for choice in Widget.Kind
             if choice.value != Widget.Kind.TEXT
