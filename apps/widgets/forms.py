@@ -165,7 +165,7 @@ class GenericWidgetForm(LiveFormsetForm):
         super().__init__(*args, **kwargs)
 
         self.fields["kind"].choices = [
-            (key, values)
+            (key.label, values)
             for key, values in CATEGORIES.items()
             if key != Widget.Category.CONTENT
         ]
