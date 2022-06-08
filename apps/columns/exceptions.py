@@ -21,10 +21,11 @@ class ArgumentError(Exception):
 
 
 class ColumnAttributeError(Exception):
-    def __init__(self, column, function):
+    def __init__(self, column=None, value=None, function=None):
         super().__init__()
         self.column = column
         self.function = function
+        self.value = value
 
 
 class ParseError(Exception):

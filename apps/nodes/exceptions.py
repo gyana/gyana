@@ -100,8 +100,14 @@ def _(e):
     elif isinstance(e.orig_exc, ColumnAttributeError):
         return {
             "error_template": "nodes/errors/column_attribute_error.html",
-            "column": e.orig_exc.column.get_name(),
-            "column_type": get_type_name(e.orig_exc.column.type()),
+            **(
+                {"column": e.orig_exc.column.get_name()}
+                if e.orig_exc.column
+                else {"value": e.orig_exc.value}
+            ),
+            "column_type": get_type_name(e.orig_exc.column.type())
+            if e.orig_exc.column
+            else get_type_name(e.orig_exc.value.type()),
             "function": e.orig_exc.function,
         }
     return {

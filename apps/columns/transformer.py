@@ -143,8 +143,10 @@ class TreeToIbis(Transformer):
             return odd_func(caller, args)
         try:
             func = getattr(caller, function["id"])
-        except AttributeError:
-            raise ColumnAttributeError(caller, function)
+        except AttributeError as e:
+            if isinstance(caller, ibis.expr.types.generic.ScalarExpr):
+                raise ColumnAttributeError(value=caller, function=function) from e
+            raise ColumnAttributeError(column=caller, function=function) from e
         if function["id"] != "coalesce" and any(
             arg.get("repeatable") for arg in function["arguments"]
         ):
