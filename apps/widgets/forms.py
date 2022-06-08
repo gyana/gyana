@@ -18,6 +18,7 @@ from apps.dashboards.widgets import PaletteColorsField
 
 from .formsets import FORMSETS, AggregationColumnFormset, ControlFormset, FilterFormset
 from .models import (
+    CATEGORIES,
     COUNT_COLUMN_NAME,
     DEFAULT_HEIGHT,
     DEFAULT_WIDTH,
@@ -125,7 +126,6 @@ class GenericWidgetForm(LiveFormsetForm):
             "compare_previous_period",
             "positive_decrease",
         ]
-        widgets = {"kind": VisualSelect()}
 
     def get_aggregations(self):
         formsets = self.get_formsets()
@@ -165,12 +165,10 @@ class GenericWidgetForm(LiveFormsetForm):
         super().__init__(*args, **kwargs)
 
         self.fields["kind"].choices = [
-            choice
-            for choice in self.fields["kind"].choices
-            if choice[0]
-            not in [Widget.Kind.TEXT, Widget.Kind.IMAGE, Widget.Kind.IFRAME]
+            (key, values)
+            for key, values in CATEGORIES.items()
+            if key != Widget.Category.CONTENT
         ]
-        self.fields["kind"].widget.total_aggregations = len(self.get_aggregations())
 
         schema = self.instance.table.schema
         if "date_column" in self.fields:

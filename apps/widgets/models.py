@@ -344,6 +344,14 @@ WIDGET_KIND_TO_WEB = {
 }
 
 
+CATEGORIES = {}
+
+for value, widget in WIDGET_KIND_TO_WEB.items():
+    if CATEGORIES.get(widget[1]):
+        CATEGORIES[widget[1]].append((value, widget[2]))
+    else:
+        CATEGORIES[widget[1]] = [(value, widget[2])]
+
 WIDGET_CHOICES_ARRAY = [
     (choices + WIDGET_KIND_TO_WEB[choices[0]]) for choices in Widget.Kind.choices
 ]

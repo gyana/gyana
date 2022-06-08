@@ -18,7 +18,9 @@
         {% if option.disabled %}disabled{% endif %}
       >
         <i class="fa {{option.icon}}"></i> {{option.name}}
-        <input name="{{widget.name}}" type='checkbox' value="{{option.id}}" class='hidden'></input>
+        <input name="{{widget.name}}" type='radio' value="{{option.id}}" class='hidden'
+          {% if option=widget.selected %}checked{% endif %}
+        ></input>
       </label>
     {% endfor %}
   </div>
