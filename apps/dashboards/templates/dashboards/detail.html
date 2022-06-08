@@ -102,6 +102,15 @@
           >
             Delete
           </a>
+        
+          {% flag 'beta' %}
+            <a
+              class="list__item list__item--interactive w-full"
+              href="{% url "dashboards:print" object.id %}"
+            >
+            <span class='beta mr-4'>Export as PDF</span>
+            </a>
+          {% endflag %}
 
           {% flag 'beta' %}
             <button

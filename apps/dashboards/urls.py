@@ -23,6 +23,11 @@ urlpatterns = [
         name="duplicate",
     ),
     path(
+        "<hashid:pk>/print",
+        login_and_dashboard_required(views.DashboardPrint.as_view()),
+        name="print",
+    ),
+    path(
         "<uuid:shared_id>",
         dashboard_is_public(views.DashboardPublic.as_view()),
         name="public",

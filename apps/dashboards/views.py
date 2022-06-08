@@ -184,12 +184,7 @@ class DashboardDuplicate(TurboUpdateView):
 @method_decorator(xframe_options_exempt, name="dispatch")
 class DashboardPublic(DetailView):
     model = Dashboard
-
-    def get_template_names(self):
-        if self.request.GET.get("printPreview"):
-            return "dashboards/print.html"
-
-        return "dashboards/public.html"
+    template_name = "dashboards/public.html"
 
     def get_object(self):
         return self.kwargs["dashboard"]
@@ -202,6 +197,17 @@ class DashboardPublic(DetailView):
         context["page_count"] = self.object.pages.count()
         context["next_page"] = page.position + 1
         context["previous_page"] = page.position - 1
+        return context
+
+
+class DashboardPrint(DetailView):
+    model = Dashboard
+    template_name = "dashboards/print.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["project"] = self.object.project
+
         return context
 
 
