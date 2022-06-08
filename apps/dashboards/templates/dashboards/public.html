@@ -124,11 +124,9 @@
           {% include 'widgets/widget_public.html' with object=widget %}
         {% endfor %}
 
-      {% for object in page.control_widgets.all %}
-          
-        {% include 'controls/control-widget.html' with object=object control=object.control is_public=True%}
-        
-      {% endfor %}
+        {% for object in page.control_widgets.all %}
+          {% include 'controls/control_public.html' with object=object control=object.control is_public=True%}
+        {% endfor %}
       </div>
     </div>
 

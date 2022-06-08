@@ -19,18 +19,21 @@ class ControlUpdate(UpdateWidgetsMixin, TurboFrameUpdateView):
     def get_stream_response(self, form):
         streams = self.get_widget_stream_responses(form.instance, form.instance.page)
         current_context = self.get_context_data()
+        is_public = current_context.get("is_public", False)
+        template = "controls/control_public.html" if is_public else "controls/control-widget.html"
+
         for control_widget in form.instance.page.control_widgets.iterator():
             context = {
                 "object": control_widget,
                 "control": form.instance,
                 "dashboard": self.dashboard,
                 "project": self.project,
-                "is_public": current_context.get("is_public", False),
+                "is_public": is_public,
                 "request": self.request,
             }
             streams.append(
                 TurboStream(f"control-widget-{control_widget.id}")
-                .update.template("controls/control-widget.html", context)
+                .replace.template(template, context)
                 .render(request=self.request)
             )
 

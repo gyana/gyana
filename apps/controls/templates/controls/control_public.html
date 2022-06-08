@@ -1,0 +1,86 @@
+<div
+  id="control-widget-{{ object.id }}"
+  style="
+    position: absolute;
+    left: {{ object.x }}px;
+    top: {{ object.y }}px;
+    width: {{ object.width }}px;
+    height: {{ object.height }}px;
+  "
+  data-is-control="true"
+>
+  <div class="widget-card h-full">
+    <div
+      class="
+        widget-card__visual
+        {% if object.page.dashboard.show_widget_border %}widget-card__visual--border{% endif %}
+      "
+      style="
+        {% if object.page.dashboard.widget_border_color %}border-color: {{ object.page.dashboard.widget_border_color }};{% endif %}
+        {% if object.page.dashboard.widget_border_radius is not None %}border-radius: {{ object.page.dashboard.widget_border_radius }}px;{% endif %}
+        {% if object.page.dashboard.widget_border_thickness is not None %}border-width: {{ object.page.dashboard.widget_border_thickness }}px;{% endif %}
+      "
+    >
+      <div class="flex flex-col flex-1 gap-5 justify-center items-center">
+        <span>
+          <i class="fa fa-calendar text-black-50 mr-2"></i>
+          {{ control.get_date_range_display }}
+        </span>
+    
+        {% if control.date_range == "custom" %}
+        <div class="flex gap-8">
+          <span class="flex flex-col">
+            {% if control.start %}Start <strong>{{ control.start }}</strong>{% endif %}
+          </span>
+    
+          <span class="flex flex-col">
+            {% if control.end %}End <strong>{{ control.end }}</strong>{% endif %}
+          </span>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class='widget-card__commands'>
+      <button  
+        class="widget-card__button"
+        data-controller="tooltip"
+        data-tooltip-content="Edit"
+        data-action="click->tf-modal#open"
+        id="widget-update-{{ control.id }}"
+        data-modal-item="{{ control.id }}"
+        data-modal-src="
+        {% if is_public %}
+          {% url 'dashboard_controls:update-public' project.id dashboard.id control.id %}
+        {% else %}
+          {% url 'dashboard_controls:update-widget' project.id dashboard.id control.id %}?mode={{ request.GET.mode }}
+        {% endif %}"
+        data-modal-id="controls:update-widget"
+        {% if request.GET.modal_item == control.id|stringformat:"i" %}
+        data-tf-modal-target="onParam"
+        {% endif %}
+        data-modal-classes="tf-modal--auto"
+      >
+        <i class="fas fa-fw fa-edit"></i>
+      </button>
+
+      {% if not is_public and request.GET.mode != 'view' %}
+        <form
+          data-controller="tooltip"
+          data-tooltip-content="Delete"
+          method="POST"
+          action="{% url 'dashboard_controls:delete-widget' project.id dashboard.id object.id %}"
+        >
+          {% csrf_token %}
+
+          <button
+            class="widget-card__button"
+            id="control-widget-delete-{{ object.id }}"
+          >
+            <i class="fas fa-fw fa-trash cursor-pointer"></i>
+          </button>
+        </form>
+      {% endif %}
+    </div>
+  </div>
+</div>
