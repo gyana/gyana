@@ -102,11 +102,11 @@ def _(e):
             "error_template": "nodes/errors/column_attribute_error.html",
             **(
                 {"column": e.orig_exc.column.get_name()}
-                if e.orig_exc.column
+                if e.orig_exc.column is not None
                 else {"value": e.orig_exc.value}
             ),
             "column_type": get_type_name(e.orig_exc.column.type())
-            if e.orig_exc.column
+            if e.orig_exc.column is not None
             else get_type_name(e.orig_exc.value.type()),
             "function": e.orig_exc.function,
         }
