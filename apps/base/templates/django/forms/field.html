@@ -1,9 +1,6 @@
 {% if field %}
   <div
     class="label {{ field.field.widget.attrs.class }}"
-    {% if field.name == 'DELETE' %}
-      style="display: none;"
-    {% endif %}
     {% if field.field.initial %}
       data-controller="reset-default"
       data-reset-default-initial-value="{{ field.field.initial }}"
