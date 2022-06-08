@@ -25,7 +25,6 @@ from .models import (
     WIDGET_KIND_TO_WEB,
     Widget,
 )
-from .widgets import VisualSelect
 
 
 def get_not_deleted_entries(data, regex):
