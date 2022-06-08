@@ -58,8 +58,10 @@
     {% with formsets|dict_key:"Group columns" as formset %}
       {% if formset %}
       <fieldset>
-        <label>Dimensions</label>
-        <p class="input__help-text">Table aggregates over dimensions if a metric is selected</p>
+        <div>
+          <label>Dimensions</label>
+          <p class="input__help-text">Table aggregates over dimensions if a metric is selected</p>
+        </div>
         {% include "components/formset.html" with formset=formset %}
       </fieldset>
       {% endif %}
