@@ -1,6 +1,5 @@
 from django.forms.widgets import ChoiceWidget
 
-from apps.base.widgets import ICONS
 from apps.widgets.formsets import FORMSETS
 from apps.widgets.models import WIDGET_KIND_TO_WEB, Widget
 
@@ -13,12 +12,8 @@ class VisualSelect(ChoiceWidget):
 
     def get_context(self, name, value, attrs):
         context = super().get_context(name, value, attrs)
-
-        context["widget"]["selected"] = value
-
         MAX_NUMS = {key: formsets[0].max_num for key, formsets in FORMSETS.items()}
-
-        context["options"] = [
+        options = [
             {
                 "id": choice.value,
                 "name": choice.label,
@@ -28,4 +23,9 @@ class VisualSelect(ChoiceWidget):
             for choice in Widget.Kind
             if choice.value != Widget.Kind.TEXT
         ]
+        context["widget"]["selected"] = next(
+            filter(lambda x: x["id"] == value, options)
+        )
+
+        context["options"] = options
         return context

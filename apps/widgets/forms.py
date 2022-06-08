@@ -24,6 +24,7 @@ from .models import (
     WIDGET_KIND_TO_WEB,
     Widget,
 )
+from .widgets import VisualSelect
 
 
 def get_not_deleted_entries(data, regex):
@@ -124,6 +125,7 @@ class GenericWidgetForm(LiveFormsetForm):
             "compare_previous_period",
             "positive_decrease",
         ]
+        widgets = {"kind": VisualSelect()}
 
     def get_aggregations(self):
         formsets = self.get_formsets()
