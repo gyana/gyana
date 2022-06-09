@@ -13,10 +13,10 @@ $banner-colors: (
   background-color: var(--background-color);
   color: var(--color);
   display: flex;
-  font-weight: 500;
-  height: 3.6rem;
+  font-weight: bold;
+  height: 36px;
   justify-content: center;
-  min-height: 3.6rem;
+  min-height: 36px;
   text-align: center;
 
   // color variant generation
@@ -29,5 +29,10 @@ $banner-colors: (
 
   a {
     font-weight: 900;
+    text-decoration: underline;
+  }
+
+  p {
+    font-size: 16px;
   }
 }
