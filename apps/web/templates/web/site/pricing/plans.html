@@ -33,7 +33,7 @@
             {% elif tier.name == 'Pro' %}
               <div class="flex items-center gap-4 mt-6">
                 {% if request.GET.iframe %}
-                  <a target="_parent" href="{% url 'teams:checkout' request.GET.team_id|add:"0" %}?plan={{ paddle_pro_plan.id }}" class="button button--secondary">
+                  <a target="_parent" disabled class="button button--secondary">
                     Upgrade to Pro
                   </a>
                 {% else %}
