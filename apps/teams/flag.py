@@ -47,6 +47,7 @@ class Flag(AbstractUserFlag):
 
     def is_active_for_user(self, user):
         is_active = super().is_active_for_user(user)
+
         if is_active:
             return is_active
 

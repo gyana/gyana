@@ -1,203 +1,85 @@
-<!-- https://docs.djangoproject.com/en/2.2/_modules/django/forms/boundfield/#BoundField -->
+{% comment %} https://docs.djangoproject.com/en/4.0/ref/forms/api/#attributes-of-boundfield {% endcomment %}
 {% if form.form_description %}
-<div class="form__description">{{ form.form_description }}</div>
+  <div class="form__description">{{ form.form_description }}</div>
 {% endif %}
 
+{% for hidden_field in form.hidden_fields %}
+  {{ hidden_field }}
+{% endfor %}
+
 <div class="input-group">
-{% for bound_field in form.visible_fields %}
-  {% if bound_field.name in form.extra_fields %}
-  {% comment %} Ignore these fields because they are going to be rendered in an extendable manner further down {% endcomment %}
-  {% elif form.formatting_unfolded and bound_field.label in 'Currency, Rounding, Name, Formatting unfolded, Show in %'%}
-  {% elif bound_field.widget_type == "palettecolors" %}
-    <div class="label">
-      <label>
-        <span class="block">
-          {{ bound_field.label }}
-
-          {% if bound_field.help_text %}
-          <p class="input__help-text">{{ bound_field.help_text }}</p>
-          {% endif %}
-        </span>
-      </label>
-
-      <div class="palette-colors">{{ bound_field }}</div>
-    </div>
-  {% elif bound_field.widget_type == "connectorschemamultiselect" %}
-    <div
-      data-controller="multi-select"
-      class="w-full {{ bound_field.field.widget.attrs.class }}"
-    > 
-      <div class="flex items-center gap-2 flex-row float-right">
-        <p class="text-black-50 small">Select:</p>
-        <a
-          class="link small"
-          data-action="click->multi-select#checkAllInputs"
-        >
-          All
-        </a>
-        <p>|</p>
-        <a
-          class="link small"
-          data-action="click->multi-select#uncheckAllInputs"
-        >
-          None
-        </a>
-      </div>
-
-      <label>
-        {{ bound_field.label }}
-
-        {% if bound_field.help_text %}
-        <p class="input__help-text">{{ bound_field.help_text }}</p>
-        {% endif %}
-      </label>
-
-      {{ bound_field }}
-    </div>
-  {% elif bound_field.widget_type == "radioselect" %}
-    <div class="{{ bound_field.field.widget.attrs.class }}">
-      <label class="block mb-2">
-        {{ bound_field.label }}
-
-        {% if not bound_field.field.required and not optional == False %}
-        <span class="text-black-50">- optional</span>
-        {% endif %}
-    
-        {% if bound_field.help_text %}
-        <p class="input__help-text">
-          {{ bound_field.help_text }}
-          {% if not bound_field.field.required %} - optional{% endif %}
-        </p>
-        {% endif %}
-      </label>
-    
-      {{ bound_field }}
-    </div>
-  {% elif bound_field.widget_type == "checkbox" %}
-    <label  
-      class="flex flex-row items-center gap-4 w-full"
-      {% if bound_field.name == 'DELETE' %}style="display: none;"{% endif %}
-    >
-      {{ bound_field }}
-      
-      <span>
-        {{ bound_field.label }}
-
-        {% if bound_field.help_text %}
-        <p class="input__help-text">{{ bound_field.help_text }}</p>
-        {% endif %}
-      </span>
-    </label>
-  {% elif bound_field.subwidgets|length == 1 and bound_field.widget_type != "codemirror" %}
-    <div
-      {% if bound_field.field.initial %}
-      data-controller="reset-default"
-      data-reset-default-initial-value="{{ bound_field.field.initial }}"
-      {% endif %}
-      class="label {{ bound_field.field.widget.attrs.class }}"
-    > 
-      <label for="{{ bound_field.id_for_label}}">
-        <span class="block">
-          {{ bound_field.label }}
-
-          {% if not bound_field.field.required and not optional == False %}
-          <span class="text-black-50">- optional</span>
-          {% endif %}
-
+  {% for bound_field in form.visible_fields %}
+    {% if bound_field.name in form.extra_fields %}
+      {% comment %} Skip rendering extra_fields, they are rendered later {% endcomment %}
+    {% elif bound_field.widget_type == "connectorschemamultiselect" %}
+      <div
+        data-controller="multi-select"
+        class="w-full {{ bound_field.field.widget.attrs.class }}"
+      > 
+        <div class="flex items-center gap-2 flex-row float-right">
+          <p class="text-black-50 small">Select:</p>
           <a
-            class="small link float-right"
-            data-reset-default-target="control"
-            hidden
+            class="link small"
+            data-action="click->multi-select#checkAllInputs"
           >
-            Reset to default
+            All
           </a>
-          
+          <p>|</p>
+          <a
+            class="link small"
+            data-action="click->multi-select#uncheckAllInputs"
+          >
+            None
+          </a>
+        </div>
+
+        <label>
+          {{ bound_field.label }}
+
           {% if bound_field.help_text %}
           <p class="input__help-text">{{ bound_field.help_text }}</p>
           {% endif %}
-        </span>
-      </label>
-
-      <div class="flex flex-row-reverse mt-auto">
-        {% if bound_field.field.widget.attrs.unit_suffix %}
-        <div class="label__unit">
-          <p>{{ bound_field.field.widget.attrs.unit_suffix }}</p>
-        </div>
-        {% endif %}
+        </label>
 
         {{ bound_field }}
       </div>
-    </div>
-    
-  {% else %}
-    {% include 'django/forms/field.html' with field=bound_field%}
-  {% endif %}
-
-  {{ bound_field.errors }}
+      {{ bound_field.errors }}
+    {% else %}
+      {% include 'django/forms/field.html' with field=bound_field %}
+    {% endif %}
   {% endfor %}
 
   {% if form.extra_fields %}
-  <details class="form__extra">
-    <summary>
-      <p class="link small cursor-pointer">
-        <i class="fas fa-fw fa-angle-down"></i>Advanced
-      </p>
-    </summary>
-
-    <div
-      class="input-group"
-    >
-      {% for bound_field in form.visible_fields  %}
-        {% if bound_field.name in form.extra_fields %}
-          {% include "django/forms/field.html" with field=bound_field %}
-        {% endif %}
-      {% endfor %}
-    </div>
-  </details>
-  {% endif %}
-
-  {% if form.formatting_unfolded %}
-    <div class='formatting' data-controller='column-format'>
-      <button 
-        type='button'
-        class="small link link--foldable {% if form.formatting_unfolded.value %}link--unfolded {% endif %} ml-auto"
-        data-action='column-format#handle'
-        data-column-format-target='button'
-      >
-        Formatting
-      </button>
-
-      {{ form.formatting_unfolded }}
+    <details class="form__extra">
+      <summary>
+        <p class="link small cursor-pointer">
+          <i class="fas fa-fw fa-angle-down"></i> Advanced
+        </p>
+      </summary>
 
       <div
         class="input-group"
-        data-column-format-target='inputs' 
-        {% if not form.formatting_unfolded.value %}hidden{% endif %}
       >
-        {% for field in form.visible_fields  %}
-          {% if field.label in 'Currency, Rounding, Name, Show in %'%}
-            {% include 'django/forms/field.html'%}
+        {% for bound_field in form.visible_fields  %}
+          {% if bound_field.name in form.extra_fields %}
+            {% include "django/forms/field.html" with field=bound_field %}
           {% endif %}
         {% endfor %}
       </div>
-    </div>
+    </details>
   {% endif %}
-
 </div>
 
-{% for label, formset in formsets.items %}
-<fieldset>
-  <label>{{ label }}</label>
-  {% include "components/formset.html" with formset=formset %}
-</fieldset>
+{% for label, formset in form.get_formsets.items %}
+  <fieldset>
+    <label>{{ label }}</label>
+
+    {% include "components/formset.html" with formset=formset %}
+  </fieldset>
 {% endfor %}
 
 {% for error in form.non_field_errors %}
-<p class="text-red">
-  {{ error|escape }}
-</p>
-{% endfor %}
-
-{% for hidden_field in form.hidden_fields %}
-{{ hidden_field }}
+  <p class="text-red">
+    {{ error|escape }}
+  </p>
 {% endfor %}

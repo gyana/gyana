@@ -91,8 +91,6 @@ class AppsumoSignupForm(SignupForm):
         with transaction.atomic():
             user = super().save(request)
             self._code.redeem_new_team(self.cleaned_data["team"], user)
-
-        analytics.identify_user(user, signup_source="appsumo")
         return user
 
 

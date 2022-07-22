@@ -6,12 +6,13 @@
   data-controller="live-update" 
   data-action="change->tf-modal#change turbo:submit-end->tf-modal#save"
   data-tf-modal-target="form"
-  data-tf-modal-submit-on-close
 >
   {% csrf_token %}
 
   <div class="widget-update__body">
-    {% include "django/forms/default_form.html" with optional=False %}
+    {% with optional=False %}
+          {{ form }}
+        {% endwith %}
   </div>
 
   <div class="widget-update__footer">

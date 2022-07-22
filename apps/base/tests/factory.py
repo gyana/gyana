@@ -14,6 +14,7 @@ from apps.columns.models import (
     EditColumn,
     FormulaColumn,
     JoinColumn,
+    RenameColumn,
     WindowColumn,
 )
 from apps.connectors.models import Connector
@@ -234,6 +235,14 @@ class FormulaColumnFactory(factory.django.DjangoModelFactory):
 class JoinColumnFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = JoinColumn
+
+    node = factory.SubFactory(NodeFactory)
+
+
+@register
+class RenameColumnFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = RenameColumn
 
     node = factory.SubFactory(NodeFactory)
 

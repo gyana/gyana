@@ -11,7 +11,7 @@
   {% csrf_token %}
 
   <div class="widget-update__body">
-    {% include "django/forms/default_form.html" %}
+    {{ form }}
   </div>
 
   <div class="widget-update__footer">

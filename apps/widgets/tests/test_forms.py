@@ -126,8 +126,6 @@ def test_one_dimension_form(kind, formset_classes, setup, widget_factory):
     else:
         assert set(form.get_live_fields()) == {
             "kind",
-            "sort_by",
-            "sort_ascending",
             "dimension",
             "date_column",
         }

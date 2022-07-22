@@ -26,7 +26,7 @@
     <form method="post" class="mt-7">
       {% csrf_token %}
 
-      {% include "django/forms/default_form.html" %}
+      {{ form }}
 
       <button type="submit" class="button button--filled button--success w-full">Create</button>
     </form>

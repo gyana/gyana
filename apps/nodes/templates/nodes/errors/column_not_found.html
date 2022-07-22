@@ -1,0 +1,7 @@
+{% extends 'nodes/errors/default.html' %}
+{% block header %}Formula error{% endblock %}
+{% block error_message %}
+  Column <strong class='text-orange'>{{ column }}</strong> does not exist on input. <br />
+
+  {% if suggestion %}Did you maybe mean <strong class='text-pink'>{{suggestion}}</strong>?{% endif %}
+{% endblock %}

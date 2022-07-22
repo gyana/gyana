@@ -29,6 +29,20 @@ export default class extends Controller {
     }
 
     this.sortable = Sortable.create(this.targetTarget, {
+      filter: '.CodeMirror',
+      preventOnFilter: false,
+      onChoose: (event) => {
+        const chosenFormset = this.element.querySelector(
+          `[data-formset-index="${event.oldIndex}"]`
+        )
+        const textareaTarget = chosenFormset.querySelector(
+          `[data-codemirror-target="textarea"]`
+        )
+
+        if (textareaTarget) {
+          textareaTarget.dataset.codemirrorIgnore = true
+        }
+      },
       onEnd: (event) => {
         const sortIndexInputs = Array.from(
           this.element.querySelectorAll('input[name*=sort_index]')
@@ -66,7 +80,7 @@ export default class extends Controller {
     const wrapper = e.target.closest(this.wrapperSelector)
 
     const input = wrapper.querySelector("input[name*='-DELETE']")
-    input.checked = true
+    input.value = true
 
     wrapper.querySelectorAll('[required]').forEach((el) => {
       el.removeAttribute('required')

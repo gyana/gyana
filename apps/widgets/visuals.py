@@ -53,7 +53,7 @@ def get_summary_row(query, widget):
     # Only naming the first group column
     group = widget.columns.first()
 
-    query = aggregate_columns(query, widget, None)
+    query = aggregate_columns(query, widget.aggregations.all(), None)
     summary = clients.bigquery().get_query_results(query.compile()).rows_dict[0]
 
     return {**dict(summary.items()), group.column: "Total"}
@@ -68,7 +68,10 @@ def table_to_output(widget: Widget, control, url=None) -> Dict[str, Any]:
             # TODO: add sorting and limit
             summary = get_summary_row(query, widget)
         groups = get_groups(query, widget)
-        query = aggregate_columns(query, widget, groups)
+        if widget.aggregations.exists():
+            query = aggregate_columns(query, widget.aggregations.all(), groups)
+        else:
+            query = query[groups]
 
     settings = {
         col.column: {
@@ -76,12 +79,17 @@ def table_to_output(widget: Widget, control, url=None) -> Dict[str, Any]:
             "rounding": col.rounding,
             "currency": col.currency,
             "is_percentage": col.is_percentage,
+            "conditional_formatting": col.conditional_formatting,
+            "positive_threshold": col.positive_threshold,
+            "negative_threshold": col.negative_threshold,
         }
         for col in [*widget.columns.all(), *widget.aggregations.all()]
     }
+    settings["hide_data_type"] = widget.table_hide_data_type
 
     if widget.sort_column:
         query = query.sort_by([(widget.sort_column, widget.sort_ascending)])
+
     return get_table(query.schema(), query, summary, settings, url=url)
 
 

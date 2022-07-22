@@ -1,7 +1,13 @@
+from django import forms
 from django.forms.models import BaseInlineFormSet
 
 
-class RequiredInlineFormset(BaseInlineFormSet):
+class BaseInlineFormset(BaseInlineFormSet):
+    def add_fields(self, form, index):
+        super().add_fields(form, index)
+        form.fields["DELETE"].widget = forms.HiddenInput()
+
+class RequiredInlineFormset(BaseInlineFormset):
     def __init__(self, *args, **kwargs):
         self.names = kwargs.pop("names", None)
         self.max_num = kwargs.pop("max_num", self.max_num)
@@ -37,3 +43,4 @@ class RequiredInlineFormset(BaseInlineFormSet):
             if not commit:
                 self.saved_forms.append(form)
         return self.new_objects
+

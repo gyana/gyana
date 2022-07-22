@@ -31,6 +31,8 @@ from apps.base.converters import HashIdConverter
 register_converter(HashIdConverter if settings.USE_HASHIDS else IntConverter, "hashid")
 
 
+from wagtail.api.v2.views import PagesAPIViewSet
+
 from apps.appsumo import urls as appsumo_urls
 from apps.cnames import urls as cname_urls
 from apps.connectors import urls as connector_urls
@@ -51,6 +53,7 @@ from apps.web.sitemaps import IntegrationsSitemap, UseCaseSitemap, WebSitemap
 from apps.widgets import urls as widget_urls
 from apps.workflows import urls as workflow_urls
 
+PagesAPIViewSet.schema = None
 schemajs_view = get_schemajs_view(title="API")
 
 

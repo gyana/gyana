@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
+from django.core.validators import MaxValueValidator
 from django.db import models
 from django.urls import reverse
 
@@ -48,7 +49,15 @@ class WidgetStyle(models.Model):
     metric_comparison_font_color = models.CharField(null=True, max_length=7)
 
     # Table specific configuration
-    table_show_header = models.BooleanField(default=True, blank=True)
+    table_show_header = models.BooleanField(
+        default=True, verbose_name="Show table header", blank=True
+    )
+    table_hide_data_type = models.BooleanField(
+        default=False, verbose_name="Hide data type icon", blank=True
+    )
+    table_paginate_by = models.PositiveIntegerField(
+        default=15, validators=[MaxValueValidator(100)], verbose_name="Rows per page"
+    )
 
     # Gauge specific configuration
     lower_limit = models.IntegerField(default=0)
@@ -148,11 +157,6 @@ class Widget(WidgetStyle, HistoryModel):
         max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH, null=True
     )
     name = models.CharField(max_length=255, null=True, blank=True)
-    sort_by = models.CharField(
-        max_length=12,
-        choices=(("dimension", "Dimension"), ("metric", "Metric")),
-        default="dimension",
-    )
     sort_column = models.CharField(
         max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH, blank=True, null=True
     )
@@ -339,6 +343,14 @@ WIDGET_KIND_TO_WEB = {
     Widget.Kind.GAUGE.value: ("fa-tachometer-fast", Widget.Category.SIMPLE, "Gauge"),
 }
 
+
+CATEGORIES = {}
+
+for value, widget in WIDGET_KIND_TO_WEB.items():
+    if CATEGORIES.get(widget[1]):
+        CATEGORIES[widget[1]].append((value, widget[2]))
+    else:
+        CATEGORIES[widget[1]] = [(value, widget[2])]
 
 WIDGET_CHOICES_ARRAY = [
     (choices + WIDGET_KIND_TO_WEB[choices[0]]) for choices in Widget.Kind.choices

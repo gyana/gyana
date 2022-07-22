@@ -42,5 +42,6 @@ export default class extends Controller {
     );
     this.dashboardTarget.style.transformOrigin = '0 0'
     this.dashboardTarget.style.transform = 'scale(' + scale + ')'
+    this.dashboardTarget.style.height = this.dashboardTarget.dataset.height * scale + 'px'
   }
 }

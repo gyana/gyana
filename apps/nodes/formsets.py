@@ -2,7 +2,7 @@
 from django import forms
 
 from apps.base.forms import BaseLiveSchemaForm, BaseSchemaForm
-from apps.base.formsets import RequiredInlineFormset
+from apps.base.formsets import BaseInlineFormset, RequiredInlineFormset
 from apps.columns.forms import (
     AddColumnForm,
     AggregationColumnForm,
@@ -11,6 +11,7 @@ from apps.columns.forms import (
     FormulaColumnForm,
     JoinColumnForm,
     OperationColumnForm,
+    RenameColumnForm,
     SortColumnForm,
     WindowColumnForm,
 )
@@ -92,13 +93,13 @@ FormulaColumnFormSet = forms.inlineformset_factory(
     can_delete=True,
     extra=0,
     min_num=1,
+    formset=BaseInlineFormset,
 )
 
 RenameColumnFormSet = forms.inlineformset_factory(
     Node,
     RenameColumn,
-    form=BaseLiveSchemaForm,
-    fields=("column", "new_name"),
+    form=RenameColumnForm,
     can_delete=True,
     extra=0,
     formset=RequiredInlineFormset,
@@ -137,10 +138,17 @@ WindowColumnFormSet = forms.inlineformset_factory(
     extra=0,
     form=WindowColumnForm,
     min_num=1,
+    formset=BaseInlineFormset,
 )
 
 ConvertColumnFormSet = forms.inlineformset_factory(
-    Node, ConvertColumn, can_delete=True, form=ConvertColumnForm, extra=0, min_num=1
+    Node,
+    ConvertColumn,
+    can_delete=True,
+    form=ConvertColumnForm,
+    extra=0,
+    min_num=1,
+    formset=BaseInlineFormset,
 )
 
 JoinColumnFormset = forms.inlineformset_factory(

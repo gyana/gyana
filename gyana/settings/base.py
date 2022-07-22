@@ -70,6 +70,7 @@ THIRD_PARTY_APPS = [
     "celery_progress",
     "django_filters",
     "django_tables2",
+    "cacheops",
     "invitations",
     "hijack",
     "hijack.contrib.admin",
@@ -164,14 +165,20 @@ LOGGING = {
             "formatter": "simple",
         }
     },
-    # uncomment to debug segment
-    # "loggers": {
-    #     "segment": {
-    #         "handlers": ["console"],
-    #         "level": "DEBUG",
-    #         "propagate": True,
-    #     }
-    # },
+    "loggers": {
+        # uncomment to debug segment
+        # "segment": {
+        #     "handlers": ["console"],
+        #     "level": "DEBUG",
+        #     "propagate": True,
+        # },
+        # uncomment to debug django
+        # "django": {
+        #     "handlers": ["console"],
+        #     "level": "DEBUG",
+        #     "propagate": True,
+        # }
+    },
 }
 
 ROOT_URLCONF = "gyana.urls"
@@ -478,3 +485,10 @@ WAGTAILSEARCH_BACKENDS = {
         "BACKEND": "wagtail.search.backends.database",
     }
 }
+
+
+CACHEOPS_REDIS = CELERY_BROKER_URL
+CACHEOPS = {"*.*": {"timeout": 60 * 60}}
+
+
+SOCIALACCOUNT_LOGIN_ON_GET = True

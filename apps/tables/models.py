@@ -114,6 +114,21 @@ class Table(BaseModel):
             return self.cache_node.workflow
 
     @property
+    def out_of_date(self):
+        if self.source == self.Source.INTEGRATION:
+            if self.integration.kind == self.integration.Kind.SHEET:
+                return not self.integration.sheet.up_to_date_with_drive
+            if self.integration.kind == self.integration.Kind.CONNECTOR:
+                return self.integration.connector.latest_sync_failed
+        elif self.source == self.Source.WORKFLOW_NODE:
+            return self.workflow_node.workflow.out_of_date
+
+        return False
+
+    def get_source_url(self):
+        return self.source_obj.get_absolute_url()        
+
+    @property
     def used_in_workflows(self):
         from apps.workflows.models import Workflow
 

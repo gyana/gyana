@@ -1,12 +1,12 @@
 import logging
+from decimal import Decimal
 
 import analytics
-from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django_tables2.tables import Table as DjangoTable
 from django_tables2.views import SingleTableMixin
 from honeybadger import honeybadger
-from turbo_response import TurboFrame, TurboStream
+from turbo_response import TurboStream
 from turbo_response.response import TurboStreamResponse
 
 from apps.base.analytics import (
@@ -43,7 +43,7 @@ def add_output_context(context, widget, request, control, url=None):
         if "table" not in context:
             table = table_to_output(widget, control, url)
             context["table"] = RequestConfig(
-                request,
+                request, paginate={"per_page": widget.table_paginate_by}
             ).configure(table)
     elif widget.kind == Widget.Kind.METRIC:
         metric = metric_to_output(widget, control)
@@ -65,7 +65,11 @@ def add_output_context(context, widget, request, control, url=None):
         context["column"] = column
         if column.currency:
             context["currency"] = CURRENCY_SYMBOLS_MAP[column.currency]
-        context["metric"] = metric
+        context["metric"] = (
+            round(metric, column.rounding)
+            if isinstance(metric, (float, Decimal))
+            else metric
+        )
     else:
         chart, chart_id = chart_to_output(widget, control)
         context.update(chart)
@@ -150,8 +154,13 @@ class WidgetUpdate(DashboardMixin, TurboFrameUpdateView):
     def get_form_class(self):
         if self.tab == "style":
             return STYLE_FORMS.get(self.object.kind, DefaultStyleForm)
-        if self.tab == "source":
+
+        if self.tab == "source" and self.object.kind not in [
+            Widget.Kind.IFRAME,
+            Widget.Kind.IMAGE,
+        ]:
             return WidgetSourceForm
+
         return FORMS[self.request.POST.get("kind", self.object.kind)]
 
     def get_form_kwargs(self):
@@ -288,12 +297,17 @@ class WidgetOutput(DashboardMixin, SingleTableMixin, TurboFrameDetailView):
 
     def get_table(self, **kwargs):
         if self.object.is_valid and self.object.kind == Widget.Kind.TABLE:
+            self.paginate_by = self.object.table_paginate_by
             table = table_to_output(
                 self.object,
                 self.object.page.control if self.object.page.has_control else None,
             )
             return RequestConfig(
-                self.request, paginate=self.get_table_pagination(table)
+                self.request,
+                paginate={
+                    **self.get_table_pagination(table),
+                    "per_page": self.object.table_paginate_by,
+                },
             ).configure(table)
         return type("DynamicTable", (DjangoTable,), {})(data=[])
 

@@ -1,5 +1,7 @@
+from django.conf import settings
 from django.core.cache import cache
 from ibis.expr.types import TableExpr
+from ibis_bigquery.client import BigQueryTable
 
 from apps.base import clients
 from apps.base.clients import ibis_client
@@ -34,23 +36,27 @@ def get_query_from_table(table: Table) -> TableExpr:
     conn = ibis_client()
 
     key = _get_cache_key_for_table(table)
-    tbl = cache.get(key)
+    schema = cache.get(key)
 
-    if tbl is None:
+    if schema is None:
         tbl = conn.table(table.bq_table, database=table.bq_dataset)
 
-        # the client is not pickle-able
-        tbl.op().source = None
-        cache.set(key, tbl, 24 * 3600)
-
-    tbl.op().source = conn
+        cache.set(key, tbl.schema(), 24 * 3600)
+    else:
+        tbl = TableExpr(
+            BigQueryTable(
+                name=f"{settings.GCP_PROJECT}.{table.bq_dataset}.{table.bq_table}",
+                schema=schema,
+                source=conn,
+            )
+        )
 
     if (
         table.integration is not None
         and table.integration.kind == table.integration.Kind.CONNECTOR
     ):
         # Drop the intersection of fivetran cols and schema cols
-        tbl = tbl.drop(set(tbl.schema().names) & FIVETRAN_COLUMNS)
+        tbl = tbl.drop(list(set(tbl.schema().names) & FIVETRAN_COLUMNS))
 
     return tbl
 

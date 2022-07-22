@@ -214,7 +214,7 @@ def test_integration_create_pending_load_and_approve(
     assertOK(r)
 
 
-def test_integration_exceeds_row_limit(
+def test_integration_exceeds_integration_row_limit(
     client, logged_in_user, sheet_factory, integration_table_factory
 ):
     team = logged_in_user.teams.first()
@@ -224,7 +224,9 @@ def test_integration_exceeds_row_limit(
     integration_table_factory(project=project, integration=integration)
 
     DETAIL = f"/projects/{project.id}/integrations/{integration.id}"
-    team.override_row_limit = 5
+    team.override_rows_per_integration_limit = 5
+    integration.ready = True
+    integration.save()
     team.save()
 
     # done

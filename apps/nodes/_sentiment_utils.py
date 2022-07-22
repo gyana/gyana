@@ -15,6 +15,7 @@ from google.cloud.language import (
 )
 
 from apps.base import clients
+from apps.nodes.exceptions import CreditException
 from apps.nodes.models import Node
 from apps.tables.models import Table
 from apps.teams.models import CreditTransaction, OutOfCreditsException
@@ -44,16 +45,6 @@ SCORES_ROUND_DP = 1
 
 TEXT_COLUMN_NAME = "text"
 SENTIMENT_COLUMN_NAME = "sentiment"
-
-
-class CreditException(Exception):
-    def __init__(self, node_id, uses_credits) -> None:
-        self.node_id = node_id
-        self.uses_credits = uses_credits
-
-    @property
-    def node(self):
-        return Node.objects.get(pk=self.node_id)
 
 
 def _remove_unicode(string: str) -> str:
@@ -191,7 +182,7 @@ def _update_intermediate_table(ibis_client, node, current_values):
     query = current_values.left_join(
         cache_query,
         current_values[TEXT_COLUMN_NAME] == cache_query[f"{TEXT_COLUMN_NAME}_right"],
-    ).materialize()[TEXT_COLUMN_NAME, SENTIMENT_COLUMN_NAME]
+    )[TEXT_COLUMN_NAME, SENTIMENT_COLUMN_NAME]
     return create_or_replace_intermediate_table(
         node,
         query.compile(),

@@ -183,8 +183,8 @@ class DashboardDuplicate(TurboUpdateView):
 # This allows a shared dashboard to be embeded in an iFrame
 @method_decorator(xframe_options_exempt, name="dispatch")
 class DashboardPublic(DetailView):
-    template_name = "dashboards/public.html"
     model = Dashboard
+    template_name = "dashboards/public.html"
 
     def get_object(self):
         return self.kwargs["dashboard"]
@@ -197,6 +197,17 @@ class DashboardPublic(DetailView):
         context["page_count"] = self.object.pages.count()
         context["next_page"] = page.position + 1
         context["previous_page"] = page.position - 1
+        return context
+
+
+class DashboardPrint(DetailView):
+    model = Dashboard
+    template_name = "dashboards/print.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["project"] = self.object.project
+
         return context
 
 
@@ -266,23 +277,15 @@ class PageDelete(PageMixin, DeleteView):
     # Not used
     template_name = "dashboards/delete.html"
 
-    def delete(self, request, *args, **kwargs):
-        page = self.get_object()
+    def form_valid(self, form):
         # The delete button should be disabled for the last page but just in case
         # this will not delete but return the same page
-        if page.position == 1:
+        if self.object.position == 1:
             return HttpResponseRedirect(
-                f"{reverse('project_dashboards:detail', args=(self.project.id, self.dashboard.id))}?dashboardPage={page.position}"
+                f"{reverse('project_dashboards:detail', args=(self.project.id, self.dashboard.id))}?dashboardPage={self.object.position}"
             )
-        r = super().delete(request, *args, **kwargs)
 
-        for follow_page in self.dashboard.pages.filter(
-            position__gt=page.position
-        ).iterator():
-            follow_page.position = follow_page.position - 1
-            follow_page.save()
-
-        return r
+        return super().form_valid(form)
 
     def get_success_url(self) -> str:
         return f"{reverse('project_dashboards:detail', args=(self.project.id, self.dashboard.id))}?dashboardPage={min(self.object.position, self.dashboard.pages.count()-1)}"
@@ -358,6 +361,11 @@ class PageName(PageMixin, TurboUpdateView):
     model = Page
     fields = ["name"]
     template_name = "dashboards/forms/name_page.html"
+
+    @property
+    def page(self):
+        # Doesnt take the page parameter
+        return self.object
 
     def get_success_url(self) -> str:
         return reverse(

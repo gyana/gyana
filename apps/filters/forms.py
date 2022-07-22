@@ -10,6 +10,7 @@ from .widgets import SelectAutocomplete
 
 IBIS_TO_TYPE = {
     "Int8": Filter.Type.INTEGER,
+    "Int16": Filter.Type.INTEGER,
     "Int32": Filter.Type.INTEGER,
     "Int64": Filter.Type.INTEGER,
     "String": Filter.Type.STRING,

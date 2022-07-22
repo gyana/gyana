@@ -31,6 +31,7 @@ describe('signup', () => {
     cy.get('select[name=company_industry]').select('Agency')
     cy.get('select[name=company_role]').select('Marketing')
     cy.get('select[name=company_size]').select('2-10')
+    cy.get('select[name=source_channel]').select('onlineads')
     cy.get('button[type=submit]').click()
 
     // new team

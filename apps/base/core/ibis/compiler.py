@@ -1,7 +1,6 @@
 import ibis.expr.datatypes as dt
 import ibis.expr.rules as rlz
 from ibis.expr.operations import (
-    Arg,
     Constant,
     DateDiff,
     Reduction,
@@ -19,13 +18,17 @@ from ibis.expr.types import (
 )
 from ibis_bigquery.compiler import BigQueryExprTranslator, _timestamp_units
 
+# Do not place compile functions and classes in a function as local variables
+# this will mess with cacheops and lead to cant pickle local object error
+
 compiles = BigQueryExprTranslator.compiles
 
 
 class StartsWith(ValueOp):
-    value = Arg(rlz.string)
-    start_string = Arg(rlz.string)
-    output_type = rlz.shape_like("value", dt.boolean)
+    value = rlz.string
+    start_string = rlz.string
+    output_dtype = dt.boolean
+    output_shape = rlz.shape_like("value")
 
 
 def startswith(value, start_string):
@@ -33,9 +36,10 @@ def startswith(value, start_string):
 
 
 class EndsWith(ValueOp):
-    value = Arg(rlz.string)
-    end_string = Arg(rlz.string)
-    output_type = rlz.shape_like("value", dt.boolean)
+    value = rlz.string
+    end_string = rlz.string
+    output_dtype = dt.boolean
+    output_shape = rlz.shape_like("value")
 
 
 def endswith(value, start_string):
@@ -69,10 +73,8 @@ def _endswith(t, expr):
 
 
 class AnyValue(Reduction):
-    arg = Arg(rlz.column(rlz.any))
-
-    def output_type(self):
-        return self.arg.type().scalar_type()
+    arg = rlz.column(rlz.any)
+    output_dtype = rlz.dtype_like("arg")
 
 
 def any_value(arg):
@@ -89,31 +91,76 @@ def _any_value(t, expr):
     return f"ANY_VALUE({t.translate(arg)})"
 
 
-def _add_timestamp_diff_with_unit(value_class, bq_func, data_type):
-    class Difference(ValueOp):
-        left = Arg(data_type)
-        right = Arg(data_type)
-        unit = Arg(rlz.string)
-        output_type = rlz.shape_like("left", dt.int64)
-
-    def difference(left, right, unit):
-        return Difference(left, right, unit).to_expr()
-
-    value_class.timestamp_diff = difference
-
-    def _difference(translator, expr):
-        left, right, unit = expr.op().args
-        t_left = translator.translate(left)
-        t_right = translator.translate(right)
-        t_unit = _timestamp_units[translator.translate(unit).replace("'", "")]
-        return f"{bq_func}({t_left}, {t_right}, {t_unit})"
-
-    return compiles(Difference)(_difference)
+class TimestampDifference(ValueOp):
+    left = rlz.timestamp
+    right = rlz.timestamp
+    unit = rlz.string
+    output_shape = rlz.shape_like("left")
+    output_dtype = dt.int64
 
 
-_add_timestamp_diff_with_unit(TimestampValue, "TIMESTAMP_DIFF", rlz.timestamp)
-_add_timestamp_diff_with_unit(DateValue, "DATE_DIFF", rlz.date)
-_add_timestamp_diff_with_unit(TimeValue, "TIME_DIFF", rlz.time)
+def timestamp_difference(left, right, unit):
+    return TimestampDifference(left, right, unit).to_expr()
+
+
+TimestampValue.timestamp_diff = timestamp_difference
+
+
+@compiles(TimestampDifference)
+def _timestamp_difference(translator, expr):
+    left, right, unit = expr.op().args
+    t_left = translator.translate(left)
+    t_right = translator.translate(right)
+    t_unit = _timestamp_units[translator.translate(unit).replace("'", "")]
+    return f"TIMESTAMP_DIFF({t_left}, {t_right}, {t_unit})"
+
+
+class DateDifference(ValueOp):
+    left = rlz.date
+    right = rlz.date
+    unit = rlz.string
+    output_shape = rlz.shape_like("left")
+    output_dtype = dt.int64
+
+
+def date_difference(left, right, unit):
+    return DateDifference(left, right, unit).to_expr()
+
+
+DateValue.timestamp_diff = date_difference
+
+
+@compiles(DateDifference)
+def _date_difference(translator, expr):
+    left, right, unit = expr.op().args
+    t_left = translator.translate(left)
+    t_right = translator.translate(right)
+    t_unit = _timestamp_units[translator.translate(unit).replace("'", "")]
+    return f"DATE_DIFF({t_left}, {t_right}, {t_unit})"
+
+
+class TimeDifference(ValueOp):
+    left = rlz.time
+    right = rlz.time
+    unit = rlz.string
+    output_shape = rlz.shape_like("left")
+    output_dtype = dt.int64
+
+
+def time_difference(left, right, unit):
+    return TimeDifference(left, right, unit).to_expr()
+
+
+TimeValue.timestamp_diff = time_difference
+
+
+@compiles(TimeDifference)
+def _time_difference(translator, expr):
+    left, right, unit = expr.op().args
+    t_left = translator.translate(left)
+    t_right = translator.translate(right)
+    t_unit = _timestamp_units[translator.translate(unit).replace("'", "")]
+    return f"TIME_DIFF({t_left}, {t_right}, {t_unit})"
 
 
 def _compiles_timestamp_diff_op(op, bq_func, unit):
@@ -133,9 +180,10 @@ _compiles_timestamp_diff_op(DateDiff, "DATE_DIFF", "DAY")
 
 
 class JSONExtract(ValueOp):
-    value = Arg(rlz.string)
-    json_path = Arg(rlz.string)
-    output_type = rlz.shape_like("value", dt.string)
+    value = rlz.string
+    json_path = rlz.string
+    output_shape = rlz.shape_like("value")
+    output_dtype = dt.string
 
 
 def json_extract(value, json_path):
@@ -155,8 +203,9 @@ def _json_extract(t, expr):
 
 
 class ISOWeek(ValueOp):
-    arg = Arg(rlz.one_of([rlz.date, rlz.timestamp]))
-    output_type = rlz.shape_like("arg", dt.int32)
+    arg = rlz.one_of([rlz.date, rlz.timestamp])
+    output_shape = rlz.shape_like("arg")
+    output_dtype = dt.int32
 
 
 def isoweek(arg):
@@ -175,8 +224,9 @@ def _isoweek(t, expr):
 
 
 class DayOfWeek(ValueOp):
-    arg = Arg(rlz.one_of([rlz.date, rlz.timestamp]))
-    output_type = rlz.shape_like("arg", dt.int32)
+    arg = rlz.one_of([rlz.date, rlz.timestamp])
+    output_shape = rlz.shape_like("arg")
+    output_dtype = dt.int32
 
 
 def day_of_week(arg):
@@ -195,9 +245,10 @@ def _day_of_week(t, expr):
 
 
 class ParseDate(ValueOp):
-    value = Arg(rlz.string)
-    format_ = Arg(rlz.string)
-    output_type = rlz.shape_like("value", dt.date)
+    value = rlz.string
+    format_ = rlz.string
+    output_shape = rlz.shape_like("value")
+    output_dtype = dt.date
 
 
 def parse_date(value, format_):
@@ -214,9 +265,10 @@ def _parse_date(t, expr):
 
 
 class ParseTime(ValueOp):
-    value = Arg(rlz.string)
-    format_ = Arg(rlz.string)
-    output_type = rlz.shape_like("value", dt.time)
+    value = rlz.string
+    format_ = rlz.string
+    output_shape = rlz.shape_like("value")
+    output_dtype = dt.time
 
 
 def parse_time(value, format_):
@@ -233,9 +285,10 @@ def _parse_time(t, expr):
 
 
 class ParseDatetime(ValueOp):
-    value = Arg(rlz.string)
-    format_ = Arg(rlz.string)
-    output_type = rlz.shape_like("value", dt.timestamp)
+    value = rlz.string
+    format_ = rlz.string
+    output_shape = rlz.shape_like("value")
+    output_dtype = dt.timestamp
 
 
 def parse_datetime(value, format_):
@@ -252,8 +305,7 @@ def _parse_datetime(t, expr):
 
 
 class Today(Constant):
-    def output_type(self):
-        return dt.date.scalar_type()
+    output_dtype = dt.date
 
 
 def today():
@@ -274,9 +326,10 @@ def _today(t, expr):
 
 # Unfortunately, ibis INTERVAL doesnt except variables
 class SubtractDays(ValueOp):
-    date = Arg(rlz.date)
-    days = Arg(rlz.integer)
-    output_type = rlz.shape_like("args", dt.date)
+    date = rlz.date
+    days = rlz.integer
+    output_shape = rlz.shape_like("args")
+    output_dtype = dt.date
 
 
 def subtract_days(date, days):
@@ -296,8 +349,9 @@ def _subtract_days(translator, expr):
 
 
 class Date(ValueOp):
-    date = Arg(rlz.date)
-    output_type = rlz.shape_like("date", dt.date)
+    date = rlz.date
+    output_shape = rlz.shape_like("date")
+    output_dtype = dt.date
 
 
 def date(d):
@@ -314,8 +368,9 @@ def _date(t, expr):
 
 
 class ToJsonString(ValueOp):
-    struct = Arg(rlz.struct)
-    output_type = rlz.shape_like("struct", dt.string)
+    struct = rlz.struct
+    output_shape = rlz.shape_like("struct")
+    output_dtype = dt.string
 
 
 def to_json_string(struct):
@@ -333,28 +388,30 @@ def _to_json_string(t, expr):
 
 
 # Converts bigquery DATETIME to TIMESTAMP in UTC timezone
-class ToTimesamp(ValueOp):
-    datetime = Arg(rlz.timestamp)
-    output_type = rlz.shape_like("datetime", dt.timestamp)
+class ToTimestamp(ValueOp):
+    datetime = rlz.timestamp
+    output_shape = rlz.shape_like("datetime")
+    output_dtype = dt.timestamp
 
 
 def to_timestamp(d):
-    return ToTimesamp(d).to_expr()
+    return ToTimestamp(d).to_expr()
 
 
 TimestampValue.to_timestamp = to_timestamp
 
 
-@compiles(ToTimesamp)
+@compiles(ToTimestamp)
 def _to_timestamp(t, expr):
     d = expr.op().args[0]
     return f"TIMESTAMP({t.translate(d)})"
 
 
 class ToTimezone(ValueOp):
-    datetime = Arg(rlz.timestamp)
-    timezone = Arg(rlz.string)
-    output_type = rlz.shape_like("datetime", dt.timestamp)
+    datetime = rlz.timestamp
+    timezone = rlz.string
+    output_shape = rlz.shape_like("datetime")
+    output_dtype = dt.timestamp
 
 
 def to_timezone(d, tz):

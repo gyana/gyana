@@ -53,7 +53,7 @@ def dashboard_is_public(view_func):
 
     @wraps(view_func)
     def decorator(request, *args, **kwargs):
-        dashboard = Dashboard.objects.get(shared_id=kwargs["shared_id"])
+        dashboard = get_object_or_404(Dashboard, shared_id=kwargs["shared_id"])
 
         if not dashboard or dashboard.project.team.deleted:
             return render(request, "404.html", status=404)

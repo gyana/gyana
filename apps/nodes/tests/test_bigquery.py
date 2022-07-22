@@ -1,115 +1,34 @@
 import re
 import textwrap
-from datetime import date, datetime
-from functools import lru_cache
+from datetime import datetime
 from unittest import mock
 from unittest.mock import MagicMock, Mock
 
 import pandas as pd
 import pytest
 from django.utils import timezone
-from google.cloud.bigquery.schema import SchemaField
-from google.cloud.bigquery.table import Table as BqTable
 
 from apps.base import clients
-from apps.base.tests.mock_data import TABLE
-from apps.base.tests.mocks import TABLE_NAME, PickableMock
 from apps.columns.models import Column
 from apps.filters.models import DateRange, Filter
-from apps.nodes._sentiment_utils import (
-    DELIMITER,
-    SENTIMENT_COLUMN_NAME,
-    TEXT_COLUMN_NAME,
-)
-from apps.nodes.bigquery import (
-    NodeResultNone,
-    get_pivot_query,
-    get_query_from_node,
-    get_unpivot_query,
-)
+from apps.nodes.bigquery import get_pivot_query, get_query_from_node, get_unpivot_query
+from apps.nodes.exceptions import CreditException
 from apps.nodes.models import Node
-from apps.teams.models import CreditTransaction
+from apps.nodes.tests.mocks import (
+    DEFAULT_X_Y,
+    INPUT_DATA,
+    INPUT_QUERY,
+    NEGATIVE_SCORE,
+    POSITIVE_SCORE,
+    SAKURA,
+    USAIN,
+    mock_bq_client_data,
+    mock_bq_client_schema,
+    mock_gcp_analyze_sentiment,
+)
+from apps.teams.models import CreditTransaction, OutOfCreditsException
 
 pytestmark = pytest.mark.django_db
-
-INPUT_QUERY = f"SELECT *\nFROM `{TABLE_NAME}`"
-DEFAULT_X_Y = {"x": 0, "y": 0}
-
-USAIN = "Usain Bolt"
-SAKURA = "Sakura Yosozumi"
-INPUT_DATA = [
-    {
-        "id": 1,
-        "athlete": USAIN,
-        "birthday": date(year=1986, month=8, day=21),
-    },
-    {
-        "id": 2,
-        "athlete": SAKURA,
-        "birthday": date(year=2002, month=3, day=15),
-    },
-]
-
-DISTINCT_QUERY = "SELECT *\nFROM (\n  SELECT `athlete` AS `text`\n  FROM (\n    SELECT DISTINCT `athlete`\n    FROM `project.dataset.table`\n  ) t1\n) t0\nWHERE `text` IS NOT NULL"
-
-
-def mock_bq_client_data(bigquery):
-    def side_effect(query, **kwargs):
-        mock = PickableMock()
-
-        if query == DISTINCT_QUERY:
-            mock.rows_dict = [{"text": row["athlete"]} for row in INPUT_DATA]
-            mock.total_rows = len(INPUT_DATA)
-        elif "EXCEPT DISTINCT" in query:
-            mock.rows_dict = []
-            mock.total_rows = 0
-        else:
-            mock.rows_dict = INPUT_DATA
-            mock.total_rows = len(INPUT_DATA)
-        return mock
-
-    def result(query, **kwargs):
-        mock = PickableMock()
-
-        if query == DISTINCT_QUERY:
-            mock.result = Mock(
-                return_value=[{"text": row["athlete"]} for row in INPUT_DATA]
-            )
-            mock.total_rows = len(INPUT_DATA)
-        elif "EXCEPT DISTINCT" in query:
-            mock.result = Mock(return_value=[])
-            mock.total_rows = 0
-        else:
-            mock.result = Mock(return_value=INPUT_DATA)
-            mock.total_rows = len(INPUT_DATA)
-
-        return mock
-
-    bigquery.query = Mock(side_effect=result)
-    bigquery.get_query_results = Mock(side_effect=side_effect)
-
-
-def mock_bq_client_schema(bigquery):
-    def side_effect(table, **kwargs):
-        if table.split(".")[-1].split("_")[0] in [
-            "cache",
-            "intermediate",
-        ]:
-            schema = [
-                SchemaField(TEXT_COLUMN_NAME, "string"),
-                SchemaField(SENTIMENT_COLUMN_NAME, "float"),
-            ]
-        else:
-            schema = [
-                SchemaField(column, str(type_))
-                for column, type_ in TABLE.schema().items()
-            ][:3]
-        return BqTable(
-            table,
-            schema=schema,
-        )
-
-    bigquery.get_table = MagicMock(side_effect=side_effect)
 
 
 @pytest.fixture
@@ -194,7 +113,7 @@ def test_join_node(setup):
     # Mocking the table conditionally requires a little bit more work
     # So we simply join the table with itself which leads to duplicate columns that
     # Are aliased
-    join_query = "SELECT `id_1` AS `id`, `athlete_1`, `birthday_1`, `athlete_2`, `birthday_2`\nFROM (\n  SELECT *\n  FROM (\n    SELECT `id` AS `id_1`, `athlete` AS `athlete_1`, `birthday` AS `birthday_1`\n    FROM `project.dataset.table`\n  ) t1\n    INNER JOIN (\n      SELECT `id` AS `id_2`, `athlete` AS `athlete_2`, `birthday` AS `birthday_2`\n      FROM `project.dataset.table`\n    ) t2\n      ON t1.`id_1` = t2.`id_2`\n) t0"
+    join_query = "SELECT `id_1` AS `id`, `athlete_1`, `birthday_1`, `athlete_2`, `birthday_2`\nFROM (\n  SELECT `id_1`, `athlete_1`, `birthday_1`, `athlete_2`, `birthday_2`\n  FROM (\n    SELECT `id` AS `id_1`, `athlete` AS `athlete_1`, `birthday` AS `birthday_1`\n    FROM `project.dataset.table`\n  ) t1\n    INNER JOIN (\n      SELECT `id` AS `id_2`, `athlete` AS `athlete_2`, `birthday` AS `birthday_2`\n      FROM `project.dataset.table`\n    ) t2\n      ON t1.`id_1` = t2.`id_2`\n) t0"
     assert query.compile() == join_query
 
     join_node.join_how = "outer"
@@ -204,7 +123,7 @@ def test_join_node(setup):
         == """\
 SELECT `id_1` AS `id`, `athlete_1`, `birthday_1`, `athlete_2`, `birthday_2`
 FROM (
-  SELECT *
+  SELECT `id_1`, `athlete_1`, `birthday_1`, `athlete_2`, `birthday_2`
   FROM (
     SELECT `id` AS `id_1`, `athlete` AS `athlete_1`, `birthday` AS `birthday_1`
     FROM `project.dataset.table`
@@ -251,14 +170,14 @@ def test_aggregation_node(setup):
 
 
 UNION_QUERY = (
-    f"SELECT `id`, `athlete`, `birthday`"
+    f"SELECT *"
     f"\nFROM (\n{textwrap.indent(INPUT_QUERY, '  ')}\n  UNION ALL"
     f"\n{textwrap.indent(INPUT_QUERY.replace('*', '`id`, `athlete`, `birthday`'), '  ')}\n) t0"
 )
 
 
 EXCEPT_QUERY = (
-    f"SELECT `id`, `athlete`, `birthday`"
+    f"SELECT *"
     f"\nFROM (\n{textwrap.indent(INPUT_QUERY, '  ')}\n  EXCEPT DISTINCT"
     f"\n{textwrap.indent(INPUT_QUERY, '  ')}\n) t0"
 )
@@ -281,6 +200,29 @@ def test_union_node(setup):
     union_node.union_distinct = True
     assert get_query_from_node(union_node).compile() == UNION_QUERY.replace(
         "UNION ALL", "UNION DISTINCT"
+    )
+
+
+def test_union_node_casts_int_to_float(setup):
+    input_node, workflow = setup
+
+    union_node = Node.objects.create(
+        kind=Node.Kind.UNION,
+        workflow=workflow,
+        **DEFAULT_X_Y,
+    )
+    convert_node = Node.objects.create(
+        kind=Node.Kind.CONVERT, workflow=workflow, **DEFAULT_X_Y
+    )
+    convert_node.parents.add(input_node)
+    convert_node.convert_columns.create(column="id", target_type="float")
+
+    union_node.parents.add(input_node)
+    union_node.parents.add(convert_node, through_defaults={"position": 1})
+
+    assert (
+        get_query_from_node(union_node).compile()
+        == "WITH t0 AS (\n  SELECT CAST(`id` AS FLOAT64) AS `id`, `athlete`, `birthday`\n  FROM `project.dataset.table`\n)\nSELECT t1.*\nFROM (\n  WITH t0 AS (\n    SELECT CAST(`id` AS FLOAT64) AS `id`, `athlete`, `birthday`\n    FROM `project.dataset.table`\n  )\n  SELECT *\n  FROM t0\n  UNION ALL\n  SELECT `id`, `athlete`, `birthday`\n  FROM t0\n) t1"
     )
 
 
@@ -345,7 +287,7 @@ def test_limit_node(setup):
     limit_node.parents.add(input_node)
 
     limit_query = (
-        f"SELECT `id`, `athlete`, `birthday`"
+        f"SELECT *"
         f"\nFROM (\n{textwrap.indent(INPUT_QUERY, '  ')}"
         f"\n  LIMIT 100\n) t0"
     )
@@ -534,7 +476,7 @@ def test_window_node(setup):
     window.save()
     assert get_query_from_node(window_node).compile() == INPUT_QUERY.replace(
         "*",
-        "*,\n       count(`athlete`) OVER (PARTITION BY `birthday` ORDER BY `id`) AS `window`",
+        "*,\n       count(`athlete`) OVER (PARTITION BY `birthday` ORDER BY `id` DESC) AS `window`",
     )
 
     window_node.window_columns.create(
@@ -543,7 +485,7 @@ def test_window_node(setup):
     assert get_query_from_node(window_node).compile() == INPUT_QUERY.replace(
         "*",
         """*,
-       count(`athlete`) OVER (PARTITION BY `birthday` ORDER BY `id`) AS `window`,
+       count(`athlete`) OVER (PARTITION BY `birthday` ORDER BY `id` DESC) AS `window`,
        count(`id`) OVER (PARTITION BY `athlete`) AS `door`""",
     )
 
@@ -601,32 +543,6 @@ def test_unpivot_node(setup):
     )
 
 
-POSITIVE_SCORE = +0.9
-NEGATIVE_SCORE = -0.9
-
-SENTIMENT_LOOKUP = {SAKURA: POSITIVE_SCORE, USAIN: NEGATIVE_SCORE}
-
-
-# cache as creating mocks is expensive
-@lru_cache(len(SENTIMENT_LOOKUP))
-def score_to_sentence_mock(sentence_text: str):
-    """Mocks a sentence to place inside an AnalyzeSentimentResponse"""
-    sentence = mock.MagicMock()
-    sentence.text.content = sentence_text
-    sentence.sentiment.score = SENTIMENT_LOOKUP[sentence_text]
-    return sentence
-
-
-def mock_gcp_analyze_sentiment(text, _):
-    """Mocks the AnalyzeSentimentResponse sent back from GCP"""
-    mocked = mock.MagicMock()
-
-    # covers the scalar case too as scalars are sent over as a single-row column
-    mocked.sentences = [score_to_sentence_mock(x) for x in text.split(DELIMITER)]
-
-    return mocked
-
-
 SENTIMENT_QUERY = "SELECT \\*\nFROM `project.cypress_team_.*_tables\\..*`"
 
 
@@ -647,7 +563,7 @@ def test_sentiment_query(mocker, logged_in_user, setup):
     sentiment_node = _create_sentiment_node(input_node, workflow)
     team = logged_in_user.teams.first()
 
-    with pytest.raises(NodeResultNone) as err:
+    with pytest.raises(CreditException) as err:
         get_query_from_node(sentiment_node)
 
     # Should error and not charge any credits
@@ -729,7 +645,7 @@ def test_sentiment_query_out_of_credits(logged_in_user, setup):
         amount=99,
         user=logged_in_user,
     )
-    with pytest.raises(NodeResultNone) as err:
+    with pytest.raises(OutOfCreditsException) as err:
         get_query_from_node(sentiment_node)
 
     assert sentiment_node.error == "out_of_credits_exception"

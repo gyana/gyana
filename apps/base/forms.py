@@ -66,6 +66,8 @@ class SchemaFormMixin:
 
 
 class BaseModelForm(forms.ModelForm):
+    template_name = "django/forms/default_form.html"
+
     def pre_save(self, instance):
         # override in child to add behaviour on commit save
         pass
@@ -86,10 +88,16 @@ class BaseModelForm(forms.ModelForm):
 
 
 class LiveModelForm(BaseModelForm):
+    ignore_live_update_fields = []
+
     def __init__(self, *args, **kwargs):
 
         self.parent_instance = kwargs.pop("parent_instance", None)
         super().__init__(*args, **kwargs)
+
+        for field in self.ignore_live_update_fields:
+            self.fields[field].widget.attrs.update({"data-live-update-ignore": ""})
+
         self.prefix = kwargs.get("prefix", None)
 
         # the rendered fields are determined by the values of the other fields

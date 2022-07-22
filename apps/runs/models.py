@@ -47,12 +47,14 @@ class JobRun(DirtyFieldsMixin, BaseModel):
 
     STATE_TO_ICON = {
         State.RUNNING: ICONS["loading"],
+        State.PENDING: ICONS["pending"],
         State.FAILED: ICONS["error"],
         State.SUCCESS: ICONS["success"],
     }
 
     STATE_TO_MESSAGE = {
         State.RUNNING: "Running",
+        State.PENDING: "Pending",
         State.FAILED: "Failed",
         State.SUCCESS: "Success",
     }

@@ -5,6 +5,7 @@ const debounceTime = 1000
 
 const toolbarOptions = [
   [{ 'header': [1, 2, 3, false] }],
+  [{ 'size': ['small', false, 'large', 'huge'] }], 
   ['bold', 'italic', 'underline', 'strike', 'link'],
   [{ 'align': [] }],
   [{ 'list': 'ordered' }, { 'list': 'bullet' }],

@@ -1,19 +1,52 @@
-<div class="label {{ field.field.widget.attrs.class }}">
-  <label for="{{ field.id_for_label }}">
-    <span class="block">
-      {{ field.label }}
-
-      {% if not bound_field.field.required and not optional == False %}
-        <span class="text-black-50">- optional</span>
-      {% endif %}
-    </span>
-
-    {% if field.help_text %}
-    <p class="input__help-text">
-      {{ field.help_text }}
-    </p>
+{% if field %}
+  <div
+    class="label {{ field.field.widget.attrs.class }}"
+    {% if field.field.initial %}
+      data-controller="reset-default"
+      data-reset-default-initial-value="{{ field.field.initial }}"
     {% endif %}
-    
-    {{ field }}
-  </label>
-</div>
+  >
+    <label
+      {% if field.field.widget.widgets|length == 0 %}
+        for="{{ field.id_for_label }}"
+      {% endif %}
+    >
+      <span class="block">
+        {{ field.label }}
+
+        {% comment %} TODO: Figure out better "optional" solution {% endcomment %}
+        {% comment %} {% if not field.field.required and not optional == False %}
+          <span class="text-black-50">- optional</span>
+        {% endif %} {% endcomment %}
+
+        <a
+          class="small link float-right"
+          data-reset-default-target="control"
+          hidden
+        >
+          Reset to default
+        </a>
+      </span>
+
+      {% if field.help_text %}
+        <p class="input__help-text">
+          {{ field.help_text }}
+        </p>
+      {% endif %}
+    </label>
+
+    {% if bound_field.field.widget.attrs.unit_suffix %}
+      <div class="flex flex-row-reverse mt-auto">
+        <div class="label__unit">
+          <p>{{ bound_field.field.widget.attrs.unit_suffix }}</p>
+        </div>
+        
+        {{ field }}
+      </div>
+    {% else %}
+      {{ field }}
+    {% endif %}
+
+    {{ field.errors }}
+  </div>
+{% endif %}

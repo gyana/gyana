@@ -174,7 +174,9 @@ class IntegrationConfigure(ProjectMixin, TurboUpdateView):
             )
         # only sync on initial get, not live form updates (post with 422 response)
         if self.object.kind == Integration.Kind.CONNECTOR:
-            self.object.connector.sync_schema_obj_from_fivetran()
+            self.object.connector.sync_schema_obj_from_fivetran(
+                enable_defaults=not self.object.connector.has_import_triggered
+            )
         return super().get(request, *args, **kwargs)
 
     def get_form_instance(self):

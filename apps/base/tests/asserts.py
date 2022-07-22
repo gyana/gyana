@@ -45,7 +45,9 @@ def assertSelectorText(response, selector, text):
     __tracebackhide__ = True
 
     soup = BeautifulSoup(response.content)
-    assert text in soup.select(selector)[0].text
+    assert (
+        text in soup.select(selector)[0].text
+    ), f"{text} not in {soup.select(selector)[0].text}"
 
 
 def assertOK(response):

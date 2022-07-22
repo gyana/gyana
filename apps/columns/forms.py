@@ -13,6 +13,7 @@ from apps.columns.models import (
     EditColumn,
     FormulaColumn,
     JoinColumn,
+    RenameColumn,
     SortColumn,
     WindowColumn,
 )
@@ -24,6 +25,7 @@ from .widgets import CodeMirror
 IBIS_TO_FUNCTION = {
     "String": "string_function",
     "Int8": "integer_function",
+    "Int16": "integer_function",
     "Int32": "integer_function",
     "Int64": "integer_function",
     "Float64": "integer_function",
@@ -81,6 +83,7 @@ class ColumnFormWithFormatting(ColumnForm):
             "class": "hidden",
         }
     )
+    template_name = "columns/forms/column_form.html"
 
     class Meta:
         model = Column
@@ -92,14 +95,24 @@ class ColumnFormWithFormatting(ColumnForm):
             "currency",
             "is_percentage",
             "sort_index",
+            "conditional_formatting",
+            "positive_threshold",
+            "negative_threshold",
         )
 
         widgets = {
-            "currency": Datalist(attrs={"data-live-update-ignore": ""}),
-            "name": forms.TextInput(attrs={"data-live-update-ignore": ""}),
-            "rounding": forms.NumberInput(attrs={"data-live-update-ignore": ""}),
+            "currency": Datalist(),
             "sort_index": forms.HiddenInput(),
         }
+
+    ignore_live_update_fields = [
+        "currency",
+        "name",
+        "rounding",
+        "positive_threshold",
+        "negative_threshold",
+        "conditional_formatting",
+    ]
 
     def get_live_fields(self):
         fields = super().get_live_fields()
@@ -108,13 +121,24 @@ class ColumnFormWithFormatting(ColumnForm):
             fields += ["name", "formatting_unfolded"]
 
         if isinstance(self.column_type, (Floating, Integer)):
-            fields += ["rounding", "currency", "is_percentage"]
+            fields += [
+                "rounding",
+                "currency",
+                "is_percentage",
+                "conditional_formatting",
+                "positive_threshold",
+                "negative_threshold",
+            ]
+
         return fields
 
 
 class AggregationColumnForm(BaseLiveSchemaForm):
     class Meta:
-        fields = ("column", "function")
+        fields = (
+            "column",
+            "function",
+        )
         help_texts = {
             "column": "Select the column to aggregate over",
             "function": "Select the aggregation function",
@@ -151,6 +175,7 @@ class AggregationFormWithFormatting(AggregationColumnForm):
             "class": "hidden",
         }
     )
+    template_name = "columns/forms/column_form.html"
 
     class Meta:
         fields = (
@@ -161,6 +186,9 @@ class AggregationFormWithFormatting(AggregationColumnForm):
             "currency",
             "is_percentage",
             "sort_index",
+            "conditional_formatting",
+            "positive_threshold",
+            "negative_threshold",
         )
         help_texts = {
             "column": "Select the column to aggregate over",
@@ -168,12 +196,18 @@ class AggregationFormWithFormatting(AggregationColumnForm):
         }
         model = AggregationColumn
         widgets = {
-            "currency": Datalist(attrs={"data-live-update-ignore": ""}),
-            "name": forms.TextInput(attrs={"data-live-update-ignore": ""}),
-            "rounding": forms.NumberInput(attrs={"data-live-update-ignore": ""}),
-            "is_percentage": forms.CheckboxInput(attrs={"data-live-update-ignore": ""}),
+            "currency": Datalist(),
             "sort_index": forms.HiddenInput(),
         }
+
+    ignore_live_update_fields = [
+        "currency",
+        "name",
+        "rounding",
+        "positive_threshold",
+        "negative_threshold",
+        "conditional_formatting",
+    ]
 
     def get_live_fields(self):
         fields = super().get_live_fields()
@@ -185,7 +219,15 @@ class AggregationFormWithFormatting(AggregationColumnForm):
             ):
                 fields += ["name"]
             # For aggregation column the numeric type of the output is guaranteed
-            fields += ["formatting_unfolded", "rounding", "currency", "is_percentage"]
+            fields += [
+                "formatting_unfolded",
+                "rounding",
+                "currency",
+                "is_percentage",
+                "conditional_formatting",
+                "positive_threshold",
+                "negative_threshold",
+            ]
 
         return fields
 
@@ -273,6 +315,9 @@ class AddColumnForm(BaseLiveSchemaForm):
 
         return fields
 
+    def clean_label(self):
+        return column_naming_validation(self.cleaned_data["label"], self.schema.names)
+
 
 class FormulaColumnForm(BaseLiveSchemaForm):
     class Meta:
@@ -283,6 +328,9 @@ class FormulaColumnForm(BaseLiveSchemaForm):
         super().__init__(*args, **kwargs)
 
         self.fields["formula"].widget = CodeMirror(self.schema)
+
+    def clean_label(self):
+        return column_naming_validation(self.cleaned_data["label"], self.schema.names)
 
 
 class WindowColumnForm(BaseLiveSchemaForm):
@@ -329,6 +377,9 @@ class WindowColumnForm(BaseLiveSchemaForm):
 
         return fields
 
+    def clean_label(self):
+        return column_naming_validation(self.cleaned_data["label"], self.schema.names)
+
 
 class ConvertColumnForm(BaseLiveSchemaForm):
     class Meta:
@@ -361,6 +412,8 @@ class JoinColumnForm(BaseLiveSchemaForm):
     class Meta:
         model = JoinColumn
         fields = ["how", "left_column", "right_column"]
+
+    ignore_live_update_fields = ["how", "left_column", "right_column"]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -401,3 +454,42 @@ class SortColumnForm(BaseLiveSchemaForm):
         model = SortColumn
         fields = ["column", "ascending", "sort_index"]
         widgets = {"sort_index": forms.HiddenInput()}
+
+
+def column_naming_validation(new_name, existing_columns):
+    if new_name in (existing_columns):
+        raise forms.ValidationError("This column already exists", code="invalid")
+
+    if new_name.lower() in [column.lower() for column in (existing_columns)]:
+        raise forms.ValidationError(
+            "This column already exists with a different capitalisation", code="invalid"
+        )
+    return new_name
+
+
+def extract_values_from_data(prefix, data, field_name, idx=None):
+    return tuple(
+        value
+        for key, value in data.items()
+        if key.startswith(prefix)
+        and key.endswith(field_name)
+        and (idx is None or int(key.split("-")[1]) < idx)
+    )
+
+
+class RenameColumnForm(BaseLiveSchemaForm):
+    class Meta:
+        model = RenameColumn
+        fields = ("column", "new_name")
+
+    def clean_new_name(self):
+        formset_prefix, idx = self.prefix.split("-")
+        idx = int(idx)
+        new_names = extract_values_from_data(formset_prefix, self.data, "new_name", idx)
+        old_names = extract_values_from_data(formset_prefix, self.data, "column")
+
+        existing_columns = set(self.schema.names) - set(old_names) | set(new_names)
+        return column_naming_validation(
+            self.cleaned_data["new_name"],
+            list(existing_columns),
+        )

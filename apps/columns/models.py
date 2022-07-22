@@ -98,6 +98,7 @@ class AbstractOperationColumn(SaveParentModel):
             or self.date_function
             or self.time_function
             or self.datetime_function
+            or self.boolean_function
         )
 
 
@@ -121,6 +122,16 @@ class ColumnSettings(models.Model):
     )
     is_percentage = models.BooleanField(
         default=False, blank=True, verbose_name="Show in %"
+    )
+
+    conditional_formatting = models.BooleanField(
+        default=False, help_text="Select whether or not to show background color"
+    )
+    positive_threshold = models.IntegerField(
+        default=0, help_text="Set a threshold for positive value"
+    )
+    negative_threshold = models.IntegerField(
+        default=0, help_text="Set a threshold for negative value"
     )
 
 

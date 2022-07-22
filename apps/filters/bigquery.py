@@ -47,7 +47,7 @@ def isin(query, column, values):
 
 
 def notin(query, column, values):
-    return query[query[column].notin(values)]
+    return query[(query[column].notin(values)) | (query[column].isnull())]
 
 
 def contains(query, column, value):

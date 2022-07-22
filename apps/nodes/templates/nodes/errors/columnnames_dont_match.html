@@ -1,0 +1,15 @@
+{% extends 'nodes/errors/default.html' %}
+{% block error_message %}
+  {% if left_columns %}
+  <p>Column{%if left_columns|length > 1%}s{%endif%} {% for column in left_columns %} <strong class='text-pink'>{{ column }}</strong>{% if not forloop.last %},{% endif %}{% endfor %} 
+    exist{%if left_columns|length == 1%}s{%endif%} in
+  <i>Input {{ index|add:1 }}</i> but not in <i>Input {{index|add:2}}</i>.</p>
+
+  {% endif %}
+
+  {% if right_columns %}
+  <p>Column{%if right_columns|length > 1%}s{%endif%} {% for column in right_columns %} <strong class='text-pink'>{{ column }}</strong>{% if not forloop.last %},{% endif %}{% endfor %} 
+    exist{%if right_columns|length == 1%}s{%endif%} in
+    <i>Input {{index|add:2}}</i> but not in <i>Input {{index|add:1}}</i>.</p>
+  {% endif %}
+{% endblock %}

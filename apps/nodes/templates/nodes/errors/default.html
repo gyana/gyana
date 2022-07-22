@@ -1,6 +1,12 @@
-<h2>Error</h2>
-<p class="mt-12">
-  {% block error_message %}
-  There seems to be an error with this node, try reconfiguring your workflow
-  {% endblock %}
-</p> 
+<div class='node__visual'>
+  <h2>
+    {% block header %}
+      Error
+    {% endblock %}
+  </h2>
+  <p class="mt-12 text-center">
+    {% block error_message %}
+    There seems to be an error with this node, try reconfiguring your workflow
+    {% endblock %}
+  </p> 
+</div>

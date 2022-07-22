@@ -1,4 +1,4 @@
-{% load static %}
+{% load static waffle_tags %}
 
 <!DOCTYPE html>
 <html>
@@ -28,9 +28,7 @@
   <link rel="stylesheet" href="{% static 'css/tailwind.css' %}">
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
-  <script type="module">
-    import * as hotwiredTurbo from '{% static 'js/turbo-bundle.js' %}';
-  </script>
+  <script src="{% static 'js/turbo-bundle.js' %}"></script>
   <script src="{% static 'js/stimulus-bundle.js' %}"></script>
   <script src="{% static 'rest_framework/js/coreapi-0.1.1.js' %}"></script>
   <script src="{% url 'api_schemajs' %}"></script>
@@ -38,8 +36,23 @@
   <!-- Include the Quill library -->
   <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
   <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+
+  {% if dashboard.extra_html_head %}
+    <!-- User-specified head elements -->
+    {{ dashboard.extra_html_head|safe }}
+  {% endif %}
+
+  {% if dashboard.extra_css %}
+    <!-- User-specified styling -->
+    <style>
+      {{ dashboard.extra_css|safe }}
+    </style>
+  {% endif %}
 </head>
-<body class="pad">
+<body
+  class="pad"
+  data-controller="tf-modal on-submit-loading turbo-loading"
+>
   {% block body %}
   <div class="widgets flex items-center justify-center">
     {% if not request.GET.embed %}
@@ -97,11 +110,13 @@
     {% endif %}
     <div
       class="widgets__canvas"
-      style="--background-color:{{ object.background_color }};"
+      style="--background-color:{{ object.background_color }};overflow:hidden;"
       data-controller="widget-list"
     > 
       <div
         id="dashboard-widget-container"
+        data-width="{{ object.width }}"
+        data-height="{{ object.height }}"
         style="width:{{ object.width }}px;height:{{object.height}}px;"
         data-widget-list-target="dashboard"
       >
@@ -109,22 +124,20 @@
           {% include 'widgets/widget_public.html' with object=widget %}
         {% endfor %}
 
-      {% for object in page.control_widgets.all %}
-          
-        {% include 'controls/control-widget.html' with object=object control=object.control is_public=True%}
-        
-      {% endfor %}
+        {% for object in page.control_widgets.all %}
+          {% include 'controls/control_public.html' with object=object control=object.control is_public=True%}
+        {% endfor %}
       </div>
     </div>
 
     {% if not request.GET.embed %}
-      <footer class="widget__public-footer">
+      <footer class="widget__public-footer" data-html2canvas-ignore>
         <p class="small">
           Last updated <abbr>{% include "columns/natural_datetime.html" with datetime=dashboard.updated %}</abbr>
         </p>
 
-        {% if dashboard.shared_status == 'password_protected' %}
-        <a class="link small" href="{% url 'dashboards:logout' dashboard.shared_id %}">Forget me on this browser</a>
+        {% if dashboard.shared_status == "password_protected" %}
+          <a class="link small" href="{% url 'dashboards:logout' dashboard.shared_id %}">Forget me on this browser</a>
         {% endif %}
       </footer>
     {% endif %}
@@ -144,7 +157,38 @@
   </style>
   {% endblock %}
 
+  {% comment %}
+  For use with the `tf_modal_controller.js` controller.
+  {% endcomment %}
+  {% block body.modal %}
+    <div
+      data-tf-modal-target="modal"
+      class="tf-modal"
+      hidden
+    >
+      <div class="card card--none card--modal">
+        {% block modal.body %}
+          <turbo-frame
+            class="overflow-hidden flex-1"
+            data-tf-modal-target="turboFrame"
+          >
+            <div class="placeholder-scr placeholder-scr--fillscreen">
+              <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-2x"></i>
+            </div>
+          </turbo-frame>
+        {% endblock modal.body %}
+      </div>
+    </div>
+
+    {% include "components/modal_closing_warning.html" %}
+  {% endblock body.modal %}
+
   {% comment %} Has to be loaded once GyWidgets are rendered {% endcomment %}
-  {% include 'components/fusionchart_scripts.html' %}
+  <script src="{% static "fusioncharts/fusioncharts.js" %}"></script>
+  <script src="{% static "fusioncharts/fusioncharts.charts.js" %}"></script>
+  <script src="{% static "fusioncharts/fusioncharts.widgets.js" %}"></script>
+  <script src="{% static "fusioncharts/fusioncharts.powercharts.js" %}"></script>
+  <script src="{% static "fusioncharts/fusioncharts.timeseries.js" %}"></script>
+  <script src="{% static "fusioncharts/themes/fusioncharts.theme.fusion.js" %}"></script>
 </body>
 </html>

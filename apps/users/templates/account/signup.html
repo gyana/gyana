@@ -10,10 +10,10 @@
   </a>
   <p class="text-center text-black-50 my-4">or</p>
 
-  <form method="post" class="mb-8">
+  <form method="post" class="mb-8" data-turbo="false">
     {% csrf_token %}
 
-    {% include "django/forms/default_form.html" %}
+    {{ form }}
 
     <button type="submit" class="button button--filled w-full">
       Create Account

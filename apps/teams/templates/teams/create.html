@@ -11,7 +11,7 @@
     <form method="post" class="form">
       {% csrf_token %}
 
-      {% include "django/forms/default_form.html" %}
+      {{ form }}
 
       <p class="alert">
         <strong>Note:</strong> You can change your team name at any time.

@@ -1,7 +1,10 @@
 {% load static %}
 {% load waffle_tags %}
 
-<div class="widgets">
+<div
+  class="widgets"
+  style="padding-right: calc({{ dashboard.width }}px + 1.6rem);"
+>
   <div
     class="widgets__canvas"
     style="--background-color:{{ dashboard.background_color }};"
@@ -20,9 +23,9 @@
       <input name='kind' id="id_kind" value="" />
       <input name='x' id="id_x" value="" />
       <input name='y' id="id_y" value="" />
-      <input name='page' id="id_page" value="{{page.id}}"/>
+      <input name='page' id="id_page" value="{{ page.id }}"/>
 
-      <button type="submit"></button>
+      <button name="submit" type="submit"></button>
     </form>
     <form
       method="POST"
@@ -36,7 +39,7 @@
       <input name='y' id="id_y" value="" />
       <input name='page' id="id_page" value="{{ page.id }}"/>
 
-      <button type="submit"></button>
+      <button name="submit" type="submit"></button>
     </form>
     <div
       id="dashboard-widget-container"
@@ -46,6 +49,7 @@
         height:{{ dashboard.height }}px;
         --grid-size:{{ dashboard.grid_size }}px;
       "
+      data-grid-size="{{ dashboard.grid_size }}"
     >
       {% for object in page.control_widgets.all %}
         {% include 'controls/control-widget.html' with object=object control=object.control %}
@@ -91,8 +95,4 @@
       {% endif %}
     </div>
   </div>
-  {% comment %}
-  The modal needs to be below the container because otherwise the
-  updated output turbo-stream would update the chart inside the modal.
-  {% endcomment %}
 </div>

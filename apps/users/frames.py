@@ -1,6 +1,8 @@
 from allauth.account.utils import send_email_confirmation
 from django.http import HttpResponse
-from django.urls import reverse_lazy
+from django.urls import reverse
+from turbo_response import TurboStream
+from turbo_response.response import TurboStreamResponse
 
 from apps.base.frames import TurboFrameUpdateView
 from apps.base.mixins import PageTitleMixin
@@ -17,9 +19,18 @@ class UserProfileModal(PageTitleMixin, TurboFrameUpdateView):
     template_name = "account/profile.html"
     model = CustomUser
     form_class = CustomUserChangeForm
-    success_url = reverse_lazy("users:profile")
     page_title = "Your Account"
     turbo_frame_dom_id = "users:profile"
+
+    def get_turbo_stream_response(self, context):
+        context = self.get_context_data()
+        return TurboStreamResponse(
+            [
+                TurboStream(self.turbo_frame_dom_id)
+                .replace.template(self.template_name, context)
+                .render()
+            ]
+        )
 
     def get_object(self, queryset=None):
         return self.request.user
@@ -40,3 +51,6 @@ class UserProfileModal(PageTitleMixin, TurboFrameUpdateView):
             user.email = user_before_update.email
 
         return super().form_valid(form)
+
+    def get_success_url(self) -> str:
+        return reverse("users:profile")

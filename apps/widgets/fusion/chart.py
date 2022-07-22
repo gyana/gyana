@@ -6,12 +6,23 @@ import numpy as np
 import pandas as pd
 
 from apps.base.core.utils import default_json_encoder
+from apps.columns.bigquery import resolve_colname
 from apps.columns.currency_symbols import CURRENCY_SYMBOLS_MAP
-from apps.widgets.bigquery import get_unique_column_names
 from apps.widgets.fusion.utils import DEFAULT_HEIGHT, DEFAULT_WIDTH, TO_FUSION_CHART
 from apps.widgets.models import COUNT_COLUMN_NAME, NO_DIMENSION_WIDGETS, Widget
 
 from .fusioncharts import FusionCharts
+
+
+def get_unique_column_names(aggregations, groups):
+    names = [
+        *groups,
+        *[aggregation.column for aggregation in aggregations],
+    ]
+    return {
+        column: resolve_colname(column.column, column.function, names)
+        for column in aggregations
+    }
 
 
 def _create_axis_names(widget):
@@ -284,10 +295,8 @@ def to_stack(widget, df):
         index=widget.dimension,
         columns=widget.second_dimension,
         values=_get_first_value_or_count(widget),
-    )
+    ).reindex(df[widget.dimension].unique())
 
-    if widget.sort_by == "value":
-        pivoted = pivoted.reindex(df[widget.dimension].unique())
     return {
         "categories": [
             {

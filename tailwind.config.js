@@ -13,7 +13,7 @@ module.exports = {
     ],
     options: {
       /** Dynamic colors on website landing page */
-      safelist: [/(bg|border|text)-(indigo|green|yellow)-\d00/],
+      safelist: [/(bg|border|text)-(indigo|green|yellow|red)-\d*/],
     },
   },
   darkMode: false,

@@ -57,7 +57,6 @@ class IntegrationListTable(tables.Table):
     ready = FaBooleanColumn()
     state = PendingStatusColumn(verbose_name="Status")
     is_scheduled = FaBooleanColumn(verbose_name="Scheduled")
-    num_rows = RowCountColumn()
     last_synced = NaturalDayColumn(orderable=False)
     display_kind = tables.Column(
         verbose_name="Kind",
@@ -73,12 +72,6 @@ class IntegrationListTable(tables.Table):
     def render_name(self, value, record):
         template = get_template("integrations/columns/name.html")
         return template.render({"record": record, "value": value, "image": record.icon})
-
-    def order_num_rows(self, queryset, is_descending):
-        queryset = queryset.annotate(num_rows_agg=Sum("table__num_rows")).order_by(
-            ("-" if is_descending else "") + "num_rows_agg"
-        )
-        return (queryset, True)
 
 
 class StructureTable(tables.Table):

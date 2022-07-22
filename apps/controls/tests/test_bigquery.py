@@ -108,7 +108,7 @@ def create_previous_last_n_days(date_range, days):
         pytest.param(
             DateRange.THIS_WEEK,
             QUERY.format(
-                f"(EXTRACT(year from `birthday`) = {(TODAY - dt.timedelta(days=7)).year}) AND\n      (EXTRACT(ISOWEEK from `birthday`) = {(TODAY - dt.timedelta(days=7)).isocalendar()[1]})"
+                f"(EXTRACT(year from `birthday`) = {(TODAY - dt.timedelta(days=7)).year}) AND (EXTRACT(ISOWEEK from `birthday`) = {(TODAY - dt.timedelta(days=7)).isocalendar()[1]})"
             ),
             id="thisweek",
         ),
@@ -122,7 +122,7 @@ def create_previous_last_n_days(date_range, days):
         pytest.param(
             DateRange.LAST_WEEK,
             QUERY.format(
-                f"(EXTRACT(year from `birthday`) = {(TODAY - dt.timedelta(days=14)).year}) AND\n      (EXTRACT(ISOWEEK from `birthday`) = {(TODAY - dt.timedelta(days=14)).isocalendar()[1]})"
+                f"(EXTRACT(year from `birthday`) = {(TODAY - dt.timedelta(days=14)).year}) AND (EXTRACT(ISOWEEK from `birthday`) = {(TODAY - dt.timedelta(days=14)).isocalendar()[1]})"
             ),
             id="lastweek",
         ),
@@ -135,7 +135,7 @@ def create_previous_last_n_days(date_range, days):
         pytest.param(
             DateRange.THIS_MONTH,
             QUERY.format(
-                f"(EXTRACT(year from `birthday`) = {(TODAY - relativedelta(months=1)).year}) AND\n      (EXTRACT(month from `birthday`) = {(TODAY - relativedelta(months=1)).month})"
+                f"(EXTRACT(year from `birthday`) = {(TODAY - relativedelta(months=1)).year}) AND (EXTRACT(month from `birthday`) = {(TODAY - relativedelta(months=1)).month})"
             ),
             id="thismonth",
         ),
@@ -149,7 +149,7 @@ def create_previous_last_n_days(date_range, days):
         pytest.param(
             DateRange.LAST_MONTH,
             QUERY.format(
-                f"(EXTRACT(year from `birthday`) = {(TODAY - relativedelta(months=2)).year}) AND\n      (EXTRACT(month from `birthday`) = {(TODAY - relativedelta(months=2)).month})"
+                f"(EXTRACT(year from `birthday`) = {(TODAY - relativedelta(months=2)).year}) AND (EXTRACT(month from `birthday`) = {(TODAY - relativedelta(months=2)).month})"
             ),
             id="lastmonth",
         ),
@@ -163,7 +163,7 @@ def create_previous_last_n_days(date_range, days):
         pytest.param(
             DateRange.THIS_YEAR_UP_TO_DATE,
             QUERY.format(
-                f"(EXTRACT(year from `birthday`) = {(TODAY -relativedelta(years=1)).year }) AND\n      (`birthday` <= DATE '{(TODAY -relativedelta(years=1)).isoformat()}')"
+                f"(EXTRACT(year from `birthday`) = {(TODAY -relativedelta(years=1)).year }) AND (`birthday` <= DATE '{(TODAY -relativedelta(years=1)).isoformat()}')"
             ),
             id="thisyearuptodate",
         ),
@@ -177,7 +177,7 @@ def create_previous_last_n_days(date_range, days):
         pytest.param(
             DateRange.THIS_QUARTER,
             QUERY.format(
-                f"(EXTRACT(year from `birthday`) = {(TODAY-relativedelta(months=3)).year}) AND\n      (EXTRACT(quarter from `birthday`) = {get_quarter((TODAY-relativedelta(months=3)))})"
+                f"(EXTRACT(year from `birthday`) = {(TODAY-relativedelta(months=3)).year}) AND (EXTRACT(quarter from `birthday`) = {get_quarter((TODAY-relativedelta(months=3)))})"
             ),
             id="thisquarter",
         ),
@@ -191,7 +191,7 @@ def create_previous_last_n_days(date_range, days):
         pytest.param(
             DateRange.LAST_QUARTER,
             QUERY.format(
-                f"(EXTRACT(year from `birthday`) = {(TODAY-relativedelta(months=6)).year}) AND\n      (EXTRACT(quarter from `birthday`) = {get_quarter(TODAY-relativedelta(months=6))})"
+                f"(EXTRACT(year from `birthday`) = {(TODAY-relativedelta(months=6)).year}) AND (EXTRACT(quarter from `birthday`) = {get_quarter(TODAY-relativedelta(months=6))})"
             ),
             id="lastquarter",
         ),

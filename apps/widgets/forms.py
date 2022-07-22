@@ -1,8 +1,7 @@
-import copy
+import math
 import re
 
 from django import forms
-from django.db.models import Case, Q, When
 from ibis.expr.datatypes import Date, Time, Timestamp
 
 from apps.base.core.utils import create_column_choices
@@ -14,11 +13,18 @@ from apps.base.forms import (
     LiveFormsetMixin,
 )
 from apps.base.widgets import Datalist, SelectWithDisable, SourceSelect
-from apps.dashboards.forms import PaletteColorsField
-from apps.tables.models import Table
+from apps.columns.bigquery import resolve_colname
+from apps.dashboards.widgets import PaletteColorsField
 
 from .formsets import FORMSETS, AggregationColumnFormset, ControlFormset, FilterFormset
-from .models import COUNT_COLUMN_NAME, WIDGET_KIND_TO_WEB, Widget
+from .models import (
+    CATEGORIES,
+    COUNT_COLUMN_NAME,
+    DEFAULT_HEIGHT,
+    DEFAULT_WIDTH,
+    WIDGET_KIND_TO_WEB,
+    Widget,
+)
 
 
 def get_not_deleted_entries(data, regex):
@@ -27,6 +33,48 @@ def get_not_deleted_entries(data, regex):
         for key, value in data.items()
         if re.match(re.compile(regex), key) and data.get(key[:-6] + "DELETE") != "on"
     ]
+
+
+class WidgetCreateForm(BaseModelForm):
+    class Meta:
+        model = Widget
+        fields = ["kind", "x", "y", "page"]
+
+    def __init__(self, *args, **kwargs):
+        self.dashboard = kwargs.pop("dashboard", None)
+        super().__init__(*args, **kwargs)
+
+    def clean_x(self):
+        value = self.cleaned_data["x"]
+
+        # Keep widget within canvas bounds
+        value = max(min(value, self.dashboard.width), 0)
+
+        if value + DEFAULT_WIDTH > self.dashboard.width:
+            value = self.dashboard.width - DEFAULT_WIDTH
+
+        if self.dashboard.snap_to_grid:
+            value = (
+                math.ceil(value / self.dashboard.grid_size) * self.dashboard.grid_size
+            )
+
+        return value
+
+    def clean_y(self):
+        value = self.cleaned_data["y"]
+
+        # Keep widget within canvas bounds
+        value = max(min(value, self.dashboard.height), 0)
+
+        if value + DEFAULT_HEIGHT > self.dashboard.height:
+            value = self.dashboard.height - DEFAULT_HEIGHT
+
+        if self.dashboard.snap_to_grid:
+            value = (
+                math.ceil(value / self.dashboard.grid_size) * self.dashboard.grid_size
+            )
+
+        return value
 
 
 class WidgetSourceForm(IntegrationSearchMixin, BaseModelForm):
@@ -69,7 +117,6 @@ class GenericWidgetForm(LiveFormsetForm):
             "dimension",
             "part",
             "second_dimension",
-            "sort_by",
             "sort_column",
             "sort_ascending",
             "stack_100_percent",
@@ -79,14 +126,47 @@ class GenericWidgetForm(LiveFormsetForm):
             "positive_decrease",
         ]
 
+    def get_aggregations(self):
+        formsets = self.get_formsets()
+        if self.data:
+            aggregations = [
+                (
+                    form.data[f"{form.prefix}-column"],
+                    form.data[f"{form.prefix}-function"],
+                )
+                for form in formsets["Aggregations"].forms
+                if not form.deleted and form.data.get(f"{form.prefix}-column")
+            ]
+            names = [aggregation[0] for aggregation in aggregations]
+            return [
+                resolve_colname(column, function, names)
+                for column, function in aggregations
+            ]
+        aggregations = self.instance.aggregations.all()
+        names = [column.column for column in aggregations]
+        return [
+            resolve_colname(column.column, column.function, names)
+            for column in aggregations
+        ]
+
+    def get_groups(self):
+        formsets = self.get_formsets()
+        if self.data:
+            return [
+                form.data[f"{form.prefix}-column"]
+                for form in formsets["Group columns"].forms
+                if not form.deleted and form.data.get(f"{form.prefix}-column")
+            ]
+
+        return [column.column for column in self.instance.columns.all()]
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.fields["kind"].choices = [
-            choice
-            for choice in self.fields["kind"].choices
-            if choice[0]
-            not in [Widget.Kind.TEXT, Widget.Kind.IMAGE, Widget.Kind.IFRAME]
+            (key.label, values)
+            for key, values in CATEGORIES.items()
+            if key != Widget.Category.CONTENT
         ]
 
         schema = self.instance.table.schema
@@ -101,20 +181,7 @@ class GenericWidgetForm(LiveFormsetForm):
             )
 
         if self.get_live_field("kind") == Widget.Kind.TABLE:
-            formsets = self.get_formsets()
-            group_columns = [
-                form.data[f"{form.prefix}-column"]
-                for form in formsets["Group columns"].forms
-                if not form.deleted and form.data.get(f"{form.prefix}-column")
-            ]
-            aggregations = [
-                form.data[f"{form.prefix}-column"]
-                for form in formsets["Aggregations"].forms
-                if not form.deleted and form.data.get(f"{form.prefix}-column")
-            ]
-            if columns := group_columns + aggregations:
-                if not aggregations:
-                    columns += [COUNT_COLUMN_NAME]
+            if columns := self.get_groups() + self.get_aggregations():
                 self.fields["sort_column"].choices = [("", "No column selected")] + [
                     (name, name) for name in columns
                 ]
@@ -190,11 +257,21 @@ class OneDimensionForm(GenericWidgetForm):
                 )
             self.fields["dimension"].choices = create_column_choices(schema)
 
+        if "sort_column" in self.fields:
+            columns = [self.get_live_field("dimension")] + (
+                self.get_aggregations() or [COUNT_COLUMN_NAME]
+            )
+            self.fields["sort_column"].choices = [("", "No column selected")] + [
+                (name, name) for name in columns
+            ]
+
     def get_live_fields(self):
         fields = super().get_live_fields()
         fields += ["dimension"]
-        if self.get_live_field("kind") != Widget.Kind.COMBO:
-            fields += ["sort_by", "sort_ascending"]
+        if self.get_live_field("kind") != Widget.Kind.COMBO and self.get_live_field(
+            "dimension"
+        ):
+            fields += ["sort_column", "sort_ascending"]
 
         schema = self.instance.table.schema
 
@@ -255,6 +332,14 @@ class StackedChartForm(GenericWidgetForm):
         self.fields["second_dimension"].label = "Stack dimension"
         self.fields["second_dimension"].required = False
 
+        if "sort_column" in self.fields:
+            columns = [self.get_live_field("dimension")] + (
+                self.get_aggregations() or [COUNT_COLUMN_NAME]
+            )
+            self.fields["sort_column"].choices = [("", "No column selected")] + [
+                (name, name) for name in columns
+            ]
+
     def get_live_fields(self):
         fields = super().get_live_fields()
 
@@ -276,6 +361,8 @@ class StackedChartForm(GenericWidgetForm):
         ):
             fields += ["part"]
 
+        if dimension:
+            fields += ["sort_column", "sort_ascending"]
         return fields
 
 
@@ -355,7 +442,7 @@ class WidgetDuplicateForm(BaseModelForm):
 
 class StyleMixin:
     def get_initial_for_field(self, field, field_name):
-        if self.initial.get(field_name) != None and getattr(self.instance, field_name):
+        if self.initial.get(field_name) != None and hasattr(self.instance, field_name):
             return self.initial.get(field_name)
 
         # Field has no value but dashboard has set a value.
@@ -385,8 +472,10 @@ class DefaultStyleForm(StyleMixin, BaseModelForm):
             "currency",
         ]
         widgets = {
-            "currency": Datalist(attrs={"data-live-update-ignore": ""}),
+            "currency": Datalist(),
         }
+
+    ignore_live_update_fields = ["currency"]
 
 
 class TableStyleForm(StyleMixin, BaseModelForm):
@@ -396,6 +485,8 @@ class TableStyleForm(StyleMixin, BaseModelForm):
         model = Widget
         fields = [
             "table_show_header",
+            "table_hide_data_type",
+            "table_paginate_by",
             "background_color",
         ]
 

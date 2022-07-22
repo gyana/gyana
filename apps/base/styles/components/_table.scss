@@ -25,6 +25,8 @@
       white-space: nowrap;
 
       &:last-child {
+        display: flex;
+        align-items: center;
         width: 100%;
       }
     }
@@ -220,6 +222,7 @@
   border-top: 1px solid var(--c-gray);
   bottom: 0;
   display: flex;
+  flex-shrink: 0;
   height: 3.2rem;
   justify-content: center;
   left: 0;

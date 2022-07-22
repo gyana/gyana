@@ -61,13 +61,13 @@
   </fieldset>
 {% endif %}
 
-{% if form.sort_by %}
 
-<fieldset>
-  <label>{{ form.sort_by.label}}</label>
+{% if form.sort_column %}
+  <fieldset>
+  <label>{{ form.sort_column.label}}</label>
 
   <div class="formset-wrapper">
-    {{ form.sort_by }}
+    {{ form.sort_column }}
 
     <div>
       <label class="input__toggle" for="{{ form.sort_ascending.id_for_label }}">
@@ -77,8 +77,7 @@
       </label>
     </div>
   </div>
-</fieldset>
-
+  </fieldset>
 {% endif %}
 
 {% endblock %}

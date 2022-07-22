@@ -10,53 +10,7 @@ from apps.base.fields import ColorField, ColorInput
 from apps.base.forms import BaseModelForm, LiveModelForm
 
 from .models import DASHBOARD_SETTING_TO_CATEGORY, Dashboard
-
-
-class PaletteColorsWidget(forms.MultiWidget):
-    widgets = [
-        ColorInput(),
-        ColorInput(),
-        ColorInput(),
-        ColorInput(),
-        ColorInput(),
-        ColorInput(),
-        ColorInput(),
-    ]
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(widgets=self.widgets, *args, **kwargs)
-
-    def decompress(self, value):
-        if value:
-            return value.split(" ")
-
-        return [None]
-
-
-class PaletteColorsField(forms.MultiValueField):
-    widget = PaletteColorsWidget
-    fields = (
-        ColorField(),
-        ColorField(),
-        ColorField(),
-        ColorField(),
-        ColorField(),
-        ColorField(),
-        ColorField(),
-    )
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(
-            fields=self.fields,
-            *args,
-            **kwargs,
-        )
-
-    def compress(self, data_list):
-        return data_list
-
-    def has_changed(self, initial, data):
-        return super().has_changed(initial, map(lambda x: x.upper(), data))
+from .widgets import PaletteColorsField, TextareaCode
 
 
 class DashboardCreateForm(BaseModelForm):
@@ -73,14 +27,28 @@ class DashboardNameForm(BaseModelForm):
 
 
 class DashboardForm(BaseModelForm):
+    extra_html_head = forms.CharField(
+        label="HTML <head>",
+        required=False,
+        help_text="When published, your dashboard will include everything here in the HTML head tag",
+        widget=TextareaCode,
+    )
+    extra_css = forms.CharField(
+        label="Extra CSS",
+        required=False,
+        help_text="Custom CSS to use for your published dashboard",
+        widget=TextareaCode,
+    )
     width = forms.IntegerField(
         required=False,
+        initial=1200,
         widget=forms.NumberInput(
             attrs={"class": "label--half", "unit_suffix": "pixels"}
         ),
     )
     height = forms.IntegerField(
         required=False,
+        initial=840,
         widget=forms.NumberInput(
             attrs={"class": "label--half", "unit_suffix": "pixels"}
         ),
@@ -127,6 +95,8 @@ class DashboardForm(BaseModelForm):
     class Meta:
         model = Dashboard
         fields = [
+            "extra_html_head",
+            "extra_css",
             "font_size",
             "font_family",
             "font_color",
@@ -143,8 +113,12 @@ class DashboardForm(BaseModelForm):
             "widget_border_color",
             "widget_border_radius",
             "widget_border_thickness",
+            "preview_by_default",
         ]
-        labels = {"snap_to_grid": "Snap widgets to grid"}
+        labels = {
+            "snap_to_grid": "Snap widgets to grid",
+            "preview_by_default": "Use preview mode as default",
+        }
 
     def __init__(self, *args, **kwargs):
         self.category = kwargs.pop("category")

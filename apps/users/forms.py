@@ -51,6 +51,8 @@ class UserOnboardingForm(BaseModelForm):
 
 
 class UserLoginForm(LoginForm):
+    template_name = "django/forms/default_form.html"
+
     error_messages = {
         "account_inactive": "This account is currently inactive.",
         "email_password_mismatch": "The e-mail address and/or password you specified are not correct.",
@@ -65,13 +67,8 @@ class UserLoginForm(LoginForm):
         del self.fields["login"].widget.attrs["placeholder"]
         del self.fields["password"].widget.attrs["placeholder"]
 
-    def login(self, *args, **kwargs):
-        identify_user(self.user)
 
-        return super(UserLoginForm, self).login(*args, **kwargs)
-
-
-class CustomUserChangeForm(UserChangeForm):
+class CustomUserChangeForm(BaseModelForm, UserChangeForm):
     email = forms.EmailField(required=True, label="Email Address")
     password = forms.CharField(widget=forms.HiddenInput(), required=False)
     marketing_allowed = forms.TypedChoiceField(

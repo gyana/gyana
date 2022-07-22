@@ -105,25 +105,28 @@ const GyWidget_: React.FC<{ children: React.ReactElement; root: HTMLElement }> =
           e.stopPropagation()
         }
       }}
-      onDragStop={(e, { node, x, y, ...rest }) => {
-        const parent = root
+      onDragStop={(e, { node, x: newX, y: newY, ...rest }) => {
         // Snaps the x value within bounds of the parent
-        const newX = Math.floor(
-          x < 0
+        newX = Math.floor(
+          newX < 0
             ? 0
-            : parent && x + node.clientWidth > parent.offsetWidth
-              ? parent.offsetWidth - node.clientWidth
-              : Math.round(x / stepSize) * stepSize
+            : root && newX + node.clientWidth > root.offsetWidth
+              ? root.offsetWidth - node.clientWidth
+              : Math.round(newX / stepSize) * stepSize
         )
-        // Snaps the y value to the top of the parent element
-        const newY = Math.floor(y > 0 ? Math.round(y / stepSize) * stepSize : 0)
         setX(newX)
+
+        // Snaps the y value to the top of the parent element
+        newY = Math.floor(newY > 0 ? Math.round(newY / stepSize) * stepSize : 0)
         setY(newY)
+
+        // No need to send update if widget did not move.
+        if (x == newX && y == newY) return
 
         client.action(window.schema, [isControl ? 'controls' : 'widgets', 'api', 'partial_update'], {
           id,
-          x: Math.floor(newX),
-          y: Math.floor(newY),
+          x: newX,
+          y: newY,
         })
       }}
       cancel='.ql-editor,.ql-toolbar,.tippy-box'

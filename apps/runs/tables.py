@@ -1,4 +1,5 @@
 import django_tables2 as tables
+from django.db.models import DurationField, ExpressionWrapper, F
 from django.template import Context
 from django.template.loader import get_template
 
@@ -26,6 +27,14 @@ class JobRunTable(tables.Table):
     started_at = NaturalDatetimeColumn(verbose_name="Started")
     state = RunStateColumn(verbose_name="Status")
 
+    def order_duration(self, queryset, is_descending):
+        queryset = queryset.annotate(
+            duration_=ExpressionWrapper(
+                F("completed_at") - F("started_at"), output_field=DurationField()
+            )
+        ).order_by(("-" if is_descending else "") + "duration_")
+        return (queryset, True)
+
 
 class GraphRunTable(tables.Table):
     class Meta:
@@ -35,3 +44,11 @@ class GraphRunTable(tables.Table):
 
     started_at = NaturalDatetimeColumn(verbose_name="Started")
     state = RunStateColumn(verbose_name="Status")
+
+    def order_duration(self, queryset, is_descending):
+        queryset = queryset.annotate(
+            duration_=ExpressionWrapper(
+                F("completed_at") - F("started_at"), output_field=DurationField()
+            )
+        ).order_by(("-" if is_descending else "") + "duration_")
+        return (queryset, True)

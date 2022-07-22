@@ -29,7 +29,9 @@
     >
       {% csrf_token %}
 
-      {% include "django/forms/default_form.html" with optional=False %}
+      {% with optional=False %}
+          {{ form }}
+        {% endwith %}
 
       <div class="flex w-full">
         <button 

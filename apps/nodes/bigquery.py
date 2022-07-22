@@ -1,10 +1,12 @@
 import inspect
-import logging
 import re
 from functools import wraps
 from itertools import chain
 
 import ibis
+import ibis.expr.datatypes as dt
+import ibis.expr.operations as ops
+from cacheops import cached_as
 from ibis.expr.datatypes import String
 
 from apps.base import clients
@@ -18,17 +20,13 @@ from apps.columns.bigquery import (
     get_groups,
 )
 from apps.filters.bigquery import get_query_from_filters
+from apps.nodes.exceptions import ColumnNamesDontMatch, JoinTypeError, NodeResultNone
+from apps.nodes.models import Node
 from apps.tables.bigquery import get_query_from_table
 from apps.teams.models import OutOfCreditsException
 
 from ._sentiment_utils import CreditException, get_gcp_sentiment
 from ._utils import create_or_replace_intermediate_table, get_parent_updated
-
-
-def _get_duplicate_names(left, right):
-    left_names = {col.lower() for col in left.schema()}
-    right_names = {col.lower() for col in right.schema()}
-    return left_names & right_names
 
 
 def _rename_duplicates(queries):
@@ -58,7 +56,7 @@ def _format_string(value):
     if not re.compile("^[a-zA-Z_].*").match(value):
         value = f"_{value}"
 
-    value = re.sub(re.compile("[\(\) @€$%&^*+-]"), "_", value)
+    value = re.sub(re.compile("[\(\) \\\/@€$%&^*+-]"), "_", value)
     return value
 
 
@@ -105,7 +103,8 @@ def get_select_query(node, parent):
     columns = [col.column for col in node.columns.all()]
 
     if node.select_mode == "keep":
-        return parent.projection(columns or [])
+        columns = columns or parent.columns
+        return parent.projection([parent[column] for column in columns])
 
     return parent.drop(columns)
 
@@ -124,34 +123,66 @@ def get_join_query(node, left, right, *queries):
             join.left_column, join.left_column
         )
         right_col = duplicate_map[idx + 1].get(join.right_column, join.right_column)
-        query = query.join(right, left[left_col] == right[right_col], how=join.how)
+        try:
+            query = query.join(right, left[left_col] == right[right_col], how=join.how)
+        except TypeError:
+            # We don't to display the original column names (instead of the potentiall
+            # suffixed left_col or right_col)
+            # but need to fetch the type from the right table
+            raise JoinTypeError(
+                left_column_name=join.left_column,
+                right_column_name=join.right_column,
+                left_column_type=left[left_col].type(),
+                right_column_type=right[right_col].type(),
+            )
+
         if join.how == "inner":
             drops.add(right_col)
             relabels[left_col] = join.left_column
-    return (
-        query.materialize()
-        .drop(drops)
-        .relabel({key: value for key, value in relabels.items() if key not in drops})
+
+    return query.drop(list(drops)).relabel(
+        {key: value for key, value in relabels.items() if key not in drops}
     )
 
 
 def get_aggregation_query(node, query):
     groups = get_groups(query, node)
-    return aggregate_columns(query, node, groups)
+    return aggregate_columns(query, node.aggregations.all(), groups)
 
 
 def get_union_query(node, query, *queries):
-    colnames = query.schema()
-    for parent in queries:
-        if set(parent.schema()) == set(colnames):
-            # Project to make sure columns are in the same order
-            query = query.union(
-                parent.projection(list(colnames)), distinct=node.union_distinct
+    columns = query.schema()
+    for idx, parent in enumerate(queries):
+        if set(parent.schema()) != set(columns):
+            raise ColumnNamesDontMatch(
+                index=idx,
+                left_columns=set(columns) - set(parent.schema()),
+                right_columns=set(parent.schema()) - set(columns),
             )
-        else:
-            raise ibis.common.exceptions.RelationError
+
+        # Project to make sure columns are in the same order
+        parent = parent.projection([parent[column] for column in columns])
+        if parent.schema().types != query.schema().types:
+            # We can cast integer columns to float columns to make the union possible
+            # we need to do it for query or parent depending which source contains the
+            # integer column
+            p_castings = {}
+            q_castings = {}
+            for colname in columns:
+                if isinstance(parent[colname].type(), dt.Integer) and isinstance(
+                    query[colname].type(), (dt.Floating, dt.Decimal)
+                ):
+                    p_castings[colname] = parent[colname].cast(query[colname].type())
+                elif isinstance(query[colname].type(), dt.Integer) and isinstance(
+                    parent[colname].type(), (dt.Floating, dt.Decimal)
+                ):
+                    q_castings[colname] = query[colname].cast(parent[colname].type())
+            query = query.mutate(**q_castings)
+            parent = parent.mutate(**p_castings)
+
+        query = query.union(parent, distinct=node.union_distinct)
     # Need to `select *` so we can operate on the query
-    return query.projection(colnames)
+    return query[query]
 
 
 def get_except_query(node, query, *queries):
@@ -159,7 +190,7 @@ def get_except_query(node, query, *queries):
     for parent in queries:
         query = query.difference(parent)
     # Need to `select *` so we can operate on the query
-    return query.projection(colnames)
+    return query[query]
 
 
 def get_intersect_query(node, query, *queries):
@@ -168,7 +199,7 @@ def get_intersect_query(node, query, *queries):
         query = query.intersect(parent)
 
     # Need to `select *` so we can operate on the query
-    return query.projection(colnames)
+    return query[query]
 
 
 def get_sort_query(node, query):
@@ -180,9 +211,8 @@ def get_sort_query(node, query):
 
 def get_limit_query(node, query):
     # Need to project again to make sure limit isn't overwritten
-    return query.limit(node.limit_limit, offset=node.limit_offset or 0).projection(
-        query.schema()
-    )
+    query = query.limit(node.limit_limit, offset=node.limit_offset or 0)
+    return query[query]
 
 
 def get_filter_query(node, query):
@@ -237,14 +267,13 @@ def get_pivot_query(node, parent):
     client = clients.bigquery()
     column_type = parent[node.pivot_column].type()
 
-    # the new column names consist of the values inside the selected column
-    # and we only need unique values but can't use a set because we like to keep the values
-    names_query = {
-        _format_literal(row[node.pivot_column], column_type): None
+    # the new column names consist of the unique values inside the selected column
+    names_query = (
+        _format_literal(row[node.pivot_column], column_type)
         for row in client.get_query_results(
-            parent[node.pivot_column].compile()
+            parent[[node.pivot_column]].distinct().compile()
         ).rows_dict
-    }.keys()
+    )
     # `pivot_index` is optional and won't be displayed if not selected
     selection = ", ".join(
         filter(None, (node.pivot_index, node.pivot_column, node.pivot_value))
@@ -281,7 +310,10 @@ def get_window_query(node, query):
         ).name(window.label)
 
         w = ibis.window(
-            group_by=window.group_by or None, order_by=window.order_by or None
+            group_by=window.group_by or None,
+            order_by=ops.SortKey(query[window.order_by], window.ascending).to_expr()
+            if window.order_by
+            else None,
         )
         aggregation = aggregation.over(w)
         aggregations.append(aggregation)
@@ -363,9 +395,10 @@ def _validate_arity(func, len_args):
     return len_args >= min_arity if variable_args else len_args == min_arity
 
 
-def get_query_from_node(node):
+@cached_as(Node, timeout=60)
+def get_query_from_node(current_node):
 
-    nodes = _get_all_parents(node)
+    nodes = _get_all_parents(current_node)
     # remove duplicates (python dicts are insertion ordered)
     nodes = list(dict.fromkeys(nodes))
 
@@ -390,17 +423,12 @@ def get_query_from_node(node):
             if isinstance(err, (CreditException, OutOfCreditsException)):
                 node.uses_credits = err.uses_credits
             node.save()
-            logging.error(err, exc_info=err)
+            if current_node != node:
+                raise NodeResultNone(node=node) from err
+            raise err
 
         # input node zero state
         if results.get(node) is None:
             raise NodeResultNone(node=node)
 
     return results[node]
-
-
-class NodeResultNone(Exception):
-    def __init__(self, node, *args: object) -> None:
-        super().__init__(*args)
-
-        self.node = node

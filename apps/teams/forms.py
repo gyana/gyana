@@ -1,28 +1,21 @@
 import analytics
 from allauth.account.forms import SignupForm
 from django import forms
-from django.conf import settings
 from django.utils.html import mark_safe
 from django.utils.safestring import mark_safe
 
-from apps.base.analytics import (
-    SIGNED_UP_EVENT,
-    TEAM_CREATED_EVENT,
-    identify_user,
-    identify_user_group,
-)
+from apps.base.analytics import TEAM_CREATED_EVENT, identify_user_group
 from apps.base.fields import ColorField, ColorInput
-from apps.base.forms import BaseModelForm, LiveModelForm
+from apps.base.forms import BaseModelForm
 from apps.base.templatetags.help_utils import INTERCOM_ROOT, get_intercom
-from apps.invites.models import Invite
 from apps.teams import roles
-from apps.users.models import ApprovedWaitlistEmail
 
 from .models import Flag, Membership, Team
-from .paddle import update_plan_for_team
 
 
 class TeamSignupForm(SignupForm):
+    template_name = "django/forms/default_form.html"
+
     def __init__(self, *args, **kwargs):
         super(TeamSignupForm, self).__init__(*args, **kwargs)
 
@@ -31,20 +24,6 @@ class TeamSignupForm(SignupForm):
 
         self.fields["email"].help_text = "e.g. maryjackson@nasa.gov"
         self.fields["password1"].help_text = "Must have at least 6 characters"
-
-    def save(self, request):
-        user = super().save(request)
-        # prefer to assign as an invite than a waitlist
-        if Invite.check_email_invited(user.email):
-            identify_user(user, signup_source="invite")
-        elif ApprovedWaitlistEmail.check_approved(user.email):
-            identify_user(user, signup_source="waitlist")
-        else:
-            identify_user(user, signup_source="website")
-
-        analytics.track(user.id, SIGNED_UP_EVENT)
-
-        return user
 
 
 class TeamCreateForm(BaseModelForm):

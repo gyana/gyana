@@ -2,13 +2,12 @@ name: Pytest Unit Tests
 
 on:
   push:
-    branches: [ main, release ]
+    branches: [main, release]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
@@ -27,32 +26,32 @@ jobs:
           - 5432:5432
 
     steps:
-    - uses: actions/checkout@v2
-    - uses: extractions/setup-just@v1
-    - uses: actions/setup-python@v2
-      with:
-        python-version: 3.9
-    - uses: Gr1N/setup-poetry@v7
-    - name: Install dependencies with poetry
-      run: poetry install
-      # required for collectstatic
-    - uses: actions/setup-node@v2
-      with:
-        node-version: '14'
-    - name: Install Node Dependencies
-      run: yarn
-    - name: Build assets
-      run: yarn build
-    - name: Collect static
-      run: poetry run just collectstatic
-    - name: Copy folders
-      run: |
-        cp -R .venv/src/dj-paddle/djpaddle/templates .venv/lib/python3.9/site-packages/djpaddle/templates
-        cp -R .venv/src/dj-paddle/djpaddle/migrations .venv/lib/python3.9/site-packages/djpaddle/migrations
-        cp -R .venv/src/dj-paddle/djpaddle/management .venv/lib/python3.9/site-packages/djpaddle/management
-    - name: Pytest run
-      run: poetry run just test-ci
-    - uses: codecov/codecov-action@v2
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
-        files: ./coverage.xml
+      - uses: actions/checkout@v2
+      - uses: extractions/setup-just@v1
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+      - uses: Gr1N/setup-poetry@v7
+      - name: Install dependencies with poetry
+        run: poetry install
+        # required for collectstatic
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - name: Install Node Dependencies
+        run: yarn
+      - name: Build assets
+        run: yarn build
+      - name: Collect static
+        run: poetry run just collectstatic
+      - name: Copy folders
+        run: |
+          cp -R .venv/src/dj-paddle/djpaddle/templates .venv/lib/python3.9/site-packages/djpaddle/templates
+          cp -R .venv/src/dj-paddle/djpaddle/migrations .venv/lib/python3.9/site-packages/djpaddle/migrations
+          cp -R .venv/src/dj-paddle/djpaddle/management .venv/lib/python3.9/site-packages/djpaddle/management
+      - name: Pytest run
+        run: poetry run just test-ci
+      - uses: codecov/codecov-action@v2
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage.xml

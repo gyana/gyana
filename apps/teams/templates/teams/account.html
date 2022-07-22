@@ -23,17 +23,7 @@
         <div class="flex items-center mb-4">
           <h2>Gyana - <span>{{ team.plan.name }}</span></h2>
 
-          {% if team.is_free %}
-            <a href="{% url 'teams:pricing' team.id %}" class="button button--sm button--success">Upgrade your plan</a>
-          {% endif %}
-
-        </div>
-        {% if team.is_free %}
-          <p class="alert">
-            Upgrade to a paid plan for custom row volume, dedicated support to build your report and 
-            <a href="{% url 'teams:pricing' team.id %}" class="link">more...</a>
-          </p>
-        {% endif %}
+        </div>  
       </header>
 
       <div class="account__plan card card--none">

@@ -1,0 +1,16 @@
+{% extends 'nodes/errors/default.html' %}
+{% block header %}Formula error{% endblock %}
+{% block error_message %}
+  We cannot parse the formula:
+  <div data-controller='codemirror'>
+    {{columns|json_script:'columns'}}
+    <textarea data-codemirror-target='textarea'
+      class="textarea"
+      name="error"
+      readonly
+    >  
+      {{formula}}
+    </textarea>
+  </div>
+  <p>Try checking the syntax again!</p>
+{% endblock %}

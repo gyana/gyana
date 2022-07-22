@@ -4,6 +4,7 @@ from django.db.models import TextChoices
 from ibis.expr import datatypes as idt
 from lark import Lark
 
+from apps.columns.exceptions import ParseError
 from apps.columns.transformer import TreeToIbis
 
 from .types import TYPES
@@ -97,7 +98,10 @@ def compile_function(query, edit):
 
 
 def compile_formula(query, formula):
-    tree = parser.parse(formula)
+    try:
+        tree = parser.parse(formula)
+    except Exception as err:
+        raise ParseError(formula=formula, columns=query.columns) from err
 
     return TreeToIbis(query).transform(tree)
 
@@ -177,13 +181,12 @@ def get_groups(query, instance):
     return groups
 
 
-def aggregate_columns(query, instance, groups):
+def aggregate_columns(query, aggregations, groups):
     """Aggregates over multiple aggregations and resolves name conflicts"""
-    aggregations = instance.aggregations.all()
     column_names = [agg.column for agg in aggregations]
     aggregations = [
         get_aggregate_expr(query, agg.column, agg.function, column_names)
-        for agg in instance.aggregations.all()
+        for agg in aggregations
     ]
     if not groups and not aggregations:
         # query.count() returns a scalar

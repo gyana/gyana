@@ -31,7 +31,6 @@
       action="{% url 'nodes:update' node.id %}"
       method="post"
       data-tf-modal-target="form"
-      data-tf-modal-submit-on-close
       data-controller="live-update"
       data-action="
         change->tf-modal#change 
@@ -50,7 +49,7 @@
         </span>
         {% csrf_token %}
 
-        {% include "django/forms/default_form.html" %}
+        {{ form }}
 
         {% if node.kind == 'sentiment' %}
           <div class="mt-6">

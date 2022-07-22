@@ -29,6 +29,7 @@ class DashboardSettings(models.Model):
         GENERAL = "general", "General"
         WIDGET = "widget", "Widget"
         CANVAS = "canvas", "Canvas"
+        ADVANCED = "advanced", "Advanced"
 
     class FontFamily(models.TextChoices):
         BOOGALOO = "Boogaloo"
@@ -39,6 +40,9 @@ class DashboardSettings(models.Model):
         ROBOTO = "Roboto"
         UBUNTU = "Ubuntu"
 
+    extra_html_head = models.TextField(null=True)
+    extra_css = models.TextField(null=True)
+    preview_by_default = models.BooleanField(default=False)
     grid_size = models.IntegerField(default=15)
     width = models.IntegerField(default=1200)
     height = models.IntegerField(default=840)
@@ -49,7 +53,7 @@ class DashboardSettings(models.Model):
     )
     background_color = models.CharField(default="#ffffff", max_length=7)
     font_size = models.IntegerField(default="14")
-    font_color = models.CharField(default="#6a6b77", max_length=7)
+    font_color = models.CharField(default="#242733", max_length=7)
     font_family = models.CharField(
         max_length=30, default=FontFamily.ROBOTO, choices=FontFamily.choices
     )
@@ -87,6 +91,11 @@ class Dashboard(DashboardSettings, HistoryModel):
         return self.name
 
     def get_absolute_url(self):
+        if self.preview_by_default:
+            return "%s?mode=view" % (
+                reverse("project_dashboards:detail", args=(self.project.id, self.id))
+            )
+
         return reverse("project_dashboards:detail", args=(self.project.id, self.id))
 
     def save(self, *args, **kwargs):
@@ -157,6 +166,10 @@ class Dashboard(DashboardSettings, HistoryModel):
 
         return Widget.history.filter(page__dashboard=self).all()
 
+    @property
+    def page_set(self):
+        return Page.objects.filter(dashboard=self).all()
+
     def make_clone(self, attrs=None, sub_clone=False, using=None):
         if self.shared_id:
             attrs["shared_id"] = uuid4()
@@ -203,9 +216,19 @@ class Page(HistoryModel):
 
     def delete(self, **kwargs):
         skip_dashboard_update = kwargs.pop("skip_dashboard_update", False)
+
         if not skip_dashboard_update:
             self.dashboard.updates.create(content_object=self)
-        return super().delete(**kwargs)
+
+        result = super().delete(**kwargs)
+
+        for follow_page in self.dashboard.pages.filter(
+            position__gt=self.position
+        ).iterator():
+            follow_page.position = follow_page.position - 1
+            follow_page.save()
+
+        return result
 
     def __str__(self) -> str:
         return f"Page {self.position}{f': {self.name}' if self.name else ''}"
@@ -231,6 +254,9 @@ class DashboardUpdate(BaseModel):
 
 
 DASHBOARD_SETTING_TO_CATEGORY = {
+    "extra_html_head": Dashboard.Category.ADVANCED,
+    "extra_css": Dashboard.Category.ADVANCED,
+    "preview_by_default": Dashboard.Category.GENERAL,
     "grid_size": Dashboard.Category.CANVAS,
     "width": Dashboard.Category.CANVAS,
     "height": Dashboard.Category.CANVAS,
