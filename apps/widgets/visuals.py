@@ -46,7 +46,7 @@ def chart_to_output(widget: Widget, control) -> Dict[str, Any]:
     else:
         chart, chart_id = to_chart(df, widget)
 
-    return {"chart": chart.render()}, chart_id
+    return {"chart": chart}, chart_id
 
 
 def get_summary_row(query, widget):

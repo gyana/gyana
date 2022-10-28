@@ -1,4 +1,5 @@
 import uuid
+from functools import partial
 
 import numpy as np
 import plotly.express as px
@@ -7,26 +8,6 @@ from plotly.offline import plot
 
 from apps.widgets.fusion.chart import _get_first_value_or_count, get_unique_column_names
 from apps.widgets.models import COUNT_COLUMN_NAME, Widget
-
-
-def to_stack(df, widget):
-    if not widget.second_dimension:
-        return to_line(df, widget)
-    return go.Figure(
-        data=[
-            go.Scatter(
-                x=group[widget.dimension],
-                y=group[_get_first_value_or_count(widget)],
-                mode="lines+markers",
-                line_shape="spline",
-                name=name,
-            )
-            for name, group in df.groupby(widget.second_dimension)
-        ],
-        layout=go.Layout(
-            title=widget.name,
-        ),
-    )
 
 
 def get_metrics(widget):
@@ -57,15 +38,27 @@ def to_line(df, widget):
     )
 
 
-def to_column(df, widget):
+def to_line_stack(df, widget):
+    if not widget.second_dimension:
+        return to_line(df, widget)
+    return px.line(
+        df,
+        x=widget.dimension,
+        y=_get_first_value_or_count(widget),
+        markers=True,
+        line_shape="spline",
+        color=widget.second_dimension,
+        title=widget.name,
+    )
+
+
+def to_column(df, widget, orientation="v"):
     values = get_metrics(widget)
 
     fig = go.Figure(
         data=[
             go.Bar(
-                name=value,
-                x=df[widget.dimension],
-                y=df[value],
+                name=value, x=df[value], y=df[widget.dimension], orientation=orientation
             )
             for value in values
         ]
@@ -75,18 +68,17 @@ def to_column(df, widget):
     return fig
 
 
-def to_bar(df, widget):
-    values = get_metrics(widget)
+def to_column_stack(df, widget, orientation="v"):
+    if not widget.second_dimension:
+        return to_column(df, widget, orientation)
 
-    fig = go.Figure(
-        data=[
-            go.Bar(name=value, x=df[value], y=df[widget.dimension], orientation="h")
-            for value in values
-        ]
+    return px.bar(
+        df,
+        x=widget.dimension,
+        y=_get_first_value_or_count(widget),
+        color=widget.second_dimension,
+        title=widget.name,
     )
-    # Change the bar mode
-    fig.update_layout(barmode="group")
-    return fig
 
 
 def to_pie(df, widget):
@@ -212,12 +204,12 @@ CHART_FIG = {
     Widget.Kind.PIE: to_pie,
     Widget.Kind.DONUT: to_pie,
     Widget.Kind.COLUMN: to_column,
-    Widget.Kind.STACKED_COLUMN: to_stack,
-    Widget.Kind.BAR: to_bar,
-    Widget.Kind.STACKED_BAR: to_stack,
+    Widget.Kind.STACKED_COLUMN: to_column_stack,
+    Widget.Kind.BAR: partial(to_column, orientation="h"),
+    Widget.Kind.STACKED_BAR: partial(to_column_stack, orientation="h"),
     Widget.Kind.AREA: to_area,
     Widget.Kind.LINE: to_line,
-    Widget.Kind.STACKED_LINE: to_stack,
+    Widget.Kind.STACKED_LINE: to_line_stack,
     # Widget.Kind.COMBO: to_combo_chart,
     Widget.Kind.GAUGE: to_gauge,
 }
