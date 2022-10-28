@@ -12,6 +12,7 @@ from apps.widgets.fusion.timeseries import TIMESERIES_DATA, to_timeseries
 from .bigquery import get_query_from_widget
 from .fusion.chart import to_chart
 from .models import Widget
+from .plotly.chart import to_line
 
 CHART_MAX_ROWS = 1000
 
@@ -43,6 +44,9 @@ def chart_to_output(widget: Widget, control) -> Dict[str, Any]:
 
     if widget.kind in TIMESERIES_DATA:
         chart, chart_id = to_timeseries(widget, df, query)
+    if widget.kind == Widget.Kind.LINE:
+        chart, chart_id = to_line(df, widget)
+        return {"chart": chart}, chart_id
     else:
         chart, chart_id = to_chart(df, widget)
 

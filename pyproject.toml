@@ -98,6 +98,7 @@ wagtailmenus = {git = "https://github.com/jazzband/wagtailmenus", rev = "8be2790
 django-cacheops = "^6.0"
 django-simple-history = "^3.1.1"
 google-cloud-language = "^2.4.1"
+plotly = "^5.10.0"
 [tool.poetry.dev-dependencies]
 autoflake = "^1.4"
 black = "^22.1.0"
