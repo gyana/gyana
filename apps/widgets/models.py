@@ -82,7 +82,6 @@ class Widget(WidgetStyle, HistoryModel):
     class Category(models.TextChoices):
         CONTENT = "content", "Content"
         SIMPLE = "simple", "Simple charts"
-        TIMESERIES = "timeseries", "Timeseries charts"
         ADVANCED = "advanced", "Advanced charts"
         COMBO = "combination", "Combination charts"
 
@@ -107,14 +106,6 @@ class Widget(WidgetStyle, HistoryModel):
         RADAR = "radar", "Radar"
         BUBBLE = "bubble", "Bubble"
         HEATMAP = "heatmap", "Heatmap"
-        TIMESERIES_LINE = "timeseries-line", "Line Timeseries"
-        TIMESERIES_STACKED_LINE = "timeseries-line_stacked", "Stacked Line Timeseries"
-        TIMESERIES_COLUMN = "timeseries-column", "Column Timeseries"
-        TIMESERIES_STACKED_COLUMN = (
-            "timeseries-column-stacked",
-            "Stacked Column Timeseries",
-        )
-        TIMESERIES_AREA = "timeseries-area", "Area Timeseries"
         COMBO = "mscombidy2d", "Combination chart"
         IFRAME = "iframe", "iframe"
         GAUGE = "angulargauge", "Gauge"
@@ -310,31 +301,6 @@ WIDGET_KIND_TO_WEB = {
     Widget.Kind.RADAR.value: ("fa-radar", Widget.Category.ADVANCED, "Radar"),
     Widget.Kind.BUBBLE.value: ("fa-soap", Widget.Category.ADVANCED, "Bubble"),
     Widget.Kind.HEATMAP.value: ("fa-map", Widget.Category.ADVANCED, "Heatmap"),
-    Widget.Kind.TIMESERIES_LINE.value: (
-        "fa-chart-line",
-        Widget.Category.TIMESERIES,
-        "Line",
-    ),
-    Widget.Kind.TIMESERIES_STACKED_LINE.value: (
-        "fa-chart-line",
-        Widget.Category.TIMESERIES,
-        "Stacked Line",
-    ),
-    Widget.Kind.TIMESERIES_COLUMN.value: (
-        "fa-chart-bar",
-        Widget.Category.TIMESERIES,
-        "Column",
-    ),
-    Widget.Kind.TIMESERIES_STACKED_COLUMN.value: (
-        "fa-chart-bar",
-        Widget.Category.TIMESERIES,
-        "Stacked Column",
-    ),
-    Widget.Kind.TIMESERIES_AREA.value: (
-        "fa-chart-area",
-        Widget.Category.TIMESERIES,
-        "Area",
-    ),
     Widget.Kind.COMBO.value: (
         "fa-analytics",
         Widget.Category.COMBO,

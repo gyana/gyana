@@ -155,8 +155,6 @@ FORMSETS = {
     Widget.Kind.STACKED_BAR: [OptionalMetricFormset],
     Widget.Kind.STACKED_COLUMN: [OptionalMetricFormset],
     Widget.Kind.STACKED_LINE: [OptionalMetricFormset],
-    Widget.Kind.TIMESERIES_STACKED_COLUMN: [OptionalMetricFormset],
-    Widget.Kind.TIMESERIES_STACKED_LINE: [OptionalMetricFormset],
     Widget.Kind.SCATTER: [XYMetricFormset],
     Widget.Kind.BUBBLE: [XYZMetricFormset],
     Widget.Kind.HEATMAP: [OptionalMetricFormset],

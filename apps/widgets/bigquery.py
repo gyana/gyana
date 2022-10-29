@@ -49,8 +49,6 @@ def get_query_from_widget(widget: Widget, query):
             Widget.Kind.STACKED_BAR,
             Widget.Kind.STACKED_COLUMN,
             Widget.Kind.STACKED_LINE,
-            Widget.Kind.TIMESERIES_STACKED_LINE,
-            Widget.Kind.TIMESERIES_STACKED_COLUMN,
         ]
         and widget.second_dimension
     ):

@@ -239,10 +239,6 @@ def disable_non_time(schema):
     }
 
 
-def is_timeseries_chart(kind):
-    return WIDGET_KIND_TO_WEB[kind][1] == Widget.Category.TIMESERIES
-
-
 class OneDimensionForm(GenericWidgetForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -409,16 +405,11 @@ FORMS = {
     Widget.Kind.BAR: OneDimensionForm,
     Widget.Kind.STACKED_COLUMN: StackedChartForm,
     Widget.Kind.COLUMN: OneDimensionForm,
-    Widget.Kind.TIMESERIES_STACKED_COLUMN: StackedChartForm,
-    Widget.Kind.TIMESERIES_COLUMN: OneDimensionForm,
     Widget.Kind.STACKED_BAR: StackedChartForm,
     Widget.Kind.LINE: OneDimensionForm,
-    Widget.Kind.TIMESERIES_STACKED_LINE: StackedChartForm,
-    Widget.Kind.TIMESERIES_LINE: OneDimensionForm,
     Widget.Kind.STACKED_LINE: StackedChartForm,
     Widget.Kind.PIE: OneDimensionForm,
     Widget.Kind.AREA: OneDimensionForm,
-    Widget.Kind.TIMESERIES_AREA: OneDimensionForm,
     Widget.Kind.DONUT: OneDimensionForm,
     Widget.Kind.SCATTER: OneDimensionForm,
     Widget.Kind.FUNNEL: GenericWidgetForm,
