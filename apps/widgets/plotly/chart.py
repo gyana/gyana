@@ -7,7 +7,7 @@ import plotly.graph_objects as go
 from plotly.offline import plot
 
 from apps.widgets.fusion.chart import _get_first_value_or_count, get_unique_column_names
-from apps.widgets.models import COUNT_COLUMN_NAME, Widget
+from apps.widgets.models import COUNT_COLUMN_NAME, CombinationChart, Widget
 
 
 def get_metrics(widget):
@@ -129,7 +129,7 @@ def to_area(df, widget):
 
     return go.Figure(
         data=[
-            go.Area(
+            go.Scatter(
                 name=value,
                 x=df[widget.dimension],
                 y=df[value],
@@ -186,6 +186,31 @@ def to_gauge(df, widget):
     )
 
 
+CHARTS = {
+    CombinationChart.Kind.LINE: go.Scatter,
+    CombinationChart.Kind.AREA: partial(go.Scatter, fill="tozeroy"),
+    CombinationChart.Kind.COLUMN: go.Bar,
+}
+
+
+def to_combo(df, widget):
+    charts = widget.charts.all()
+    unique_names = get_unique_column_names(charts, [widget.dimension])
+    fig = go.Figure(title=widget.name)
+
+    for chart in charts:
+        fig.add_trace(
+            CHARTS[chart.kind](
+                name=unique_names.get(chart, chart.column),
+                x=df[widget.dimension],
+                y=df[unique_names.get(chart, chart.column)],
+            ),
+            secondary_y=chart.on_secondary,
+        )
+
+    return fig
+
+
 def to_chart(df, widget):
     fig = CHART_FIG[widget.kind](df, widget)
     chart = plot(fig, output_type="div", include_plotlyjs=False)
@@ -200,7 +225,6 @@ CHART_FIG = {
     Widget.Kind.SCATTER: to_scatter,
     Widget.Kind.RADAR: to_radar,
     Widget.Kind.FUNNEL: to_funnel,
-    # Widget.Kind.PYRAMID: to_segment,
     Widget.Kind.PIE: to_pie,
     Widget.Kind.DONUT: to_pie,
     Widget.Kind.COLUMN: to_column,
@@ -210,6 +234,6 @@ CHART_FIG = {
     Widget.Kind.AREA: to_area,
     Widget.Kind.LINE: to_line,
     Widget.Kind.STACKED_LINE: to_line_stack,
-    # Widget.Kind.COMBO: to_combo_chart,
+    Widget.Kind.COMBO: to_combo,
     Widget.Kind.GAUGE: to_gauge,
 }

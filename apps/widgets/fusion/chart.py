@@ -382,7 +382,7 @@ CHART_DATA = {
     Widget.Kind.SCATTER: to_scatter,
     Widget.Kind.RADAR: to_radar,
     Widget.Kind.FUNNEL: to_segment,
-    Widget.Kind.PYRAMID: to_segment,
+    # Widget.Kind.PYRAMID: to_segment,
     Widget.Kind.PIE: to_single_value,
     Widget.Kind.DONUT: to_single_value,
     Widget.Kind.COLUMN: to_multi_value_data,

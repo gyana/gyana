@@ -159,7 +159,6 @@ FORMSETS = {
     Widget.Kind.BUBBLE: [XYZMetricFormset],
     Widget.Kind.HEATMAP: [OptionalMetricFormset],
     Widget.Kind.RADAR: [Min3Formset],
-    Widget.Kind.PYRAMID: [Min2Formset],
     Widget.Kind.FUNNEL: [Min2Formset],
     Widget.Kind.METRIC: [SingleMetricFormset],
     Widget.Kind.GAUGE: [SingleMetricFormset],

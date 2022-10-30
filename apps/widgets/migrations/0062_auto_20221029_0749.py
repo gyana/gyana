@@ -8,6 +8,7 @@ MAP = {
     "timeseries-column": "mscolumn2d",
     "timeseries-column-stacked": "stackedcolumn2d",
     "timeseries-area": "msarea",
+    "pyramid": "funnel",
 }
 
 

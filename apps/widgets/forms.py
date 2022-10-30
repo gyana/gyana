@@ -413,7 +413,6 @@ FORMS = {
     Widget.Kind.DONUT: OneDimensionForm,
     Widget.Kind.SCATTER: OneDimensionForm,
     Widget.Kind.FUNNEL: GenericWidgetForm,
-    Widget.Kind.PYRAMID: GenericWidgetForm,
     Widget.Kind.RADAR: GenericWidgetForm,
     Widget.Kind.HEATMAP: TwoDimensionForm,
     Widget.Kind.BUBBLE: OneDimensionForm,

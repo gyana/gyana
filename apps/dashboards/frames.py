@@ -36,10 +36,7 @@ class DashboardOverview(ProjectMixin, TurboFrameTemplateView):
             | (Q(kind=Widget.Kind.TABLE) & ~Q(table=None))
             | (Q(kind__in=[Widget.Kind.METRIC, Widget.Kind.GAUGE]) & Q(agg_count=1))
             | (Q(kind=Widget.Kind.RADAR) & Q(agg_count__gte=3))
-            | (
-                Q(kind__in=[Widget.Kind.FUNNEL, Widget.Kind.PYRAMID])
-                & Q(agg_count__gte=2)
-            )
+            | (Q(kind=Widget.Kind.FUNNEL) & Q(agg_count__gte=2))
             | (~Q(table=None) & ~Q(dimension=None) & ~Q(aggregations__column=None))
         )
         dashboards_incomplete = (

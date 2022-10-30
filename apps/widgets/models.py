@@ -102,7 +102,6 @@ class Widget(WidgetStyle, HistoryModel):
         DONUT = "doughnut2d", "Donut"
         SCATTER = "scatter", "Scatter"
         FUNNEL = "funnel", "Funnel"
-        PYRAMID = "pyramid", "Pyramid"
         RADAR = "radar", "Radar"
         BUBBLE = "bubble", "Bubble"
         HEATMAP = "heatmap", "Heatmap"
@@ -204,7 +203,7 @@ class Widget(WidgetStyle, HistoryModel):
             return self.aggregations.count() == 1
         if self.kind == self.Kind.RADAR:
             return self.aggregations.count() >= 3
-        if self.kind in [self.Kind.FUNNEL, self.Kind.PYRAMID]:
+        if self.kind == self.Kind.FUNNEL:
             return self.aggregations.count() >= 2
         if self.kind is not None:
             return bool(self.kind and self.dimension)
@@ -254,7 +253,6 @@ class Widget(WidgetStyle, HistoryModel):
 NO_DIMENSION_WIDGETS = [
     Widget.Kind.RADAR,
     Widget.Kind.FUNNEL,
-    Widget.Kind.PYRAMID,
     Widget.Kind.METRIC,
     Widget.Kind.GAUGE,
 ]
@@ -297,7 +295,6 @@ WIDGET_KIND_TO_WEB = {
         "Scatter",
     ),
     Widget.Kind.FUNNEL.value: ("fa-filter", Widget.Category.ADVANCED, "Funnel"),
-    Widget.Kind.PYRAMID.value: ("fa-triangle", Widget.Category.ADVANCED, "Pyramid"),
     Widget.Kind.RADAR.value: ("fa-radar", Widget.Category.ADVANCED, "Radar"),
     Widget.Kind.BUBBLE.value: ("fa-soap", Widget.Category.ADVANCED, "Bubble"),
     Widget.Kind.HEATMAP.value: ("fa-map", Widget.Category.ADVANCED, "Heatmap"),
