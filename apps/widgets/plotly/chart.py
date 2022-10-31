@@ -5,6 +5,7 @@ import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
 from plotly.offline import plot
+from plotly.subplots import make_subplots
 
 from apps.widgets.fusion.chart import _get_first_value_or_count, get_unique_column_names
 from apps.widgets.models import COUNT_COLUMN_NAME, CombinationChart, Widget
@@ -33,9 +34,14 @@ def to_line(df, widget):
                 mode="lines+markers",
                 line_shape="spline",
                 name=value,
-                color_discrete_sequence=pallete_colors,
+                marker={
+                    "color": pallete_colors[i if i < len(values) else i % len(values)]
+                },
+                line={
+                    "color": pallete_colors[i if i < len(values) else i % len(values)]
+                },
             )
-            for value in values
+            for i, value in enumerate(values)
         ]
     )
 
@@ -64,12 +70,14 @@ def to_column(df, widget, orientation="v"):
         data=[
             go.Bar(
                 name=value,
-                x=df[value],
-                y=df[widget.dimension],
+                x=df[widget.dimension] if orientation == "v" else df[value],
+                y=df[value] if orientation == "v" else df[widget.dimension],
                 orientation=orientation,
-                color_discrete_sequence=pallete_colors,
+                marker={
+                    "color": pallete_colors[i if i < len(values) else i % len(values)]
+                },
             )
-            for value in values
+            for i, value in enumerate(values)
         ]
     )
     # Change the bar mode
@@ -83,9 +91,10 @@ def to_column_stack(df, widget, orientation="v"):
 
     return px.bar(
         df,
-        x=widget.dimension,
-        y=_get_first_value_or_count(widget),
+        x=widget.dimension if orientation == "v" else _get_first_value_or_count(widget),
+        y=_get_first_value_or_count(widget) if orientation == "v" else widget.dimension,
         color=widget.second_dimension,
+        orientation=orientation,
         color_discrete_sequence=get_pallete_colors(widget),
     )
 
@@ -95,7 +104,7 @@ def to_pie(df, widget):
         df,
         names=widget.dimension,
         values=_get_first_value_or_count(widget),
-        hole=0.3 if Widget.Kind.DONUT else None,
+        hole=0.3 if widget.kind == Widget.Kind.DONUT else None,
         color_discrete_sequence=get_pallete_colors(widget),
     )
 
@@ -127,13 +136,16 @@ def pivot_df(df, widget):
 
 def to_radar(df, widget):
     df = pivot_df(df, widget)
-    return px.line_polar(df, r="variable", theta="value", line_close=True)
+    return px.line_polar(df, r="value", theta="variable", line_close=True)
 
 
 def to_funnel(df, widget):
     df = pivot_df(df, widget)
     return px.funnel_area(
-        df, x="variable", y="value", color_discrete_sequence=get_pallete_colors(widget)
+        df,
+        names="variable",
+        values="value",
+        color_discrete_sequence=get_pallete_colors(widget),
     )
 
 
@@ -147,7 +159,9 @@ def to_area(df, widget):
                 x=df[widget.dimension],
                 y=df[value],
                 fill="tozeroy" if i == 0 else "tonexty",
-                color_discrete_sequence=pallete_colors,
+                line={
+                    "color": pallete_colors[i if i < len(values) else i % len(values)]
+                },
             )
             for i, value in enumerate(values)
         ]
@@ -160,7 +174,7 @@ def to_heatmap(df, widget):
         columns=widget.second_dimension,
         values=_get_first_value_or_count(widget),
     )
-    return px.imshow(df, color_discrete_sequence=get_pallete_colors(widget))
+    return px.imshow(df, color_continuous_scale=get_pallete_colors(widget))
 
 
 def to_gauge(df, widget):
@@ -174,7 +188,7 @@ def to_gauge(df, widget):
             value=value,
             domain={"x": [0, 1], "y": [0, 1]},
             gauge={
-                "axis": [min_val, max_val],
+                "axis": {"range": [min_val, max_val]},
                 "steps": [
                     {
                         "range": [min_val, first_quarter],
@@ -208,20 +222,24 @@ CHARTS = {
 def to_combo(df, widget):
     charts = widget.charts.all()
     unique_names = get_unique_column_names(charts, [widget.dimension])
-    fig = go.Figure()
+
+    fig = make_subplots(
+        specs=[[{"secondary_y": any(chart.on_secondary for chart in charts)}]]
+    )
     pallete_colors = get_pallete_colors(widget)
 
-    for chart in charts:
+    for i, chart in enumerate(charts):
         fig.add_trace(
             CHARTS[chart.kind](
                 name=unique_names.get(chart, chart.column),
                 x=df[widget.dimension],
                 y=df[unique_names.get(chart, chart.column)],
-                color_discrete_sequence=get_pallete_colors(widget),
+                marker={
+                    "color": pallete_colors[i if i < len(charts) else i % len(charts)]
+                },
             ),
             secondary_y=chart.on_secondary,
         )
-
     return fig
 
 
