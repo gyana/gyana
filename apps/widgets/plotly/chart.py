@@ -31,10 +31,7 @@ def to_line(df, widget):
                 name=value,
             )
             for value in values
-        ],
-        layout=go.Layout(
-            title=widget.name,
-        ),
+        ]
     )
 
 
@@ -48,7 +45,6 @@ def to_line_stack(df, widget):
         markers=True,
         line_shape="spline",
         color=widget.second_dimension,
-        title=widget.name,
     )
 
 
@@ -77,7 +73,6 @@ def to_column_stack(df, widget, orientation="v"):
         x=widget.dimension,
         y=_get_first_value_or_count(widget),
         color=widget.second_dimension,
-        title=widget.name,
     )
 
 
@@ -86,7 +81,6 @@ def to_pie(df, widget):
         df,
         names=widget.dimension,
         values=_get_first_value_or_count(widget),
-        title=widget.name,
         hole=0.3 if Widget.Kind.DONUT else None,
     )
 
@@ -96,7 +90,7 @@ def to_scatter(df, widget):
     unique_names = get_unique_column_names(aggregations, [widget.dimension])
     x, y = [unique_names.get(value, value.column) for value in aggregations][:2]
 
-    return px.scatter(df, x=x, y=y, title=widget.name)
+    return px.scatter(df, x=x, y=y)
 
 
 def to_bubble(df, widget):
@@ -136,8 +130,7 @@ def to_area(df, widget):
                 fill="tozeroy" if i == 0 else "tonexty",
             )
             for i, value in enumerate(values)
-        ],
-        title=widget.name,
+        ]
     )
 
 
@@ -147,7 +140,7 @@ def to_heatmap(df, widget):
         columns=widget.second_dimension,
         values=_get_first_value_or_count(widget),
     )
-    return px.imshow(df, title=widget.name)
+    return px.imshow(df)
 
 
 def to_gauge(df, widget):
@@ -160,7 +153,6 @@ def to_gauge(df, widget):
             mode="gauge+number",
             value=value,
             domain={"x": [0, 1], "y": [0, 1]},
-            title=widget.name,
             gauge={
                 "axis": [min_val, max_val],
                 "steps": [
@@ -196,7 +188,7 @@ CHARTS = {
 def to_combo(df, widget):
     charts = widget.charts.all()
     unique_names = get_unique_column_names(charts, [widget.dimension])
-    fig = go.Figure(title=widget.name)
+    fig = go.Figure()
 
     for chart in charts:
         fig.add_trace(
@@ -213,9 +205,15 @@ def to_combo(df, widget):
 
 def to_chart(df, widget):
     fig = CHART_FIG[widget.kind](df, widget)
-    chart = plot(fig, output_type="div", include_plotlyjs=False)
-    chart_id = f"{widget.pk}-{uuid.uuid4()}"
+    fig.layout.title = widget.name
 
+    chart = plot(
+        fig, output_type="div", include_plotlyjs=False, config={"displayModeBar": False}
+    )
+    chart_id = f"{widget.pk}-{uuid.uuid4()}"
+    # Not sure whether there is a better solution for this but right now
+    # It is necessary
+    chart = chart.replace("div", 'div style="height:100%;"', 1)
     return chart, chart_id
 
 

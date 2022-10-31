@@ -246,11 +246,6 @@ class OneDimensionForm(GenericWidgetForm):
         schema = self.instance.table.schema
 
         if "dimension" in self.fields:
-
-            if is_timeseries_chart(self.get_live_field("kind")):
-                self.fields["dimension"].widget = SelectWithDisable(
-                    disabled=disable_non_time(schema)
-                )
             self.fields["dimension"].choices = create_column_choices(schema)
 
         if "sort_column" in self.fields:
@@ -287,10 +282,7 @@ class TwoDimensionForm(GenericWidgetForm):
         schema = self.instance.table.schema
 
         columns = create_column_choices(schema)
-        if is_timeseries_chart(self.get_live_field("kind")):
-            self.fields["dimension"].widget = SelectWithDisable(
-                disabled=disable_non_time(schema)
-            )
+
         self.fields["dimension"].choices = columns
         self.fields["dimension"].label = "X"
         self.fields["second_dimension"].choices = columns
@@ -318,10 +310,7 @@ class StackedChartForm(GenericWidgetForm):
         schema = self.instance.table.schema
 
         choices = create_column_choices(schema)
-        if is_timeseries_chart(self.get_live_field("kind")):
-            self.fields["dimension"].widget = SelectWithDisable(
-                disabled=disable_non_time(schema)
-            )
+
         self.fields["dimension"].choices = choices
         self.fields["second_dimension"].choices = choices
         # Can't overwrite label in Meta because we would have to overwrite the whole thing
