@@ -10,6 +10,10 @@ from apps.widgets.fusion.chart import _get_first_value_or_count, get_unique_colu
 from apps.widgets.models import COUNT_COLUMN_NAME, CombinationChart, Widget
 
 
+def get_pallete_colors(widget):
+    return widget.palette_colors or widget.page.dashboard.palette_colors
+
+
 def get_metrics(widget):
     aggregations = widget.aggregations.all()
     unique_names = get_unique_column_names(aggregations, [widget.dimension])
@@ -20,7 +24,7 @@ def get_metrics(widget):
 
 def to_line(df, widget):
     values = get_metrics(widget)
-
+    pallete_colors = get_pallete_colors(widget)
     return go.Figure(
         data=[
             go.Scatter(
@@ -29,6 +33,7 @@ def to_line(df, widget):
                 mode="lines+markers",
                 line_shape="spline",
                 name=value,
+                color_discrete_sequence=pallete_colors,
             )
             for value in values
         ]
@@ -38,6 +43,8 @@ def to_line(df, widget):
 def to_line_stack(df, widget):
     if not widget.second_dimension:
         return to_line(df, widget)
+
+    pallete_colors = get_pallete_colors(widget)
     return px.line(
         df,
         x=widget.dimension,
@@ -45,16 +52,22 @@ def to_line_stack(df, widget):
         markers=True,
         line_shape="spline",
         color=widget.second_dimension,
+        color_discrete_sequence=pallete_colors,
     )
 
 
 def to_column(df, widget, orientation="v"):
     values = get_metrics(widget)
+    pallete_colors = get_pallete_colors(widget)
 
     fig = go.Figure(
         data=[
             go.Bar(
-                name=value, x=df[value], y=df[widget.dimension], orientation=orientation
+                name=value,
+                x=df[value],
+                y=df[widget.dimension],
+                orientation=orientation,
+                color_discrete_sequence=pallete_colors,
             )
             for value in values
         ]
@@ -73,6 +86,7 @@ def to_column_stack(df, widget, orientation="v"):
         x=widget.dimension,
         y=_get_first_value_or_count(widget),
         color=widget.second_dimension,
+        color_discrete_sequence=get_pallete_colors(widget),
     )
 
 
@@ -82,6 +96,7 @@ def to_pie(df, widget):
         names=widget.dimension,
         values=_get_first_value_or_count(widget),
         hole=0.3 if Widget.Kind.DONUT else None,
+        color_discrete_sequence=get_pallete_colors(widget),
     )
 
 
@@ -90,14 +105,16 @@ def to_scatter(df, widget):
     unique_names = get_unique_column_names(aggregations, [widget.dimension])
     x, y = [unique_names.get(value, value.column) for value in aggregations][:2]
 
-    return px.scatter(df, x=x, y=y)
+    return px.scatter(df, x=x, y=y, color_discrete_sequence=get_pallete_colors(widget))
 
 
 def to_bubble(df, widget):
     aggregations = widget.aggregations.all()
     unique_names = get_unique_column_names(aggregations, [widget.dimension])
     x, y, z = [unique_names.get(value, value.column) for value in aggregations][:3]
-    return px.scatter(df, x=x, y=y, size=z)
+    return px.scatter(
+        df, x=x, y=y, size=z, color_discrete_sequence=get_pallete_colors(widget)
+    )
 
 
 def pivot_df(df, widget):
@@ -115,12 +132,14 @@ def to_radar(df, widget):
 
 def to_funnel(df, widget):
     df = pivot_df(df, widget)
-    return px.funnel_area(df, x="variable", y="value")
+    return px.funnel_area(
+        df, x="variable", y="value", color_discrete_sequence=get_pallete_colors(widget)
+    )
 
 
 def to_area(df, widget):
     values = get_metrics(widget)
-
+    pallete_colors = get_pallete_colors(widget)
     return go.Figure(
         data=[
             go.Scatter(
@@ -128,6 +147,7 @@ def to_area(df, widget):
                 x=df[widget.dimension],
                 y=df[value],
                 fill="tozeroy" if i == 0 else "tonexty",
+                color_discrete_sequence=pallete_colors,
             )
             for i, value in enumerate(values)
         ]
@@ -140,7 +160,7 @@ def to_heatmap(df, widget):
         columns=widget.second_dimension,
         values=_get_first_value_or_count(widget),
     )
-    return px.imshow(df)
+    return px.imshow(df, color_discrete_sequence=get_pallete_colors(widget))
 
 
 def to_gauge(df, widget):
@@ -189,6 +209,7 @@ def to_combo(df, widget):
     charts = widget.charts.all()
     unique_names = get_unique_column_names(charts, [widget.dimension])
     fig = go.Figure()
+    pallete_colors = get_pallete_colors(widget)
 
     for chart in charts:
         fig.add_trace(
@@ -196,6 +217,7 @@ def to_combo(df, widget):
                 name=unique_names.get(chart, chart.column),
                 x=df[widget.dimension],
                 y=df[unique_names.get(chart, chart.column)],
+                color_discrete_sequence=get_pallete_colors(widget),
             ),
             secondary_y=chart.on_secondary,
         )
