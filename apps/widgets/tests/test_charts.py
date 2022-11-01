@@ -399,7 +399,6 @@ NO_DIMENSION_DF = pd.DataFrame({"medals": [10], "points": [20], "wins": [30]})
                 {
                     "x": np.array(["a", "b"]),
                     "y": np.array([0, 5]),
-                    "mode": "markers+lines",
                 },
                 {"y": np.array([1, 6])},
                 {"y": np.array([2, 7])},
