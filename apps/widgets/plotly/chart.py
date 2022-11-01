@@ -4,7 +4,6 @@ from functools import partial
 import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
-from plotly.offline import plot
 from plotly.subplots import make_subplots
 
 from apps.widgets.fusion.chart import _get_first_value_or_count, get_unique_column_names
@@ -247,9 +246,7 @@ def to_chart(df, widget):
     fig = CHART_FIG[widget.kind](df, widget)
     fig.layout.title = widget.name
 
-    chart = plot(
-        fig, output_type="div", include_plotlyjs=False, config={"displayModeBar": False}
-    )
+    chart = fig.to_html(include_plotlyjs=False, config={"displayModeBar": False})
     chart_id = f"{widget.pk}-{uuid.uuid4()}"
     # Not sure whether there is a better solution for this but right now
     # It is necessary

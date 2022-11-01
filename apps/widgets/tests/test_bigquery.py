@@ -65,13 +65,6 @@ simple_params = pytest.mark.parametrize(
         pytest.param(Widget.Kind.AREA, id="area"),
         pytest.param(Widget.Kind.PIE, id="pie"),
         pytest.param(Widget.Kind.DONUT, id="donut"),
-        pytest.param(Widget.Kind.TIMESERIES_LINE, id="timeseries line"),
-        pytest.param(Widget.Kind.TIMESERIES_COLUMN, id="timeseries column"),
-        pytest.param(Widget.Kind.TIMESERIES_AREA, id="timeseries area"),
-        pytest.param(
-            Widget.Kind.TIMESERIES_STACKED_COLUMN, id="timeseries stacked column"
-        ),
-        pytest.param(Widget.Kind.TIMESERIES_STACKED_LINE, id="timeseries stacked line"),
         # Scatter actually requires two aggregations but the query still compiles
         # this should be enforced in the form
         pytest.param(Widget.Kind.SCATTER, id="scatter"),
@@ -112,10 +105,6 @@ stacked_params = pytest.mark.parametrize(
         pytest.param(Widget.Kind.STACKED_COLUMN, id="stacked column"),
         pytest.param(Widget.Kind.STACKED_BAR, id="stacked bar"),
         pytest.param(Widget.Kind.STACKED_LINE, id="stacked line"),
-        pytest.param(
-            Widget.Kind.TIMESERIES_STACKED_COLUMN, id="timeseries stacked column"
-        ),
-        pytest.param(Widget.Kind.TIMESERIES_STACKED_LINE, id="timeseries stacked line"),
         pytest.param(Widget.Kind.HEATMAP, id="heatmap"),
     ],
 )

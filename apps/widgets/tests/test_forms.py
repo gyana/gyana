@@ -49,7 +49,6 @@ def setup(
             id="table",
         ),
         pytest.param(Widget.Kind.FUNNEL, {FilterFormset, Min2Formset}, id="funnel"),
-        pytest.param(Widget.Kind.PYRAMID, {FilterFormset, Min2Formset}, id="pyramid"),
         pytest.param(Widget.Kind.RADAR, {FilterFormset, Min3Formset}, id="radar"),
         pytest.param(
             Widget.Kind.METRIC, {FilterFormset, SingleMetricFormset}, id="metric"
@@ -77,26 +76,11 @@ def test_generic_form(kind, formset_classes, setup, widget_factory):
             Widget.Kind.COLUMN, {FilterFormset, AggregationColumnFormset}, id="column"
         ),
         pytest.param(
-            Widget.Kind.TIMESERIES_COLUMN,
-            {FilterFormset, AggregationColumnFormset},
-            id="timeseries column",
-        ),
-        pytest.param(
             Widget.Kind.LINE, {FilterFormset, AggregationColumnFormset}, id="line"
-        ),
-        pytest.param(
-            Widget.Kind.TIMESERIES_LINE,
-            {FilterFormset, AggregationColumnFormset},
-            id="timeseries line",
         ),
         pytest.param(Widget.Kind.PIE, {FilterFormset, OptionalMetricFormset}, id="pie"),
         pytest.param(
             Widget.Kind.AREA, {FilterFormset, AggregationColumnFormset}, id="area"
-        ),
-        pytest.param(
-            Widget.Kind.TIMESERIES_AREA,
-            {FilterFormset, AggregationColumnFormset},
-            id="timeseries area",
         ),
         pytest.param(
             Widget.Kind.DONUT, {FilterFormset, AggregationColumnFormset}, id="donut"
@@ -153,16 +137,6 @@ def test_one_dimension_form(kind, formset_classes, setup, widget_factory):
             Widget.Kind.STACKED_LINE,
             {FilterFormset, OptionalMetricFormset},
             id="stacked line",
-        ),
-        pytest.param(
-            Widget.Kind.TIMESERIES_STACKED_COLUMN,
-            {FilterFormset, OptionalMetricFormset},
-            id="timeseries stacked column",
-        ),
-        pytest.param(
-            Widget.Kind.TIMESERIES_STACKED_LINE,
-            {FilterFormset, OptionalMetricFormset},
-            id="timeseries stacked line",
         ),
     ],
 )
