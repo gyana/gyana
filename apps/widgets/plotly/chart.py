@@ -264,6 +264,13 @@ def to_combo(df, widget):
 def to_chart(df, widget):
     fig = CHART_FIG[widget.kind](df, widget)
     fig.layout.title = widget.name
+    bg_color = (
+        widget.background_color
+        or widget.page.dashboard.widget_background_color
+        or "#ffffff"
+    )
+    fig.layout.paper_bgcolor = bg_color
+    fig.layout.plot_bgcolor = bg_color
 
     chart = fig.to_html(include_plotlyjs=False, config={"displayModeBar": False})
     chart_id = f"{widget.pk}-{uuid.uuid4()}"
