@@ -111,6 +111,7 @@ def to_column_stack(df, widget, orientation="v"):
         color=widget.second_dimension,
         orientation=orientation,
         color_discrete_sequence=get_pallete_colors(widget),
+        color_continuous_scale=get_pallete_colors(widget),
     )
 
 
@@ -121,6 +122,7 @@ def to_pie(df, widget):
         values=_get_first_value_or_count(widget),
         hole=0.3 if widget.kind == Widget.Kind.DONUT else None,
         color_discrete_sequence=get_pallete_colors(widget),
+        color_continuous_scale=get_pallete_colors(widget),
     )
 
 
@@ -161,6 +163,7 @@ def to_funnel(df, widget):
         names="variable",
         values="value",
         color_discrete_sequence=get_pallete_colors(widget),
+        color_continuous_scale=get_pallete_colors(widget),
     )
 
 
