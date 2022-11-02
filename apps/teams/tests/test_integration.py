@@ -261,7 +261,8 @@ def test_team_subscriptions(client, logged_in_user, settings, paddle):
 
     r = client.get(f"/teams/{team.id}/account")
     assertOK(r)
-    assertLink(r, f"/teams/{team.id}/pricing", "Upgrade")
+    # TODO: currently upgrading is disabled
+    # assertLink(r, f"/teams/{team.id}/pricing", "Upgrade")
 
     r = client.get(f"/teams/{team.id}/pricing")
     assertOK(r)
@@ -269,7 +270,8 @@ def test_team_subscriptions(client, logged_in_user, settings, paddle):
     # in turn, loads web pricing via iframe
     r = client.get(f"/pricing?iframe=true&team_id={team.id}")
     assertOK(r)
-    assertLink(r, f"/teams/{team.id}/checkout?plan={pro_plan.id}", "Upgrade to Pro")
+    # TODO: still disabled
+    # assertLink(r, f"/teams/{team.id}/checkout?plan={pro_plan.id}", "Upgrade to Pro")
 
     r = client.get(f"/teams/{team.id}/checkout?plan={pro_plan.id}")
     assertOK(r)
@@ -349,4 +351,6 @@ def test_pro_upgrade_with_limits(
     # pro tier cannot create two connectors in account
     r = client.get(f"{LIST}/connectors/new")
     assertOK(r)
-    assertNotLink(r, f"{LIST}/connectors/new?service=facebook_ads", "Import with Fivetran")
+    assertNotLink(
+        r, f"{LIST}/connectors/new?service=facebook_ads", "Import with Fivetran"
+    )
