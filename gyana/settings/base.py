@@ -218,8 +218,8 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
         "NAME": "gyana",
-        "USER": "postgres",
-        "PASSWORD": "***",
+        "USER": os.getenv("PG_USER", "postgres"),
+        "PASSWORD": os.getenv("PG_PASSWORD", "***"),
         "HOST": "localhost",
         "PORT": "5432",
     }
