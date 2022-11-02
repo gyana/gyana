@@ -18,7 +18,7 @@ from django.utils.translation import gettext_lazy
 from apps.base.models import BaseModel, HistoryModel
 from apps.projects.models import Project
 
-from .utils import getFusionThemePalette
+from .utils import getDefaultThemePalette
 
 
 class DashboardSettings(models.Model):
@@ -49,7 +49,7 @@ class DashboardSettings(models.Model):
     palette_colors = ArrayField(
         models.CharField(default="#5D62B5", max_length=7),
         size=10,
-        default=getFusionThemePalette,
+        default=getDefaultThemePalette,
     )
     background_color = models.CharField(default="#ffffff", max_length=7)
     font_size = models.IntegerField(default="14")

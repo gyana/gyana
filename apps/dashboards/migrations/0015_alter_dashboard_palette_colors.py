@@ -18,7 +18,7 @@ class Migration(migrations.Migration):
             name="palette_colors",
             field=django.contrib.postgres.fields.ArrayField(
                 base_field=models.CharField(default="#5D62B5", max_length=7),
-                default=apps.dashboards.models.getFusionThemePalette,
+                default=apps.dashboards.models.getDefaultThemePalette,
                 size=10,
             ),
         ),

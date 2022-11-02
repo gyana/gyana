@@ -6,8 +6,24 @@ import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
-from apps.widgets.fusion.chart import _get_first_value_or_count, get_unique_column_names
+from apps.columns.bigquery import resolve_colname
 from apps.widgets.models import COUNT_COLUMN_NAME, CombinationChart, Widget
+
+
+def _get_first_value_or_count(widget):
+    aggregation = widget.aggregations.first()
+    return aggregation.column if aggregation else COUNT_COLUMN_NAME
+
+
+def get_unique_column_names(aggregations, groups):
+    names = [
+        *groups,
+        *[aggregation.column for aggregation in aggregations],
+    ]
+    return {
+        column: resolve_colname(column.column, column.function, names)
+        for column in aggregations
+    }
 
 
 def get_pallete_colors(widget):

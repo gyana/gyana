@@ -110,7 +110,6 @@ ENVIRONMENT = production
 EXTERNAL_URL = https://app.gyana.com
 FIVETRAN_GROUP = intended_monsieur
 FIVETRAN_KEY = {{ key }}
-FUSIONCHARTS_LICENCE = {{ key }}
 GCP_BQ_SVC_ACCOUNT = gyana-app@gyana-app-314217.iam.gserviceaccount.com
 GCP_PROJECT = gyana-app-314217
 GOOGLE_ANALYTICS_ID = {{ key }}

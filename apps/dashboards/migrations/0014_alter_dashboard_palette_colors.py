@@ -4,7 +4,7 @@ import django.contrib.postgres.fields
 from django.db import migrations, models
 
 
-def getFusionThemePalette():
+def getDefaultThemePalette():
     return [
         "#5D62B5",
         "#29C3BE",
@@ -32,7 +32,7 @@ class Migration(migrations.Migration):
             name="palette_colors",
             field=django.contrib.postgres.fields.ArrayField(
                 base_field=models.CharField(default="#5D62B5", max_length=7),
-                default=getFusionThemePalette,
+                default=getDefaultThemePalette,
                 size=10,
             ),
         ),
