@@ -1,7 +1,10 @@
 import { Listbox, Transition } from '@headlessui/react'
 import React, { Fragment, useEffect, useRef, useState } from 'react'
 import ReactDOM from 'react-dom'
-import { SelectButton, SelectOption } from 'apps/base/javascript/components/SelectComponents'
+import {
+  SelectButton,
+  SelectOption,
+} from 'apps/base/javascript/components/SelectComponents'
 
 const findParentForm = (el) => {
   if (el.tagName == 'FORM') return el
@@ -28,8 +31,12 @@ const AutocompleteMultiSelect_: React.FC<{
 
   function handleSelect(value) {
     if (!isSelected(value)) {
-      const selectedUpdated = [...selectedOptions, options.find((el) => el === value) as string]
+      const selectedUpdated = [
+        ...selectedOptions,
+        options.find((el) => el === value) as string,
+      ]
       setSelectedOptions(selectedUpdated)
+      setSearch('')
     } else {
       handleDeselect(value)
     }
@@ -52,11 +59,15 @@ const AutocompleteMultiSelect_: React.FC<{
       .then((r) => {
         setOptions(r)
         setLoading(false)
+        searchRef.current?.focus()
       })
   }, [search])
 
   useEffect(() => {
-    if (inputRef.current && selectedOptions.some((o) => !selected.includes(o))) {
+    if (
+      inputRef.current &&
+      selectedOptions.some((o) => !selected.includes(o))
+    ) {
       // Manually fire the input change event for live update form
       // https://stackoverflow.com/a/36648958/15425660
       inputRef.current.dispatchEvent(new Event('change', { bubbles: true }))
@@ -64,20 +75,28 @@ const AutocompleteMultiSelect_: React.FC<{
   }, [JSON.stringify(selectedOptions)])
 
   return (
-    <Listbox className={'w-full'} as='div' value={selectedOptions} onChange={handleSelect}>
+    <Listbox
+      className={'w-full'}
+      as='div'
+      value={selectedOptions}
+      onChange={handleSelect}
+    >
       {() => (
         <>
           <SelectButton>
-            <div className='flex flex-col items-center'>
-              <span className='truncate flex flex-wrap gap-0.5 mb-1'>
-                {selectedOptions.length < 1
-                  ? 'Select'
-                  : selectedOptions.map((o) => (
-                      <Option key={o} label={o} remove={() => handleDeselect(o)} />
-                    ))}
-              </span>
+            <div className='flex flex-wrap items-center p-1 rounded-sm text-lg w-full truncate gap-0.5'>
+              {selectedOptions.length < 1
+                ? 'Select'
+                : selectedOptions.map((o) => (
+                    <Option
+                      key={o}
+                      label={o}
+                      remove={() => handleDeselect(o)}
+                    />
+                  ))}
+
               <input
-                className='border border-gray p-1 rounded-sm text-base w-full'
+                className='outline-none'
                 value={search}
                 ref={searchRef}
                 onChange={(e) => setSearch(e.target.value)}
@@ -92,7 +111,7 @@ const AutocompleteMultiSelect_: React.FC<{
             // The transition pulls the focus from the input here we put it back
             beforeEnter={() => searchRef.current?.focus()}
           >
-            <Listbox.Options className='absolute z-10 text-lg w-full py-1 mt-1 overflow-auto bg-white rounded-md max-h-60 focus:outline-none border border-gray'>
+            <Listbox.Options className='absolute z-10 text-lg w-full p-1 mt-1 overflow-auto bg-white rounded-md max-h-60 focus:outline-none border border-gray'>
               {loading ? (
                 <li className='w-full flex flex-row justify-center items-center'>
                   <i className='fad fa-spinner-third fa-spin' />
@@ -114,7 +133,9 @@ const AutocompleteMultiSelect_: React.FC<{
                             </span>
                             {selected ? (
                               <span
-                                className={`${active ? 'text-black-50' : 'text-black-20'}
+                                className={`${
+                                  active ? 'text-black-50' : 'text-black-20'
+                                }
                             absolute inset-y-0 right-0 flex items-center pr-3`}
                               >
                                 <i className='fa fa-check w-5 h-5' />
@@ -154,7 +175,9 @@ class AutocompleteMultiSelect extends HTMLElement {
     const mountPoint = document.createElement('div')
     // Because the Select dropdown will be absolute positioned we need to make the outer div relative
     mountPoint.setAttribute('class', 'relative w-full')
-    const selected = JSON.parse(this.querySelector('#selected')?.innerHTML || '[]')
+    const selected = JSON.parse(
+      this.querySelector('#selected')?.innerHTML || '[]'
+    )
 
     const parentType = this.attributes['parent-type'].value
     const parentId = this.attributes['parent'].value
