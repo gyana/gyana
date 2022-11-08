@@ -1,4 +1,6 @@
 # fmt: off
+from functools import partial
+
 from django import forms
 
 from apps.base.forms import BaseLiveSchemaForm, BaseSchemaForm
@@ -35,100 +37,54 @@ from apps.filters.models import Filter
 
 from .models import Node
 
-AggregationColumnFormSet = forms.inlineformset_factory(
-    Node,
-    AggregationColumn,
-    form=AggregationColumnForm,
-    extra=0,
-    can_delete=True,
+node_formset_factory = partial(
+    forms.inlineformset_factory,
+    parent_model=Node,
     formset=RequiredInlineFormset,
+    can_delete=True,
+    extra=0,
+)
+
+AggregationColumnFormSet = node_formset_factory(
+    model=AggregationColumn, form=AggregationColumnForm
 )
 
 
-ColumnFormSet = forms.inlineformset_factory(
-    Node,
-    Column,
-    form=ColumnForm,
-    extra=0,
-    can_delete=True,
-    formset=RequiredInlineFormset,
-)
+ColumnFormSet = node_formset_factory(model=Column, form=ColumnForm)
 
-SortColumnFormSet = forms.inlineformset_factory(
-    Node,
-    SortColumn,
-    form=SortColumnForm,
-    can_delete=True,
-    extra=0,
-    min_num=1,
-    formset=RequiredInlineFormset,
+SortColumnFormSet = node_formset_factory(
+    model=SortColumn, form=SortColumnForm, min_num=1
 )
 
 
-EditColumnFormSet = forms.inlineformset_factory(
-    Node,
-    EditColumn,
-    form=OperationColumnForm,
-    can_delete=True,
-    extra=0,
-    min_num=1,
-    formset=RequiredInlineFormset,
+EditColumnFormSet = node_formset_factory(
+    model=EditColumn, form=OperationColumnForm, min_num=1
 )
 
-AddColumnFormSet = forms.inlineformset_factory(
-    Node,
-    AddColumn,
+AddColumnFormSet = node_formset_factory(
+    model=AddColumn,
     form=AddColumnForm,
-    can_delete=True,
-    extra=0,
-    min_num=1,
-    formset=RequiredInlineFormset,
-)
-
-FormulaColumnFormSet = forms.inlineformset_factory(
-    Node,
-    FormulaColumn,
-    form=FormulaColumnForm,
-    fields=("formula", "label"),
-    can_delete=True,
-    extra=0,
-    min_num=1,
-    formset=BaseInlineFormset,
-)
-
-RenameColumnFormSet = forms.inlineformset_factory(
-    Node,
-    RenameColumn,
-    form=RenameColumnForm,
-    can_delete=True,
-    extra=0,
-    formset=RequiredInlineFormset,
     min_num=1,
 )
 
-FilterFormSet = forms.inlineformset_factory(
-    Node, Filter, form=FilterForm, can_delete=True, extra=0, min_num=1
+FormulaColumnFormSet = node_formset_factory(
+    model=FormulaColumn, form=FormulaColumnForm, fields=("formula", "label"), min_num=1
 )
 
-SelectColumnFormSet = forms.inlineformset_factory(
-    Node,
-    SecondaryColumn,
+RenameColumnFormSet = node_formset_factory(
+    model=RenameColumn, form=RenameColumnForm, min_num=1
+)
+
+FilterFormSet = node_formset_factory(model=Filter, form=FilterForm, min_num=1)
+
+SelectColumnFormSet = node_formset_factory(
+    model=SecondaryColumn,
     fields=("column",),
     form=BaseSchemaForm,
-    can_delete=True,
-    extra=0,
-    formset=RequiredInlineFormset,
 )
 
-UnpivotColumnFormSet = forms.inlineformset_factory(
-    Node,
-    Column,
-    fields=("column",),
-    form=BaseSchemaForm,
-    can_delete=True,
-    extra=0,
-    formset=RequiredInlineFormset,
-    min_num=1,
+UnpivotColumnFormSet = node_formset_factory(
+    model=Column, fields=("column",), form=BaseSchemaForm, min_num=1
 )
 
 WindowColumnFormSet = forms.inlineformset_factory(
@@ -151,14 +107,8 @@ ConvertColumnFormSet = forms.inlineformset_factory(
     formset=BaseInlineFormset,
 )
 
-JoinColumnFormset = forms.inlineformset_factory(
-    Node,
-    JoinColumn,
-    form=JoinColumnForm,
-    can_delete=True,
-    extra=0,
-    min_num=1,
-    formset=RequiredInlineFormset,
+JoinColumnFormset = node_formset_factory(
+    model=JoinColumn, form=JoinColumnForm, min_num=1
 )
 
 KIND_TO_FORMSETS = {
