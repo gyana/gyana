@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from functools import lru_cache
 
 from django.db.models import TextChoices
 from ibis.expr import datatypes as idt
@@ -9,7 +10,10 @@ from apps.columns.transformer import TreeToIbis
 
 from .types import TYPES
 
-parser = Lark.open("formula.lark", rel_to=__file__, start="formula")
+
+@lru_cache
+def parser():
+    return Lark.open("formula.lark", rel_to=__file__, start="formula")
 
 
 @dataclass
@@ -99,7 +103,7 @@ def compile_function(query, edit):
 
 def compile_formula(query, formula):
     try:
-        tree = parser.parse(formula)
+        tree = parser().parse(formula)
     except Exception as err:
         raise ParseError(formula=formula, columns=query.columns) from err
 
