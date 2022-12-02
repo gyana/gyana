@@ -18,125 +18,125 @@ from .mock import get_mock_fivetran_connector, get_mock_list_tables, get_mock_sc
 
 pytestmark = pytest.mark.django_db
 
+# TODO: Put back in once we have connectors again
+# def test_connector_create(client, logged_in_user, bigquery, fivetran, project):
+#     fivetran.get_authorize_url.side_effect = (
+#         lambda c, r: f"http://fivetran.url?redirect_uri={r}"
+#     )
+#     schema_obj = get_mock_schema(1)  # connector with a single table
+#     fivetran.get_schemas.return_value = schema_obj.to_dict()
+#     fivetran.create.return_value = get_mock_fivetran_connector(is_historical_sync=True)
+#     bigquery.list_tables.return_value = get_mock_list_tables(1)
 
-def test_connector_create(client, logged_in_user, bigquery, fivetran, project):
-    fivetran.get_authorize_url.side_effect = (
-        lambda c, r: f"http://fivetran.url?redirect_uri={r}"
-    )
-    schema_obj = get_mock_schema(1)  # connector with a single table
-    fivetran.get_schemas.return_value = schema_obj.to_dict()
-    fivetran.create.return_value = get_mock_fivetran_connector(is_historical_sync=True)
-    bigquery.list_tables.return_value = get_mock_list_tables(1)
+#     LIST = f"/projects/{project.id}/integrations"
+#     CONNECTORS = f"{LIST}/connectors"
 
-    LIST = f"/projects/{project.id}/integrations"
-    CONNECTORS = f"{LIST}/connectors"
+#     # test: create a new connector, authorize it, configure it, start the sync,
+#     # view the load screen and finally complete the sync
+#     # at each step, verify that the fivetran client is called with correct variables
+#     # and mock the return
 
-    # test: create a new connector, authorize it, configure it, start the sync,
-    # view the load screen and finally complete the sync
-    # at each step, verify that the fivetran client is called with correct variables
-    # and mock the return
+#     # view all connectors
+#     r = client.get(f"{CONNECTORS}/new")
+#     assertOK(r)
+#     assertLink(r, f"{CONNECTORS}/new?service=google_analytics", "Import with Fivetran")
 
-    # view all connectors
-    r = client.get(f"{CONNECTORS}/new")
-    assertOK(r)
-    assertLink(r, f"{CONNECTORS}/new?service=google_analytics", "Import with Fivetran")
+#     # connector alias logic (e.g. mysql)
+#     r = client.get(f"{CONNECTORS}/new?service=woocommerce_via_mysql")
+#     assertOK(r)
+#     assertLink(r, f"{CONNECTORS}/new?search=mysql", "Continue")
 
-    # connector alias logic (e.g. mysql)
-    r = client.get(f"{CONNECTORS}/new?service=woocommerce_via_mysql")
-    assertOK(r)
-    assertLink(r, f"{CONNECTORS}/new?search=mysql", "Continue")
+#     # create
+#     r = client.get(f"{CONNECTORS}/new?service=google_analytics")
+#     assertOK(r)
+#     assertFormRenders(r, [])
 
-    # create
-    r = client.get(f"{CONNECTORS}/new?service=google_analytics")
-    assertOK(r)
-    assertFormRenders(r, [])
+#     r = client.post(f"{CONNECTORS}/new?service=google_analytics", data={})
+#     integration = project.integration_set.first()
+#     assert integration is not None
+#     assert integration.kind == Integration.Kind.CONNECTOR
+#     connector = integration.connector
+#     assert connector is not None
+#     assert integration.created_by == logged_in_user
 
-    r = client.post(f"{CONNECTORS}/new?service=google_analytics", data={})
-    integration = project.integration_set.first()
-    assert integration is not None
-    assert integration.kind == Integration.Kind.CONNECTOR
-    connector = integration.connector
-    assert connector is not None
-    assert integration.created_by == logged_in_user
+#     redirect_uri = f"http://localhost:8000{CONNECTORS}/{connector.id}/authorize"
+#     authorization_uri = f"http://fivetran.url?redirect_uri={redirect_uri}"
+#     assertRedirects(r, authorization_uri)
 
-    redirect_uri = f"http://localhost:8000{CONNECTORS}/{connector.id}/authorize"
-    authorization_uri = f"http://fivetran.url?redirect_uri={redirect_uri}"
-    assertRedirects(r, authorization_uri)
+#     assert fivetran.create.call_count == 1
+#     assert fivetran.create.call_args.args == (
+#         "google_analytics",
+#         project.team.id,
+#         "00:00",
+#     )
+#     assert connector.fivetran_id == "fivetran_id"
+#     assert connector.schema == "dataset"
 
-    assert fivetran.create.call_count == 1
-    assert fivetran.create.call_args.args == (
-        "google_analytics",
-        project.team.id,
-        "00:00",
-    )
-    assert connector.fivetran_id == "fivetran_id"
-    assert connector.schema == "dataset"
+#     assert fivetran.get_authorize_url.call_count == 1
+#     assert fivetran.get_authorize_url.call_args.args == (
+#         connector,
+#         redirect_uri,
+#     )
 
-    assert fivetran.get_authorize_url.call_count == 1
-    assert fivetran.get_authorize_url.call_args.args == (
-        connector,
-        redirect_uri,
-    )
+#     DETAIL = f"{LIST}/{integration.id}"
 
-    DETAIL = f"{LIST}/{integration.id}"
+#     # authorize redirect
+#     r = client.get(f"{CONNECTORS}/{connector.id}/authorize")
+#     assertRedirects(r, f"{DETAIL}/configure")
 
-    # authorize redirect
-    r = client.get(f"{CONNECTORS}/{connector.id}/authorize")
-    assertRedirects(r, f"{DETAIL}/configure")
+#     # configure
+#     fivetran.get_schemas.reset_mock()
+#     r = client.get(f"{DETAIL}/configure")
+#     assertOK(r)
+#     # todo: fix this!
+#     assertFormRenders(r, ["name", "dataset_schema", "dataset_tables"])
+#     assertLink(r, authorization_uri, "authorization")
 
-    # configure
-    fivetran.get_schemas.reset_mock()
-    r = client.get(f"{DETAIL}/configure")
-    assertOK(r)
-    # todo: fix this!
-    assertFormRenders(r, ["name", "dataset_schema", "dataset_tables"])
-    assertLink(r, authorization_uri, "authorization")
+#     assert fivetran.get_schemas.call_count == 1
+#     assert fivetran.get_schemas.call_args.args == (connector,)
 
-    assert fivetran.get_schemas.call_count == 1
-    assert fivetran.get_schemas.call_args.args == (connector,)
+#     # fivetran initial sync request will happen on post
+#     fivetran.get.return_value = get_mock_fivetran_connector(is_historical_sync=True)
+#     r = client.post(f"{DETAIL}/configure", data={"dataset_tables": ["table_1"]})
+#     assertRedirects(r, f"{DETAIL}/load")
 
-    # fivetran initial sync request will happen on post
-    fivetran.get.return_value = get_mock_fivetran_connector(is_historical_sync=True)
-    r = client.post(f"{DETAIL}/configure", data={"dataset_tables": ["table_1"]})
-    assertRedirects(r, f"{DETAIL}/load")
+#     assert fivetran.update_schemas.call_count == 1
+#     assert fivetran.update_schemas.call_args.args == (connector, schema_obj.to_dict())
+#     assert fivetran.start_initial_sync.call_count == 1
+#     assert fivetran.start_initial_sync.call_args.args == (connector,)
 
-    assert fivetran.update_schemas.call_count == 1
-    assert fivetran.update_schemas.call_args.args == (connector, schema_obj.to_dict())
-    assert fivetran.start_initial_sync.call_count == 1
-    assert fivetran.start_initial_sync.call_args.args == (connector,)
+#     r = client.get(f"{DETAIL}/load")
+#     assertOK(r)
+#     assertContains(r, "Google Analytics")
+#     assertLink(r, f"{LIST}/", "integrations")
 
-    r = client.get(f"{DETAIL}/load")
-    assertOK(r)
-    assertContains(r, "Google Analytics")
-    assertLink(r, f"{LIST}/", "integrations")
+#     # the user leaves the page and periodic job runs in background
+#     fivetran.get.return_value = get_mock_fivetran_connector(succeeded_at=timezone.now())
+#     fivetran.list.return_value = [
+#         get_mock_fivetran_connector(succeeded_at=timezone.now())
+#     ]
+#     periodic.sync_all_updates_from_fivetran.delay()
 
-    # the user leaves the page and periodic job runs in background
-    fivetran.get.return_value = get_mock_fivetran_connector(succeeded_at=timezone.now())
-    fivetran.list.return_value = [
-        get_mock_fivetran_connector(succeeded_at=timezone.now())
-    ]
-    periodic.sync_all_updates_from_fivetran.delay()
+#     integration.refresh_from_db()
+#     assert integration.state == Integration.State.DONE
+#     assert integration.table_set.count() == 1
 
-    integration.refresh_from_db()
-    assert integration.state == Integration.State.DONE
-    assert integration.table_set.count() == 1
+#     fivetran.get.call_count == 3
+#     fivetran.get.call_args.args == (connector,)
 
-    fivetran.get.call_count == 3
-    fivetran.get.call_args.args == (connector,)
+#     assert len(mail.outbox) == 1
 
-    assert len(mail.outbox) == 1
+#     # checking back explicitly will also complete
+#     fivetran.get.return_value = get_mock_fivetran_connector(succeeded_at=timezone.now())
+#     integration.state = Integration.State.LOAD
+#     integration.table_set.all().delete()
+#     integration.save()
 
-    # checking back explicitly will also complete
-    fivetran.get.return_value = get_mock_fivetran_connector(succeeded_at=timezone.now())
-    integration.state = Integration.State.LOAD
-    integration.table_set.all().delete()
-    integration.save()
+#     r = client.get(f"{DETAIL}/load")
+#     assertRedirects(r, f"{DETAIL}/done")
 
-    r = client.get(f"{DETAIL}/load")
-    assertRedirects(r, f"{DETAIL}/done")
-
-    integration.refresh_from_db()
-    assert integration.state == Integration.State.DONE
+#     integration.refresh_from_db()
+#     assert integration.state == Integration.State.DONE
 
 
 def test_status_on_integrations_page(
@@ -215,83 +215,84 @@ def test_status_broken(client, logged_in_user, fivetran, connector_factory):
     assertLink(r, f"http://fivetran.url?redirect_uri={redirect_uri}", "needs attention")
 
 
-def test_connector_search_and_categories(client, logged_in_user, project):
+# def test_connector_search_and_categories(client, logged_in_user, project):
 
-    LIST = f"/projects/{project.id}/integrations"
-    CONNECTORS = f"{LIST}/connectors"
+#     LIST = f"/projects/{project.id}/integrations"
+#     CONNECTORS = f"{LIST}/connectors"
 
-    # test: search and filter by category
+#     # test: search and filter by category
 
-    r = client.get(f"{CONNECTORS}/new")
-    assertOK(r)
-    assertLink(r, f"{CONNECTORS}/new?service=google_analytics", "Import with Fivetran")
-    assertLink(r, f"{CONNECTORS}/new?service=asana", "Import with Fivetran")
+#     r = client.get(f"{CONNECTORS}/new")
+#     assertOK(r)
+#     assertLink(r, f"{CONNECTORS}/new?service=google_analytics", "Import with Fivetran")
+#     assertLink(r, f"{CONNECTORS}/new?service=asana", "Import with Fivetran")
 
-    # filter by category
-    assertLink(r, f"{CONNECTORS}/new?category=Marketing", "Marketing")
-    r = client.get(f"{CONNECTORS}/new?category=Marketing")
-    assertOK(r)
-    assertContains(r, "Google Analytics")
-    assertNotContains(r, "Asana")
+#     # filter by category
+#     assertLink(r, f"{CONNECTORS}/new?category=Marketing", "Marketing")
+#     r = client.get(f"{CONNECTORS}/new?category=Marketing")
+#     assertOK(r)
+#     assertContains(r, "Google Analytics")
+#     assertNotContains(r, "Asana")
 
-    # filter by search
-    r = client.get(f"{CONNECTORS}/new?search=asa")
-    assertOK(r)
-    assertNotContains(r, "Google Analytics")
-    assertContains(r, "Asana")
+#     # filter by search
+#     r = client.get(f"{CONNECTORS}/new?search=asa")
+#     assertOK(r)
+#     assertNotContains(r, "Google Analytics")
+#     assertContains(r, "Asana")
 
 
-def test_connector_basic_reports(client, project, connector_factory, fivetran):
-    connector = connector_factory(integration__project=project, service="facebook_ads")
-    integration = connector.integration
-    schema_obj = get_mock_schema(1)  # connector with a single table
-    patched_schema_obj = get_mock_schema(1, disabled=[1], schemas_disabled=True)
-    fivetran.get_schemas.return_value = schema_obj.to_dict()
-    fivetran.get.return_value = get_mock_fivetran_connector(
-        is_historical_sync=True, service="facebook_ads"
-    )
+# TODO: Put back in once we have connectors again
+# def test_connector_basic_reports(client, project, connector_factory, fivetran):
+#     connector = connector_factory(integration__project=project, service="facebook_ads")
+#     integration = connector.integration
+#     schema_obj = get_mock_schema(1)  # connector with a single table
+#     patched_schema_obj = get_mock_schema(1, disabled=[1], schemas_disabled=True)
+#     fivetran.get_schemas.return_value = schema_obj.to_dict()
+#     fivetran.get.return_value = get_mock_fivetran_connector(
+#         is_historical_sync=True, service="facebook_ads"
+#     )
 
-    DETAIL = f"/projects/{project.id}/integrations/{integration.id}"
+#     DETAIL = f"/projects/{project.id}/integrations/{integration.id}"
 
-    r = client.get(f"{DETAIL}/configure")
-    assertOK(r)
-    assertFormRenders(
-        r,
-        ["setup_mode", "dataset_schema", "dataset_tables"],
-        formSelector="#configure-update-form",
-    )
+#     r = client.get(f"{DETAIL}/configure")
+#     assertOK(r)
+#     assertFormRenders(
+#         r,
+#         ["setup_mode", "dataset_schema", "dataset_tables"],
+#         formSelector="#configure-update-form",
+#     )
 
-    r = client.post(
-        f"{DETAIL}/configure",
-        data={"hidden_live": True, "setup_mode": Connector.SetupMode.BASIC},
-    )
-    assertOK(r)
-    assertFormRenders(
-        r, ["setup_mode", "basic_reports"], formSelector="#configure-update-form"
-    )
+#     r = client.post(
+#         f"{DETAIL}/configure",
+#         data={"hidden_live": True, "setup_mode": Connector.SetupMode.BASIC},
+#     )
+#     assertOK(r)
+#     assertFormRenders(
+#         r, ["setup_mode", "basic_reports"], formSelector="#configure-update-form"
+#     )
 
-    assert fivetran.update_schemas.call_count == 0
-    assert fivetran.update.call_count == 0
+#     assert fivetran.update_schemas.call_count == 0
+#     assert fivetran.update.call_count == 0
 
-    r = client.post(
-        f"{DETAIL}/configure",
-        data={
-            "setup_mode": Connector.SetupMode.BASIC,
-            "basic_reports": ["BASIC_AD_PERFORMANCE"],
-        },
-    )
-    assertRedirects(r, f"{DETAIL}/load")
+#     r = client.post(
+#         f"{DETAIL}/configure",
+#         data={
+#             "setup_mode": Connector.SetupMode.BASIC,
+#             "basic_reports": ["BASIC_AD_PERFORMANCE"],
+#         },
+#     )
+#     assertRedirects(r, f"{DETAIL}/load")
 
-    assert fivetran.update_schemas.call_count == 1
-    assert fivetran.update_schemas.call_args.args == (
-        connector,
-        patched_schema_obj.to_dict(),
-    )
+#     assert fivetran.update_schemas.call_count == 1
+#     assert fivetran.update_schemas.call_args.args == (
+#         connector,
+#         patched_schema_obj.to_dict(),
+#     )
 
-    assert fivetran.update.call_count == 1
-    assert fivetran.update.call_args.args == (connector,)
-    assert fivetran.update.call_args.kwargs["config"]["custom_tables"] == [
-        BASIC_REPORTS["BASIC_AD_PERFORMANCE"]["custom_table"]
-    ]
+#     assert fivetran.update.call_count == 1
+#     assert fivetran.update.call_args.args == (connector,)
+#     assert fivetran.update.call_args.kwargs["config"]["custom_tables"] == [
+#         BASIC_REPORTS["BASIC_AD_PERFORMANCE"]["custom_table"]
+#     ]
 
-    assert connector.facebookadscustomreport_set.count() == 1
+#     assert connector.facebookadscustomreport_set.count() == 1

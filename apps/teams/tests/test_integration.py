@@ -209,7 +209,8 @@ def test_account_limit_warning_and_disabled(client, project_factory):
     team.members.add(user, through_defaults={"role": "admin"})
     client.force_login(user)
 
-    assertOK(client.get(f"/projects/{project.id}/integrations/connectors/new"))
+    # TODO: Put back in once we have connectors again
+    # assertOK(client.get(f"/projects/{project.id}/integrations/connectors/new"))
     assertOK(client.get(f"/projects/{project.id}/integrations/sheets/new"))
     assertOK(client.get(f"/projects/{project.id}/integrations/uploads/new"))
 
@@ -233,7 +234,8 @@ def test_account_limit_warning_and_disabled(client, project_factory):
     assertOK(r)
     assertContains(r, "You've exceeded your row count limit by over 20%")
 
-    assertNotFound(client.get(f"/projects/{project.id}/integrations/connectors/new"))
+    # TODO: Put back in once we have connectors again
+    # assertNotFound(client.get(f"/projects/{project.id}/integrations/connectors/new"))
     assertNotFound(client.get(f"/projects/{project.id}/integrations/sheets/new"))
     assertNotFound(client.get(f"/projects/{project.id}/integrations/uploads/new"))
 
@@ -334,23 +336,25 @@ def test_pro_upgrade_with_limits(
 
     # zero state
     r = client.get(f"{LIST}/")
-    assertLink(r, f"{LIST}/connectors/new", "Add a connector")
+
     assertLink(r, f"{LIST}/customapis/new", "Use a Custom API")
 
-    r = client.get(f"{LIST}/connectors/new")
-    assertOK(r)
-    assertLink(r, f"{LIST}/connectors/new?service=facebook_ads", "Import with Fivetran")
+    # TODO: Put back in once we have connectors again
+    # assertLink(r, f"{LIST}/connectors/new", "Add a connector")
+    # r = client.get(f"{LIST}/connectors/new")
+    # assertOK(r)
+    # assertLink(r, f"{LIST}/connectors/new?service=facebook_ads", "Import with Fivetran")
 
-    connector_factory(integration__project=project, service="facebook_ads")
+    # connector_factory(integration__project=project, service="facebook_ads")
 
     # dropdown
     r = client.get(f"{LIST}/")
-    assertLink(r, f"{LIST}/connectors/new", "New Connector")
+    # assertLink(r, f"{LIST}/connectors/new", "New Connector")
     assertLink(r, f"{LIST}/customapis/new", "Custom API")
 
     # pro tier cannot create two connectors in account
-    r = client.get(f"{LIST}/connectors/new")
-    assertOK(r)
-    assertNotLink(
-        r, f"{LIST}/connectors/new?service=facebook_ads", "Import with Fivetran"
-    )
+    # r = client.get(f"{LIST}/connectors/new")
+    # assertOK(r)
+    # assertNotLink(
+    #     r, f"{LIST}/connectors/new?service=facebook_ads", "Import with Fivetran"
+    # )

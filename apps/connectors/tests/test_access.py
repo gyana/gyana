@@ -31,7 +31,8 @@ def test_connector_required(client, url, user, connector_factory, fivetran):
 @pytest.mark.parametrize(
     "url, success_code",
     [
-        pytest.param("/projects/{}/integrations/connectors/new", 200, id="new"),
+        # TODO: Put back in once we have connectors again
+        # pytest.param("/projects/{}/integrations/connectors/new", 200, id="new"),
         pytest.param(
             "/projects/{}/integrations/connectors/{}/authorize", 302, id="authorize"
         ),
