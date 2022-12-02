@@ -84,7 +84,7 @@ PARAMS = [
     ),
     pytest.param(
         "ifelse(is_nice, medals*10, medals-5)",
-        QUERY.format("CASE WHEN `is_nice` THEN `medals` * 10 ELSE `medals` - 5 END"),
+        QUERY.format("if(`is_nice`, `medals` * 10, `medals` - 5)"),
         id="if else",
     ),
     # Test string operations
@@ -432,7 +432,7 @@ PARAMS = [
     pytest.param(
         'ifelse(between(birthday, 2000-01-01, 2000-01-31), "millenium kid", "normal kid")',
         QUERY.format(
-            "CASE WHEN `birthday` BETWEEN '2000-01-01' AND '2000-01-31' THEN 'millenium kid' ELSE 'normal kid' END"
+            "if(`birthday` BETWEEN '2000-01-01' AND '2000-01-31', 'millenium kid', 'normal kid')"
         ),
         id="nest ifelse with datetime function",
     ),
