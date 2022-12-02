@@ -797,18 +797,14 @@ test = ["pytest", "pytest-cov", "pytest-django"]
 
 [[package]]
 name = "django-invitations"
-version = "1.9.3"
+version = "2.0.0"
 description = "Generic invitations app with support for django-allauth"
 category = "main"
 optional = false
-python-versions = "*"
-develop = false
+python-versions = ">=3.7,<4.0"
 
-[package.source]
-type = "git"
-url = "https://github.com/gyana/django-invitations.git"
-reference = "patch-1"
-resolved_reference = "141b87895901bea3700fa6dd46b657800764e83f"
+[package.dependencies]
+django = ">=3.2"
 
 [[package]]
 name = "django-modelcluster"
@@ -2786,26 +2782,19 @@ test = ["coverage (==6.0)", "flake8 (==4.0.0)", "flake8-blind-except (==0.1.1)",
 
 [[package]]
 name = "wagtailmenus"
-version = "3.1.1"
+version = "3.1.3"
 description = "An app to help you manage menus in your Wagtail projects more consistently."
 category = "main"
 optional = false
 python-versions = ">=3.7"
-develop = false
 
 [package.dependencies]
 django-cogwheels = "0.3"
 
 [package.extras]
 development = ["beautifulsoup4 (>=4.8,<4.10)", "coverage (>=4.5)", "django-debug-toolbar", "django-extensions", "django-webtest (>=1.9,<1.10)", "ipdb", "wagtail (>=2.15)", "werkzeug"]
-docs = ["Sphinx (>=1.7.4)", "pyenchant (>=2.0)", "sphinx_rtd_theme (>=0.3)", "sphinxcontrib-spelling (>=1.4)"]
+docs = ["Sphinx (>=1.7.4)", "pyenchant (>=2.0)", "sphinx-rtd-theme (>=0.3)", "sphinxcontrib-spelling (>=1.4)"]
 testing = ["beautifulsoup4 (>=4.8,<4.10)", "coverage (>=4.5)", "django-webtest (>=1.9,<1.10)"]
-
-[package.source]
-type = "git"
-url = "https://github.com/jazzband/wagtailmenus"
-reference = "8be2790c01688dd3c9ef7298bdebe94575c0a76a"
-resolved_reference = "8be2790c01688dd3c9ef7298bdebe94575c0a76a"
 
 [[package]]
 name = "wcwidth"
@@ -2897,7 +2886,7 @@ testing = ["flake8 (<5)", "func-timeout", "jaraco.functools", "jaraco.itertools"
 [metadata]
 lock-version = "1.1"
 python-versions = "3.9.*"
-content-hash = "ecba74a02030c45a2b86a6188e99b457c986e8aeb3b21daef82fee77184df3de"
+content-hash = "513606d6c50a719d813b1536e714fa9b01229b6f94f3c833aff8c415a5b57b1e"
 
 [metadata.files]
 amqp = [
@@ -3291,7 +3280,10 @@ django-hijack = [
     {file = "django-hijack-3.2.1.tar.gz", hash = "sha256:8df524fd085a43205a6bb497c53fd94483824b4f3179762fc1c31c1dea58d1ca"},
     {file = "django_hijack-3.2.1-py3-none-any.whl", hash = "sha256:b0723750b247e5b1f69f600a40b1d512404061f33918e0bffb4aa928314ea1db"},
 ]
-django-invitations = []
+django-invitations = [
+    {file = "django-invitations-2.0.0.tar.gz", hash = "sha256:49df44fc226234fbf08ad59a937864bc28fa044e0d508b3995a13505faa03a78"},
+    {file = "django_invitations-2.0.0-py3-none-any.whl", hash = "sha256:7dae5ae2b2add311be5f2420d21b5853d4a63fb09f2b6414ee1b6bcb3e4fbf77"},
+]
 django-modelcluster = [
     {file = "django-modelcluster-6.0.tar.gz", hash = "sha256:cdcffef5baf5d3759ee04c5b60ffaf1a0c95fc0f265e762f3ddfadde3394e5db"},
     {file = "django_modelcluster-6.0-py2.py3-none-any.whl", hash = "sha256:4ae46f86c43702020f24f212222eef0a2588df937bbb523a5447da247b5fb130"},
@@ -4688,7 +4680,9 @@ wagtail-factories = [
     {file = "wagtail_factories-2.1.0-py2.py3-none-any.whl", hash = "sha256:bca1538d2c7faad9a9d024c047c7f695e2753d218ea79b78e410bec77913bee3"},
     {file = "wagtail_factories-2.1.0.tar.gz", hash = "sha256:162cce8f3f7d26aebf19f233e243a24946be74bb281822889ec7f936ba42dbff"},
 ]
-wagtailmenus = []
+wagtailmenus = [
+    {file = "wagtailmenus-3.1.3-py3-none-any.whl", hash = "sha256:0f5669f160d788b1ab8c2b412cb95411e9c07f83e4b52dddc92991752c6fa397"},
+]
 wcwidth = [
     {file = "wcwidth-0.2.5-py2.py3-none-any.whl", hash = "sha256:beb4802a9cebb9144e99086eff703a642a13d6a0052920003a230f3294bbe784"},
     {file = "wcwidth-0.2.5.tar.gz", hash = "sha256:c4d647b99872929fdb7bdcaa4fbe7f01413ed3d98077df798530e5b04f116c83"},
