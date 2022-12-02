@@ -50,18 +50,9 @@
   <div class="flex gap-8 mt-7">
     {% if team.is_free %}
       <button class="button button--tertiary flex-1 disabled">
-        Add a connector
-      </button>
-      <button class="button button--tertiary flex-1 disabled">
         Use a Custom API
       </button>
     {% else %}
-      <a
-        href="{% url 'project_integrations_connectors:create' project.id %}"
-        class="button button--tertiary flex-1"
-      >
-        Add a connector
-      </a>
       <a
         href="{% url 'project_integrations_customapis:create' project.id %}"
         class="button button--tertiary flex-1"
@@ -104,17 +95,11 @@
           </a>
 
           {% if team.is_free %}
-            <button disabled class="list__item list__item--interactive disabled">
-              <i class="fas fa-fw fa-plus mr-4"></i> New Connector
-            </button>
 
             <button disabled class="list__item list__item--interactive disabled">
               <i class="fas fa-fw fa-brackets-curly mr-4"></i> Custom API
             </button>
           {% else %}
-            <a class="list__item list__item--interactive" href="{% url 'project_integrations_connectors:create' project.id %}">
-              <i class="fas fa-fw fa-plus mr-4"></i> New Connector
-            </a>
 
             <a class="list__item list__item--interactive" href="{% url 'project_integrations_customapis:create' project.id %}">
               <i class="fas fa-fw fa-brackets-curly mr-4"></i> Custom API

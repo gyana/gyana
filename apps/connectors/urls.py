@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.urls import path
+from django.views.defaults import page_not_found
 
 from apps.projects.access import (
     login_and_project_enabled_required,
@@ -36,11 +37,12 @@ if settings.DEBUG:
 
 integration_urlpatterns = (
     [
-        path(
-            "new",
-            login_and_project_enabled_required(views.ConnectorCreate.as_view()),
-            name="create",
-        ),
+        path("new", page_not_found, {"exception": Exception()}),
+        # path(
+        #     "new",
+        #     login_and_project_enabled_required(views.ConnectorCreate.as_view()),
+        #     name="create",
+        # ),
         path(
             "<hashid:pk>/authorize",
             login_and_project_required(views.ConnectorAuthorize.as_view()),
