@@ -1,6 +1,7 @@
 import pytest
 from deepdiff import DeepDiff
-from django.utils import timezone
+from django.conf import settings
+from djpaddle.models import Plan
 from pytest_django.asserts import assertContains, assertRedirects
 
 from apps.base.tests.asserts import (
@@ -12,6 +13,7 @@ from apps.base.tests.asserts import (
     assertSelectorText,
 )
 from apps.base.tests.snapshot import get_instance_dict
+from apps.base.tests.subscribe import upgrade_to_pro
 from apps.nodes.models import Node
 from apps.projects.models import Project
 from apps.tables.models import Table
@@ -123,7 +125,14 @@ def test_private_projects(client, logged_in_user):
     project = team.project_set.first()
     assert project is None
 
-    # TODO: upgrade usern without appsumo code
+    # Upgrade user
+    pro_plan = Plan.objects.create(
+        id=settings.DJPADDLE_PRO_PLAN_ID,
+        name="Business",
+        billing_type="month",
+        billing_period=1,
+    )
+    upgrade_to_pro(logged_in_user, team, pro_plan)
 
     r = client.post(
         f"/teams/{team.id}/projects/new",

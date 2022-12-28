@@ -40,18 +40,12 @@ class ConnectorCreate(ProjectMixin, CreateView):
         context_data["service_categories"] = get_service_categories(
             show_internal=self.request.user.is_superuser
         )
-        context_data["disabled_services"] = (
-            {}
-            if self.project.team.is_ltd
-            else {
-                integration.connector.service
-                for integration in Integration.objects.visible()
-                .filter(
-                    project__team=self.project.team, kind=Integration.Kind.CONNECTOR
-                )
-                .all()
-            }
-        )
+        context_data["disabled_services"] = {
+            integration.connector.service
+            for integration in Integration.objects.visible()
+            .filter(project__team=self.project.team, kind=Integration.Kind.CONNECTOR)
+            .all()
+        }
 
         return context_data
 

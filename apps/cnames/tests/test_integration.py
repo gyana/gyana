@@ -2,7 +2,9 @@ from unittest import mock
 from uuid import uuid4
 
 import pytest
+from django.conf import settings
 from django.utils import timezone
+from djpaddle.models import Plan
 from pytest_django.asserts import assertFormError, assertRedirects
 
 from apps.base.tests.asserts import (
@@ -12,6 +14,7 @@ from apps.base.tests.asserts import (
     assertSelectorLength,
     assertSelectorText,
 )
+from apps.base.tests.subscribe import upgrade_to_pro
 from apps.dashboards.models import Dashboard
 from apps.teams.models import Team
 
@@ -41,7 +44,14 @@ def test_cname_crudl(client, logged_in_user, heroku):
     r = client.post(f"/teams/{team.id}/cnames/new", data={"domain": "test.domain.com"})
     assert r.status_code == 422
 
-    # TODO: Upgrade user without appsumo code
+    # Upgrade user
+    pro_plan = Plan.objects.create(
+        id=settings.DJPADDLE_PRO_PLAN_ID,
+        name="Business",
+        billing_type="month",
+        billing_period=1,
+    )
+    upgrade_to_pro(logged_in_user, team, pro_plan)
 
     r = client.get_turbo_frame(f"/teams/{team.id}/update", f"/teams/{team.id}/cnames/")
     assertOK(r)
