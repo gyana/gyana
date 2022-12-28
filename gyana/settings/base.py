@@ -120,6 +120,7 @@ PROJECT_APPS = [
     "apps.uploads",
     "apps.sheets",
     "apps.connectors.apps.ConnectorsConfig",
+    # TODO: Remove once migrations have run
     "apps.appsumo",
     "apps.cnames.apps.CNamesConfig",
     "apps.exports",

@@ -10,21 +10,11 @@ stateDiagram-v2
   has_account --> Signup: No account
   Signup --> questionare
 
-  AppSumo --> if_code_valid 
-  if_code_valid --> Team_select: After logging in
-  if_code_valid --> Team_select: Already logged in
-  if_code_valid --> Appsumo_signup: No account
-  if_code_valid --> 404: Code does not exist
-  if_code_valid --> Error: Already redeemed
-  Team_select --> questionare
-  Appsumo_signup --> questionare
-
   questionare --> team_creation: Not Appsumo
   team_creation --> activation_flow
 ```
 
 ## Activation Flow
-
 
 ```mermaid
 stateDiagram-v2
@@ -47,5 +37,4 @@ stateDiagram-v2
 
 TODOs
 
-* Add next to appsumo login button (brings back to appsumo redemption)
-* Add welcome to team overview for choice between project/templates
+- Add welcome to team overview for choice between project/templates

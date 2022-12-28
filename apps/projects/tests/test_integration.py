@@ -3,7 +3,6 @@ from deepdiff import DeepDiff
 from django.utils import timezone
 from pytest_django.asserts import assertContains, assertRedirects
 
-from apps.appsumo.models import AppsumoCode
 from apps.base.tests.asserts import (
     assertFormRenders,
     assertLink,
@@ -124,9 +123,7 @@ def test_private_projects(client, logged_in_user):
     project = team.project_set.first()
     assert project is None
 
-    # upgrade user
-    AppsumoCode.objects.create(code="12345678", team=team, redeemed=timezone.now())
-    AppsumoCode.objects.create(code="12345679", team=team, redeemed=timezone.now())
+    # TODO: upgrade usern without appsumo code
 
     r = client.post(
         f"/teams/{team.id}/projects/new",

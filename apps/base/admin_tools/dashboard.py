@@ -49,8 +49,8 @@ class CustomIndexDashboard(Dashboard):
 
         self.children.append(
             modules.ModelList(
-                _("Appsumo & Waitlist"),
-                models=("apps.appsumo.*", "apps.users.models.ApprovedWaitlistEmail*"),
+                _("Waitlist"),
+                models=("apps.users.models.ApprovedWaitlistEmail*"),
             )
         )
 

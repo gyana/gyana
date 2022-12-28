@@ -5,7 +5,6 @@ import pytest
 from django.utils import timezone
 from pytest_django.asserts import assertFormError, assertRedirects
 
-from apps.appsumo.models import AppsumoCode
 from apps.base.tests.asserts import (
     assertFormRenders,
     assertLink,
@@ -42,9 +41,7 @@ def test_cname_crudl(client, logged_in_user, heroku):
     r = client.post(f"/teams/{team.id}/cnames/new", data={"domain": "test.domain.com"})
     assert r.status_code == 422
 
-    # upgrade user
-    AppsumoCode.objects.create(code="12345678", team=team, redeemed=timezone.now())
-    AppsumoCode.objects.create(code="12345679", team=team, redeemed=timezone.now())
+    # TODO: Upgrade user without appsumo code
 
     r = client.get_turbo_frame(f"/teams/{team.id}/update", f"/teams/{team.id}/cnames/")
     assertOK(r)

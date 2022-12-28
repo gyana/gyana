@@ -8,7 +8,6 @@ from apps.users.models import CustomUser
 # users
 SIGNED_UP_EVENT: Final = "Signed up"
 ONBOARDING_COMPLETED_EVENT: Final = "Onboarding completed"
-APPSUMO_CODE_REDEEMED_EVENT: Final = "AppSumo code redeemed"
 
 # teams
 TEAM_CREATED_EVENT: Final = "Team created"
@@ -74,7 +73,7 @@ def identify_user(user: CustomUser, signup_source=None):
     }
 
     if signup_source is not None:
-        # appsumo OR waitlist OR invite OR website
+        # waitlist OR invite OR website
         traits["signup_source"] = signup_source
 
     analytics.identify(user.id, traits)

@@ -3280,48 +3280,6 @@
     }
   },
   {
-    "model": "appsumo.appsumocode",
-    "pk": 1,
-    "fields": {
-      "created": "2021-08-23T23:00:00Z",
-      "updated": "2021-08-23T23:00:00Z",
-      "code": "12345678",
-      "team": null,
-      "deal": "usd_49",
-      "redeemed": null,
-      "refunded_before": null,
-      "redeemed_by": null
-    }
-  },
-  {
-    "model": "appsumo.appsumocode",
-    "pk": 2,
-    "fields": {
-      "created": "2021-08-23T23:00:00Z",
-      "updated": "2021-08-23T23:00:00Z",
-      "code": "ABCDEFGH",
-      "team": 1,
-      "deal": "usd_59",
-      "redeemed": "2021-08-23T23:00:00Z",
-      "refunded_before": null,
-      "redeemed_by": null
-    }
-  },
-  {
-    "model": "appsumo.appsumocode",
-    "pk": 3,
-    "fields": {
-      "created": "2021-08-23T23:00:00Z",
-      "updated": "2021-08-23T23:00:00Z",
-      "code": "QWERTYUI",
-      "team": null,
-      "deal": "usd_179",
-      "redeemed": "2021-08-23T23:00:00Z",
-      "refunded_before": null,
-      "redeemed_by": null
-    }
-  },
-  {
     "model": "runs.jobrun",
     "pk": 1,
     "fields": {

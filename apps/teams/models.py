@@ -110,17 +110,6 @@ class Team(DirtyFieldsMixin, BaseModel, SafeDeleteModel):
 
         return calculate_credit_balance(self)
 
-    def redeemed_codes(self):
-        return self.appsumocode_set.count()
-
-    @property
-    def active_codes(self):
-        return self.appsumocode_set.filter(refunded_before__isnull=True).count()
-
-    @property
-    def refunded_codes(self):
-        return self.appsumocode_set.filter(refunded_before__isnull=False).count()
-
     @property
     def ltd_disabled(self):
         return self.active_codes == 0
@@ -128,10 +117,6 @@ class Team(DirtyFieldsMixin, BaseModel, SafeDeleteModel):
     @property
     def exceeds_stacking_limit(self):
         return self.active_codes > 5
-
-    @property
-    def has_extra_rows(self):
-        return self.appsumoextra_set.count() > 0
 
     @property
     def is_free(self):

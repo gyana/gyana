@@ -2,11 +2,6 @@ from django.contrib import admin
 from safedelete.admin import SafeDeleteAdmin, highlight_deleted
 from waffle.admin import FlagAdmin as WaffleFlagAdmin
 
-from apps.appsumo.admin import (
-    AppsumoCodeInline,
-    AppsumoExtraInline,
-    AppsumoReviewInline,
-)
 from apps.invites.admin import InviteInline
 
 from .models import Flag, Membership, Team
@@ -86,9 +81,6 @@ class TeamAdmin(SafeDeleteAdmin):
 
     inlines = [
         UserMembershipInline,
-        AppsumoCodeInline,
-        AppsumoReviewInline,
-        AppsumoExtraInline,
         InviteInline,
     ]
 
