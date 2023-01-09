@@ -125,7 +125,3 @@ class ProjectRunForm(BaseModelForm):
         self._daily_schedule_time_is_dirty = (
             "daily_schedule_time" in instance.get_dirty_fields()
         )
-
-    def post_save(self, instance):
-        if self._daily_schedule_time_is_dirty:
-            instance.update_daily_sync_time()

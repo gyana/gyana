@@ -25,15 +25,6 @@ def create_attrs(attrs, original):
             # For these simply use the new source table_id and the original team_dataset
             attrs["bq_table"] = integration_clone.source_obj.table_id
             attrs["bq_dataset"] = original.bq_dataset
-        elif integration_clone.kind == Integration.Kind.CONNECTOR:
-            # Connectors should have a new dataset created but the table name stays the same
-            attrs["bq_table"] = original.bq_table
-            # We are replacing the connector schema from the bq_dataset to
-            # To maintain schema names for e.g. database connectors.
-            attrs["bq_dataset"] = original.bq_dataset.replace(
-                original.integration.connector.bq_dataset_prefix,
-                integration_clone.connector.bq_dataset_prefix,
-            )
 
     # Dependies to nodes simply stay in the same dataset but change the table name
     elif original.source == original.Source.WORKFLOW_NODE:
@@ -57,14 +48,4 @@ def create_attrs(attrs, original):
 
 # Make sure this is called inside a celery task, it could take a while
 def duplicate_table(original, clone):
-    if (
-        clone.source == clone.Source.INTEGRATION
-        and clone.integration.kind == clone.integration.Kind.CONNECTOR
-    ):
-        client = clients.bigquery()
-        transaction.on_commit(
-            lambda: client.create_dataset(  # Create dataset if it doesn't exist yet
-                clone.bq_dataset, exists_ok=True
-            )
-        )
     transaction.on_commit(lambda: copy_table(original.bq_id, clone.bq_id).result())

@@ -224,10 +224,6 @@ class Team(DirtyFieldsMixin, BaseModel, SafeDeleteModel):
             Q(status="active") | Q(status="deleted", next_bill_date__gte=timezone.now())
         ).first()
 
-    def update_daily_sync_time(self):
-        for project in self.project_set.all():
-            project.update_daily_sync_time()
-
 
 class Membership(BaseModel):
     """

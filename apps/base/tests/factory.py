@@ -19,7 +19,6 @@ from apps.columns.models import (
 )
 from apps.controls.models import Control, ControlWidget
 from apps.customapis.models import CustomApi
-from apps.customreports.models import FacebookAdsCustomReport
 from apps.dashboards.models import Dashboard, Page
 from apps.filters.models import Filter
 from apps.integrations.models import Integration

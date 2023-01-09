@@ -119,14 +119,6 @@ def drive_v2(mocker):
 
 
 @pytest.fixture(autouse=True)
-def fivetran(mocker, settings):
-    settings.MOCK_FIVETRAN = False
-    client = MagicMock()
-    mocker.patch("apps.base.clients.fivetran", return_value=client)
-    yield client
-
-
-@pytest.fixture(autouse=True)
 def heroku(mocker):
     client = MagicMock()
     mocker.patch("apps.base.clients.heroku", return_value=client)

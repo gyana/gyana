@@ -25,9 +25,6 @@ def resetdb(request: Request):
     mail.outbox = Outbox()
     mail.outbox.clear()
 
-    clients.fivetran()._schema_cache.clear()
-    clients.fivetran()._started = {}
-
     return JsonResponse({})
 
 
