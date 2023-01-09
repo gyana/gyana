@@ -1,6 +1,5 @@
 from django.contrib import admin
 
-from apps.connectors.admin import ConnectorInline
 from apps.sheets.admin import SheetInline
 from apps.tables.admin import TableInline
 from apps.uploads.admin import UploadInline
@@ -8,7 +7,6 @@ from apps.uploads.admin import UploadInline
 from .models import Integration
 
 KIND_TO_INLINE = {
-    Integration.Kind.CONNECTOR: ConnectorInline,
     Integration.Kind.SHEET: SheetInline,
     Integration.Kind.UPLOAD: UploadInline,
 }

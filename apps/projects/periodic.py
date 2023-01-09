@@ -5,7 +5,6 @@ from django.db.models import Q
 from django.utils import timezone
 
 from apps.base.tasks import honeybadger_check_in
-from apps.connectors.models import Connector
 from apps.projects.models import Project
 from apps.projects.schedule import get_next_daily_sync_in_utc_from_project
 from apps.runs.models import GraphRun

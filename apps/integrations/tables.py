@@ -4,7 +4,12 @@ from django.template import Context
 from django.template.loader import get_template
 from django.utils.html import format_html
 
-from apps.base.tables import FaBooleanColumn, NaturalDatetimeColumn, NaturalDayColumn, TemplateColumn
+from apps.base.tables import (
+    FaBooleanColumn,
+    NaturalDatetimeColumn,
+    NaturalDayColumn,
+    TemplateColumn,
+)
 
 from .models import Integration
 
@@ -19,14 +24,6 @@ class PendingStatusColumn(tables.Column):
 
         context["icon"] = instance.state_icon
         context["text"] = instance.state_text
-
-        # wrap status in turbo frame to fetch possible update
-        if (
-            instance.kind == Integration.Kind.CONNECTOR
-            and instance.state == Integration.State.LOAD
-        ):
-            context["connector"] = instance.connector
-            return get_template("connectors/icon.html").render(context.flatten())
 
         return get_template("columns/status.html").render(context.flatten())
 
@@ -110,11 +107,8 @@ class ReferencesTable(tables.Table):
             table = record.input_table
         else:
             table = record.table
-        table_name = (
-            table.bq_table
-            if table.integration.kind == Integration.Kind.CONNECTOR
-            else table.integration.name
-        )
+        table_name = table.integration.name
+
         return format_html(
             f"<a target='_top' href='{table.integration.get_absolute_url()}?table_id={table.id}'>{table_name}</a>"
         )

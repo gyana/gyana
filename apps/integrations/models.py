@@ -21,9 +21,8 @@ PENDING_DELETE_AFTER_DAYS = 30
 
 class IntegrationsManager(models.Manager):
     def visible(self):
-        # hide un-authorized fivetran connectors and pending connectors with >7
-        # days, cleanup up periodically
-        return self.exclude(connector__fivetran_authorized=False).exclude(
+        # cleanup up periodically
+        return self.exclude(
             created__lt=timezone.now() - timedelta(days=PENDING_DELETE_AFTER_DAYS),
             ready=False,
         )
@@ -34,20 +33,11 @@ class IntegrationsManager(models.Manager):
     def ready(self):
         return self.visible().filter(ready=True)
 
-    def broken(self):
-        return self.ready().filter(
-            kind=Integration.Kind.CONNECTOR,
-            connector__succeeded_at__lt=timezone.now() - timezone.timedelta(hours=24),
-        )
-
     def needs_attention(self):
         return self.pending().exclude(state=Integration.State.LOAD)
 
     def loading(self):
         return self.pending().filter(state=Integration.State.LOAD)
-
-    def connectors(self):
-        return self.ready().filter(kind=Integration.Kind.CONNECTOR)
 
     def sheets(self):
         return self.ready().filter(kind=Integration.Kind.SHEET)
@@ -69,7 +59,6 @@ class Integration(BaseModel):
     class Kind(models.TextChoices):
         SHEET = "sheet", "Sheet"
         UPLOAD = "upload", "Upload"
-        CONNECTOR = "connector", "Connector"
         CUSTOMAPI = "customapi", "Custom API"
 
     class State(models.TextChoices):
@@ -80,7 +69,6 @@ class Integration(BaseModel):
         DONE = "done", "Done"
 
     _clone_excluded_m2o_or_o2m_fields = ["runs", "table_set"]
-    _clone_excluded_o2o_fields = ["connector"]
 
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     kind = models.CharField(max_length=32, choices=Kind.choices)
@@ -162,9 +150,7 @@ class Integration(BaseModel):
 
     @property
     def last_synced(self):
-        if self.kind == self.Kind.CONNECTOR:
-            return self.connector.bigquery_succeeded_at
-        elif self.kind == self.Kind.SHEET:
+        if self.kind == self.Kind.SHEET:
             return self.sheet.drive_file_last_modified_at_sync
         return self.created_ready
 
@@ -202,14 +188,6 @@ class Integration(BaseModel):
     def used_in(self):
         return list(chain(self.used_in_nodes, self.used_in_widgets))
 
-    @property
-    def display_kind(self):
-        return (
-            self.get_kind_display()
-            if self.kind != self.Kind.CONNECTOR
-            else self.connector.conf.name
-        )
-
     def get_table_name(self):
         return f"Integration:{self.name}"
 
@@ -223,8 +201,6 @@ class Integration(BaseModel):
         return reverse("project_integrations:detail", args=(self.project.id, self.id))
 
     def icon(self):
-        if self.kind == Integration.Kind.CONNECTOR:
-            return f"images/integrations/fivetran/{self.connector.conf.icon_path}"
         return f"images/integrations/{self.kind}.svg"
 
     def get_table_by_pk_safe(self, table_pk):
@@ -247,9 +223,6 @@ class Integration(BaseModel):
         return self.runs.order_by("-created").first()
 
     def update_state_from_latest_run(self):
-
-        if self.kind == self.Kind.CONNECTOR:
-            return
 
         self.state = (
             self.State.UPDATE

@@ -7,10 +7,8 @@ from djpaddle.models import Plan
 from rest_framework.decorators import api_view
 
 from apps.columns.transformer import FUNCTIONS
-from apps.connectors.fivetran.config import get_services_obj
 from apps.nodes.config import NODE_CONFIG
 from apps.teams.models import Team
-from apps.web.frames import get_services_grouped
 from apps.widgets.models import WIDGET_KIND_TO_WEB
 
 from .cache import cache_site
@@ -72,8 +70,6 @@ class Integrations(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["services"] = get_services_obj()
-        context["services_grouped"] = get_services_grouped(4)
         context["content"] = get_content("integrations.yaml")
         return context
 
@@ -83,7 +79,6 @@ class Integration(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["service"] = get_services_obj()[kwargs["id"]]
         context["content"] = get_content("integration.yaml", context)
         return context
 
@@ -130,8 +125,6 @@ class UseCase(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["services"] = get_services_obj()
-        context["services_grouped"] = get_services_grouped(4)
         context["content"] = {
             **get_content(f"use_case/{kwargs['id']}.yaml"),
             **get_content("integrations.yaml"),

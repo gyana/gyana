@@ -6,80 +6,76 @@
 <div class="pad flex flex-1 justify-center items-center">
   <div class='flex flex-col flex-1 max-w-3xl'>
     <div class="flex flex-1 justify-center items-center">
-      {% if integration.kind == 'connector' %}
-        {% include 'connectors/_load.html' with connector=integration.connector %}
-      {% else %}
-        <div
-          class='integration__file-validate'
-          data-controller="celery-progress"
-          data-celery-progress-task-url-value="{% url 'celery_progress:task_status' integration.latest_run.task_id %}"
-          data-celery-progress-script-url-value="{% static 'celery_progress/celery_progress.js' %}"
-          data-celery-progress-redirect-url-value="{% url 'project_integrations:done' project.id object.id %}"
-          {% if done %} data-celery-progress-done-value {% endif %}
-        >
-          <i class="fad fa-fw fa-spinner-third fa-spin fa-3x text-blue"></i>
+      <div
+        class='integration__file-validate'
+        data-controller="celery-progress"
+        data-celery-progress-task-url-value="{% url 'celery_progress:task_status' integration.latest_run.task_id %}"
+        data-celery-progress-script-url-value="{% static 'celery_progress/celery_progress.js' %}"
+        data-celery-progress-redirect-url-value="{% url 'project_integrations:done' project.id object.id %}"
+        {% if done %} data-celery-progress-done-value {% endif %}
+      >
+        <i class="fad fa-fw fa-spinner-third fa-spin fa-3x text-blue"></i>
 
-          <div class="flex flex-col gap-4">
-            <h1>Validating and importing your {{ object.kind }}...</h1>
-            <p>
-              This can take anywhere from a few seconds to a minute.
-            </p>
-            <p class="alert">
-              You can safely navigate away and check progress in <a class="link" href="{% url 'project_integrations:list' project.id %}">integrations</a>.
-            </p>
-          </div>
-
-          <template id="success-template">
-            <i class="fas fa-fw fa-check fa-3x text-green"></i>
-
-            <div class='flex flex-col'>
-              <h1>{{ object.kind|title }} successfully imported</h4>
-            </div>
-          </template>
-
-          <template id="failure-template">
-            <i class="fas fa-fw fa-times text-red fa-3x mr-4"></i>
-
-            <div class="flex flex-col space-y-4">
-              <div class="flex justify-center items-center gap-3">
-                <h1>Something went wrong</h1>
-                {% link_article 'integrations' 'error' %}
-              </div>
-
-              <p id="failure-message">
-              </p>
-
-              {% if object.kind == 'upload' %}
-              <p>
-                If the problem persists, you can upload the CSV to Google Sheets and use our
-                <a class="link" href="{% url 'project_integrations_sheets:create' project.id %}">sheets integration.</a>
-              </p>
-              {% endif %}
-
-              <form
-                method="POST"
-                action="{{ request.get_full_path }}"
-                class="form--no-layout"
-              >
-                {% csrf_token %}
-                {{ form }}
-
-                <div class="flex gap-3 w-full">
-                  <button type="submit" class="button button--tertiary flex-1">
-                    Retry
-                  </button>
-
-                  <a
-                    class="button flex-1"
-                    href="{% url 'project_integrations:configure' project.id object.id %}">
-                    Configure
-                  </a>
-                </div>
-              </form>
-            </div>
-          </template>
+        <div class="flex flex-col gap-4">
+          <h1>Validating and importing your {{ object.kind }}...</h1>
+          <p>
+            This can take anywhere from a few seconds to a minute.
+          </p>
+          <p class="alert">
+            You can safely navigate away and check progress in <a class="link" href="{% url 'project_integrations:list' project.id %}">integrations</a>.
+          </p>
         </div>
-      {% endif %}
+
+        <template id="success-template">
+          <i class="fas fa-fw fa-check fa-3x text-green"></i>
+
+          <div class='flex flex-col'>
+            <h1>{{ object.kind|title }} successfully imported</h4>
+          </div>
+        </template>
+
+        <template id="failure-template">
+          <i class="fas fa-fw fa-times text-red fa-3x mr-4"></i>
+
+          <div class="flex flex-col space-y-4">
+            <div class="flex justify-center items-center gap-3">
+              <h1>Something went wrong</h1>
+              {% link_article 'integrations' 'error' %}
+            </div>
+
+            <p id="failure-message">
+            </p>
+
+            {% if object.kind == 'upload' %}
+            <p>
+              If the problem persists, you can upload the CSV to Google Sheets and use our
+              <a class="link" href="{% url 'project_integrations_sheets:create' project.id %}">sheets integration.</a>
+            </p>
+            {% endif %}
+
+            <form
+              method="POST"
+              action="{{ request.get_full_path }}"
+              class="form--no-layout"
+            >
+              {% csrf_token %}
+              {{ form }}
+
+              <div class="flex gap-3 w-full">
+                <button type="submit" class="button button--tertiary flex-1">
+                  Retry
+                </button>
+
+                <a
+                  class="button flex-1"
+                  href="{% url 'project_integrations:configure' project.id object.id %}">
+                  Configure
+                </a>
+              </div>
+            </form>
+          </div>
+        </template>
+      </div>
     </div>
   </div>
 </div>

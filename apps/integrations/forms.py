@@ -1,6 +1,5 @@
 from apps.base.account import is_scheduled_paid_only
 from apps.base.forms import BaseModelForm
-from apps.connectors.forms import ConnectorUpdateForm
 from apps.customapis.forms import CustomApiUpdateForm
 from apps.sheets.forms import SheetUpdateForm
 from apps.uploads.forms import UploadUpdateForm
@@ -15,7 +14,6 @@ class IntegrationForm(BaseModelForm):
 
 
 KIND_TO_FORM_CLASS = {
-    Integration.Kind.CONNECTOR: ConnectorUpdateForm,
     Integration.Kind.SHEET: SheetUpdateForm,
     Integration.Kind.UPLOAD: UploadUpdateForm,
     Integration.Kind.CUSTOMAPI: CustomApiUpdateForm,

@@ -33,7 +33,6 @@ class IntegrationOverview(ProjectMixin, TurboFrameTemplateView):
             "loading": queryset.loading().count(),
             "broken": broken,
             "operational": broken == 0 and pending == 0,
-            "connectors": queryset.connectors().all(),
             "sheet_count": queryset.sheets().count(),
             "upload_count": queryset.uploads().count(),
         }

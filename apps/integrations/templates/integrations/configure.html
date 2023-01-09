@@ -20,11 +20,6 @@
           formset:add->live-update#updateForm
         "
         {% endif %}
-        {% flag 'alpha' %}
-          {% if object.kind == 'connector' and object.connector.service == 'facebook_ads' %}
-            data-controller="live-update"
-          {% endif %}
-        {% endflag %}
         >
         <span data-live-update-target="loading" hidden>
           <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-fw fa-2x"></i>
@@ -32,31 +27,11 @@
 
         <p class="alert">
           If you're not sure about these options, you can start with the defaults and tweak them later.
-          {% if object.kind == 'connector' %}
-            {% cache 500 fivetran_authorization_url object.id %}
-              You can also go back to the <a href="{{ object.connector.fivetran_authorization_url }}" class="link">authorization</a> page.
-            {% endcache %}
-          {% endif %}
         </p>
 
         {% csrf_token %}
 
         {{ form }}
-
-        {% flag 'alpha' %}
-          {% if object.kind == 'connector' and object.connector.service == 'facebook_ads' and object.connector.setup_mode == 'advanced' %}
-            <label>
-              Custom reports
-              <p class="input__help-text">Build custom reports (you can change this later)</p>
-            </label>
-            <turbo-frame id="customreports:list" class="w-full" src="{% url 'connectors_customreports:list' object.connector.id %}">
-              <div class='placeholder-scr placeholder-scr--fillscreen'>
-                <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
-                <p class='placeholder-scr__title'>Loading custom reports...</p>
-              </div>
-            </turbo-frame>
-          {% endif %}
-        {% endflag %}
 
         <button type="submit" name="submit" value="submit" class="button button--success mt-4 w-full">
           Import
