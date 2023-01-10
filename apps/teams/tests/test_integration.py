@@ -280,9 +280,7 @@ def test_team_subscriptions(client, logged_in_user, settings, paddle):
     assert paddle.list_subscription_payments.call_args.kwargs == {"is_paid": True}
 
 
-def test_pro_upgrade_with_limits(
-    client, logged_in_user, settings, project_factory, connector_factory
-):
+def test_pro_upgrade_with_limits(client, logged_in_user, settings, project_factory):
 
     team = logged_in_user.teams.first()
     pro_plan = Plan.objects.create(name="Pro", billing_type="month", billing_period=1)
@@ -306,22 +304,7 @@ def test_pro_upgrade_with_limits(
 
     assertLink(r, f"{LIST}/customapis/new", "Use a Custom API")
 
-    # TODO: Put back in once we have connectors again
-    # assertLink(r, f"{LIST}/connectors/new", "Add a connector")
-    # r = client.get(f"{LIST}/connectors/new")
-    # assertOK(r)
-    # assertLink(r, f"{LIST}/connectors/new?service=facebook_ads", "Import with Fivetran")
-
-    # connector_factory(integration__project=project, service="facebook_ads")
-
     # dropdown
     r = client.get(f"{LIST}/")
     # assertLink(r, f"{LIST}/connectors/new", "New Connector")
     assertLink(r, f"{LIST}/customapis/new", "Custom API")
-
-    # pro tier cannot create two connectors in account
-    # r = client.get(f"{LIST}/connectors/new")
-    # assertOK(r)
-    # assertNotLink(
-    #     r, f"{LIST}/connectors/new?service=facebook_ads", "Import with Fivetran"
-    # )

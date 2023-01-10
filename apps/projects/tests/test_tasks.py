@@ -16,7 +16,6 @@ pytestmark = pytest.mark.django_db
 def test_run_project(
     project_factory,
     sheet_factory,
-    connector_factory,
     integration_table_factory,
     workflow_table_factory,
     node_factory,
@@ -36,8 +35,6 @@ def test_run_project(
     )
     integration = integration_table.integration
     sheet_factory(integration=integration)
-    # will be ignored by current implementation
-    connector_factory(integration__project=project)
 
     workflow_table_1 = workflow_table_factory(
         project=project,

@@ -156,8 +156,7 @@ def test_integration_create_pending_load_and_approve(
     # zero state
     r = client.get(f"{LIST}/")
     assertOK(r)
-    assertContains(r, f"Import a source of data")
-    # connector link tested in team/account test
+    assertContains(r, "Import a source of data")
     assertLink(r, f"{LIST}/sheets/new", "Add a Google Sheet")
     assertLink(r, f"{LIST}/uploads/new", "Upload CSV")
 

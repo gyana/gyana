@@ -70,15 +70,12 @@ def test_sheet_schedule(client, logged_in_user, sheet_factory, mocker, is_paid):
     assert CrontabSchedule.objects.count() == 0
 
 
-def test_run_schedule_for_periodic(
-    project_factory, sheet_factory, connector_factory, mocker, is_paid
-):
+def test_run_schedule_for_periodic(project_factory, sheet_factory, mocker, is_paid):
 
     mocker.patch("apps.projects.tasks.run_project_task")
 
     project = project_factory()
     sheet = sheet_factory(integration__project=project, integration__is_scheduled=True)
-    connector = connector_factory(integration__project=project)
 
     project.update_schedule()
 
@@ -86,18 +83,16 @@ def test_run_schedule_for_periodic(
 
     task_id = str(uuid4())
 
-    with pytest.raises(RetryTaskError):
-        periodic.run_schedule_for_project.apply_async((project.id,), task_id=task_id)
+    # TODO: What to do with this after connector removal
+    # with pytest.raises(RetryTaskError):
+    #     periodic.run_schedule_for_project.apply_async((project.id,), task_id=task_id)
 
-    assert project.runs.count() == 1
-    graph_run = project.runs.first()
-    assert graph_run.state == GraphRun.State.RUNNING
-
-    connector.succeeded_at = timezone.now()
-    connector.save()
+    # assert project.runs.count() == 1
+    # graph_run = project.runs.first()
+    # assert graph_run.state == GraphRun.State.RUNNING
 
     periodic.run_schedule_for_project.apply_async((project.id,), task_id=task_id)
-
+    graph_run = project.runs.first()
     assert project.runs.count() == 1
     graph_run.refresh_from_db()
     assert graph_run.state == GraphRun.State.SUCCESS

@@ -40,23 +40,6 @@ def run_schedule_for_project(self, project_id: int):
         days=1
     )
 
-    # wait until all the connectors we expect to sync have completed for today
-    connectors_not_ready = (
-        Connector.objects.filter(
-            integration__project=project,
-            setup_state=Connector.SetupState.CONNECTED,
-            paused=False,
-            integration__ready=True,
-        )
-        .exclude(
-            Q(succeeded_at__gt=current_schedule) | Q(failed_at__gt=current_schedule)
-        )
-        .exists()
-    )
-
-    if connectors_not_ready:
-        self.retry(countdown=RETRY_COUNTDOWN, max_retries=MAX_RETRIES)
-
     tasks.run_project_task(graph_run.id, scheduled_only=True)
 
     honeybadger_check_in("j6IrRd")

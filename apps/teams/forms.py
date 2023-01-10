@@ -78,6 +78,8 @@ class TeamUpdateForm(BaseModelForm):
         self._timezone_is_dirty = "timezone" in instance.get_dirty_fields()
 
     def post_save(self, instance):
+        if self._timezone_is_dirty:
+            instance.update_daily_sync_time()
 
         Flag.set_beta_program_for_team(instance, self.cleaned_data["beta"])
 
