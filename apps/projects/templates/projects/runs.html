@@ -22,7 +22,7 @@
       action="{% url 'projects:runs' project.id %}"
     >
       {% if not object.needs_schedule and not is_free %}
-        <p class="alert">The daily schedule will only run if you have one or more scheduled integrations or workflows, excluding connectors.</p>
+        <p class="alert">The daily schedule will only run if you have one or more scheduled integrations or workflows.</p>
       {% endif %}
       {% csrf_token %}
 

@@ -12,8 +12,6 @@ def _calculate_row_count_for_team(team: Team):
 
     team.update_row_count()
 
-    # todo: disable connectors
-
 
 @shared_task
 def update_team_row_limits():

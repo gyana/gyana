@@ -6,13 +6,6 @@
 
     {% if integrations.ready > 0 %}
     <div class='flex flex-row items-center gap-3 flex-wrap'>
-      {% for integration in integrations.connectors %}
-        <span>
-          <a href="{% url 'project_integrations:detail' project.id integration.id %}" data-turbo-frame="_top">
-            <img class="h-8 w-8" src="{% static integration.icon %}"/>
-          </a>
-        </span>
-      {% endfor %}
       {% if integrations.sheet_count > 0 %}
         <span>
           <p class="text-black-50">
