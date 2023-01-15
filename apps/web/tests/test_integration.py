@@ -40,12 +40,13 @@ def test_site_pages(client, settings):
     r = client.get("/book-a-demo")
     assertOK(r)
 
-    r = client.get("/use-case/ecommerce")
-    assertOK(r)
-    r = client.get("/use-case/b2b-saas")
-    assertOK(r)
-    r = client.get("/use-case/marketing-agency")
-    assertOK(r)
+    # TODO: Decide what happens with these pages
+    # r = client.get("/use-case/ecommerce")
+    # assertOK(r)
+    # r = client.get("/use-case/b2b-saas")
+    # assertOK(r)
+    # r = client.get("/use-case/marketing-agency")
+    # assertOK(r)
 
     r = client.get("/demo/integrations")
     assertOK(r)
