@@ -7,9 +7,16 @@
 {% endblock %}
 
 {% block body.content %}
-  {% include 'web/site/integrations/hero.html' %}
-  {% include 'web/site/integrations/animation.html' %}
-  {% include 'web/site/integrations/apps.html' %}
+  <div class="bg-gray-20 border-b border-gray">
+    <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8">
+      <h1 class="my-12 sm:my-24 text-7xl lg:text-8xl font-bold text-caveat text-indigo-600">
+        Integrations
+      </h1>
+    </div>
+  </div>
+  {% comment %} {% include 'web/site/integrations/hero.html' %} {% endcomment %}
+  {% comment %} {% include 'web/site/integrations/animation.html' %} {% endcomment %}
+  {% comment %} {% include 'web/site/integrations/apps.html' %} {% endcomment %}
   {% include 'web/site/integrations/custom.html' %}
   {% include 'web/site/integrations/cta.html' %}
   {% include 'web/site/integrations/links.html' %}

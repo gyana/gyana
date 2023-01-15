@@ -50,7 +50,7 @@
               Product
             </h3>
             <ul role="list" class="mt-4 space-y-4">
-              <li>
+              {% comment %} <li>
                 <a href="{% url 'web:use_case' 'ecommerce' %}" class="text-base text-gray-500 hover:text-gray-900">
                   Ecommerce
                 </a>
@@ -64,7 +64,7 @@
                 <a href="{% url 'web:use_case' 'marketing-agency' %}" class="text-base text-gray-500 hover:text-gray-900">
                   Marketing Agency
                 </a>
-              </li>
+              </li> {% endcomment %}
               <li>
                 <a href="{% url 'web:integrations' %}" class="text-base text-gray-500 hover:text-gray-900">
                   Integrations
