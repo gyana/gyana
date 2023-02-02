@@ -119,10 +119,6 @@ PROJECT_APPS = [
     "apps.columns",
     "apps.uploads",
     "apps.sheets",
-    # TODO: Remove once migrations have run
-    "apps.connectors",
-    # TODO: Remove once migrations have run
-    "apps.appsumo",
     "apps.cnames.apps.CNamesConfig",
     "apps.exports",
     "apps.controls",
@@ -130,7 +126,6 @@ PROJECT_APPS = [
     "apps.customapis",
     "apps.oauth2",
     "apps.blog",
-    "apps.customreports",
     "apps.learn",
 ]
 
