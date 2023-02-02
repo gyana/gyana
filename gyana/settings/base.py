@@ -364,7 +364,7 @@ CELERY_RESULT_BACKEND = "django-db"
 PROJECT_METADATA = {
     "NAME": "Gyana",
     "URL": "http://gyana.com",
-    "DESCRIPTION": "Custom reports for any source",
+    "DESCRIPTION": "Open source, no-code business intelligence",
     "IMAGE": "https://upload.wikimedia.org/wikipedia/commons/2/20/PEO-pegasus_black.svg",
     "KEYWORDS": "SaaS, django",
     "CONTACT_EMAIL": "developers@gyana.com",
