@@ -1,6 +1,5 @@
 import analytics
 import jwt
-from allauth.account.views import SignupView
 from django.conf import settings
 from django.shortcuts import redirect
 from django.urls import reverse
@@ -12,14 +11,6 @@ from apps.base.views import TurboUpdateView
 
 from .forms import UserNameForm, UserOnboardingForm
 from .models import CustomUser
-
-
-class AccountSignupView(SignupView):
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        if "email" in self.request.GET:
-            kwargs["initial"]["email"] = self.request.GET.get("email")
-        return kwargs
 
 
 class UserOnboarding(PageTitleMixin, TurboUpdateView):

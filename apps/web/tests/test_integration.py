@@ -140,14 +140,3 @@ def test_sitemap(client):
     # sitemap
     r = client.get("/sitemap.xml")
     assertOK(r)
-
-
-def test_signup_from_website(client):
-
-    r = client.get("/")
-    assertOK(r)
-    assertFormRenders(r, ["email"])
-
-    r = client.get("/signup/?email=test@gyana.com")
-    assertOK(r)
-    assertSelectorLength(r, 'input[value="test@gyana.com"]', 1)
