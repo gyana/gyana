@@ -39,7 +39,7 @@ class Migration(migrations.Migration):
                     "palette_colors",
                     django.contrib.postgres.fields.ArrayField(
                         base_field=models.CharField(default="#5D62B5", max_length=7),
-                        default=apps.dashboards.utils.geDefaultThemePalette,
+                        default=apps.dashboards.utils.getDefaultThemePalette,
                         size=10,
                     ),
                 ),
@@ -168,7 +168,7 @@ class Migration(migrations.Migration):
                     "palette_colors",
                     django.contrib.postgres.fields.ArrayField(
                         base_field=models.CharField(default="#5D62B5", max_length=7),
-                        default=apps.dashboards.utils.geDefaultThemePalette,
+                        default=apps.dashboards.utils.getDefaultThemePalette,
                         size=10,
                     ),
                 ),
