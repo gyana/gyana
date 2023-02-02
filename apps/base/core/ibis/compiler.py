@@ -16,7 +16,7 @@ from ibis.expr.types import (
     TimestampValue,
     TimeValue,
 )
-from ibis_bigquery.compiler import BigQueryExprTranslator, _timestamp_units
+from ibis_bigquery.compiler import BigQueryExprTranslator
 
 # Do not place compile functions and classes in a function as local variables
 # this will mess with cacheops and lead to cant pickle local object error
@@ -111,7 +111,7 @@ def _timestamp_difference(translator, expr):
     left, right, unit = expr.op().args
     t_left = translator.translate(left)
     t_right = translator.translate(right)
-    t_unit = _timestamp_units[translator.translate(unit).replace("'", "")]
+    # t_unit = _timestamp_units[translator.translate(unit).replace("'", "")]
     return f"TIMESTAMP_DIFF({t_left}, {t_right}, {t_unit})"
 
 

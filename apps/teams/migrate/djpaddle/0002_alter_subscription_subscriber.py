@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('teams', '0022_remove_team_subscription'),
+        ('teams', '0002_initial'),
         ('djpaddle', '0001_initial'),
     ]
 
