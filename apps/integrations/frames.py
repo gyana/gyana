@@ -23,7 +23,8 @@ class IntegrationOverview(ProjectMixin, TurboFrameTemplateView):
 
         ready = queryset.ready().count()
         pending = queryset.pending().count()
-        broken = queryset.broken().count()
+        # todo: decide definition of broken for CSV, Sheet, API, etc
+        broken = 0
 
         context_data["integrations"] = {
             "all": queryset.visible().order_by("-updated").all()[:5],
