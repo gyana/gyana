@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('djpaddle', '0002_alter_subscription_subscriber'),
+        ('djpaddle', '0001_initial'),
     ]
 
     operations = [
