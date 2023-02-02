@@ -1,10 +1,5 @@
-import json
-from datetime import timedelta
-from uuid import uuid4
-
 import pytest
-from django.utils import timezone
-from djpaddle.models import Checkout, Plan, Subscription
+from djpaddle.models import Plan
 from pytest_django.asserts import assertContains, assertRedirects
 
 from apps.base.tests.asserts import (
@@ -16,39 +11,11 @@ from apps.base.tests.asserts import (
     assertSelectorLength,
     assertSelectorText,
 )
+from apps.base.tests.subscribe import upgrade_to_pro
 from apps.teams.models import Team
 from apps.users.models import CustomUser
 
 pytestmark = pytest.mark.django_db
-
-
-def upgrade_to_pro(logged_in_user, team, pro_plan):
-
-    checkout = Checkout.objects.create(
-        id=uuid4(),
-        completed=True,
-        passthrough=json.dumps({"user_id": logged_in_user.id, "team_id": team.id}),
-    )
-    return Subscription.objects.create(
-        id=uuid4(),
-        subscriber=team,
-        cancel_url="https://cancel.url",
-        checkout_id=checkout.id,
-        currency="USD",
-        email=logged_in_user.email,
-        event_time=timezone.now(),
-        marketing_consent=True,
-        next_bill_date=timezone.now() + timedelta(weeks=4),
-        passthrough=json.dumps({"user_id": logged_in_user.id, "team_id": team.id}),
-        quantity=1,
-        source="test.url",
-        status=Subscription.STATUS_ACTIVE,
-        plan=pro_plan,
-        unit_price=99,
-        update_url="https://update.url",
-        created_at=timezone.now(),
-        updated_at=timezone.now(),
-    )
 
 
 def test_team_crudl(client, logged_in_user, bigquery, flag_factory, settings):
@@ -209,7 +176,8 @@ def test_account_limit_warning_and_disabled(client, project_factory):
     team.members.add(user, through_defaults={"role": "admin"})
     client.force_login(user)
 
-    assertOK(client.get(f"/projects/{project.id}/integrations/connectors/new"))
+    # TODO: Put back in once we have connectors again
+    # assertOK(client.get(f"/projects/{project.id}/integrations/connectors/new"))
     assertOK(client.get(f"/projects/{project.id}/integrations/sheets/new"))
     assertOK(client.get(f"/projects/{project.id}/integrations/uploads/new"))
 
@@ -233,7 +201,8 @@ def test_account_limit_warning_and_disabled(client, project_factory):
     assertOK(r)
     assertContains(r, "You've exceeded your row count limit by over 20%")
 
-    assertNotFound(client.get(f"/projects/{project.id}/integrations/connectors/new"))
+    # TODO: Put back in once we have connectors again
+    # assertNotFound(client.get(f"/projects/{project.id}/integrations/connectors/new"))
     assertNotFound(client.get(f"/projects/{project.id}/integrations/sheets/new"))
     assertNotFound(client.get(f"/projects/{project.id}/integrations/uploads/new"))
 
@@ -261,7 +230,8 @@ def test_team_subscriptions(client, logged_in_user, settings, paddle):
 
     r = client.get(f"/teams/{team.id}/account")
     assertOK(r)
-    assertLink(r, f"/teams/{team.id}/pricing", "Upgrade")
+    # TODO: currently upgrading is disabled
+    # assertLink(r, f"/teams/{team.id}/pricing", "Upgrade")
 
     r = client.get(f"/teams/{team.id}/pricing")
     assertOK(r)
@@ -269,7 +239,8 @@ def test_team_subscriptions(client, logged_in_user, settings, paddle):
     # in turn, loads web pricing via iframe
     r = client.get(f"/pricing?iframe=true&team_id={team.id}")
     assertOK(r)
-    assertLink(r, f"/teams/{team.id}/checkout?plan={pro_plan.id}", "Upgrade to Pro")
+    # TODO: still disabled
+    # assertLink(r, f"/teams/{team.id}/checkout?plan={pro_plan.id}", "Upgrade to Pro")
 
     r = client.get(f"/teams/{team.id}/checkout?plan={pro_plan.id}")
     assertOK(r)
@@ -309,9 +280,7 @@ def test_team_subscriptions(client, logged_in_user, settings, paddle):
     assert paddle.list_subscription_payments.call_args.kwargs == {"is_paid": True}
 
 
-def test_pro_upgrade_with_limits(
-    client, logged_in_user, settings, project_factory, connector_factory
-):
+def test_pro_upgrade_with_limits(client, logged_in_user, settings, project_factory):
 
     team = logged_in_user.teams.first()
     pro_plan = Plan.objects.create(name="Pro", billing_type="month", billing_period=1)
@@ -332,21 +301,10 @@ def test_pro_upgrade_with_limits(
 
     # zero state
     r = client.get(f"{LIST}/")
-    assertLink(r, f"{LIST}/connectors/new", "Add a connector")
+
     assertLink(r, f"{LIST}/customapis/new", "Use a Custom API")
-
-    r = client.get(f"{LIST}/connectors/new")
-    assertOK(r)
-    assertLink(r, f"{LIST}/connectors/new?service=facebook_ads", "Import with Fivetran")
-
-    connector_factory(integration__project=project, service="facebook_ads")
 
     # dropdown
     r = client.get(f"{LIST}/")
-    assertLink(r, f"{LIST}/connectors/new", "New Connector")
+    # assertLink(r, f"{LIST}/connectors/new", "New Connector")
     assertLink(r, f"{LIST}/customapis/new", "Custom API")
-
-    # pro tier cannot create two connectors in account
-    r = client.get(f"{LIST}/connectors/new")
-    assertOK(r)
-    assertNotLink(r, f"{LIST}/connectors/new?service=facebook_ads", "Import with Fivetran")

@@ -9,19 +9,7 @@
 
     <div class="flex flex-col flex-1 justify-center gap-3">
     
-      {% if team.is_ltd and exceeds_row_limit %}
-        <h1 class="flex items-center justify-center gap-3 mb-7">
-          Insufficient rows
-        </h1>
-        <p>
-          Adding this data will bring your total rows to <strong>{{ projected_num_rows|intcomma }}</strong>,
-          which exceeds your row limit of <strong>{{ project.team.row_limit|intcomma }}</strong>.
-        </p>
-
-        <p class="alert">
-          You can either reduce your row count, or reach out for an upgrade.
-        </p>
-      {% elif not team.is_ltd and exceeds_per_integration_row_limit %}
+      {% if exceeds_per_integration_row_limit %}
         <h1 class="flex items-center justify-center gap-3 mb-7">
           Insufficient rows
         </h1>

@@ -119,7 +119,9 @@ PROJECT_APPS = [
     "apps.columns",
     "apps.uploads",
     "apps.sheets",
-    "apps.connectors.apps.ConnectorsConfig",
+    # TODO: Remove once migrations have run
+    "apps.connectors",
+    # TODO: Remove once migrations have run
     "apps.appsumo",
     "apps.cnames.apps.CNamesConfig",
     "apps.exports",
@@ -218,8 +220,8 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
         "NAME": "gyana",
-        "USER": "postgres",
-        "PASSWORD": "***",
+        "USER": os.getenv("PG_USER", "postgres"),
+        "PASSWORD": os.getenv("PG_PASSWORD", "***"),
         "HOST": "localhost",
         "PORT": "5432",
     }
@@ -362,7 +364,7 @@ CELERY_RESULT_BACKEND = "django-db"
 PROJECT_METADATA = {
     "NAME": "Gyana",
     "URL": "http://gyana.com",
-    "DESCRIPTION": "Custom reports for any source",
+    "DESCRIPTION": "Open source, no-code business intelligence",
     "IMAGE": "https://upload.wikimedia.org/wikipedia/commons/2/20/PEO-pegasus_black.svg",
     "KEYWORDS": "SaaS, django",
     "CONTACT_EMAIL": "developers@gyana.com",
@@ -385,17 +387,9 @@ GS_BUCKET_NAME = os.environ.get("GS_BUCKET_NAME")
 GS_PUBLIC_BUCKET_NAME = os.environ.get("GS_PUBLIC_BUCKET_NAME")
 GS_PUBLIC_CACHE_CONTROL = "public, max-age=31536000"
 
-FIVETRAN_KEY = os.environ.get("FIVETRAN_KEY")
-FIVETRAN_URL = "https://api.fivetran.com/v1"
-FIVETRAN_GROUP = os.environ.get("FIVETRAN_GROUP")
-FIVETRAN_HEADERS = {
-    "Authorization": f"Basic {FIVETRAN_KEY}",
-    "Accept": "application/json;version=2",
-}
 
 EXTERNAL_URL = "http://localhost:8000"
-# for local development
-MOCK_FIVETRAN = os.environ.get("MOCK_FIVETRAN", "False") == "True"
+
 
 BIGQUERY_COLUMN_NAME_LENGTH = 300
 BIGQUERY_TABLE_NAME_LENGTH = 1024
@@ -419,7 +413,6 @@ INVITATIONS_ACCEPT_INVITE_AFTER_SIGNUP = True
 
 HASHIDS_SALT = os.environ.get("HASHIDS_SALT", "")
 
-FUSIONCHARTS_LICENCE = os.environ.get("FUSIONCHARTS_LICENCE")
 
 CYPRESS_URLS = False
 

@@ -19,9 +19,4 @@ PLANS = {
         "cnames": -1,
         "white_labeling": True,
     },
-    "appsumo": {
-        "name": "AppSumo Lifetime Deal",
-        "projects": -1,
-        "custom_branding": True,
-    },
 }

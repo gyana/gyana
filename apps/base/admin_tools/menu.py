@@ -26,8 +26,8 @@ class CustomMenu(Menu):
                 models=("apps.users.models.CustomUser", "apps.teams.models.Team"),
             ),
             items.ModelList(
-                _("Appsumo & Waitlist"),
-                models=("apps.appsumo.*", "apps.users.models.ApprovedWaitlistEmail*"),
+                _(" Waitlist"),
+                models=("apps.users.models.ApprovedWaitlistEmail*"),
             ),
             items.ModelList(
                 _("Feature flippers"),
@@ -37,7 +37,6 @@ class CustomMenu(Menu):
                 _("Applications"),
                 exclude=(
                     "allauth.*",
-                    "apps.appsumo.*",
                     "apps.teams.*",
                     "apps.users.*",
                     "django_celery_beat.*",

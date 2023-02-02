@@ -38,8 +38,5 @@
   "python.testing.pytestArgs": ["--no-migrations", "--disable-pytest-warnings"],
   "python.testing.unittestEnabled": false,
   "python.testing.nosetestsEnabled": false,
-  "python.testing.pytestEnabled": true,
-  "files.exclude": {
-    "apps/widgets/static/fusioncharts/**": true
-  }
+  "python.testing.pytestEnabled": true
 }

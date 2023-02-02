@@ -28,7 +28,7 @@ class WidgetStyle(models.Model):
     )
     background_color = models.CharField(max_length=7, null=True)
 
-    # Fusionchart configuration
+    # Chart configuration
     show_tooltips = models.BooleanField(default=True, blank=True)
     font_size = models.IntegerField(null=True)
     font_color = models.CharField(null=True, max_length=7)
@@ -82,7 +82,6 @@ class Widget(WidgetStyle, HistoryModel):
     class Category(models.TextChoices):
         CONTENT = "content", "Content"
         SIMPLE = "simple", "Simple charts"
-        TIMESERIES = "timeseries", "Timeseries charts"
         ADVANCED = "advanced", "Advanced charts"
         COMBO = "combination", "Combination charts"
 
@@ -103,18 +102,9 @@ class Widget(WidgetStyle, HistoryModel):
         DONUT = "doughnut2d", "Donut"
         SCATTER = "scatter", "Scatter"
         FUNNEL = "funnel", "Funnel"
-        PYRAMID = "pyramid", "Pyramid"
         RADAR = "radar", "Radar"
         BUBBLE = "bubble", "Bubble"
         HEATMAP = "heatmap", "Heatmap"
-        TIMESERIES_LINE = "timeseries-line", "Line Timeseries"
-        TIMESERIES_STACKED_LINE = "timeseries-line_stacked", "Stacked Line Timeseries"
-        TIMESERIES_COLUMN = "timeseries-column", "Column Timeseries"
-        TIMESERIES_STACKED_COLUMN = (
-            "timeseries-column-stacked",
-            "Stacked Column Timeseries",
-        )
-        TIMESERIES_AREA = "timeseries-area", "Area Timeseries"
         COMBO = "mscombidy2d", "Combination chart"
         IFRAME = "iframe", "iframe"
         GAUGE = "angulargauge", "Gauge"
@@ -213,7 +203,7 @@ class Widget(WidgetStyle, HistoryModel):
             return self.aggregations.count() == 1
         if self.kind == self.Kind.RADAR:
             return self.aggregations.count() >= 3
-        if self.kind in [self.Kind.FUNNEL, self.Kind.PYRAMID]:
+        if self.kind == self.Kind.FUNNEL:
             return self.aggregations.count() >= 2
         if self.kind is not None:
             return bool(self.kind and self.dimension)
@@ -263,7 +253,6 @@ class Widget(WidgetStyle, HistoryModel):
 NO_DIMENSION_WIDGETS = [
     Widget.Kind.RADAR,
     Widget.Kind.FUNNEL,
-    Widget.Kind.PYRAMID,
     Widget.Kind.METRIC,
     Widget.Kind.GAUGE,
 ]
@@ -306,35 +295,9 @@ WIDGET_KIND_TO_WEB = {
         "Scatter",
     ),
     Widget.Kind.FUNNEL.value: ("fa-filter", Widget.Category.ADVANCED, "Funnel"),
-    Widget.Kind.PYRAMID.value: ("fa-triangle", Widget.Category.ADVANCED, "Pyramid"),
     Widget.Kind.RADAR.value: ("fa-radar", Widget.Category.ADVANCED, "Radar"),
     Widget.Kind.BUBBLE.value: ("fa-soap", Widget.Category.ADVANCED, "Bubble"),
     Widget.Kind.HEATMAP.value: ("fa-map", Widget.Category.ADVANCED, "Heatmap"),
-    Widget.Kind.TIMESERIES_LINE.value: (
-        "fa-chart-line",
-        Widget.Category.TIMESERIES,
-        "Line",
-    ),
-    Widget.Kind.TIMESERIES_STACKED_LINE.value: (
-        "fa-chart-line",
-        Widget.Category.TIMESERIES,
-        "Stacked Line",
-    ),
-    Widget.Kind.TIMESERIES_COLUMN.value: (
-        "fa-chart-bar",
-        Widget.Category.TIMESERIES,
-        "Column",
-    ),
-    Widget.Kind.TIMESERIES_STACKED_COLUMN.value: (
-        "fa-chart-bar",
-        Widget.Category.TIMESERIES,
-        "Stacked Column",
-    ),
-    Widget.Kind.TIMESERIES_AREA.value: (
-        "fa-chart-area",
-        Widget.Category.TIMESERIES,
-        "Area",
-    ),
     Widget.Kind.COMBO.value: (
         "fa-analytics",
         Widget.Category.COMBO,

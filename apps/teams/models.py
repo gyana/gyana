@@ -110,54 +110,23 @@ class Team(DirtyFieldsMixin, BaseModel, SafeDeleteModel):
 
         return calculate_credit_balance(self)
 
-    def redeemed_codes(self):
-        return self.appsumocode_set.count()
-
-    @property
-    def active_codes(self):
-        return self.appsumocode_set.filter(refunded_before__isnull=True).count()
-
-    @property
-    def refunded_codes(self):
-        return self.appsumocode_set.filter(refunded_before__isnull=False).count()
-
-    @property
-    def ltd_disabled(self):
-        return self.active_codes == 0
-
-    @property
-    def exceeds_stacking_limit(self):
-        return self.active_codes > 5
-
-    @property
-    def has_extra_rows(self):
-        return self.appsumoextra_set.count() > 0
-
     @property
     def is_free(self):
         return (
-            self.active_codes == 0
-            and not self.has_subscription
+            not self.has_subscription
             and not self.recently_completed_checkout
             and not self.has_free_trial
         )
 
     @property
-    def is_ltd(self):
-        return self.active_codes > 0
-
-    @property
     def plan(self):
-        from apps.appsumo.account import get_deal
-
-        if self.active_codes > 0:
-            return {**PLANS["appsumo"], **get_deal(self.appsumocode_set.all())}
-
+        if self.has_free_trial:
+            return PLANS["pro"]
         if (
             self.has_subscription
-            and self.active_subscription.plan.id == settings.DJPADDLE_PRO_PLAN_ID
-        ) or self.has_free_trial:
-            return PLANS["pro"]
+            and int(self.active_subscription.plan.id) == settings.DJPADDLE_PRO_PLAN_ID
+        ):
+            return PLANS[self.active_subscription.plan.name.lower()]
 
         return PLANS["free"]
 
@@ -257,7 +226,7 @@ class Team(DirtyFieldsMixin, BaseModel, SafeDeleteModel):
 
     def update_daily_sync_time(self):
         for project in self.project_set.all():
-            project.update_daily_sync_time()
+            project.update_schedule()
 
 
 class Membership(BaseModel):

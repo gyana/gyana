@@ -10,7 +10,6 @@ from allauth.account.signals import email_confirmed, user_signed_up
 from django.dispatch.dispatcher import receiver
 from django.utils import timezone
 
-from apps.appsumo.models import AppsumoCode
 from apps.base.analytics import SIGNED_UP_EVENT, identify_user
 from apps.invites.models import Invite
 from apps.users.models import ApprovedWaitlistEmail
@@ -27,12 +26,6 @@ def _get_signup_source_from_user(user):
 
     if ApprovedWaitlistEmail.check_approved(user.email):
         return "waitlist"
-
-    if (
-        user.date_joined < WEBSITE_SIGNUP_ENABLED_DATE
-        or AppsumoCode.objects.filter(redeemed_by=user).exists()
-    ):
-        return "appsumo"
 
     return "website"
 

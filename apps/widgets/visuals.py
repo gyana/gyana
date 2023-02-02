@@ -7,11 +7,10 @@ from apps.columns.currency_symbols import CURRENCY_SYMBOLS_MAP
 from apps.controls.bigquery import slice_query
 from apps.filters.bigquery import get_query_from_filters
 from apps.tables.bigquery import get_query_from_table
-from apps.widgets.fusion.timeseries import TIMESERIES_DATA, to_timeseries
 
 from .bigquery import get_query_from_widget
-from .fusion.chart import to_chart
 from .models import Widget
+from .plotly.chart import to_chart
 
 CHART_MAX_ROWS = 1000
 
@@ -40,13 +39,9 @@ def chart_to_output(widget: Widget, control) -> Dict[str, Any]:
     if (result.total_rows or 0) > CHART_MAX_ROWS:
         raise MaxRowsExceeded
     df = result.rows_df
+    chart, chart_id = to_chart(df, widget)
 
-    if widget.kind in TIMESERIES_DATA:
-        chart, chart_id = to_timeseries(widget, df, query)
-    else:
-        chart, chart_id = to_chart(df, widget)
-
-    return {"chart": chart.render()}, chart_id
+    return {"chart": chart}, chart_id
 
 
 def get_summary_row(query, widget):

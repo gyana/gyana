@@ -9,7 +9,7 @@ Required:
 - just
 - direnv
 - poetry
-- yarn
+- volta (`curl https://get.volta.sh | bash`)
 - watchexec
 - postgres 13 (https://postgresapp.com/)
 - redis 6 (https://jpadilla.github.io/redisapp/)
@@ -138,7 +138,7 @@ is an art but you get better at it over time:
 - Django widgets - using React or Stimulus
 - React wrapped - a React powered web component that has plain HTML (generated
   by Django) as children - see `<gy-widget>`
-- Celery Progress - show progress of long running task using the `celery_progress` 
+- Celery Progress - show progress of long running task using the `celery_progress`
   library
 
 ## Philosophy

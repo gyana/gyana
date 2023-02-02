@@ -239,10 +239,6 @@ def disable_non_time(schema):
     }
 
 
-def is_timeseries_chart(kind):
-    return WIDGET_KIND_TO_WEB[kind][1] == Widget.Category.TIMESERIES
-
-
 class OneDimensionForm(GenericWidgetForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -250,11 +246,6 @@ class OneDimensionForm(GenericWidgetForm):
         schema = self.instance.table.schema
 
         if "dimension" in self.fields:
-
-            if is_timeseries_chart(self.get_live_field("kind")):
-                self.fields["dimension"].widget = SelectWithDisable(
-                    disabled=disable_non_time(schema)
-                )
             self.fields["dimension"].choices = create_column_choices(schema)
 
         if "sort_column" in self.fields:
@@ -291,10 +282,7 @@ class TwoDimensionForm(GenericWidgetForm):
         schema = self.instance.table.schema
 
         columns = create_column_choices(schema)
-        if is_timeseries_chart(self.get_live_field("kind")):
-            self.fields["dimension"].widget = SelectWithDisable(
-                disabled=disable_non_time(schema)
-            )
+
         self.fields["dimension"].choices = columns
         self.fields["dimension"].label = "X"
         self.fields["second_dimension"].choices = columns
@@ -322,10 +310,7 @@ class StackedChartForm(GenericWidgetForm):
         schema = self.instance.table.schema
 
         choices = create_column_choices(schema)
-        if is_timeseries_chart(self.get_live_field("kind")):
-            self.fields["dimension"].widget = SelectWithDisable(
-                disabled=disable_non_time(schema)
-            )
+
         self.fields["dimension"].choices = choices
         self.fields["second_dimension"].choices = choices
         # Can't overwrite label in Meta because we would have to overwrite the whole thing
@@ -409,20 +394,14 @@ FORMS = {
     Widget.Kind.BAR: OneDimensionForm,
     Widget.Kind.STACKED_COLUMN: StackedChartForm,
     Widget.Kind.COLUMN: OneDimensionForm,
-    Widget.Kind.TIMESERIES_STACKED_COLUMN: StackedChartForm,
-    Widget.Kind.TIMESERIES_COLUMN: OneDimensionForm,
     Widget.Kind.STACKED_BAR: StackedChartForm,
     Widget.Kind.LINE: OneDimensionForm,
-    Widget.Kind.TIMESERIES_STACKED_LINE: StackedChartForm,
-    Widget.Kind.TIMESERIES_LINE: OneDimensionForm,
     Widget.Kind.STACKED_LINE: StackedChartForm,
     Widget.Kind.PIE: OneDimensionForm,
     Widget.Kind.AREA: OneDimensionForm,
-    Widget.Kind.TIMESERIES_AREA: OneDimensionForm,
     Widget.Kind.DONUT: OneDimensionForm,
     Widget.Kind.SCATTER: OneDimensionForm,
     Widget.Kind.FUNNEL: GenericWidgetForm,
-    Widget.Kind.PYRAMID: GenericWidgetForm,
     Widget.Kind.RADAR: GenericWidgetForm,
     Widget.Kind.HEATMAP: TwoDimensionForm,
     Widget.Kind.BUBBLE: OneDimensionForm,

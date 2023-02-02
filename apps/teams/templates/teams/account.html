@@ -27,13 +27,6 @@
       </header>
 
       <div class="account__plan card card--none">
-        {% if team.is_ltd %}
-          <div class="w-full">
-            <p>Rows used</p>
-            <h4 class="h2">{{ team.row_count|intcomma }} / {{ team.row_limit|intcomma }}</h4>
-          </div>
-        {% endif %}
-
         <div class="w-1/3">
           <p>Projects</p>
           <h4 class="h2">{{ team.total_projects }} / {% if team.plan.projects != -1 %}{{ team.plan.projects }}{% else %}<i class="far fa-fw fa-infinity"></i>{% endif %}</h4>
@@ -143,12 +136,5 @@
     {% endif %}
   </div>
 
-  {% if team.appsumocode_set.count > 0 %}
-  <div id="appsumo-list" class="mt-auto">
-    <h2 class="mb-3">AppSumo</h2>
-
-    <turbo-frame id="team_appsumo:list" src="{% url 'team_appsumo:list' team.id %}"></turbo-frame>
-  </div>
-  {% endif %}
 </section>
 {% endblock %}

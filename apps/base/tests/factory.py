@@ -17,10 +17,8 @@ from apps.columns.models import (
     RenameColumn,
     WindowColumn,
 )
-from apps.connectors.models import Connector
 from apps.controls.models import Control, ControlWidget
 from apps.customapis.models import CustomApi
-from apps.customreports.models import FacebookAdsCustomReport
 from apps.dashboards.models import Dashboard, Page
 from apps.filters.models import Filter
 from apps.integrations.models import Integration
@@ -64,37 +62,6 @@ class IntegrationFactory(factory.django.DjangoModelFactory):
     project = factory.SubFactory(ProjectFactory)
     ready = True
     state = Integration.State.DONE
-
-
-@register
-class ConnectorFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = Connector
-
-    fivetran_id = factory.Sequence(lambda n: uuid.uuid4())
-    group_id = "group_id"
-    service = "google_analytics"
-    service_version = 0
-    schema = factory.Sequence(lambda n: f"dataset_{uuid.uuid4()}")
-    paused = False
-    pause_after_trial = False
-    connected_by = ""
-    created_at = timezone.now()
-    fivetran_authorized = True
-    sync_frequency = 1440
-    daily_sync_time = "00:00"
-    schedule_type = "auto"
-    setup_state = Connector.SetupState.CONNECTED
-    sync_state = Connector.SyncState.SCHEDULED
-    update_state = Connector.UpdateState.ON_SCHEDULE
-    is_historical_sync = False
-    tasks = []
-    warnings = []
-    config = {}
-    integration = factory.SubFactory(
-        IntegrationFactory, kind=Integration.Kind.CONNECTOR, name="Google Analytics"
-    )
-    schema_config = {}
 
 
 @register
@@ -328,14 +295,6 @@ class ColumnFactory(factory.django.DjangoModelFactory):
 class FlagFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Flag
-
-
-@register
-class FacebookAdsCustomReportFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = FacebookAdsCustomReport
-
-    connector = factory.SubFactory(ConnectorFactory)
 
 
 @register

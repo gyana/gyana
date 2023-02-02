@@ -72,9 +72,7 @@ class Project(DirtyFieldsMixin, BaseModel):
 
     @property
     def integration_count(self):
-        return self.integration_set.exclude(
-            connector__fivetran_authorized=False
-        ).count()
+        return self.integration_set.count()
 
     @property
     def workflow_count(self):
@@ -83,7 +81,7 @@ class Project(DirtyFieldsMixin, BaseModel):
     @property
     def dashboard_count(self):
         return self.dashboard_set.count()
-    
+
     @cached_property
     def row_percentage(self):
         return round((self.num_rows / self.team.row_limit) * 100, 3)
@@ -122,15 +120,6 @@ class Project(DirtyFieldsMixin, BaseModel):
         from .schedule import update_periodic_task_from_project
 
         update_periodic_task_from_project(self)
-
-    def update_daily_sync_time(self):
-        from apps.connectors.models import Connector
-
-        connectors = Connector.objects.filter(integration__project=self).all()
-        for connector in connectors:
-            connector.sync_updates_from_fivetran()
-
-        self.update_schedule()
 
     def get_absolute_url(self):
         return reverse("projects:detail", args=(self.id,))

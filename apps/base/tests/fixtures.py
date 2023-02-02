@@ -8,7 +8,6 @@ from django.utils import timezone
 from waffle.templatetags import waffle_tags
 
 from apps.base import clients
-from apps.connectors.models import Connector
 from apps.teams.models import Team
 from apps.users.models import CustomUser
 
@@ -120,14 +119,6 @@ def drive_v2(mocker):
 
 
 @pytest.fixture(autouse=True)
-def fivetran(mocker, settings):
-    settings.MOCK_FIVETRAN = False
-    client = MagicMock()
-    mocker.patch("apps.base.clients.fivetran", return_value=client)
-    yield client
-
-
-@pytest.fixture(autouse=True)
 def heroku(mocker):
     client = MagicMock()
     mocker.patch("apps.base.clients.heroku", return_value=client)
@@ -170,10 +161,3 @@ def project(project_factory, logged_in_user):
 @pytest.fixture
 def is_paid(mocker):
     mocker.patch.object(Team, "is_free", False)
-
-
-@pytest.fixture
-def mock_update_kwargs_from_fivetran():
-    mock = MagicMock()
-    Connector.update_kwargs_from_fivetran = mock
-    return mock

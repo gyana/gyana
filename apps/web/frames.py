@@ -2,22 +2,9 @@ import random
 from dataclasses import asdict
 
 from apps.base.frames import TurboFrameTemplateView
-from apps.connectors.fivetran.config import get_services_obj, get_services_query
 from apps.nodes.config import NODE_CONFIG
 from apps.web.content import get_content
 from apps.widgets.models import WIDGET_KIND_TO_WEB
-
-
-def get_services_grouped(group_n):
-    services = [asdict(s) for s in get_services_obj().values()]
-    random.shuffle(services)
-    length = len(services)
-    n = int(length / group_n)
-    services_grouped = [
-        {"services": services[i : i + n], "animation": random.randint(15, 35)}
-        for i in range(0, group_n * n, n)
-    ]
-    return services_grouped
 
 
 class HelpModal(TurboFrameTemplateView):
@@ -36,7 +23,6 @@ class IntegrationsDemo(TurboFrameTemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["services_grouped"] = get_services_grouped(6)
         return context
 
 
@@ -84,9 +70,5 @@ class SearchIntegrationsDemo(TurboFrameTemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["services"] = get_services_obj()
-        context["services_query"] = get_services_query(
-            category=None, search=self.request.GET.get("query") or None
-        )
         context["content"] = get_content("integrations.yaml")
         return context

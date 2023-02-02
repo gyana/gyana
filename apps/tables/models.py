@@ -88,8 +88,6 @@ class Table(BaseModel):
     @property
     def owner_name(self):
         if self.source == self.Source.INTEGRATION:
-            if self.integration.kind == self.integration.Kind.CONNECTOR:
-                return f"{self.integration.name} - {self.bq_table}"
             return self.integration.name
         return f"{self.workflow_node.workflow.name} - {self.workflow_node.name or 'Untitled'}"
 
@@ -118,15 +116,13 @@ class Table(BaseModel):
         if self.source == self.Source.INTEGRATION:
             if self.integration.kind == self.integration.Kind.SHEET:
                 return not self.integration.sheet.up_to_date_with_drive
-            if self.integration.kind == self.integration.Kind.CONNECTOR:
-                return self.integration.connector.latest_sync_failed
         elif self.source == self.Source.WORKFLOW_NODE:
             return self.workflow_node.workflow.out_of_date
 
         return False
 
     def get_source_url(self):
-        return self.source_obj.get_absolute_url()        
+        return self.source_obj.get_absolute_url()
 
     @property
     def used_in_workflows(self):

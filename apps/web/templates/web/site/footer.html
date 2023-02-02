@@ -7,7 +7,7 @@
       <div class="space-y-8 xl:col-span-1">
         <img class="h-10 filter grayscale" src="{% static 'images/logo.png' %}" alt="Company name">
         <p class="text-gray-500 text-base">
-          Custom reports for any source
+          Open source, no-code business intelligence
         </p>
         <div class="flex space-x-6">
           <a href="{% external_url 'facebook' %}" class="text-gray-400 hover:text-gray-500">
@@ -50,7 +50,7 @@
               Product
             </h3>
             <ul role="list" class="mt-4 space-y-4">
-              <li>
+              {% comment %} <li>
                 <a href="{% url 'web:use_case' 'ecommerce' %}" class="text-base text-gray-500 hover:text-gray-900">
                   Ecommerce
                 </a>
@@ -64,7 +64,7 @@
                 <a href="{% url 'web:use_case' 'marketing-agency' %}" class="text-base text-gray-500 hover:text-gray-900">
                   Marketing Agency
                 </a>
-              </li>
+              </li> {% endcomment %}
               <li>
                 <a href="{% url 'web:integrations' %}" class="text-base text-gray-500 hover:text-gray-900">
                   Integrations

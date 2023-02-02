@@ -28,16 +28,11 @@ accounts_urlpatterns = [
         {"exception": Exception("Not Found")},
         name="account_email",
     ),
-    # Redirecting old signin link to account_login
-    # SHUTDOWN: disable signup and signin
-    path("signup/", page_not_found, {"exception": Exception()}),
-    path("signin/", page_not_found, {"exception": Exception()}),
-    path("login/", page_not_found, {"exception": Exception()}),
-    # path("signin/", RedirectView.as_view(pattern_name="account_login")),
-    # path(
-    #     "signup/",
-    #     xframe_options_sameorigin_allowlist(views.AccountSignupView.as_view()),
-    #     name="account_signup",
-    # ),
+    path("signin/", RedirectView.as_view(pattern_name="account_login")),
+    path(
+        "signup/",
+        xframe_options_sameorigin_allowlist(views.AccountSignupView.as_view()),
+        name="account_signup",
+    ),
     path("", include("turbo_allauth.urls")),
 ]

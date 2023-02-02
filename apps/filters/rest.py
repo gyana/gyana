@@ -44,8 +44,9 @@ def autocomplete_options(request):
         # For widgets we are sending the table information
         # To make sure we always have the correct one
         # For nodes we actually want the parent of the parent
+
         query = (
-            get_query_from_table(get_object_or_404(Table, pk=request.GET["tableId"]))
+            get_query_from_table(parent.table)
             if parentType == "widget"
             else get_query_from_node(parent.parents.first())
         )

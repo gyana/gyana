@@ -97,10 +97,6 @@
             <i>~{{ integration.row_percentage }}</i>% of your quota
           </span>
         </span>
-
-        {% if object.kind == "connector" %}
-         • <strong>{{ integration.num_tables|intcomma }}</strong> table{{ integration.num_tables|pluralize }}
-        {% endif %}
       </p>
     {% endif %}
   </div>
@@ -163,18 +159,8 @@
           • <turbo-frame id="sheets:status" src="{% url 'sheets:status' object.sheet.id %}">
             {% include "sheets/status.html" with object=object.sheet %}
           </turbo-frame>
-        {% elif object.kind == 'connector' %}
-          • <turbo-frame id="connectors:status" src="{% url 'connectors:status' object.connector.id %}">
-            {% include "connectors/status.html" with object=object.connector %}
-          </turbo-frame>
         {% endif %}
       </p>
-
-      {% if object.kind == 'connector' %}
-       • <turbo-frame id="connectors:pause" class='p'>
-          {% include "connectors/pause.html" with object=object.connector %}
-        </turbo-frame>
-      {% endif %}
     </div>
   </div>
 {% endif %}

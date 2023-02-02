@@ -12,13 +12,12 @@ from waffle import flag_is_active
 
 from apps.base.analytics import INTEGRATION_SYNC_STARTED_EVENT
 from apps.base.views import TurboUpdateView
-from apps.connectors.forms import FacebookAdsConnectorUpdateForm
 from apps.integrations.filters import IntegrationFilter
 from apps.integrations.tasks import run_integration
 from apps.projects.mixins import ProjectMixin
 from apps.runs.tables import JobRunTable
 
-from .forms import KIND_TO_FORM_CLASS, IntegrationUpdateForm
+from .forms import KIND_TO_FORM_CLASS
 from .mixins import STATE_TO_URL_REDIRECT, ReadyMixin
 from .models import Integration
 from .tables import IntegrationListTable, ReferencesTable
@@ -74,13 +73,6 @@ class IntegrationDetail(ProjectMixin, TurboUpdateView):
         table = self.object.get_table_by_pk_safe(self.request.GET.get("table_id"))
         context_data["table_id"] = table.id if table else None
 
-        if self.object.kind == Integration.Kind.CONNECTOR:
-            syncing_or_empty = {
-                i.split(".")[1] for i in self.object.connector.schema_obj.enabled_bq_ids
-            } - {t.bq_table for t in context_data["tables"]}
-            context_data["syncing_or_empty"] = {
-                t.replace("_", " ").title() for t in syncing_or_empty
-            }
         return context_data
 
     def get_success_url(self) -> str:
@@ -172,23 +164,12 @@ class IntegrationConfigure(ProjectMixin, TurboUpdateView):
             return redirect(
                 "project_integrations:load", self.project.id, self.object.id
             )
-        # only sync on initial get, not live form updates (post with 422 response)
-        if self.object.kind == Integration.Kind.CONNECTOR:
-            self.object.connector.sync_schema_obj_from_fivetran(
-                enable_defaults=not self.object.connector.has_import_triggered
-            )
         return super().get(request, *args, **kwargs)
 
     def get_form_instance(self):
         return self.object.source_obj
 
     def get_form_class(self):
-        if (
-            self.object.kind == Integration.Kind.CONNECTOR
-            and self.object.connector.service == "facebook_ads"
-            and flag_is_active(self.request, "alpha")
-        ):
-            return FacebookAdsConnectorUpdateForm
         return KIND_TO_FORM_CLASS[self.object.kind]
 
     def get_form_kwargs(self):
@@ -230,9 +211,6 @@ class IntegrationLoad(ProjectMixin, TurboUpdateView):
     def get(self, request, *args, **kwargs):
 
         self.object = self.get_object()
-
-        if self.object.kind == Integration.Kind.CONNECTOR:
-            self.object.connector.sync_updates_from_fivetran()
 
         if self.object.state not in [
             Integration.State.LOAD,

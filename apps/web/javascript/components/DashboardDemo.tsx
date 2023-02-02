@@ -1,15 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import ReactFC from 'react-fusioncharts'
-import FusionCharts from 'fusioncharts'
-import ChartLibrary from 'fusioncharts/fusioncharts.charts'
-import FusionTheme from 'fusioncharts/themes/fusioncharts.theme.fusion'
-
-ReactFC.fcRoot(FusionCharts, ChartLibrary, FusionTheme)
-
-FusionCharts.options.license({
-  key: window.FUSIONCHARTS_LICENCE,
-  creditLabel: false,
-})
 
 import chartData from './dashboard-demo-data'
 import { useDemoStore } from '../store'
@@ -80,10 +69,11 @@ const TypeButtonGroup = ({ type, setType }) => {
       {TYPE_CONFIG.map((option) => (
         <button
           key={option.id}
-          className={`p-2 text-lg lg:text-xl focus:outline-none h-full ${type === option.id
-            ? 'text-white bg-indigo-600 hover:bg-indigo-700'
-            : 'text-gray-600 hover:text-gray-900'
-            }`}
+          className={`p-2 text-lg lg:text-xl focus:outline-none h-full ${
+            type === option.id
+              ? 'text-white bg-indigo-600 hover:bg-indigo-700'
+              : 'text-gray-600 hover:text-gray-900'
+          }`}
           onClick={() => setType(option.id)}
         >
           <i className={`fa ${option.icon}`}></i>
@@ -99,8 +89,11 @@ const ThemeButtonGroup = ({ theme, setTheme }) => {
       {THEME_CONFIG.map(({ id }) => (
         <button
           key={id}
-          className={`p-2 focus:outline-none w-10 h-full ${theme === id ? `bg-${id}-600 hover:bg-${id}-700` : `bg-${id}-100 hover:bg-${id}-200`
-            }`}
+          className={`p-2 focus:outline-none w-10 h-full ${
+            theme === id
+              ? `bg-${id}-600 hover:bg-${id}-700`
+              : `bg-${id}-100 hover:bg-${id}-200`
+          }`}
           onClick={() => setTheme(id)}
         ></button>
       ))}
@@ -115,10 +108,11 @@ const FontButtonGroup = ({ font, setFont }) => {
         <button
           key={id}
           style={{ fontFamily: id }}
-          className={`p-2 text-lg lg:text-xl focus:outline-none w-10 h-full ${font === id
-            ? 'text-white bg-indigo-600 hover:bg-indigo-700'
-            : 'text-gray-600 hover:text-gray-900'
-            }`}
+          className={`p-2 text-lg lg:text-xl focus:outline-none w-10 h-full ${
+            font === id
+              ? 'text-white bg-indigo-600 hover:bg-indigo-700'
+              : 'text-gray-600 hover:text-gray-900'
+          }`}
           onClick={() => setFont(id)}
         >
           T
@@ -134,10 +128,11 @@ const AgencyButtonGroup = ({ agency, setAgency }) => {
       {AGENCY_CONFIG.map(({ id }) => (
         <button
           key={id}
-          className={`p-2 text-lg lg:text-xl focus:outline-none w-10 h-full ${agency === id
-            ? 'text-white bg-indigo-600 hover:bg-indigo-700'
-            : 'text-gray-600 hover:text-gray-900'
-            }`}
+          className={`p-2 text-lg lg:text-xl focus:outline-none w-10 h-full ${
+            agency === id
+              ? 'text-white bg-indigo-600 hover:bg-indigo-700'
+              : 'text-gray-600 hover:text-gray-900'
+          }`}
           onClick={() => setAgency(id)}
         >
           <i className={`fa fa-${id}`}></i>
@@ -155,29 +150,6 @@ const DashboardDemo = () => {
   const [data, setData] = useState(chartData)
 
   const { integrations, node } = useDemoStore()[0]
-
-  const chartConfigs = {
-    type,
-    width: '100%',
-    height: '60%',
-    dataFormat: 'json',
-    dataSource: {
-      chart: {
-        baseFont: font,
-        xAxisNameFont: font,
-        yAxisNameFont: font,
-        captionFont: font,
-        labelFont: font,
-        legendItemFont: font,
-        bgColor: '#ffffff',
-        theme: 'fusion',
-        paletteColors: THEME_CONFIG.find((item) => item.id === theme)?.palette,
-        animation: '0',
-        showLegend: false,
-      },
-      data,
-    },
-  }
 
   useEffect(() => {
     setData(
@@ -215,7 +187,8 @@ const DashboardDemo = () => {
           </div>
         </div>
         <div className='p-2'>
-          <ReactFC {...chartConfigs} />
+          There used to be charts here but we removed FusionCharts and now need
+          to do the same with Plotly
         </div>
         <p className='absolute bottom-0 right-0 text-gray-600 text-sm inline-flex items-center gap-1 bg-gray-10 p-1 m-2 rounded border border-gray'>
           Data sources

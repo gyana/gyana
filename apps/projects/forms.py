@@ -128,4 +128,4 @@ class ProjectRunForm(BaseModelForm):
 
     def post_save(self, instance):
         if self._daily_schedule_time_is_dirty:
-            instance.update_daily_sync_time()
+            instance.update_schedule()

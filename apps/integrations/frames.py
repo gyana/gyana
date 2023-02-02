@@ -23,7 +23,8 @@ class IntegrationOverview(ProjectMixin, TurboFrameTemplateView):
 
         ready = queryset.ready().count()
         pending = queryset.pending().count()
-        broken = queryset.broken().count()
+        # todo: decide definition of broken for CSV, Sheet, API, etc
+        broken = 0
 
         context_data["integrations"] = {
             "all": queryset.visible().order_by("-updated").all()[:5],
@@ -33,7 +34,6 @@ class IntegrationOverview(ProjectMixin, TurboFrameTemplateView):
             "loading": queryset.loading().count(),
             "broken": broken,
             "operational": broken == 0 and pending == 0,
-            "connectors": queryset.connectors().all(),
             "sheet_count": queryset.sheets().count(),
             "upload_count": queryset.uploads().count(),
         }

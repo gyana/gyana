@@ -1,9 +1,9 @@
 import pytest
 from deepdiff import DeepDiff
-from django.utils import timezone
+from django.conf import settings
+from djpaddle.models import Plan
 from pytest_django.asserts import assertContains, assertRedirects
 
-from apps.appsumo.models import AppsumoCode
 from apps.base.tests.asserts import (
     assertFormRenders,
     assertLink,
@@ -13,6 +13,7 @@ from apps.base.tests.asserts import (
     assertSelectorText,
 )
 from apps.base.tests.snapshot import get_instance_dict
+from apps.base.tests.subscribe import upgrade_to_pro
 from apps.nodes.models import Node
 from apps.projects.models import Project
 from apps.tables.models import Table
@@ -124,9 +125,14 @@ def test_private_projects(client, logged_in_user):
     project = team.project_set.first()
     assert project is None
 
-    # upgrade user
-    AppsumoCode.objects.create(code="12345678", team=team, redeemed=timezone.now())
-    AppsumoCode.objects.create(code="12345679", team=team, redeemed=timezone.now())
+    # Upgrade user
+    pro_plan = Plan.objects.create(
+        id=settings.DJPADDLE_PRO_PLAN_ID,
+        name="Business",
+        billing_type="month",
+        billing_period=1,
+    )
+    upgrade_to_pro(logged_in_user, team, pro_plan)
 
     r = client.post(
         f"/teams/{team.id}/projects/new",
@@ -278,58 +284,6 @@ def test_duplicate_simple_project(
 
     new_project_dict = get_instance_dict(project)
     # Confirm original project hasn't been changed through deletion
-    assert not DeepDiff(project_dict, new_project_dict)
-
-
-def test_duplicate_project_with_connector(
-    client,
-    bigquery,
-    project,
-    integration_factory,
-    connector_factory,
-    mock_update_kwargs_from_fivetran,
-):
-    """Duplicates a project with an integration->connector->table and confirms
-    that the new dataset of the connector and table is updated"""
-    integration = integration_factory(project=project, kind="connector")
-    connector = connector_factory(integration=integration)
-    table = integration.table_set.create(
-        bq_dataset=connector.schema,
-        bq_table="table",
-        project=project,
-        source=Table.Source.INTEGRATION,
-    )
-    project_dict = get_instance_dict(project)
-
-    r = client.post(f"/projects/{project.id}/duplicate")
-    assert r.status_code == 303
-    duplicate = Project.objects.exclude(id=project.id).first()
-
-    assert duplicate.name == f"Copy of {project.name}"
-    assert duplicate.integration_set.count() == 1
-    assert duplicate.table_set.count() == 1
-
-    connector_clone = duplicate.integration_set.first().connector
-    assert connector_clone.schema != connector.schema
-
-    table_clone = duplicate.integration_set.first().table_set.first()
-
-    assert table_clone.bq_dataset == connector_clone.schema
-    assert table_clone.bq_table == table.bq_table
-
-    # Table should be copied
-    assert bigquery.query.call_count == 1
-    assert (
-        f"CREATE OR REPLACE TABLE {table_clone.bq_id} as (SELECT * FROM {table.bq_id})"
-        == bigquery.query.call_args.args[0]
-    )
-    assert mock_update_kwargs_from_fivetran.call_count == 1
-
-    r = client.delete(f"/projects/{duplicate.id}/delete")
-    assert r.status_code == 302
-
-    new_project_dict = get_instance_dict(project)
-    # Make sure deletion doesn't change original project
     assert not DeepDiff(project_dict, new_project_dict)
 
 

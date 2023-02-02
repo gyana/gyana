@@ -1,4 +1,3 @@
-from apps.connectors.sync import start_connector_sync
 from apps.customapis import tasks as customapi_tasks
 from apps.sheets import tasks as sheet_tasks
 from apps.uploads.tasks import run_upload_sync
@@ -18,7 +17,6 @@ def run_integration_task(kind: Integration.Kind, run_id: str):
 
 def run_integration(kind: Integration.Kind, entity, user: CustomUser):
     return {
-        Integration.Kind.CONNECTOR: start_connector_sync,
         Integration.Kind.CUSTOMAPI: customapi_tasks.run_customapi_sync,
         Integration.Kind.SHEET: sheet_tasks.run_sheet_sync,
         Integration.Kind.UPLOAD: run_upload_sync,

@@ -72,13 +72,6 @@ def get_bucket():
 
 
 @lru_cache
-def fivetran():
-    from apps.connectors.fivetran.client import FivetranClient
-
-    return FivetranClient()
-
-
-@lru_cache
 def heroku():
     heroku_conn = heroku3.from_key(settings.HEROKU_API_KEY)
     return heroku_conn.app(settings.HEROKU_APP)

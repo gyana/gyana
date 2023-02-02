@@ -33,12 +33,9 @@ register_converter(HashIdConverter if settings.USE_HASHIDS else IntConverter, "h
 
 from wagtail.api.v2.views import PagesAPIViewSet
 
-from apps.appsumo import urls as appsumo_urls
 from apps.cnames import urls as cname_urls
-from apps.connectors import urls as connector_urls
 from apps.controls import urls as control_urls
 from apps.customapis import urls as api_urls
-from apps.customreports import urls as customreports_urls
 from apps.dashboards import urls as dashboard_urls
 from apps.integrations import urls as integration_urls
 from apps.invites import urls as invite_urls
@@ -57,18 +54,9 @@ PagesAPIViewSet.schema = None
 schemajs_view = get_schemajs_view(title="API")
 
 
-connector_urlpatterns = [
-    path("", include("apps.connectors.urls")),
-    path(
-        "<hashid:connector_id>/customreports/",
-        include(customreports_urls.connector_urlpatterns),
-    ),
-]
-
 integration_urlpatterns = [
     path("", include(integration_urls.project_urlpatterns)),
     path("customapis/", include(api_urls.integration_urlpatterns)),
-    path("connectors/", include(connector_urls.integration_urlpatterns)),
     path("sheets/", include(sheet_urls.integration_urlpatterns)),
     path("uploads/", include(upload_urls.integration_urlpatterns)),
 ]
@@ -98,7 +86,6 @@ teams_urlpatterns = [
     path("<hashid:team_id>/invites/", include(invite_urls.team_urlpatterns)),
     path("<hashid:team_id>/projects/", include(project_urls.team_urlpatterns)),
     path("<hashid:team_id>/members/", include(team_urls.membership_urlpatterns)),
-    path("<hashid:team_id>/appsumo/", include(appsumo_urls.team_urlpatterns)),
     path("<hashid:team_id>/cnames/", include(cname_urls.team_urlpatterns)),
 ]
 
@@ -121,8 +108,6 @@ urlpatterns = [
     path("nodes/", include("apps.nodes.urls")),
     path("uploads/", include("apps.uploads.urls")),
     path("sheets/", include("apps.sheets.urls")),
-    path("connectors/", include(connector_urlpatterns)),
-    path("appsumo/", include("apps.appsumo.urls")),
     path("cnames/", include("apps.cnames.urls")),
     path("oauth2/", include("apps.oauth2.urls")),
     path("learn/", include("apps.learn.urls")),
