@@ -10,24 +10,19 @@
         Business Intelligence
       </h1>
       <p class="mt-3 max-w-md mx-auto text-base text-gray-600 sm:text-lg md:mt-5 md:text-xl md:max-w-3xl">
-        The power of a modern data stack with the simplicity of a spreadsheet. <br/>
-        Run it on your infrastructure or scale with us.
+        Gyana is a BI tool with a friendly UX and the flexibility of SQL.
+        Build a dashboard for all your metrics without writing a line of code.
+        Self host or scale with us.
       </p>
     </div>
 
     <div class="my-8 text-base text-gray-600 gap-4 flex justify-center">
-      <form method="get" action="{% url 'account_signup' %}"
-        class="flex flex-col sm:flex-row items-center max-w-xl w-full">
-          <input type="email" name="email" id="email" class="input input--sm" placeholder="Email address">
-          <div class="flex items-center gap-4">
-            <button type="submit" href="{% url 'account_signup' %}" class="w-full sm:w-auto button button--secondary">
-              Create account
-            </button>
-            {% comment %} <a class="button button--tertiary w-16" href="{% provider_login_url 'google' %}">
-              <img class="w-6 h-6" src="{% static 'images/socialauth/google-g.svg' %}" alt="Google Logo">
-            </a> {% endcomment %}
-          </div>
-      </form>
+      <a href="{% url 'account_signup' %}" class="w-full sm:w-auto button button--secondary">
+        Get started
+      </a>
+      <a href="{% external_url 'github' %}" class="w-full sm:w-auto button">
+        Self host Gyana
+      </a>
     </div>
 
     <p class="text-xs sm:text-sm text-gray-600 px-4 inline-flex items-center gap-1">
