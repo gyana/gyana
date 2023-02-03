@@ -33,7 +33,7 @@ fixtures:
     ./manage.py dumpdata --natural-foreign -e blog -e learn {{ excludes }} {{ wagtail_excludes }} > cypress/fixtures/fixtures.json
     # wagtail custom page fixtures need to run after wagtailcore_locale
     ./manage.py dumpdata blog learn > cypress/fixtures/fixtures-wagtail.json
-    yarn prettier:fixtures
+    npm run prettier:fixtures
 
 shell:
     ./manage.py shell -i ipython
@@ -62,7 +62,7 @@ export:
     poetry export -f requirements.txt --output requirements.txt --without-hashes
 
 update:
-    yarn install
+    npm install
     poetry install
 
 format:
@@ -72,7 +72,7 @@ format:
 
 alias bf := branchformat
 branchformat:
-    git diff --diff-filter=M --name-only main '***.scss' | xargs --no-run-if-empty yarn prettier:write
+    git diff --diff-filter=M --name-only main '***.scss' | xargs --no-run-if-empty npm run prettier:write
     git diff --diff-filter=M --name-only main '***.py' | xargs --no-run-if-empty black
     git diff --diff-filter=M --name-only main '***.py' | xargs --no-run-if-empty isort
 

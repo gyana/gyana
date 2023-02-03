@@ -39,9 +39,9 @@ jobs:
         with:
           node-version: '14'
       - name: Install Node Dependencies
-        run: yarn
+        run: npm install
       - name: Build assets
-        run: yarn build
+        run: npm run build
       - name: Collect static
         run: poetry run just collectstatic
       - name: Copy folders

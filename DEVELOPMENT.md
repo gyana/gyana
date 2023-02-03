@@ -32,7 +32,7 @@ Install all required python and node dependencies:
 
 ```bash
 poetry install
-yarn install
+npm install
 ```
 
 Create a local database and run migrations on it:
@@ -60,7 +60,7 @@ Make sure that Postgres and Redis servers are running:
 ```bash
 just dev
 just celery
-yarn build:watch
+npm run build:watch
 ```
 
 Bootstrap a new CRUDL Django app with `just startapp`.
@@ -76,7 +76,7 @@ just test -k {name}
 For cypress, run your app in development mode and open the cypress UI:
 
 ```
-yarn cypress:open
+npm run cypress:open
 ```
 
 The database is seeded with fixtures, and reset before each test. To modify the
@@ -109,8 +109,8 @@ Run the entire e2e test suite locally, and view the list of failed tests. You ca
 review screenshots and videos in the cypress folder to spot easy fixes:
 
 ```
-yarn cypress:run
-yarn cypress:failed
+npm run cypress:run
+npm run cypress:failed
 ```
 
 Manually fix failed tests in the UI and re-run the tests suite to confirm.

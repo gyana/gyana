@@ -62,9 +62,9 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
     - name: Install Node Dependencies
-      run: yarn
+      run: npm install
     - name: Build assets
-      run: yarn build
+      run: npm run build
     - name: Run migrations
       run: just migrate
     - name: Cypress run

@@ -2,7 +2,6 @@
 .venv
 gyana-1511894275181-50f107d4db00.json
 celerybeat-schedule
-.yarn
 local-service-key.json
 
 # Coverage
