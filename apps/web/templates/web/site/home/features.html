@@ -2,12 +2,14 @@
 
 <div class="bg-white pt-16 pb-32 overflow-hidden">
   <div class="px-4 sm:px-6 lg:px-8 mb-16 lg:mb-0 lg:text-center">
+    <p class="font-normal text-indigo-600 text-2xl lg:text-3xl text-caveat">
+      Three steps to
+    </p>
     <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
-      Unified reporting for $99<span class="text-xl text-gray-600 font-medium">/mo</span>
+      Measure what matters
     </h2>
     <p class="mt-4 max-w-3xl mx-auto text-lg text-gray-600">
-      You can build a completely custom report for your business, without jumping between tools or hiring expensive engineers.
-      <strong>All in three simple steps.</strong>
+      You can build a dashboard tailored to your business without hiring expensive engineers.
     </p>
   </div>
   <div>
@@ -26,11 +28,21 @@
               Connect your sources
             </h2>
             <p class="text-lg text-gray-600">
-              Connect to most popular online sources out of the box, including apps, databases, webhooks and APIs.
-              <strong>Need something custom?</strong> We can integrate any new source in 2 weeks.
+              Wherever your data lives, there's a way to get it into Gyana. Make use of integrations like
+              <span class="inline-flex items-center px-2 py-1 rounded-md text-sm font-normal bg-indigo-100 text-gray-800">
+                <i class="fa fa-upload mr-2"> </i>Upload
+              </span>
+              <span class="inline-flex items-center px-2 py-1 rounded-md text-sm font-normal bg-indigo-100 text-gray-800">
+                <i class="fa fa-file-spreadsheet mr-2"> </i>Google Sheets
+              </span>
+              <span class="inline-flex items-center px-2 py-1 rounded-md text-sm font-normal bg-indigo-100 text-gray-800">
+                <i class="fa fa-brackets-curly mr-2"> </i>Custom API
+              </span>
+              to turn your tools and services into tables.
+              {% comment %} to build live connections to all your tools. {% endcomment %}
             </p>
             <p class="text-sm text-gray-600">
-              <b>100+</b> native integrations • <b>2B+</b> rows synced
+              <b>3</b> integrations • <b>2B+</b> rows synced • <b>Any data</b> on the internet
             </p>
             <div class="flex flex-col lg:flex-row gap-4">
               <a href="{% url 'web:integrations' %}" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-700 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
@@ -119,7 +131,7 @@
           </div>
           <div class="mt-6 flex flex-col gap-y-4">
             <h2 class="text-3xl font-extrabold text-gray-900">
-              Build your report
+              Build your dashboard
             </h2>
             <p class="text-lg text-gray-600">
               It's like making a presentation, but with live data sources that never break. Drag and drop widgets like
@@ -138,7 +150,7 @@
             </p>
             <div class="inline-flex items-center text-sm leading-4 font-medium text-gray-700">
               <span class="mr-2 block lg:hidden">{% heroicon 'arrow-down' class="w-5 h-5" style="solid" %}</span>
-              <span>Customize your report</span>
+              <span>Customize your dashboard</span>
               <span class="ml-2 hidden lg:block">{% heroicon 'arrow-right' class="w-5 h-5" style="solid" %}</span>
             </div>
             <p class="text-indigo-600 text-xl lg:text-2xl text-right text-caveat">
