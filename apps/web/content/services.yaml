@@ -1,27 +1,3 @@
-adjust:
-  icon_path: adjust.svg
-  id: adjust
-  name: Adjust
-adobe_analytics:
-  icon_path: adobe_analytics.svg
-  id: adobe_analytics
-  name: Adobe Analytics
-adobe_analytics_data_feed:
-  icon_path: adobe_analytics_data_feed.svg
-  id: adobe_analytics_data_feed
-  name: Adobe Analytics Data Feed
-adp_workforce_now:
-  icon_path: adp_workforce_now.svg
-  id: adp_workforce_now
-  name: ADP Workforce Now
-adroll:
-  icon_path: adroll.svg
-  id: adroll
-  name: AdRoll
-adwords:
-  icon_path: adwords.png
-  id: adwords
-  name: Google Ads (AdWords)
 airtable:
   icon_path: airtable.svg
   id: airtable
@@ -30,10 +6,6 @@ amplitude:
   icon_path: amplitude.svg
   id: amplitude
   name: Amplitude
-anaplan:
-  icon_path: anaplan.svg
-  id: anaplan
-  name: Anaplan
 apache_kafka:
   icon_path: apache_kafka.svg
   id: apache_kafka
@@ -42,10 +14,6 @@ apple_search_ads:
   icon_path: apple_search_ads.svg
   id: apple_search_ads
   name: Apple Search Ads
-appsflyer:
-  icon_path: appsflyer.svg
-  id: appsflyer
-  name: AppsFlyer
 asana:
   icon_path: asana.svg
   id: asana
@@ -54,50 +22,10 @@ aurora:
   icon_path: aurora.png
   id: aurora
   name: Aurora MySQL
-aurora_postgres:
-  icon_path: aurora_postgres.png
-  id: aurora_postgres
-  name: Aurora PostgreSQL
-aws_cloudtrail:
-  icon_path: aws_cloudtrail.svg
-  id: aws_cloudtrail
-  name: AWS CloudTrail
-aws_inventory:
-  icon_path: aws_inventory.svg
-  id: aws_inventory
-  name: AWS Inventory
-aws_lambda:
-  icon_path: aws_lambda.png
-  id: aws_lambda
-  name: AWS Lambda
-aws_msk:
-  icon_path: aws_msk.svg
-  id: aws_msk
-  name: AWS MSK
-azure_blob_storage:
-  icon_path: azure_blob_storage.svg
-  id: azure_blob_storage
-  name: Azure Blob Storage
-azure_event_hub:
-  icon_path: azure_event_hub.svg
-  id: azure_event_hub
-  name: Azure Event Hubs
-azure_function:
-  icon_path: azure_function.svg
-  id: azure_function
-  name: Azure Functions
-azure_postgres:
-  icon_path: azure_postgres.png
-  id: azure_postgres
-  name: Azure PostgreSQL
 azure_sql_db:
   icon_path: azure_sql_db.png
   id: azure_sql_db
   name: Azure SQL Database
-azure_sql_managed_db:
-  icon_path: azure_sql_managed_db.png
-  id: azure_sql_managed_db
-  name: Azure SQL Managed Instance
 bingads:
   icon_path: bingads.svg
   id: bingads
@@ -106,58 +34,10 @@ box:
   icon_path: box.svg
   id: box
   name: Box
-braintree:
-  icon_path: braintree.svg
-  id: braintree
-  name: Braintree
-braintree_sandbox:
-  icon_path: braintree_sandbox.svg
-  id: braintree_sandbox
-  name: Braintree Sandbox
-branch:
-  icon_path: branch.svg
-  id: branch
-  name: Branch
-braze:
-  icon_path: braze.png
-  id: braze
-  name: Braze
-cloudfront:
-  icon_path: cloudfront.svg
-  id: cloudfront
-  name: Amazon CloudFront
-concur:
-  icon_path: concur.svg
-  id: concur
-  name: SAP Concur
-confluent_cloud:
-  icon_path: confluent_cloud.svg
-  id: confluent_cloud
-  name: Confluent Cloud
-coupa:
-  icon_path: coupa.svg
-  id: coupa
-  name: Coupa
-criteo:
-  icon_path: criteo.png
-  id: criteo
-  name: Criteo
-delighted:
-  icon_path: delighted.svg
-  id: delighted
-  name: Delighted
 documentdb:
   icon_path: documentdb.svg
   id: documentdb
   name: Amazon DocumentDB
-double_click_campaign_manager:
-  icon_path: double_click_campaign_manager.svg
-  id: double_click_campaign_manager
-  name: Google Campaign Manager 360
-double_click_publishers:
-  icon_path: double_click_publishers.png
-  id: double_click_publishers
-  name: Google Ad Manager
 dropbox:
   icon_path: dropbox.svg
   id: dropbox
@@ -166,18 +46,10 @@ dynamics_365:
   icon_path: dynamics_365.svg
   id: dynamics_365
   name: Microsoft Dynamics 365
-dynamics_365_fo:
-  icon_path: dynamics_365_fo.svg
-  id: dynamics_365_fo
-  name: Microsoft Dynamics 365 F/O
 dynamodb:
   icon_path: dynamodb.svg
   id: dynamodb
   name: DynamoDB
-eloqua:
-  icon_path: eloqua.svg
-  id: eloqua
-  name: Eloqua
 email:
   icon_path: email.svg
   id: email
@@ -186,26 +58,10 @@ facebook:
   icon_path: facebook.svg
   id: facebook
   name: Facebook Ad Insights
-facebook_ad_account:
-  icon_path: facebook_ad_account.svg
-  id: facebook_ad_account
-  name: Facebook Ad Account
-facebook_ads:
-  icon_path: facebook_ads.svg
-  id: facebook_ads
-  name: Facebook Ads
 facebook_pages:
   icon_path: facebook_pages.svg
   id: facebook_pages
   name: Facebook Pages
-financial_force:
-  icon_path: financial_force.svg
-  id: financial_force
-  name: FinancialForce
-fivetran_log:
-  icon_path: fivetran_log.svg
-  id: fivetran_log
-  name: Fivetran Log
 freshdesk:
   icon_path: freshdesk.svg
   id: freshdesk
@@ -234,38 +90,10 @@ google_analytics:
   icon_path: google_analytics.svg
   id: google_analytics
   name: Google Analytics
-google_analytics_360:
-  icon_path: google_analytics_360.svg
-  id: google_analytics_360
-  name: Google Analytics 360
 google_analytics_4:
   icon_path: google_analytics_4.svg
   id: google_analytics_4
   name: Google Analytics 4
-google_analytics_mcf:
-  icon_path: google_analytics_mcf.svg
-  id: google_analytics_mcf
-  name: Google Analytics (MCF)
-google_cloud_function:
-  icon_path: google_cloud_function.svg
-  id: google_cloud_function
-  name: Google Cloud Functions
-google_cloud_mysql:
-  icon_path: google_cloud_mysql.png
-  id: google_cloud_mysql
-  name: Google Cloud MySQL
-google_cloud_postgresql:
-  icon_path: google_cloud_postgresql.png
-  id: google_cloud_postgresql
-  name: Google Cloud PostgreSQL
-google_cloud_sqlserver:
-  icon_path: google_cloud_sqlserver.png
-  id: google_cloud_sqlserver
-  name: Google Cloud SQL - SQL Server
-google_display_and_video_360:
-  icon_path: google_display_and_video_360.svg
-  id: google_display_and_video_360
-  name: Google Display & Video 360
 google_drive:
   icon_path: google_drive.svg
   id: google_drive
@@ -298,14 +126,6 @@ helpscout:
   icon_path: helpscout.svg
   id: helpscout
   name: Help Scout
-heroku_kafka:
-  icon_path: heroku_kafka.svg
-  id: heroku_kafka
-  name: Heroku Kafka
-heroku_postgres:
-  icon_path: heroku_postgres.png
-  id: heroku_postgres
-  name: Heroku Postgres
 hubspot:
   icon_path: hubspot.svg
   id: hubspot
@@ -318,10 +138,6 @@ intercom:
   icon_path: intercom.svg
   id: intercom
   name: Intercom
-iterable:
-  icon_path: iterable.svg
-  id: iterable
-  name: Iterable
 itunes_connect:
   icon_path: itunes_connect.png
   id: itunes_connect
@@ -330,10 +146,6 @@ jira:
   icon_path: jira.svg
   id: jira
   name: Jira
-kinesis:
-  icon_path: kinesis.svg
-  id: kinesis
-  name: Kinesis
 klaviyo:
   icon_path: klaviyo.svg
   id: klaviyo
@@ -346,10 +158,6 @@ lever:
   icon_path: lever.svg
   id: lever
   name: Lever
-light_speed_retail:
-  icon_path: light_speed_retail.svg
-  id: light_speed_retail
-  name: Lightspeed Retail
 linkedin_ads:
   icon_path: linkedin_ads.svg
   id: linkedin_ads
@@ -362,10 +170,6 @@ magento_mysql:
   icon_path: magento_mysql.png
   id: magento_mysql
   name: Magento MySQL
-magento_mysql_rds:
-  icon_path: magento_mysql_rds.png
-  id: magento_mysql_rds
-  name: Magento MySQL RDS
 mailchimp:
   icon_path: mailchimp.svg
   id: mailchimp
@@ -378,26 +182,6 @@ maria:
   icon_path: maria.png
   id: maria
   name: MariaDB
-maria_azure:
-  icon_path: maria_azure.png
-  id: maria_azure
-  name: Azure MariaDB
-maria_rds:
-  icon_path: maria_rds.png
-  id: maria_rds
-  name: MariaDB RDS
-marin:
-  icon_path: marin.png
-  id: marin
-  name: Marin Software
-marketo:
-  icon_path: marketo.svg
-  id: marketo
-  name: Marketo
-mavenlink:
-  icon_path: mavenlink.svg
-  id: mavenlink
-  name: Mavenlink
 microsoft_lists:
   icon_path: microsoft_lists.svg
   id: microsoft_lists
@@ -410,66 +194,18 @@ mongo:
   icon_path: mongo.svg
   id: mongo
   name: MongoDB
-mongo_sharded:
-  icon_path: mongo_sharded.svg
-  id: mongo_sharded
-  name: MongoDB Sharded
 mysql:
   icon_path: mysql.png
   id: mysql
   name: MySQL
-mysql_azure:
-  icon_path: mysql_azure.png
-  id: mysql_azure
-  name: Azure MySQL
-mysql_rds:
-  icon_path: mysql_rds.png
-  id: mysql_rds
-  name: MySQL RDS
-netsuite_suiteanalytics:
-  icon_path: netsuite_suiteanalytics.svg
-  id: netsuite_suiteanalytics
-  name: NetSuite SuiteAnalytics
 one_drive:
   icon_path: one_drive.svg
   id: one_drive
   name: OneDrive
-optimizely:
-  icon_path: optimizely.svg
-  id: optimizely
-  name: Optimizely
 oracle:
   icon_path: oracle.svg
   id: oracle
   name: Oracle
-oracle_ebs:
-  icon_path: oracle_ebs.svg
-  id: oracle_ebs
-  name: Oracle EBS
-oracle_rac:
-  icon_path: oracle_rac.svg
-  id: oracle_rac
-  name: Oracle RAC
-oracle_rds:
-  icon_path: oracle_rds.svg
-  id: oracle_rds
-  name: Oracle RDS
-outbrain:
-  icon_path: outbrain.png
-  id: outbrain
-  name: Outbrain
-outreach:
-  icon_path: outreach.svg
-  id: outreach
-  name: Outreach
-pardot:
-  icon_path: pardot.svg
-  id: pardot
-  name: Pardot
-pendo:
-  icon_path: pendo.svg
-  id: pendo
-  name: Pendo
 pinterest_ads:
   icon_path: pinterest_ads.svg
   id: pinterest_ads
@@ -482,14 +218,6 @@ postgres:
   icon_path: postgres.svg
   id: postgres
   name: PostgreSQL
-postgres_rds:
-  icon_path: postgres_rds.svg
-  id: postgres_rds
-  name: PostgreSQL RDS
-qualtrics:
-  icon_path: qualtrics.svg
-  id: qualtrics
-  name: Qualtrics
 quickbooks:
   icon_path: quickbooks.svg
   id: quickbooks
@@ -510,22 +238,10 @@ sage_intacct:
   icon_path: sage_intacct.svg
   id: sage_intacct
   name: Sage Intacct
-sailthru:
-  icon_path: sailthru.svg
-  id: sailthru
-  name: Sailthru
 salesforce:
   icon_path: salesforce.svg
   id: salesforce
   name: Salesforce
-salesforce_marketing_cloud:
-  icon_path: salesforce_marketing_cloud.svg
-  id: salesforce_marketing_cloud
-  name: Salesforce Marketing Cloud
-salesforce_sandbox:
-  icon_path: salesforce_sandbox.png
-  id: salesforce_sandbox
-  name: Salesforce sandbox
 segment:
   icon_path: segment.svg
   id: segment
@@ -534,10 +250,6 @@ sendgrid:
   icon_path: sendgrid.svg
   id: sendgrid
   name: SendGrid
-servicenow:
-  icon_path: servicenow.svg
-  id: servicenow
-  name: ServiceNow
 sftp:
   icon_path: sftp.svg
   id: sftp
@@ -558,18 +270,10 @@ snowplow:
   icon_path: snowplow.svg
   id: snowplow
   name: Snowplow
-splunk:
-  icon_path: splunk.svg
-  id: splunk
-  name: Splunk
 sql_server:
   icon_path: sql_server.svg
   id: sql_server
   name: SQL Server
-sql_server_rds:
-  icon_path: sql_server_rds.svg
-  id: sql_server_rds
-  name: SQL Server RDS
 square:
   icon_path: square.png
   id: square
@@ -578,10 +282,6 @@ stripe:
   icon_path: stripe.svg
   id: stripe
   name: Stripe
-stripe_test:
-  icon_path: stripe_test.svg
-  id: stripe_test
-  name: Stripe test mode
 survey_monkey:
   icon_path: survey_monkey.svg
   id: survey_monkey
@@ -610,26 +310,14 @@ typeform:
   icon_path: typeform.svg
   id: typeform
   name: Typeform
-uservoice:
-  icon_path: uservoice.svg
-  id: uservoice
-  name: UserVoice
 webhooks:
   icon_path: webhooks.svg
   id: webhooks
   name: Webhooks
-workday:
-  icon_path: workday.png
-  id: workday
-  name: Workday
 xero:
   icon_path: xero.svg
   id: xero
   name: Xero
-yahoo_gemini:
-  icon_path: yahoo_gemini.png
-  id: yahoo_gemini
-  name: Verizon Media
 youtube_analytics:
   icon_path: youtube_analytics.svg
   id: youtube_analytics
@@ -638,18 +326,6 @@ zendesk:
   icon_path: zendesk.svg
   id: zendesk
   name: Zendesk Support
-zendesk_chat:
-  icon_path: zendesk_chat.svg
-  id: zendesk_chat
-  name: Zendesk Chat
-zendesk_sell:
-  icon_path: zendesk_sell.svg
-  id: zendesk_sell
-  name: Zendesk Sell
-zendesk_sunshine:
-  icon_path: zendesk_sunshine.svg
-  id: zendesk_sunshine
-  name: Zendesk Sunshine
 zoho_crm:
   icon_path: zoho_crm.svg
   id: zoho_crm
@@ -658,7 +334,3 @@ zuora:
   icon_path: zuora.svg
   id: zuora
   name: Zuora
-zuora_sandbox:
-  icon_path: zuora_sandbox.svg
-  id: zuora_sandbox
-  name: Zuora Sandbox
