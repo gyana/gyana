@@ -46,7 +46,7 @@ django-cogwheels==0.3 ; python_full_version >= "3.9.0" and python_full_version <
 django-cryptography==1.1 ; python_full_version >= "3.9.0" and python_full_version < "3.10.0"
 django-dirtyfields==1.8.2 ; python_full_version >= "3.9.0" and python_full_version < "3.10.0"
 django-filter==2.4.0 ; python_full_version >= "3.9.0" and python_full_version < "3.10.0"
-django-heroicons @ git+https://github.com/geoffbeier/django-heroicons@HEAD ; python_full_version >= "3.9.0" and python_full_version < "3.10.0"
+django-heroicons @ git+https://github.com/geoffbeier/django-heroicons@acbd344230689ab2cde4c20d7f0f597ef8795ad0 ; python_full_version >= "3.9.0" and python_full_version < "3.10.0"
 django-heroku==0.3.1 ; python_full_version >= "3.9.0" and python_full_version < "3.10.0"
 django-hijack==3.2.1 ; python_full_version >= "3.9.0" and python_full_version < "3.10.0"
 django-invitations @ git+https://github.com/gyana/django-invitations.git@patch-1 ; python_full_version >= "3.9.0" and python_full_version < "3.10.0"
