@@ -16,7 +16,8 @@ $card-colors: (
   background: var(--c-white);
   border-radius: 10px;
   border: 1px solid var(--card-color);
-  display: block;
+  // todo: understand why this breaks plotly layout
+  // display: block;
   position: relative;
   z-index: var(--z-default);
   overflow: auto;

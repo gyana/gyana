@@ -1,13 +1,24 @@
 import React, { useEffect, useState } from 'react'
+import Plot from 'react-plotly.js'
 
-import chartData from './dashboard-demo-data'
 import { useDemoStore } from '../store'
 
+const chartData = {
+  x: [
+    'Direct',
+    'Referral',
+    'Organic Search',
+    'Organic Social',
+    'Organic Video',
+    'Paid',
+  ],
+  y: [290, 260, 180, 140, 115, 100],
+}
+
 const TYPE_CONFIG = [
-  { id: 'pie2d', icon: 'fa-chart-pie' },
-  { id: 'column2d', icon: 'fa-chart-bar' },
+  { id: 'pie', icon: 'fa-chart-pie' },
+  { id: 'bar', icon: 'fa-chart-bar' },
   { id: 'line', icon: 'fa-chart-line' },
-  { id: 'area2d', icon: 'fa-chart-area' },
 ]
 
 const THEME_CONFIG = [
@@ -143,7 +154,7 @@ const AgencyButtonGroup = ({ agency, setAgency }) => {
 }
 
 const DashboardDemo = () => {
-  const [type, setType] = useState('pie2d')
+  const [type, setType] = useState('pie')
   const [theme, setTheme] = useState('indigo')
   const [font, setFont] = useState('sans-serif')
   const [agency, setAgency] = useState('squirrel')
@@ -151,13 +162,45 @@ const DashboardDemo = () => {
 
   const { integrations, node } = useDemoStore()[0]
 
+  const chartConfigs = {
+    type,
+    width: '100%',
+    height: '60%',
+    dataFormat: 'json',
+    dataSource: {
+      chart: {
+        baseFont: font,
+        xAxisNameFont: font,
+        yAxisNameFont: font,
+        captionFont: font,
+        labelFont: font,
+        legendItemFont: font,
+        bgColor: '#ffffff',
+        theme: 'fusion',
+        paletteColors: THEME_CONFIG.find((item) => item.id === theme)?.palette,
+        animation: '0',
+        showLegend: false,
+      },
+      data,
+    },
+  }
+
+  const plotlyData = {
+    ...data,
+    labels: data.x,
+    values: data.y,
+    type,
+  }
+
+  const plotlyLayout = { showlegend: false }
+
+  const plotlyConfig = { displayModeBar: false }
+
   useEffect(() => {
-    setData(
-      chartData.map(({ label, value }) => ({
-        label,
-        value: value + Math.floor(Math.random() * 240) - 120,
-      }))
-    )
+    setData({
+      x: chartData.x,
+      y: chartData.y.map((p) => p + Math.floor(Math.random() * 240) - 120),
+    })
   }, [JSON.stringify({ integrations, node })])
 
   return (
@@ -186,10 +229,7 @@ const DashboardDemo = () => {
             <p>{AGENCY_CONFIG.find((item) => item.id === agency)?.name} Inc.</p>
           </div>
         </div>
-        <div className='p-2'>
-          There used to be charts here but we removed FusionCharts and now need
-          to do the same with Plotly
-        </div>
+        <Plot data={[plotlyData]} layout={plotlyLayout} config={plotlyConfig} />
         <p className='absolute bottom-0 right-0 text-gray-600 text-sm inline-flex items-center gap-1 bg-gray-10 p-1 m-2 rounded border border-gray'>
           Data sources
           {integrations.map((integration) => (
