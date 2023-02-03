@@ -1,10 +1,25 @@
 import random
-from dataclasses import asdict
 
 from apps.base.frames import TurboFrameTemplateView
 from apps.nodes.config import NODE_CONFIG
 from apps.web.content import get_content
 from apps.widgets.models import WIDGET_KIND_TO_WEB
+
+
+def get_services_obj():
+    return get_content("services.yaml")
+
+
+def get_services_grouped(group_n):
+    services = list(get_services_obj().values())
+    random.shuffle(services)
+    length = len(services)
+    n = int(length / group_n)
+    services_grouped = [
+        {"services": services[i : i + n], "animation": random.randint(15, 35)}
+        for i in range(0, group_n * n, n)
+    ]
+    return services_grouped
 
 
 class HelpModal(TurboFrameTemplateView):
@@ -23,6 +38,7 @@ class IntegrationsDemo(TurboFrameTemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context["services_grouped"] = get_services_grouped(6)
         return context
 
 
