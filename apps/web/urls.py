@@ -28,11 +28,6 @@ sitmap_urlpatterns = [
 
 urlpatterns = sitmap_urlpatterns + [
     # manually added to sitemap
-    path(
-        "use-case/<str:id>",
-        cache_site(views.UseCase.as_view()),
-        name="use_case",
-    ),
     path("toggle-sidebar", views.toggle_sidebar),
     # frames
     path(

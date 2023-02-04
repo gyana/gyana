@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.views.generic import TemplateView
@@ -93,22 +93,3 @@ def toggle_sidebar(request):
     )
 
     return HttpResponse(200)
-
-
-class UseCase(TemplateView):
-    template_name = "web/use_case.html"
-
-    def get(self, request, *args, **kwargs):
-
-        if kwargs["id"] not in USE_CASES:
-            return HttpResponseNotFound()
-
-        return super().get(request, *args, **kwargs)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["content"] = {
-            **get_content(f"use_case/{kwargs['id']}.yaml"),
-            **get_content("integrations.yaml"),
-        }
-        return context

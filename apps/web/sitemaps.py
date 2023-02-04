@@ -2,7 +2,6 @@ from django.contrib import sitemaps
 from django.urls import reverse
 
 from .urls import sitmap_urlpatterns
-from .views import USE_CASES
 
 
 class WebSitemap(sitemaps.Sitemap):
@@ -14,11 +13,3 @@ class WebSitemap(sitemaps.Sitemap):
 
     def location(self, item):
         return reverse(item)
-
-
-class UseCaseSitemap(sitemaps.Sitemap):
-    priority = 0.5
-    changefreq = "daily"
-
-    def location(self, item):
-        return item
