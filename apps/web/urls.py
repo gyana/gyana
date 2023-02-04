@@ -29,11 +29,6 @@ sitmap_urlpatterns = [
 urlpatterns = sitmap_urlpatterns + [
     # manually added to sitemap
     path(
-        "integrations/<str:id>",
-        cache_site(views.Integration.as_view()),
-        name="integration",
-    ),
-    path(
         "use-case/<str:id>",
         cache_site(views.UseCase.as_view()),
         name="use_case",
@@ -42,11 +37,6 @@ urlpatterns = sitmap_urlpatterns + [
     # frames
     path(
         "demo/integrations", frames.IntegrationsDemo.as_view(), name="integrations-demo"
-    ),
-    path(
-        "demo/search-integrations",
-        frames.SearchIntegrationsDemo.as_view(),
-        name="search-integrations-demo",
     ),
     path("demo/workflows", frames.WorkflowsDemo.as_view(), name="workflows-demo"),
     path("demo/dashboards", frames.DashboardsDemo.as_view(), name="dashboards-demo"),

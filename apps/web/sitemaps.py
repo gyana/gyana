@@ -16,14 +16,6 @@ class WebSitemap(sitemaps.Sitemap):
         return reverse(item)
 
 
-class IntegrationsSitemap(sitemaps.Sitemap):
-    priority = 0.5
-    changefreq = "daily"
-
-    def location(self, item):
-        return item
-
-
 class UseCaseSitemap(sitemaps.Sitemap):
     priority = 0.5
     changefreq = "daily"

@@ -65,15 +65,6 @@ class Pricing(TemplateView):
         return context
 
 
-class Integration(TemplateView):
-    template_name = "web/integration.html"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["content"] = get_content("integration.yaml", context)
-        return context
-
-
 class About(TemplateView):
     template_name = "web/about.html"
 
