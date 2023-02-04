@@ -179,9 +179,11 @@ const DashboardDemo = () => {
   const plotlyLayout = {
     showlegend: false,
     font: { family: font },
+    height: 250,
+    margin: { l: 40, r: 40, t: 40, b: 60 },
   }
 
-  const plotlyConfig = { displayModeBar: false }
+  const plotlyConfig = { displayModeBar: false, responsive: true }
 
   useEffect(() => {
     setData({
@@ -216,7 +218,13 @@ const DashboardDemo = () => {
             <p>{AGENCY_CONFIG.find((item) => item.id === agency)?.name} Inc.</p>
           </div>
         </div>
-        <Plot data={[plotlyData]} layout={plotlyLayout} config={plotlyConfig} />
+        <div className='flex flex-col'>
+          <Plot
+            data={[plotlyData]}
+            layout={plotlyLayout}
+            config={plotlyConfig}
+          />
+        </div>
         <p className='absolute bottom-0 right-0 text-gray-600 text-sm inline-flex items-center gap-1 bg-gray-10 p-1 m-2 rounded border border-gray'>
           Data sources
           {integrations.map((integration) => (

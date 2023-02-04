@@ -110,7 +110,7 @@ body {
 }
 
 .dashboard-demo {
-  height: 30rem;
+  height: 34rem;
 
   @include mixins.respond-to(lg) {
     height: auto;
