@@ -39,7 +39,7 @@ support:
     cta:
       message: Read our documentation
       external_url: help
-  - heading: Join our Facebook community
+  - heading: Join our Facebook group
     description: Keep on top of latest announcements
     icon: hashtag
     note: 'The Data Analytics Enthusiasts #DAE'
@@ -48,7 +48,7 @@ support:
     icon: chat-alt-2
     note: Someone will know the answer
   - heading: Hire an expert
-    description: Get your custom report built by a Gyana architect
+    description: Get your custom dashboard built for you
     icon: video-camera
     note: If you can imagine it, a Gyanee can build it
   - heading: Follow our development
