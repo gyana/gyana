@@ -46,7 +46,7 @@ from apps.sheets import urls as sheet_urls
 from apps.teams import urls as team_urls
 from apps.uploads import urls as upload_urls
 from apps.users import urls as users_urls
-from apps.web.sitemaps import IntegrationsSitemap, UseCaseSitemap, WebSitemap
+from apps.web.sitemaps import WebSitemap
 from apps.widgets import urls as widget_urls
 from apps.workflows import urls as workflow_urls
 
@@ -125,14 +125,7 @@ urlpatterns = [
     path(
         "sitemap.xml",
         sitemap,
-        {
-            "sitemaps": {
-                "web": WebSitemap,
-                "integrations": IntegrationsSitemap,
-                "use_cases": UseCaseSitemap,
-                "wagtail": WagtailSitemap,
-            }
-        },
+        {"sitemaps": {"web": WebSitemap, "wagtail": WagtailSitemap}},
         name="django.contrib.sitemaps.views.sitemap",
     ),
 ]

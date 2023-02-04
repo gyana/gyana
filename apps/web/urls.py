@@ -23,7 +23,6 @@ sitmap_urlpatterns = [
         name="privacy-policy",
     ),
     path("terms-of-use", cache_site(views.TermsOfUse.as_view()), name="terms-of-use"),
-    path("book-a-demo", cache_site(views.BookADemo.as_view()), name="book-a-demo"),
 ]
 
 urlpatterns = sitmap_urlpatterns + [
@@ -36,11 +35,6 @@ urlpatterns = sitmap_urlpatterns + [
     path("demo/workflows", frames.WorkflowsDemo.as_view(), name="workflows-demo"),
     path("demo/dashboards", frames.DashboardsDemo.as_view(), name="dashboards-demo"),
     path("demo/support", frames.SupportDemo.as_view(), name="support-demo"),
-    path(
-        "demo/intercom",
-        xframe_options_sameorigin_allowlist(frames.IntercomDemo.as_view()),
-        name="intercom-demo",
-    ),
     path("help", frames.HelpModal.as_view(), name="help"),
     path("changelog", frames.ChangelogModal.as_view(), name="changelog"),
 ]

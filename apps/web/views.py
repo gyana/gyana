@@ -14,8 +14,6 @@ from apps.widgets.models import WIDGET_KIND_TO_WEB
 from .cache import cache_site
 from .content import get_content
 
-USE_CASES = ["ecommerce", "b2b-saas", "marketing-agency"]
-
 
 class Home(TemplateView):
     template_name = "web/home.html"
@@ -80,10 +78,6 @@ class PrivacyPolicy(TemplateView):
 
 class TermsOfUse(TemplateView):
     template_name = "web/terms_of_use.html"
-
-
-class BookADemo(TemplateView):
-    template_name = "web/book_a_demo.html"
 
 
 @api_view(["POST"])
