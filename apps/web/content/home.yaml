@@ -32,36 +32,42 @@ support:
     description: Get started for free
     icon: login
     note: It only takes a minute
-  - heading: Visit help center # Attend Gyana University
-    description: Go through the fundamentals
+  - heading: Read the documentation
+    description: Learn the fundamentals
     icon: academic-cap
     note: Videos, walkthroughs and guides
     cta:
-      message: Visit help center
+      message: Read the documentation
       external_url: help
-    # cta:
-    #   message: Visit Gyana University
-    #   external_url: university
-  - heading: Join the community
-    description: Learn from other Gyanees
+  - heading: Join our Facebook group
+    description: Keep on top of latest announcements
     icon: hashtag
-    note: Speak directly with the team
-  - heading: Live support
-    description: Chat with us in app
+    note: 'The Data Analytics Enthusiasts #DAE'
+    cta:
+      message: Join our Facebook group
+      external_url: facebook_group
+  - heading: Chat on Slack
+    description: Get help from other Gyanees
     icon: chat-alt-2
-    note: We'll get to the bottom of it
-  - heading: Customized onboarding
-    description: Discuss your use case with us
-    icon: video-camera
-    note: It's free
+    note: Someone will know the answer
+    cta:
+      message: Join our Slack community
+      external_url: slack_community
   - heading: Hire an expert
-    description: Get your custom report built by a Gyana architect
+    description: Get your custom dashboard built for you
     icon: video-camera
-    note: If you can imagine it, we can build it
+    note: If you can imagine it, a Gyanee can build it
   - heading: Follow our development
     description: We release changes every week
     icon: clipboard-list
-    note: Upvote your top features and we'll build them
+    note: Upvote your top features to help prioritize
     cta:
       message: Visit feedback portal
       external_url: feedback
+  - heading: Contribute on Github
+    description: Fix a bug or write a new feature
+    icon: terminal
+    note: It's all open source
+    cta:
+      message: Contribute on Github
+      external_url: github

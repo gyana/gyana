@@ -56,8 +56,6 @@ def test_site_pages(client, settings):
     assertOK(r)
     r = client.get("/demo/support")
     assertOK(r)
-    r = client.get("/demo/intercom")
-    assertOK(r)
 
 
 def test_site_links(client, settings):
@@ -75,12 +73,6 @@ def test_site_links(client, settings):
     assertLink(r, "https://support.gyana.com", "Help Center", total=3)
     assertLink(r, "https://feedback.gyana.com", "Feedback", total=3)
 
-    # assertLink(r, "/use-case/ecommerce", "Ecommerce", total=3)
-    # assertLink(r, "/use-case/b2b-saas", "B2B Saas", total=3)
-    # assertLink(r, "/use-case/marketing-agency", "Marketing Agency", total=3)
-
-    assertLink(r, "/integrations", "Learn about integrations")
-
     # footer links
     assertLink(r, "/about", "About", total=3)
     assertLink(r, "/about#careers", "Careers")
@@ -94,7 +86,7 @@ def test_site_links(client, settings):
 
     # app links
     assertLink(r, "/signup/", "Sign up", total=3)
-    assertLink(r, "/book-a-demo", "Book a demo", total=3)
+    assertLink(r, "/book-a-demo", "Book a demo", total=2)
     assertLink(r, "/login/", "Sign in", total=2)
 
     user = CustomUser.objects.create_user("test", email="test@gyana.com")
