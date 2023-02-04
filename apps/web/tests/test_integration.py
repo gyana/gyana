@@ -1,17 +1,9 @@
 import pytest
 import wagtail_factories
 from djpaddle.models import Plan
-from pytest_django.asserts import assertContains, assertNotContains
 from wagtail.core.models import Locale, Site
 
-from apps.base.tests.asserts import (
-    assertFormRenders,
-    assertLink,
-    assertOK,
-    assertSelectorHasAttribute,
-    assertSelectorLength,
-    assertSelectorText,
-)
+from apps.base.tests.asserts import assertLink, assertOK
 from apps.users.models import CustomUser
 
 pytestmark = pytest.mark.django_db
@@ -37,17 +29,6 @@ def test_site_pages(client, settings):
     r = client.get("/terms-of-use")
     assertOK(r)
 
-    r = client.get("/book-a-demo")
-    assertOK(r)
-
-    # TODO: Decide what happens with these pages
-    # r = client.get("/use-case/ecommerce")
-    # assertOK(r)
-    # r = client.get("/use-case/b2b-saas")
-    # assertOK(r)
-    # r = client.get("/use-case/marketing-agency")
-    # assertOK(r)
-
     r = client.get("/demo/integrations")
     assertOK(r)
     r = client.get("/demo/workflows")
@@ -67,15 +48,13 @@ def test_site_links(client, settings):
 
     # header links
     # 3x = header, mobile menu, footer
-    assertLink(r, "/integrations", "Integrations", total=3)
     assertLink(r, "/pricing", "Pricing", total=3)
     assertLink(r, "/blog", "Blog", total=3)
-    assertLink(r, "https://support.gyana.com", "Help Center", total=3)
+    assertLink(r, "https://support.gyana.com", "Documentation", total=3)
     assertLink(r, "https://feedback.gyana.com", "Feedback", total=3)
 
     # footer links
     assertLink(r, "/about", "About", total=3)
-    assertLink(r, "/about#careers", "Careers")
     assertLink(
         r,
         "https://c6df0725-5be1-435b-a2d7-1a90649a7bc5.site.hbuptime.com/",
@@ -86,7 +65,6 @@ def test_site_links(client, settings):
 
     # app links
     assertLink(r, "/signup/", "Sign up", total=3)
-    assertLink(r, "/book-a-demo", "Book a demo", total=2)
     assertLink(r, "/login/", "Sign in", total=2)
 
     user = CustomUser.objects.create_user("test", email="test@gyana.com")
@@ -94,34 +72,6 @@ def test_site_links(client, settings):
 
     r = client.get("/pricing")
     assertLink(r, "/", "Go to app", total=2)
-
-
-def test_integrations_page(client):
-
-    r = client.get("/integrations")
-    assertOK(r)
-
-    # TODO: Redo after integration page rework
-    # assertLink(r, "/book-a-demo", "Talk to us", total=2)
-
-    # # integration search
-    # r = client.get("/demo/search-integrations")
-    # assertOK(r)
-
-    # r = client.get("/demo/search-integrations?query=google")
-    # assertOK(r)
-    # assertContains(r, "Google Ads")
-    # assertLink(r, "/integrations/google_ads", "Google Ads")
-    # assertNotContains(r, "Facebook Pages")
-
-    # r = client.get("/demo/search-integrations?category=Organic")
-    # assertOK(r)
-    # assertContains(r, "Facebook Pages")
-    # assertLink(r, "/integrations/facebook_pages", "Facebook Pages")
-    # assertNotContains(r, "Google Ads")
-
-    # r = client.get("/integrations/google_ads")
-    # assertOK(r)
 
 
 def test_sitemap(client):

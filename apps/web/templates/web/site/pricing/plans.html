@@ -45,7 +45,7 @@
                   </a>
                   <div>or</div>
                   <a
-                    href="{% external_url 'request_demo' %}"
+                    href="{% external_url 'github' %}"
                     class="button button--primary"
                   >
                     Book a demo
@@ -56,14 +56,14 @@
               {% if request.GET.iframe %}
                 <a
                   target="_parent"
-                  href="{% external_url 'request_demo' %}"
+                  href="{% external_url 'github' %}"
                   class="mt-6 button button--primary"
                 >
                   Talk to Sales
                 </a>
               {% else %}
                 <a
-                  href="{% external_url 'request_demo' %}"
+                  href="{% external_url 'github' %}"
                   class="mt-6 button button--primary"
                 >
                   Book a demo
@@ -98,7 +98,7 @@
         </p>
         <a
           {% if request.GET.iframe %}target="_parent"{% endif %}
-          href="{% external_url 'request_demo' %}"
+          href="{% external_url 'github' %}"
           class="button button--primary mr-1"
         >
           Get in contact
