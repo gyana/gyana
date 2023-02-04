@@ -32,7 +32,7 @@ support:
     description: Get started for free
     icon: login
     note: It only takes a minute
-  - heading: Read our documentation
+  - heading: Read the docs
     description: Learn the fundamentals
     icon: academic-cap
     note: Videos, walkthroughs and guides
