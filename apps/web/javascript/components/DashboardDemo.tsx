@@ -202,7 +202,8 @@ const DashboardDemo = () => {
             suppressContentEditableWarning
           >
             <i className='fa fa-search text-gray mr-1'></i>
-            <span className='text-black-20'>https://</span>reports.{agency}.com
+            <span className='text-black-20'>https://</span>dashboard.{agency}
+            .com
           </div>
         </div>
         <div className='w-full bg-gray-10 flex-none flex items-center gap-2 p-2 border-b border-gray'>
