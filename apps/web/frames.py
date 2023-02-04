@@ -75,11 +75,6 @@ class SupportDemo(TurboFrameTemplateView):
         return context
 
 
-class IntercomDemo(TurboFrameTemplateView):
-    template_name = "web/demo/intercom.html"
-    turbo_frame_dom_id = "web:intercom-demo"
-
-
 class SearchIntegrationsDemo(TurboFrameTemplateView):
     template_name = "web/demo/search_integrations.html"
     turbo_frame_dom_id = "web:search-integrations-demo"
