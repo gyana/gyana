@@ -32,12 +32,12 @@ support:
     description: Get started for free
     icon: login
     note: It only takes a minute
-  - heading: Read the docs
+  - heading: Read the documentation
     description: Learn the fundamentals
     icon: academic-cap
     note: Videos, walkthroughs and guides
     cta:
-      message: Read our documentation
+      message: Read the documentation
       external_url: help
   - heading: Join our Facebook group
     description: Keep on top of latest announcements
