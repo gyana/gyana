@@ -16,7 +16,6 @@ sitmap_urlpatterns = [
         xframe_options_sameorigin_allowlist(cache_site(views.Pricing.as_view())),
         name="pricing",
     ),
-    path("integrations", cache_site(views.Integrations.as_view()), name="integrations"),
     path("about", cache_site(views.About.as_view()), name="about"),
     path(
         "privacy-policy",
