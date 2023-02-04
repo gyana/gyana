@@ -162,37 +162,24 @@ const DashboardDemo = () => {
 
   const { integrations, node } = useDemoStore()[0]
 
-  const chartConfigs = {
-    type,
-    width: '100%',
-    height: '60%',
-    dataFormat: 'json',
-    dataSource: {
-      chart: {
-        baseFont: font,
-        xAxisNameFont: font,
-        yAxisNameFont: font,
-        captionFont: font,
-        labelFont: font,
-        legendItemFont: font,
-        bgColor: '#ffffff',
-        theme: 'fusion',
-        paletteColors: THEME_CONFIG.find((item) => item.id === theme)?.palette,
-        animation: '0',
-        showLegend: false,
-      },
-      data,
-    },
-  }
+  const palette = THEME_CONFIG.find((item) => item.id === theme)?.palette
 
   const plotlyData = {
     ...data,
     labels: data.x,
     values: data.y,
     type,
+    marker: {
+      colors: palette,
+      color: palette[0],
+      line: { color: palette },
+    },
   }
 
-  const plotlyLayout = { showlegend: false }
+  const plotlyLayout = {
+    showlegend: false,
+    font: { family: font },
+  }
 
   const plotlyConfig = { displayModeBar: false }
 
