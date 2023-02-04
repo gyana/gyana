@@ -92,8 +92,7 @@
             <div class="card card--none ring-1 ring-black ring-opacity-5 overflow-hidden">
               <div class="relative grid gap-6 bg-white px-5 py-6 sm:gap-8 sm:p-8">
                 <a
-                  {% comment %} Blog is Wagtail, this has no django-specific route {% endcomment %}
-                  href="/blog"
+                  href="{% external_url 'facebook_group' %}"
                   class="-m-3 p-3 flex items-start rounded-lg hover:bg-gray-50"
                 >
                   {% heroicon 'user-group' class="flex-shrink-0 h-6 w-6 text-blue" style="solid"%}
@@ -103,7 +102,7 @@
                   </div>
                 </a>
                 <a
-                  href="{% external_url 'help' %}"
+                  href="{% external_url 'slack_community' %}"
                   class="-m-3 p-3 flex items-start rounded-lg hover:bg-gray-50"
                 >
                   {% heroicon 'chat-alt-2' class="flex-shrink-0 h-6 w-6 text-blue" style="solid"%}
@@ -113,7 +112,7 @@
                   </div>
                 </a>
                 <a
-                  href="{% external_url 'feedback' %}"
+                  href="{% external_url 'github' %}"
                   class="-m-3 p-3 flex items-start rounded-lg hover:bg-gray-50"
                 >
                   {% heroicon 'terminal' class="flex-shrink-0 h-6 w-6 text-blue" style="solid"%}
@@ -123,7 +122,7 @@
                   </div>
                 </a>
                 <a
-                  href="{% external_url 'feedback' %}"
+                  href="{% external_url 'hire_an_expert' %}"
                   class="-m-3 p-3 flex items-start rounded-lg hover:bg-gray-50"
                 >
                   {% heroicon 'video-camera' class="flex-shrink-0 h-6 w-6 text-blue" style="solid"%}

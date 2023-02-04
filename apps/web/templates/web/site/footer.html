@@ -55,22 +55,66 @@
                   Pricing
                 </a>
               </li>
+
+              <li>
+                <a href="{% url 'web:about' %}" class="text-base text-gray-500 hover:text-gray-900">
+                  About
+                </a>
+              </li>
             </ul>
           </div>
           <div class="mt-12 md:mt-0">
             <h3 class="text-sm font-semibold text-gray-400 tracking-wider uppercase">
-              Support
+              Community
             </h3>
             <ul role="list" class="mt-4 space-y-4">
 
               <li>
-                <a href="{% external_url 'help' %}" class="text-base text-gray-500 hover:text-gray-900">
-                  Help Center
+                <a href="{% external_url 'facebook_group' %}" class="text-base text-gray-500 hover:text-gray-900">
+                  Facebook
                 </a>
               </li>
 
               <li>
-                <a href="{% external_url 'feedback' %}" class="text-base text-gray-500 hover:text-gray-900">
+                <a href="{% external_url 'slack_community' %}" class="text-base text-gray-500 hover:text-gray-900">
+                  Slack
+                </a>
+              </li>
+
+              <li>
+                <a href="{% external_url 'github' %}" class="text-base text-gray-500 hover:text-gray-900">
+                  Github
+                </a>
+              </li>
+
+              <li>
+                <a href="{% external_url 'hire_an_expert' %}" class="text-base text-gray-500 hover:text-gray-900">
+                  Hire an expert
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="md:grid md:grid-cols-2 md:gap-8">
+          <div>
+            <h3 class="text-sm font-semibold text-gray-400 tracking-wider uppercase">
+              Resources
+            </h3>
+            <ul role="list" class="mt-4 space-y-4">
+              <li>
+                <a href="/blog" class="text-base text-gray-500 hover:text-gray-900">
+                  Documentation
+                </a>
+              </li>
+
+              <li>
+                <a href="/blog" class="text-base text-gray-500 hover:text-gray-900">
+                  Blog
+                </a>
+              </li>
+
+              <li>
+                <a href="/blog" class="text-base text-gray-500 hover:text-gray-900">
                   Feedback
                 </a>
               </li>
@@ -82,35 +126,9 @@
               </li>
             </ul>
           </div>
-        </div>
-        <div class="md:grid md:grid-cols-2 md:gap-8">
-          <div>
-            <h3 class="text-sm font-semibold text-gray-400 tracking-wider uppercase">
-              Company
-            </h3>
-            <ul role="list" class="mt-4 space-y-4">
-              <li>
-                <a href="{% url 'web:about' %}" class="text-base text-gray-500 hover:text-gray-900">
-                  About
-                </a>
-              </li>
-
-              <li>
-                <a href="/blog" class="text-base text-gray-500 hover:text-gray-900">
-                  Blog
-                </a>
-              </li>
-
-              <li>
-                <a href="{% url 'web:about' %}#careers" class="text-base text-gray-500 hover:text-gray-900">
-                  Careers
-                </a>
-              </li>
-            </ul>
-          </div>
           <div class="mt-12 md:mt-0">
             <h3 class="text-sm font-semibold text-gray-400 tracking-wider uppercase">
-              Legal
+              Company
             </h3>
             <ul role="list" class="mt-4 space-y-4">
               <li>

@@ -17,6 +17,7 @@ EXTERNAL_URLS = {
     "appsumo": "https://appsumo.com/products/gyana/",
     "demo_dashboard": "https://www.gyana.com/dashboards/a7b7458f-8162-4ec9-b92b-5b6911e02d49?embed=true",
     "github": "https://www.github.com/gyana/gyana",
+    "hire_an_expert": "",
     # social
     "facebook": "https://www.facebook.com/GyanaHQ",
     "twitter": "https://twitter.com/GyanaHQ",
