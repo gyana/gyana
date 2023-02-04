@@ -10,8 +10,8 @@
         Join the community
       </h2>
       <p class="mt-4 max-w-lg text-base text-gray-800">
-        Every step of your journey, you'll have the support of thousands of Gyana users all over the globe.
-        It's the power of connection.
+        Every step of your journey, you'll have the support of thousands of Gyana users.
+        Connect with no-code data analysts all over the globe.
       </p>
     </div>
     <nav aria-label="Progress" class="mt-8 lg:grid lg:grid-cols-2">
@@ -64,17 +64,18 @@
                       {% comment %} Documentation {% endcomment %}
                     {% elif step == 2 %}
                       {% comment %} Facebook group {% endcomment %}
-                      {% include 'web/site/home/community.html' %}
+                      <img class="h-full object-cover object-left" src="{% static 'images/site/home/facebook-group.png' %}"/>
                     {% elif step == 3 %}
                       {% comment %} Slack {% endcomment %}
-                      {% include 'web/site/home/community.html' %}
+                      <img class="h-full object-cover object-left" src="{% static 'images/site/home/slack-community.png' %}"/>
                     {% elif step == 4 %}
                       {% comment %} Hire an expert {% endcomment %}
                     {% elif step == 5 %}
                       {% comment %} HelloNext {% endcomment %}
-                      <iframe style='border:0px; height:100%; width:100%;' src='https://feedback.gyana.com/embed/c?no_header=true'></iframe>
+                      <iframe style='border:0px; height:100%; width:100%;' src='https://gyana.hellonext.co/embed/c'></iframe>
                     {% elif step == 6 %}
                       {% comment %} Github {% endcomment %}
+                      <img class="h-full object-cover object-left" src="{% static 'images/site/home/github.png' %}"/>
                     {% endif %}
                     {% if item.cta %}
                       <a href="{% external_url item.cta.external_url %}" class="text-sm absolute bottom-0 inset-x-0 bg-gray-50 text-right flex items-center justify-end text-gray-600 gap-1 p-2 border-gray border-t" data-turbo-frame="_top">
