@@ -43,10 +43,16 @@ support:
     description: Keep on top of latest announcements
     icon: hashtag
     note: 'The Data Analytics Enthusiasts #DAE'
+    cta:
+      message: Join our Facebook group
+      external_url: facebook_group
   - heading: Chat on Slack
     description: Get help from other Gyanees
     icon: chat-alt-2
     note: Someone will know the answer
+    cta:
+      message: Join our Slack community
+      external_url: slack_community
   - heading: Hire an expert
     description: Get your custom dashboard built for you
     icon: video-camera
@@ -62,3 +68,6 @@ support:
     description: Fix a bug or write a new feature
     icon: terminal
     note: It's all open source
+    cta:
+      message: Contribute on Github
+      external_url: github
