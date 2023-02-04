@@ -41,7 +41,7 @@ support:
       external_url: help
   - heading: Join our Facebook group
     description: Keep on top of latest announcements
-    icon: hashtag
+    icon: user-group
     note: 'The Data Analytics Enthusiasts #DAE'
     cta:
       message: Join our Facebook group
