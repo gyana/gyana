@@ -1,0 +1,45 @@
+{% load site_tags %}
+
+<div class="bg-gray-20 border-t border-b border-gray">
+  <div class="max-w-7xl mx-auto  py-12 px-4 sm:px-6 lg:py-16 lg:px-8">
+    <p class="text-2xl lg:text-3xl text-caveat text-indigo-600 mb-2">
+      Hire an expert
+    </p>
+    <h2 class="text-3xl font-extrabold text-gray-900">
+      Looking for professional support?
+    </h2>
+    <p class="mt-4 text-lg text-gray-600 max-w-3xl">
+      Get connected to our community of Gyana experts. They've built thousands
+      of custom dashboards and can give you everything you need to get started fast.
+    </p>
+    <div class="mt-6 flex gap-4">
+      <a href="{% external_url 'hire_an_expert' %}" class="button w-36">
+        Learn more
+      </a>
+    </div>
+  </div>
+</div>
+
+{% comment %} <div class="bg-gray-20 border-t border-b border-gray">
+  <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 md:py-16 md:px-8 flex flex-col items-center">
+    <div class="space-y-4 md:space-y-0 md:grid md:grid-cols-4 md:gap-6 md:mx-auto xl:mx-0">
+      <div class="col-span-2">
+        <h2 class="text-3xl font-extrabold text-indigo-900">
+          Hire an expert
+        </h2>
+        <p class="my-4 text-base text-gray-600 max-w-3xl">
+          <b>Do you have a specific dashboard in mind?</b>
+          Get connected to our community of Gyana professionals, who will give
+          you the support you need to get started fast.
+        </p>
+        <a
+          {% if request.GET.iframe %}target="_parent"{% endif %}
+          href="{% external_url 'hire_an_expert' %}"
+          class="button button--primary mr-1"
+        >
+          Talk to us
+        </a>
+      </div>
+    </div>
+  </div>
+</div> {% endcomment %}

@@ -87,59 +87,5 @@
         </div>
       {% endfor %}
     </div>
-    <div class="space-y-4 md:space-y-0 md:grid md:grid-cols-3 md:gap-6 md:mx-auto xl:mx-0 mt-8">
-      <div>
-        <h2 class="text-3xl font-extrabold text-indigo-900">
-          Add ons
-        </h2>
-        <p class="my-4 text-base text-gray-600 max-w-3xl">
-          <b>Do you have a specific report in mind?</b> With our optional service packages, 
-          our team will give you the support you need to get started fast.
-        </p>
-        <a
-          {% if request.GET.iframe %}target="_parent"{% endif %}
-          href="{% external_url 'github' %}"
-          class="button button--primary mr-1"
-        >
-          Get in contact
-        </a>
-        <span class="text-gray-600 text-base"> to learn more</span>
-      </div>
-      <div class="card card--sm col-span-2 grid grid-cols-2 divide-y space-y-4">
-        {% for addon in content.addons %}
-          <div class="{% if forloop.counter0 > 0 %}pt-4{% endif %}">
-            <div>
-              <div class="flex">
-                <h3 class="text-lg font-medium text-gray-900">
-                  {{ addon.name }}
-                </h3>
-                <div class="ml-auto">
-                  {% if addon.price %}
-                    <div>
-                      <span class="text-sm font-normal text-gray-600">Starting at</span>
-                      <span class="text-xl font-bold text-gray-900">{{ addon.price }}</span>
-                    </div>
-                  {% endif %}
-                  {% if addon.note %}
-                    <span class="text-sm font-normal text-gray-600">{{ addon.note }}</span>
-                  {% endif %}
-                </div>
-              </div>
-                <p class="mt-2 text-base text-gray-800 max-w-xl">
-                  {{ addon.summary }}
-                </p>
-            </div>
-            <ul class="mt-3 gap-x-4 flex flex-wrap">
-              {% for feature in addon.features %}
-                <li class="flex space-x-1 text-indigo-600">
-                  {% heroicon 'check' class="flex-shrink-0 h-5 w-5" %}
-                  <span class="text-sm text-gray-600">{{ feature }}</span>
-                </li>
-              {% endfor %}
-            </ul>
-          </div>
-        {% endfor %}
-      </div>
-    </div>
   </div>
 </div>
