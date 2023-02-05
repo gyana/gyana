@@ -120,6 +120,42 @@ usage:
     price: 500
 
 features:
+  Integrations:
+    - name: Upload
+      icon: fa-upload
+    - name: Google Sheet
+      icon: fa-file-spreadsheet
+    - name: Custom API
+      icon: fa-brackets-curly
+    - name: Automation
+      heading: true
+    - name: Schedule
+      icon: fa-clock
+    - name: Monitor
+      icon: fa-desktop
+    - name: Export
+      icon: fa-download
+  Workflows: []
+  Dashboards: []
+  Collaboration:
+    - name: Projects
+      icon: fa-folders
+    - name: Teams
+      icon: fa-users
+    - name: Access
+      icon: fa-lock
+    - name: Interactive controls
+      icon: fa-calendar
+    - name: Version history
+      icon: fa-code-branch
+    - name: Public dashboards
+      icon: fa-link
+    - name: Embedded BI
+      icon: fa-desktop
+    - name: Project templates
+      icon: fa-copy
+
+comparison:
   Data:
     - name: Rows
       description: Total rows synced to Gyana across all data sources

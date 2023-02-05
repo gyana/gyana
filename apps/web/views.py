@@ -59,6 +59,12 @@ class Pricing(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["content"] = get_content("pricing.yaml")
+        context["nodes"] = [
+            v for k, v in NODE_CONFIG.items() if k not in ["input", "output", "text"]
+        ]
+        context["widgets"] = [
+            {"name": v[2], "icon": v[0]} for v in WIDGET_KIND_TO_WEB.values()
+        ]
         context["paddle_pro_plan"] = Plan.objects.get(pk=settings.DJPADDLE_PRO_PLAN_ID)
         return context
 

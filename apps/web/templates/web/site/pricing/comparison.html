@@ -21,13 +21,13 @@
             <p class="mt-4 text-sm text-gray-500">{{ tier.description }}</p>
           </div>
 
-          {% for section in content.features %}
+          {% for section in content.comparison %}
             <table class="w-full">
               <caption class="bg-gray-50 border-t border-gray-200 py-3 px-4 text-sm font-medium text-gray-900 text-left">
                 {{ section }}
               </caption>
               <tbody class="divide-y divide-gray-200">
-                {% for feature_item in content.features|get_item:section %}
+                {% for feature_item in content.comparison|get_item:section %}
                   {% with feature=feature_item.name|default:feature_item %}
 
                     <tr class="border-t border-gray-200">
@@ -106,12 +106,12 @@
             {% endfor %}
           </tr>
 
-          {% for section in content.features %}
+          {% for section in content.comparison %}
             <tr>
               <th class="bg-gray-50 py-3 pl-6 text-sm font-medium text-gray-900 text-left" colspan="5" scope="colgroup">{{ section }}</th>
             </tr>
 
-            {% for feature_item in content.features|get_item:section %}
+            {% for feature_item in content.comparison|get_item:section %}
               {% with feature=feature_item.name|default:feature_item %}
                 <tr>
                   <th class="py-5 px-6 text-sm font-normal text-gray-500 text-left flex items-center space-x-1" scope="row">
