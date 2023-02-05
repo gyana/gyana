@@ -32,7 +32,25 @@
                 {% elif tier.name == 'Enterprise' %}
                   Get in touch
                 {% else %}
-                  ${{ tier.price }}<span class="text-sm font-normal text-gray-600"> per month</span> 
+                  $<span id="price">{{ tier.price }}</span><span class="text-sm font-normal text-gray-600"> per month</span> 
+                {% endif %}
+              </p>
+              <p class="mt-4 text-base text-gray-600">
+                {% if tier.name == 'Open source' %}
+                  Run on your data warehouse
+                {% elif tier.name == 'Enterprise' %}
+                  <b>Custom</b> usage
+                {% elif tier.name == 'Free' %}
+                  <b>1,000</b> rows of data
+                {% else %}
+                  <div class="-mt-1 -mb-1 flex items-center text-gray-600">
+                    <select id="usage" class="list__item text-gray-600 font-semibold text-base">
+                      {% for usage in content.usage %}
+                        <option value="{{ usage.price }}">{{ usage.rows }}</option>
+                      {% endfor %}
+                    </select>
+                    <span class="ml-2 whitespace-nowrap">rows of data</span>
+                  </div>
                 {% endif %}
               </p>
               {% if tier.name == 'Free' %}
@@ -90,3 +108,7 @@
     </div>
   </div>
 </div>
+
+<script>
+  document.querySelector('#usage').onchange = e => document.querySelector('#price').innerText = e.target.value
+</script>
