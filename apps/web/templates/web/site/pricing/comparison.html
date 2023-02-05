@@ -76,7 +76,9 @@
               <span>Plans</span>
             </th>
             {% for tier in content.tiers %}
-              <th class="w-1/5 pb-4 px-6 text-lg leading-6 font-medium text-gray-900 text-left" scope="col">{{ tier.name }}</th>
+              <th class="w-1/5 pb-4 px-6 text-lg leading-6 font-medium text-gray-900 text-left" scope="col">
+                {{ tier.name }}
+              </th>
             {% endfor %}
           </tr>
         </thead>
@@ -93,8 +95,9 @@
                     {% elif tier.name == 'Enterprise' %}
                       Get in touch
                     {% else %}
-                      ${{ tier.price }}
-                      <span class="text-base font-medium text-gray-500">/mo</span>
+                      <span class="text-base font-medium text-gray-500">Starting at</span>
+                      $10
+                      <span class="-ml-2 text-base font-medium text-gray-500">/mo</span>
                     {% endif %}
                   </p>
                   <p class="mt-4 text-sm text-gray-500">{{ tier.description }}</p>
@@ -105,7 +108,7 @@
 
           {% for section in content.features %}
             <tr>
-              <th class="bg-gray-50 py-3 pl-6 text-sm font-medium text-gray-900 text-left" colspan="4" scope="colgroup">{{ section }}</th>
+              <th class="bg-gray-50 py-3 pl-6 text-sm font-medium text-gray-900 text-left" colspan="5" scope="colgroup">{{ section }}</th>
             </tr>
 
             {% for feature_item in content.features|get_item:section %}

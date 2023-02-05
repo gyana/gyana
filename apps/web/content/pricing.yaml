@@ -7,6 +7,9 @@ tiers:
       - You own your data
       - Gyana community
     features:
+      Data:
+        Rows: Run in your data warehouse
+        Hosting: Self hosted
       Integrations:
         Google Sheets: true
         CSV: true
@@ -19,13 +22,16 @@ tiers:
         Shareable URLs: true
         HTML Embed: true
   - name: Free
-    description: Explore Gyana with our limited free forever plan.
+    description: Explore Gyana with our forever free plan.
     includedHeader: What's included
     includedFeatures:
       - No-code business intelligence
       - Build custom dashboards
       - Managed by us
     features:
+      Data:
+        Rows: 1,000
+        Hosting: Gyana Cloud
       Integrations:
         Google Sheets: true
         CSV: true
@@ -46,6 +52,9 @@ tiers:
       - Dashboard automation
       - Remove branding
     features:
+      Data:
+        Rows: Starting at 1,000,000
+        Hosting: Gyana Cloud
       Integrations:
         Google Sheets: true
         CSV: true
@@ -75,6 +84,9 @@ tiers:
       - Hosted in your cloud
       - Solution architect
     features:
+      Data:
+        Rows: Custom volume
+        Hosting: Gyana Cloud
       Integrations:
         Google Sheets: true
         CSV: true
@@ -117,6 +129,10 @@ usage:
     price: 500
 
 features:
+  Data:
+    - name: Rows
+      description: Total rows synced to Gyana across all data sources
+    - Hosting
   Integrations:
     - Google Sheets
     - CSV
@@ -141,35 +157,6 @@ features:
     - White-labelling
     - Okta Single Sign-On
     - Custom billing & MSA
-addons:
-  - name: Report setup
-    summary: Our data experts will understand your business use case, and build your reports from scratch. We've done it for hundreds of companies.
-    price: $499
-    features:
-      - Connect sources
-      - Data modelling
-      - Dashboard build
-      - Personalized training
-      - Private Slack
-  - name: Custom integrations
-    summary: We can build you a custom data pipeline for your source. It will sync historical data and daily updates into Gyana.
-    note: Setup fee + monthly
-    features:
-      - Applications
-      - Databases
-      - Warehouse
-      - Cloud
-      - Internal APIs
-      - Web scraping
-      - Feeds
-  - name: Agency
-    summary: Setup Gyana to manage multiple clients, in your own branded portal. Partner with us for exclusive insights, templates and training.
-    note: Billed per client
-    features:
-      - Client management
-      - White-label
-      - Custom domains
-      - Partner programme
 
 faqs:
   - q: What does Gyana do?
