@@ -19,7 +19,7 @@ tiers:
         Shareable URLs: true
         HTML Embed: true
   - name: Free
-    description: Ideal for personal use and individuals at early stage companies.
+    description: Explore Gyana with our limited free forever plan.
     includedHeader: What's included
     includedFeatures:
       - Google Sheets and CSV
@@ -38,9 +38,9 @@ tiers:
         Shareable URLs: true
         HTML Embed: true
   - name: Pro
-    description: Ideal for founders, analysts and marketing teams at 10 to 25-person companies.
+    description: Ideal for SMBs, startups, agencies and non-profits.
     includedHeader: Everything in free, plus
-    price: 99
+    price: 10
     includedFeatures:
       - All integrations
       - Report automation
@@ -68,7 +68,7 @@ tiers:
         Remove Gyana branding: true
         White-labelling: Add-on
   - name: Enterprise
-    description: Ideal for 50 to 1,000-person companies with an existing data warehouse.
+    description: Talk to us when you're ready to scale your usage.
     includedHeader: Everything in pro, plus
     includedFeatures:
       - Bring your own warehouse
