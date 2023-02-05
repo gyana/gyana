@@ -10,15 +10,15 @@ tiers:
       Data:
         Rows: Run in your data warehouse
         Hosting: Self hosted
-      Integrations:
-        Google Sheets: true
-        CSV: true
-        Rows synced per integration: 100,000
-      Reports:
-        Projects: 3
+      Features:
+        Integrations: true
+        Workflows: true
+        Dashboards: true
+        Collaboration: true
+      Automation: {}
       Support:
-        Live chat: true
-      Other:
+        Gyana community: true
+      Advanced features:
         Shareable URLs: true
         HTML Embed: true
   - name: Free
@@ -31,16 +31,16 @@ tiers:
     features:
       Data:
         Rows: 1,000
-        Hosting: Gyana Cloud
-      Integrations:
-        Google Sheets: true
-        CSV: true
-        Rows synced per integration: 100,000
-      Reports:
-        Projects: 3
+        Hosting: Gyana cloud
+      Features:
+        Integrations: true
+        Workflows: true
+        Dashboards: true
+        Collaboration: true
+      Automation: {}
       Support:
-        Live chat: true
-      Other:
+        Gyana community: true
+      Advanced features:
         Shareable URLs: true
         HTML Embed: true
   - name: Pro
@@ -54,24 +54,20 @@ tiers:
     features:
       Data:
         Rows: Starting at 1,000,000
-        Hosting: Gyana Cloud
-      Integrations:
-        Google Sheets: true
-        CSV: true
-        Custom API & Webhooks: true
-        Databases: true
-        Applications: true
-        Custom integration: Add-on
-        Accounts per integration: 1
-        Rows synced per integration: 10,000,000
-      Reports:
-        Projects: Unlimited
-        Report automation: Daily
+        Hosting: Gyana cloud
+      Features:
+        Integrations: true
+        Workflows: true
+        Dashboards: true
+        Collaboration: true
+      Automation:
+        Schedule: true
+        Frequency: Daily
       Support:
-        Live chat: true
+        Gyana community: true
         Shared Slack Channel: true
-        Report setup: Add-on
-      Other:
+        Professional support: Hire an expert
+      Advanced features:
         Shareable URLs: true
         HTML Embed: true
         Remove Gyana branding: true
@@ -80,31 +76,26 @@ tiers:
     description: For organizations seeking enterprise-grade features.
     includedHeader: Everything in pro, plus
     includedFeatures:
+      - Single-sign on
+      - Customised billing & MSA
       - Bring your own warehouse
-      - Hosted in your cloud
-      - Solution architect
     features:
       Data:
         Rows: Custom volume
-        Hosting: Gyana Cloud
-      Integrations:
-        Google Sheets: true
-        CSV: true
-        Custom API & Webhooks: true
-        Applications: true
-        Databases: true
-        Custom integration: true
-        Accounts per integration: Custom
-        Rows synced per integration: Custom
-      Reports:
-        Projects: Unlimited
-        Report automation: Custom
+        Hosting: Gyana cloud
+      Features:
+        Integrations: true
+        Workflows: true
+        Dashboards: true
+        Collaboration: true
+      Automation:
+        Schedule: true
+        Frequency: Custom
       Support:
-        Live chat: true
+        Gyana community: true
         Shared Slack Channel: true
-        Report setup: true
-        Solution architect: true
-      Other:
+        Professional support: Hire an expert
+      Advanced features:
         Shareable URLs: true
         HTML Embed: true
         Remove Gyana branding: true
@@ -133,26 +124,20 @@ features:
     - name: Rows
       description: Total rows synced to Gyana across all data sources
     - Hosting
-  Integrations:
-    - Google Sheets
-    - CSV
-    - Custom API & Webhooks
-    - Applications
-    - Databases
-    - Custom integration
-    - name: Accounts per integration
-      description: E.g. How many Shopify stores, Google Ads accounts or Postgres databases you can connect. Excludes Google Sheets, CSV, custom API and webhooks, which are unlimited.
-    - name: Rows synced per integration
-      description: Total rows synced to Gyana from each data source e.g. Shopify store.
-  Reports:
-    - Projects
-    - Report automation
+  Features:
+    - Integrations
+    - Workflows
+    - Dashboards
+    - Collaboration
+  Automation:
+    - Schedule
+    - Frequency
   Support:
-    - Live chat
+    - Gyana community
     - Shared Slack Channel
-    - Report setup
+    - Professional support
     - Solution architect
-  Other:
+  Advanced features:
     - HTML Embed
     - White-labelling
     - Okta Single Sign-On
