@@ -2,7 +2,7 @@
 
 <div class="bg-white">
   <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 md:py-16 md:px-8">
-    <div class="space-y-4 md:space-y-0 md:grid md:grid-cols-3 md:gap-6 md:mx-auto xl:mx-0">
+    <div class="space-y-4 md:space-y-0 md:grid md:grid-cols-4 md:gap-6 md:mx-auto xl:mx-0">
       {% for tier in content.tiers %}
         <div class="card card--none">
           <div class="p-6 border-b border-gray-200">
@@ -11,7 +11,7 @@
             </h2>
             <p class="mt-4 text-base text-gray-600">{{ tier.description }}</p>
             <p class="mt-4 text-3xl font-bold text-gray-900">
-              {% if tier.name == 'Free' %}
+              {% if tier.name in 'Free|Open source' %}
                 It's free
               {% elif tier.name == 'Enterprise' %}
                 Get in touch
@@ -43,32 +43,16 @@
                   >
                     Try for free
                   </a>
-                  <div>or</div>
-                  <a
-                    href="{% external_url 'github' %}"
-                    class="button button--primary"
-                  >
-                    Book a demo
-                  </a>
                 {% endif %}
               </div>
             {% else %}
-              {% if request.GET.iframe %}
-                <a
-                  target="_parent"
-                  href="{% external_url 'github' %}"
-                  class="mt-6 button button--primary"
-                >
-                  Talk to Sales
-                </a>
-              {% else %}
-                <a
-                  href="{% external_url 'github' %}"
-                  class="mt-6 button button--primary"
-                >
-                  Book a demo
-                </a>
-              {% endif %}
+              <a
+                target="_parent"
+                href="{% external_url 'github' %}"
+                class="mt-6 button button--primary"
+              >
+                Talk to us
+              </a>
             {% endif %}
           </div>
           <div class="pt-6 pb-8 px-6">

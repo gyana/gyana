@@ -1,4 +1,23 @@
 tiers:
+  - name: Open source
+    description: Run Gyana on your own infrastructure for free.
+    includedHeader: What's included
+    includedFeatures:
+      - Fully open source
+      - You own your data
+      - Gyana community
+    features:
+      Integrations:
+        Google Sheets: true
+        CSV: true
+        Rows synced per integration: 100,000
+      Reports:
+        Projects: 3
+      Support:
+        Live chat: true
+      Other:
+        Shareable URLs: true
+        HTML Embed: true
   - name: Free
     description: Ideal for personal use and individuals at early stage companies.
     includedHeader: What's included
