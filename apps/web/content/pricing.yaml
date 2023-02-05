@@ -22,8 +22,8 @@ tiers:
     description: Explore Gyana with our limited free forever plan.
     includedHeader: What's included
     includedFeatures:
-      - Google Sheets and CSV
-      - Build custom reports
+      - Build custom dashboards
+      - Managed by us
       - Live chat
     features:
       Integrations:
@@ -42,9 +42,9 @@ tiers:
     includedHeader: Everything in free, plus
     price: 10
     includedFeatures:
-      - All integrations
-      - Report automation
-      - Dedicated support
+      - Scale your usage
+      - Dashboard automation
+      - Remove branding
     features:
       Integrations:
         Google Sheets: true
