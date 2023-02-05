@@ -53,7 +53,15 @@
                   </div>
                 {% endif %}
               </p>
-              {% if tier.name == 'Free' %}
+              {% if tier.name == 'Open source' %}
+                <a
+                  target="_parent"
+                  href="{% external_url 'github' %}"
+                  class="mt-6 button button--primary"
+                >
+                  Go to Github
+                </a>
+              {% elif tier.name == 'Free' %}
                 {% if request.GET.iframe %}
                   <a target="_parent" href="{% url 'teams:detail' request.GET.team_id|add:"0" %}" class="mt-6 button button--tertiary">Continue</a>
                 {% else %}
@@ -82,7 +90,7 @@
               {% else %}
                 <a
                   target="_parent"
-                  href="{% external_url 'github' %}"
+                  href="{% external_url 'talk_to_us' %}"
                   class="mt-6 button button--primary"
                 >
                   Talk to us
