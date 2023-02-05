@@ -120,23 +120,6 @@ usage:
     price: 500
 
 features:
-  Integrations:
-    - name: Upload
-      icon: fa-upload
-    - name: Google Sheet
-      icon: fa-file-spreadsheet
-    - name: Custom API
-      icon: fa-brackets-curly
-    - name: Automation
-      heading: true
-    - name: Schedule
-      icon: fa-clock
-    - name: Monitor
-      icon: fa-desktop
-    - name: Export
-      icon: fa-download
-  Workflows: []
-  Dashboards: []
   Collaboration:
     - name: Projects
       icon: fa-folders
@@ -154,6 +137,23 @@ features:
       icon: fa-desktop
     - name: Project templates
       icon: fa-copy
+  Integrations:
+    - name: Upload
+      icon: fa-upload
+    - name: Google Sheet
+      icon: fa-file-spreadsheet
+    - name: Custom API
+      icon: fa-brackets-curly
+    - name: Automation
+      heading: true
+    - name: Schedule
+      icon: fa-clock
+    - name: Monitor
+      icon: fa-desktop
+    - name: Export
+      icon: fa-download
+  Workflows: []
+  Dashboards: []
 
 comparison:
   Data:
