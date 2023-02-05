@@ -68,10 +68,8 @@ tiers:
         Shared Slack Channel: true
         Professional support: Hire an expert
       Advanced features:
-        Shareable URLs: true
-        HTML Embed: true
-        Remove Gyana branding: true
-        White-labelling: Add-on
+        Remove branding: true
+        Custom domains: true
   - name: Enterprise
     description: For organizations seeking enterprise-grade features.
     includedHeader: Everything in pro, plus
@@ -96,10 +94,8 @@ tiers:
         Shared Slack Channel: true
         Professional support: Hire an expert
       Advanced features:
-        Shareable URLs: true
-        HTML Embed: true
-        Remove Gyana branding: true
-        White-labelling: true
+        Remove branding: true
+        Custom domains: true
         Okta Single Sign-On: true
         Custom billing & MSA: true
 
@@ -158,7 +154,7 @@ features:
 comparison:
   Data:
     - name: Rows
-      description: Total rows synced to Gyana across all data sources
+      description: Total rows synced to Gyana from external data sources
     - Hosting
   Features:
     - Integrations
@@ -166,16 +162,16 @@ comparison:
     - Dashboards
     - Collaboration
   Automation:
-    - Schedule
+    - name: Schedule
+      description: Schedule an integration or workflow to run at a fixed frequency
     - Frequency
   Support:
     - Gyana community
     - Shared Slack Channel
     - Professional support
-    - Solution architect
   Advanced features:
-    - HTML Embed
-    - White-labelling
+    - Remove branding
+    - Custom domains
     - Okta Single Sign-On
     - Custom billing & MSA
 
