@@ -8,7 +8,7 @@ tiers:
       - Gyana community
     features:
       Data:
-        Rows: Run in your data warehouse
+        Rows: Run on your data warehouse
         Hosting: Self hosted
       Features:
         Integrations: true
