@@ -28,6 +28,8 @@ EXTERNAL_URLS = {
     "david_twitter": "https://twitter.com/davidkell_",
     "joyeeta_linkedin": "https://www.linkedin.com/in/joyeeta-das-9124471a/",
     "joyeeta_twitter": "https://twitter.com/thisisjoyeeta",
+    # blog posts
+    "goodbye_gyana": "https://gyana.com/blog/goodbye-gyana",
 }
 
 register = template.Library()

@@ -8,7 +8,22 @@ statistics:
   - value: 2,000,000,000+
     title: Rows of data managed
     description: Designed to scale
-
+logos:
+  - ey
+  - bcg
+  - nasa
+  - barclays
+  - mckinsey
+  - pret
+  - vodafone
+  - knightfrank
+  - pwc
+  - airbnb
+  - wework
+  - colliers
+  - tbs
+  - grantthornton
+  - nuveen
 investors:
   - oui
   - fuel
