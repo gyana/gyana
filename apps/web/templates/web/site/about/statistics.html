@@ -3,17 +3,17 @@
     <div class="max-w-7xl mx-auto text-left pb-16 px-4 sm:pb-20 sm:px-6 lg:px-8 flex flex-col gap-y-4">
       <div class="grid grid-cols-1 gap-y-12 gap-x-6 lg:grid-cols-3">
         {% for statistic in content.statistics %}
-          <p>
-            <span class="block text-4xl font-bold text-gray-900">
+          <div>
+            <p class="block text-4xl font-bold text-gray-900">
               {{ statistic.value }}
-            </span>
-            <span class="mt-1 block text-base text-gray-900">
+            </p>
+            <p class="mt-1 block text-base text-gray-900">
               {{ statistic.title }}
-            </span>
-            <span class="mt-2 block text-xl text-indigo-600 text-caveat">
+            </p>
+            <p class="mt-2 block text-xl text-indigo-600 text-caveat">
               {{ statistic.description }}
-            </span>
-          </p>
+            </p>
+          </div>
         {% endfor %}
       </div>
     </div>
