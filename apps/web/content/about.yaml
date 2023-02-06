@@ -1,3 +1,14 @@
+statistics:
+  - value: 1,500+
+    title: Pull requests on Github
+    description: Mature, open source codebase
+  - value: 2,000+
+    title: Gyanees trust us
+    description: Our community of no-code data analysts
+  - value: 2,000,000,000+
+    title: Rows of data managed
+    description: Designed to scale
+
 investors:
   - oui
   - fuel
