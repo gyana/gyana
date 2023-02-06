@@ -15,12 +15,15 @@ tiers:
         Workflows: true
         Dashboards: true
         Collaboration: true
-      Automation: {}
+      Automation:
+        Schedule: true
+        Frequency: true
       Support:
         Gyana community: true
+        Professional support: Hire an expert
       Advanced features:
-        Shareable URLs: true
-        HTML Embed: true
+        Remove branding: true
+        Custom domains: true
   - name: Free
     description: Explore Gyana with our forever free plan.
     includedHeader: What's included
@@ -40,9 +43,7 @@ tiers:
       Automation: {}
       Support:
         Gyana community: true
-      Advanced features:
-        Shareable URLs: true
-        HTML Embed: true
+      Advanced features: {}
   - name: Pro
     description: Ideal for SMBs, startups, agencies and non-profits.
     includedHeader: Everything in free, plus
@@ -65,7 +66,6 @@ tiers:
         Frequency: Daily
       Support:
         Gyana community: true
-        Shared Slack Channel: true
         Professional support: Hire an expert
       Advanced features:
         Remove branding: true
@@ -91,7 +91,6 @@ tiers:
         Frequency: Custom
       Support:
         Gyana community: true
-        Shared Slack Channel: true
         Professional support: Hire an expert
       Advanced features:
         Remove branding: true
@@ -167,7 +166,6 @@ comparison:
     - Frequency
   Support:
     - Gyana community
-    - Shared Slack Channel
     - Professional support
   Advanced features:
     - Remove branding
@@ -198,9 +196,7 @@ faqs:
       Gyana is committed to GDPR compliance. Your data is always located in the UK and
       EU, and we act as your data processing partner.
   - q: Do you offer 1-on-1 training/support?
-    a:
-      We do not offer hands-on training ourselves, but we can connect you to a Gyana expert.
-      We also offer a shared Slack channel for Pro plans.
+    a: We do not offer hands-on training ourselves, but we can connect you to a Gyana expert.
   - q: Can you replicate my Looker Studio dashboard?
     a: Yes — our community of Gyana experts can help build your existing dashboard in Gyana.
   - q: Can you help me set up a dashboard from scratch?
