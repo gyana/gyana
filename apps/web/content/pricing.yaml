@@ -19,8 +19,9 @@ tiers:
         Schedule: true
         Frequency: true
       Support:
+        Email support: true
         Gyana community: true
-        Professional support: Hire an expert
+        Specialist support: Hire an expert
       Advanced features:
         Remove branding: true
         Custom domains: true
@@ -42,6 +43,7 @@ tiers:
         Collaboration: true
       Automation: {}
       Support:
+        Email support: true
         Gyana community: true
       Advanced features: {}
   - name: Pro
@@ -65,8 +67,9 @@ tiers:
         Schedule: true
         Frequency: Daily
       Support:
+        Email support: true
         Gyana community: true
-        Professional support: Hire an expert
+        Specialist support: Hire an expert
       Advanced features:
         Remove branding: true
         Custom domains: true
@@ -90,8 +93,9 @@ tiers:
         Schedule: true
         Frequency: Custom
       Support:
+        Email support: true
         Gyana community: true
-        Professional support: Hire an expert
+        Specialist support: Hire an expert
       Advanced features:
         Remove branding: true
         Custom domains: true
@@ -165,8 +169,10 @@ comparison:
       description: Schedule an integration or workflow to run at a fixed frequency
     - Frequency
   Support:
+    - name: Email support
+      description: Send an email to <a class="link" href="mailto:support@gyana.com">support@gyana.com</a>
     - Gyana community
-    - Professional support
+    - Specialist support
   Advanced features:
     - Remove branding
     - Custom domains

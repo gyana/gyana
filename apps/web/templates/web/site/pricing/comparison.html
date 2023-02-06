@@ -96,7 +96,7 @@
                       Get in touch
                     {% else %}
                       <span class="text-base font-medium text-gray-500">Starting at</span>
-                      $10
+                      ${{ content.usage.0.price }}
                       <span class="-ml-2 text-base font-medium text-gray-500">/mo</span>
                     {% endif %}
                   </p>
@@ -121,7 +121,7 @@
                         <button>{% heroicon 'information-circle' class="text-gray-400 w-4 h-4 ml-1" %}</button>
                         <template data-popover-target="body">
                           <div class="text-gray-600 max-w-md">
-                            {{ feature_item.description }}
+                            {{ feature_item.description|safe }}
                           </div>
                         </template>
                       </div>
