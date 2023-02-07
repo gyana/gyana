@@ -33,6 +33,7 @@ jobs:
           python-version: 3.9
           cache: 'pip' # caching pip dependencies
       - run: pip install -r requirements.txt
+      - run: which python
         # required for collectstatic
       - uses: actions/setup-node@v2
         with:
