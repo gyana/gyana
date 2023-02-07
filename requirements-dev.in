@@ -1,3 +1,4 @@
+-c requirements.txt
 autoflake
 black
 cookiecutter
