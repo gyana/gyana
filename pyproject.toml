@@ -37,66 +37,66 @@ omit = ["*/migrations/*", "apps/cookiecutter-app/*"]
 plugins = ["django_coverage_plugin"]
 source = ["apps"]
 
-[tool.poetry.dependencies]
-Django = "^4.0.4"
-analytics-python = "^1.3.1"
-attrs = "^20.3.0"
-backoff = "^1.10.0"
-celery = {extras = ["redis"], version = "^5.0.5"}
-coreapi = "^2.3.3"
-django-admin-tools = "^0.9.1"
-django-allauth = "^0.50.0"
-django-anymail = {extras = ["mailgun"], version = "^8.2"}
-django-clone = "^3.0.1"
-django-dirtyfields = "^1.7.0"
-django-filter = "^2.4.0"
-django-heroku = "^0.3.1"
-django-hijack = "^3.0.0"
-django-invitations = "^2.0.0"
-django-storages = {extras = ["google"], version = "^1.11.1"}
-django-tables2 = "^2.4.1"
-django-turbo-allauth = "^0.0.10"
-django-turbo-response = "^0.0.52"
-djangorestframework = "^3.13.1"
-google-api-python-client = "^2.4.0"
-google-cloud-bigquery = "^2.14.0"
-gunicorn = "^20.0.4"
-hashids = "^1.3.1"
-honeybadger = "^0.8.0"
-honeycomb-beeline = "^2.17.1"
-ibis-bigquery = "^2.2.0"
-inflection = "^0.5.1"
-lark = "^0.11.3"
-pandas = "^1.2.4"
-pathvalidate = "^2.4.1"
-psycopg2-binary = "^2.8.6"
-python = "3.9.*"
+[project]
+dependencies = [
+  "Django==4.0.4",
+  "analytics-python==1.3.1",
+  "attrs==20.3.0",
+  "backoff==1.10.0",
+  "celery[redis]==5.0.5",
+  "coreapi==2.3.3",
+  "django-admin-tools==0.9.1",
+  "django-allauth==0.50.0",
+  "django-anymail[mailgun]==8.2",
+  "django-clone==3.0.1",
+  "django-dirtyfields==1.7.0",
+  "django-filter==2.4.0",
+  "django-heroku==0.3.1",
+  "django-hijack==3.0.0",
+  "django-invitations==2.0.0",
+  "django-storages[google]==1.11.1",
+  "django-tables2==2.4.1",
+  "django-turbo-allauth==0.0.10",
+  "django-turbo-response==0.0.52",
+  "djangorestframework==3.13.1",
+  "google-api-python-client==2.4.0",
+  "google-cloud-bigquery==2.14.0",
+  "gunicorn==20.0.4",
+  "hashids==1.3.1",
+  "honeybadger==0.8.0",
+  "honeycomb-beeline==2.17.1",
+  "ibis-bigquery==2.2.0",
+  "inflection==0.5.1",
+  "lark==0.11.3",
+  "pandas==1.2.4",
+  "pathvalidate==2.4.1",
+  "psycopg2-binary==2.8.6",
+  "PyYAML==6.0",
+  "celery-progress==0.1.1",
+  "git+https://github.com/paddle-python/dj-paddle#8945137c9ff70ae00d519625f81b10d1bc6bf071",
+  "django-celery-beat==2.3.0",
+  "django-celery-results==2.2.0",
+  "django-cryptography==1.0",
+  'git+https://github.com/geoffbeier/django-heroicons",
+  "django-redis==5.0.0",
+  "django-safedelete==1.1.0",
+  "django-silk==4.3.0",
+  "django-timezone-field==5.0",
+  "django-waffle==2.2.1",
+  "fuzzywuzzy==0.18.0",
+  "git+https://github.com/martyzz1/heroku3.py#81c996929e37450e1e65f28eb43fc28533a79048",
+  "jsonpath-ng==1.5.3",
+  "pytest-mock==3.6.1",
+  "python-Levenshtein==0.12.2",
+  "readtime==1.1.1",
+  "wagtail==3.0",
+  "wagtailmenus==3.1.3",
+  "django-cacheops==6.0",
+  "django-simple-history==3.1.1",
+  "google-cloud-language==2.4.1",
+  "plotly==5.10.0",
+]
 
-PyYAML = "^6.0"
-celery-progress = "^0.1.1"
-dj-paddle = {git = "https://github.com/paddle-python/dj-paddle", rev = "8945137c9ff70ae00d519625f81b10d1bc6bf071"}
-django-celery-beat = "^2.3.0"
-django-celery-results = "^2.2.0"
-django-cryptography = "^1.0"
-django-heroicons = {git = "https://github.com/geoffbeier/django-heroicons"}
-django-redis = "^5.0.0"
-django-safedelete = "^1.1.0"
-django-silk = "^4.3.0"
-django-timezone-field = "^5.0"
-django-waffle = "^2.2.1"
-fuzzywuzzy = "^0.18.0"
-heroku3 = {git = "https://github.com/martyzz1/heroku3.py", rev = "81c996929e37450e1e65f28eb43fc28533a79048"}
-jsonpath-ng = "^1.5.3"
-pytest-mock = "^3.6.1"
-python-Levenshtein = "^0.12.2"
-readtime = "^1.1.1"
-wagtail = "^3.0"
-wagtailmenus = "^3.1.3"
-
-django-cacheops = "^6.0"
-django-simple-history = "^3.1.1"
-google-cloud-language = "^2.4.1"
-plotly = "^5.10.0"
 [tool.poetry.dev-dependencies]
 autoflake = "^1.4"
 black = "^22.1.0"
