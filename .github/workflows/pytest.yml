@@ -33,9 +33,6 @@ jobs:
           python-version: 3.9
           cache: 'pip' # caching pip dependencies
       - run: pip install -r requirements.txt
-      - run: which python
-      - run: which pip
-      - run: find / -name dj-paddle
         # required for collectstatic
       - uses: actions/setup-node@v2
         with:
