@@ -58,12 +58,9 @@ enc_env:
     just gcloud_kms encrypt .env
     just gcloud_kms encrypt {{service_account}}
 
-export:
-    poetry export -f requirements.txt --output requirements.txt --without-hashes
-
 update:
     npm install
-    poetry install
+    pip-sync requirements.txt requirements-dev.txt
 
 format:
     autoflake --in-place --recursive --remove-all-unused-imports --ignore-init-module-imports --exclude 'apps/*/migrations' gyana apps

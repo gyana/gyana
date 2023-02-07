@@ -8,7 +8,8 @@ Required:
 
 - just
 - direnv
-- poetry
+- pyenv
+- pip-tools
 - volta (`curl https://get.volta.sh | bash`)
 - watchexec
 - postgres 13 (https://postgresapp.com/)
@@ -31,8 +32,7 @@ direnv allow .
 Install all required python and node dependencies:
 
 ```bash
-poetry install
-npm install
+just update
 ```
 
 Create a local database and run migrations on it:
