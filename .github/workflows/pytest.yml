@@ -31,9 +31,7 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: 3.9
-      - uses: Gr1N/setup-poetry@v7
-      - name: Install dependencies with poetry
-        run: poetry install
+      - run: pip install -r requirements.txt
         # required for collectstatic
       - uses: actions/setup-node@v2
         with:
@@ -43,14 +41,14 @@ jobs:
       - name: Build assets
         run: npm run build
       - name: Collect static
-        run: poetry run just collectstatic
+        run: just collectstatic
       - name: Copy folders
         run: |
           cp -R .venv/src/dj-paddle/djpaddle/templates .venv/lib/python3.9/site-packages/djpaddle/templates
           cp -R .venv/src/dj-paddle/djpaddle/migrations .venv/lib/python3.9/site-packages/djpaddle/migrations
           cp -R .venv/src/dj-paddle/djpaddle/management .venv/lib/python3.9/site-packages/djpaddle/management
       - name: Pytest run
-        run: poetry run just test-ci
+        run: just test-ci
       - uses: codecov/codecov-action@v2
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
