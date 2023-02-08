@@ -99,6 +99,7 @@ THIRD_PARTY_APPS = [
     "taggit",
     "wagtail.contrib.modeladmin",
     "wagtailmenus",
+    "django_htmx",
 ]
 
 # Put your project-specific apps here
@@ -149,6 +150,7 @@ MIDDLEWARE = [
     "hijack.middleware.HijackUserMiddleware",
     "waffle.middleware.WaffleMiddleware",
     "wagtail.contrib.redirects.middleware.RedirectMiddleware",
+    "django_htmx.middleware.HtmxMiddleware",
 ]
 
 LOGGING = {

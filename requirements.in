@@ -18,6 +18,7 @@ django-dirtyfields
 django-filter
 django-heroku
 django-hijack
+django-htmx
 django-invitations
 django-redis
 django-safedelete
