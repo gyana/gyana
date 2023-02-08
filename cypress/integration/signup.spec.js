@@ -37,11 +37,11 @@ describe('signup', () => {
     // new team
     cy.url().should('contain', '/teams')
     cy.get('input[name=name]').type('My team')
-    cy.get('button[type=submit]').click({ turbo: false })
+    cy.get('button[type=submit]').click()
 
     // select plan and continue
     cy.url().should('contain', `/teams/${newTeamId}/pricing`)
-    getIframeBody('pricing').contains('Continue').click({ turbo: false })
+    getIframeBody('pricing').contains('Continue').click()
 
     // new project
     cy.url().should('contain', `/teams/${newTeamId}`)

@@ -42,11 +42,11 @@ describe('dashboards', () => {
       cy.wrap(el)
         .get('button')
         .should('not.be.disabled')
-        .click({ turbo: false })
+        .click()
     })
     cy.get('select[name=aggregations-0-column]').select('Employees')
     cy.get('select[name=aggregations-0-function]').select('SUM')
-    cy.contains('Save & Close').click({ turbo: false })
+    cy.contains('Save & Close').click()
 
     cy.get(`#widget-${widgetStartId + 1}`).within((el) => {
       // TODO: check for visibility
