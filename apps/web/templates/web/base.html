@@ -70,6 +70,8 @@
   {% block body.attrs %}
     data-controller="tf-modal on-submit-loading turbo-loading"
   {% endblock body.attrs %}
+  data-turbo="false"
+  hx-boost="true"
 >
   {% block body %}
     {% block body.banner %}{% endblock %}
