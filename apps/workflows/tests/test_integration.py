@@ -27,12 +27,12 @@ def test_workflow_crudl(client, project, workflow_factory):
     # read
     r = client.get(f"{project_url}/workflows/{workflow.id}")
     assertOK(r)
-    assertFormRenders(r, ["name"])
+    assertFormRenders(r, ["name"], "#workflows-name")
 
     # update/rename
     new_name = "Superduper workflow"
-    r = client.post(f"{project_url}/workflows/{workflow.id}", data={"name": new_name})
-    assertRedirects(r, f"{project_url}/workflows/{workflow.id}", status_code=303)
+    r = client.post(f"/workflows/{workflow.id}/name", data={"name": new_name})
+    assertRedirects(r, f"/workflows/{workflow.id}/name", status_code=302)
     workflow.refresh_from_db()
     assert workflow.name == new_name
 

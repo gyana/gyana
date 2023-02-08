@@ -38,14 +38,14 @@ def test_dashboard_crudl(client, project, dashboard_factory):
     # read
     r = client.get(DETAIL)
     assertOK(r)
-
+    assertFormRenders(r, ["name"],  "#dashboards-name")
     assertFormRenders(r, ["x", "y", "kind", "page"], "#dashboard-widget-create-form")
     assertLink(r, f"{DETAIL}/delete", "Delete")
 
     # update/rename
     new_name = "Superduper dashboard"
-    r = client.post(DETAIL, data={"name": new_name})
-    assertRedirects(r, DETAIL, status_code=303)
+    r = client.post(f"/dashboards/{dashboard.id}/name", data={"name": new_name})
+    assertRedirects(r, f"/dashboards/{dashboard.id}/name", status_code=302)
     dashboard.refresh_from_db()
     assert dashboard.name == new_name
 

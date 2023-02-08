@@ -1,4 +1,5 @@
-<form hx-post="{% url "workflows:name" object.id %}"
+<form id="workflows-name"
+    hx-post="{% url "workflows:name" object.id %}"
     class="form">
   {% csrf_token %}
 
