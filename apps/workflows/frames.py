@@ -1,12 +1,9 @@
 from django.db.models import F
 from django.urls import reverse
+from django.views.generic import TemplateView
 from django_tables2 import MultiTableMixin
 
-from apps.base.frames import (
-    TurboFrameDetailView,
-    TurboFrameTemplateView,
-    TurboFrameUpdateView,
-)
+from apps.base.frames import TurboFrameDetailView, TurboFrameUpdateView
 from apps.nodes.models import Node
 from apps.projects.mixins import ProjectMixin
 from apps.runs.tables import JobRunTable
@@ -16,9 +13,8 @@ from .forms import WorkflowSettingsForm
 from .models import Workflow
 
 
-class WorkflowOverview(ProjectMixin, TurboFrameTemplateView):
+class WorkflowOverview(ProjectMixin, TemplateView):
     template_name = "workflows/overview.html"
-    turbo_frame_dom_id = "workflows:overview"
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)

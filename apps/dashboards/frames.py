@@ -1,15 +1,11 @@
 from django.db.models import Count, Q
 from django.urls.base import reverse
-from django.views.generic import UpdateView
+from django.views.generic import TemplateView, UpdateView
 from django_tables2 import SingleTableMixin
 from turbo_response import TurboStream
 from turbo_response.response import TurboStreamResponse
 
-from apps.base.frames import (
-    TurboFrameDetailView,
-    TurboFrameTemplateView,
-    TurboFrameUpdateView,
-)
+from apps.base.frames import TurboFrameDetailView, TurboFrameUpdateView
 from apps.dashboards.forms import DashboardShareForm
 from apps.dashboards.tables import DashboardHistoryTable, DashboardUpdateTable
 from apps.projects.mixins import ProjectMixin
@@ -19,9 +15,8 @@ from .forms import DashboardForm, DashboardNameForm, DashboardVersionSaveForm
 from .models import Dashboard, DashboardVersion
 
 
-class DashboardOverview(ProjectMixin, TurboFrameTemplateView):
+class DashboardOverview(ProjectMixin, TemplateView):
     template_name = "dashboards/overview.html"
-    turbo_frame_dom_id = "dashboards:overview"
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
