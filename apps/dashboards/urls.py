@@ -18,6 +18,11 @@ app_name = "dashboards"
 urlpatterns = [
     # views
     path(
+        "<hashid:pk>/name",
+        login_and_dashboard_required(frames.DashboardName.as_view()),
+        name="name",
+    ),
+    path(
         "<hashid:pk>/duplicate",
         login_and_dashboard_required(views.DashboardDuplicate.as_view()),
         name="duplicate",

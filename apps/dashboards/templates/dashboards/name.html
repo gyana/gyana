@@ -1,0 +1,18 @@
+<form
+  hx-post="{% url "dashboards:name" object.id %}"
+  hx-trigger="submit"
+  class="form--no-layout w-full"
+>
+  {% csrf_token %}
+
+  <input
+    class="input__inline mr-auto"
+    id="name"
+    type="text"
+    name="name"
+    value="{{ object.name }}"
+    size="{{ object.name|length }}"
+    onblur="this.form.requestSubmit();"
+    oninput="this.size = this.value.length+1"
+  />
+</form>

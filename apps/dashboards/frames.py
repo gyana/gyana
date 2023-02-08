@@ -1,7 +1,7 @@
 from django.db.models import Count, Q
-from django.shortcuts import redirect
 from django.urls.base import reverse
-from django_tables2 import SingleTableMixin, SingleTableView
+from django.views.generic import UpdateView
+from django_tables2 import SingleTableMixin
 from turbo_response import TurboStream
 from turbo_response.response import TurboStreamResponse
 
@@ -15,7 +15,7 @@ from apps.dashboards.tables import DashboardHistoryTable, DashboardUpdateTable
 from apps.projects.mixins import ProjectMixin
 from apps.widgets.models import Widget
 
-from .forms import DashboardForm, DashboardVersionSaveForm
+from .forms import DashboardForm, DashboardNameForm, DashboardVersionSaveForm
 from .models import Dashboard, DashboardVersion
 
 
@@ -157,3 +157,12 @@ class DashboardVersionRename(TurboFrameUpdateView):
 
     def get_success_url(self) -> str:
         return reverse("dashboards:version-rename", args=(self.object.id,))
+
+
+class DashboardName(UpdateView):
+    template_name = "dashboards/name.html"
+    model = Dashboard
+    form_class = DashboardNameForm
+
+    def get_success_url(self) -> str:
+        return reverse("dashboards:name", args=(self.object.id,))

@@ -115,10 +115,9 @@ class DashboardCreateFromIntegration(ProjectMixin, TurboCreateView):
         return r
 
 
-class DashboardDetail(ProjectMixin, TurboUpdateView):
+class DashboardDetail(ProjectMixin, DetailView):
     template_name = "dashboards/detail.html"
     model = Dashboard
-    form_class = DashboardNameForm
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -133,11 +132,6 @@ class DashboardDetail(ProjectMixin, TurboUpdateView):
         context["next_page"] = page.position + 1
         context["previous_page"] = page.position - 1
         return context
-
-    def get_success_url(self) -> str:
-        return reverse(
-            "project_dashboards:detail", args=(self.project.id, self.object.id)
-        )
 
 
 class DashboardDelete(ProjectMixin, DeleteView):

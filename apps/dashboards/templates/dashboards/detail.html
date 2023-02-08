@@ -33,26 +33,7 @@
 {% block app %}
   <div class="dashboard__header">
     <div class="flex items-center gap-2 mr-auto">
-      <turbo-frame id="dashboard-name">
-        <form
-          method="POST"
-          action="{% url "project_dashboards:detail" project.id object.id %}"
-          class="form--no-layout w-full"
-        >
-          {% csrf_token %}
-  
-          <input
-            class="input__inline mr-auto"
-            id="name"
-            type="text"
-            name="name"
-            value="{{ object.name }}"
-            size="{{ object.name|length }}"
-            onblur="this.form.requestSubmit();"
-            oninput="this.size = this.value.length+1"
-          />
-        </form>
-      </turbo-frame>
+      {% include "dashboards/name.html" %}
 
       <span class="bold">-</span>
       
