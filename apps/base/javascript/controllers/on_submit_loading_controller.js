@@ -4,11 +4,9 @@ import { Controller } from '@hotwired/stimulus'
 
 export default class extends Controller {
   onSubmit(event) {
-    // https://turbo.hotwired.dev/reference/events
-    const submitter = event.submitter || event.detail.formSubmission.submitter
+    const submitter = event.submitter
 
-    // event fires twice for top level forms with data-turbo="true" (default)
-    if (submitter && !submitter.disabled && !(submitter.getAttribute('data-loading-false') == '')) {
+    if (submitter && !submitter.disabled) {
       const placeholder = document.createElement('template')
       placeholder.innerHTML = `
         <div class="placeholder-scr--inline">
@@ -28,12 +26,10 @@ export default class extends Controller {
   }
 
   connect() {
-    document.addEventListener('submit', this.onSubmit) // data-turbo="false" and root level forms
-    document.addEventListener('turbo:submit-start', this.onSubmit) // submissions within turbo-frames
+    document.addEventListener('submit', this.onSubmit)
   }
 
   disconnect() {
     document.addEventListener('submit', this.onSubmit)
-    document.removeEventListener('turbo:submit-start', this.onSubmit)
   }
 }

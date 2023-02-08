@@ -38,6 +38,10 @@
     {% comment %} Default is for app e.g. app_base, landing_base {% endcomment %}
     <meta name="turbo-cache-control" content="no-cache" />
 
+    <script>
+      Turbo.session.drive = false
+    </script>
+
     <link
       href="//fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap"
       rel="stylesheet"
@@ -70,7 +74,6 @@
   {% block body.attrs %}
     data-controller="tf-modal on-submit-loading turbo-loading"
   {% endblock body.attrs %}
-  data-turbo="false"
   hx-boost="true"
 >
   {% block body %}

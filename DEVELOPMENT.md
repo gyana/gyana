@@ -12,8 +12,8 @@ Required:
 - pip-tools
 - volta (`curl https://get.volta.sh | bash`)
 - watchexec
+- redis 6 (`brew services start redis`)
 - postgres 13 (https://postgresapp.com/)
-- redis 6 (https://jpadilla.github.io/redisapp/)
 
 Optional / Recommended:
 

@@ -20,7 +20,7 @@ describe('dashboards', () => {
 
   it('dashboard editor', () => {
     cy.get('[data-cy=dashboard-create]').click()
-    cy.get('#dashboard-name input[id=name]')
+    cy.get('#dashboards-name input[id=name]')
       .clear()
       .type('Magical dashboard{enter}')
 
