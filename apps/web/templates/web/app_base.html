@@ -2,6 +2,11 @@
 {% load static %}
 {% load team_tags %}
 
+{% block body.attrs %}
+  data-controller="tf-modal on-submit-loading turbo-loading"
+  hx-boost="true"
+{% endblock body.attrs %}
+
 {% block body.banner %}
   {% if team and team.warning %}
   <div class="banner banner--warning">
