@@ -13,7 +13,7 @@ class WorkflowFormCreate(BaseModelForm):
         widgets = {"project": HiddenInput()}
 
 
-class WorkflowForm(BaseModelForm):
+class WorkflowNameForm(BaseModelForm):
     class Meta:
         model = Workflow
         fields = ["name"]

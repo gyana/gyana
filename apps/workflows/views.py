@@ -3,7 +3,7 @@ from django.db.models.query import QuerySet
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.utils import timezone
-from django.views.generic.edit import DeleteView
+from django.views.generic import DeleteView, DetailView
 from django_tables2 import SingleTableView
 
 from apps.base.analytics import (
@@ -17,7 +17,7 @@ from apps.nodes.config import get_node_config_with_arity
 from apps.nodes.models import Node
 from apps.projects.mixins import ProjectMixin
 
-from .forms import WorkflowForm, WorkflowFormCreate
+from .forms import WorkflowFormCreate
 from .models import Workflow
 from .tables import WorkflowTable
 
@@ -104,10 +104,9 @@ class WorkflowCreateFromIntegration(ProjectMixin, TurboCreateView):
         return r
 
 
-class WorkflowDetail(ProjectMixin, TurboUpdateView):
+class WorkflowDetail(ProjectMixin, DetailView):
     template_name = "workflows/detail.html"
     model = Workflow
-    form_class = WorkflowForm
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -120,11 +119,6 @@ class WorkflowDetail(ProjectMixin, TurboUpdateView):
             "Annotation",
         ]
         return context
-
-    def get_success_url(self) -> str:
-        return reverse(
-            "project_workflows:detail", args=(self.project.id, self.object.id)
-        )
 
 
 class WorkflowDelete(ProjectMixin, DeleteView):

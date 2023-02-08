@@ -27,6 +27,11 @@ urlpatterns = [
     ),
     # frames
     path(
+        "<hashid:pk>/name",
+        login_and_workflow_required(frames.WorkflowName.as_view()),
+        name="name",
+    ),
+    path(
         "<hashid:pk>/last_run",
         login_and_workflow_required(frames.WorkflowLastRun.as_view()),
         name="last_run",

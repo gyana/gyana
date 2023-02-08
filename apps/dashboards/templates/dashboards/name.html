@@ -1,6 +1,5 @@
 <form
   hx-post="{% url "dashboards:name" object.id %}"
-  hx-trigger="submit"
   class="form--no-layout w-full"
 >
   {% csrf_token %}
