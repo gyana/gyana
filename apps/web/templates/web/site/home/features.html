@@ -1,5 +1,8 @@
 {% load static heroicons %}
 
+{% comment %} Workflows demo (HTMX does not load CSS) {% endcomment %}
+<link rel="stylesheet" href="{% static "css/workflow.css" %}" />
+
 <div class="bg-white pt-16 pb-32 overflow-hidden">
   <div class="px-4 sm:px-6 lg:px-8 mb-16 lg:mb-0 lg:text-center">
     <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
@@ -58,9 +61,9 @@
         </div>
       </div>
       <div class="mt-12 sm:mt-16 lg:mt-0 relative integration-demo flex flex-col justify-center">
-        <turbo-frame id="web:integrations-demo" src="{% url 'web:integrations-demo' %}" data-turbo="true">
+        <div hx-trigger="load" hx-get="{% url 'web:integrations-demo' %}" hx-swap="outerHTML">
           <img src="{% static 'images/site/home/integrations-fallback.jpg' %}" alt="Integrations"/>
-        </turbo-frame>
+        </div>
       </div>
     </div>
   </div>
@@ -108,9 +111,9 @@
         </div>
       </div>
       <div class="mt-12 sm:mt-16 lg:mt-0 lg:col-start-1 p-4 lg:p-0 workflow-demo">
-        <turbo-frame id="web:workflows-demo" src="{% url 'web:workflows-demo' %}" data-turbo="true">
+        <div hx-trigger="load" hx-get="{% url 'web:workflows-demo' %}" hx-swap="outerHTML">
           <img src="{% static 'images/site/home/workflows-fallback.jpg' %}" alt="Workflows"/>
-        </turbo-frame>
+        </div>
       </div>
     </div>
   </div>
@@ -156,9 +159,9 @@
         </div>
       </div>
       <div class="mt-12 sm:mt-16 lg:mt-0 dashboard-demo">
-        <turbo-frame id="web:dashboards-demo" src="{% url 'web:dashboards-demo' %}" data-turbo="true">
+        <div hx-trigger="load" hx-get="{% url 'web:dashboards-demo' %}" hx-swap="outerHTML">
           <img src="{% static 'images/site/home/dashboards-fallback.jpg' %}" alt="Dashboards"/>
-        </turbo-frame>
+        </div>
       </div>
     </div>
   </div>

@@ -1,5 +1,7 @@
 import random
 
+from django.views.generic import TemplateView
+
 from apps.base.frames import TurboFrameTemplateView
 from apps.nodes.config import NODE_CONFIG
 from apps.web.content import get_content
@@ -32,9 +34,8 @@ class ChangelogModal(TurboFrameTemplateView):
     turbo_frame_dom_id = "web:changelog"
 
 
-class IntegrationsDemo(TurboFrameTemplateView):
+class IntegrationsDemo(TemplateView):
     template_name = "web/demo/integrations.html"
-    turbo_frame_dom_id = "web:integrations-demo"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -42,9 +43,8 @@ class IntegrationsDemo(TurboFrameTemplateView):
         return context
 
 
-class WorkflowsDemo(TurboFrameTemplateView):
+class WorkflowsDemo(TemplateView):
     template_name = "web/demo/workflows.html"
-    turbo_frame_dom_id = "web:workflows-demo"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -55,9 +55,8 @@ class WorkflowsDemo(TurboFrameTemplateView):
         return context
 
 
-class DashboardsDemo(TurboFrameTemplateView):
+class DashboardsDemo(TemplateView):
     template_name = "web/demo/dashboards.html"
-    turbo_frame_dom_id = "web:dashboards-demo"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

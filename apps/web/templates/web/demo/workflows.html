@@ -1,7 +1,7 @@
 {% load static %}
 
+<script src="{% static "js/web-workflow-demo-bundle.js" %}"></script>
+
 <workflow-demo></workflow-demo>
 
 {{ node_config|json_script:"nodes" }}
-<script src="{% static "js/web-workflow-demo-bundle.js" %}"></script>
-<link rel="stylesheet" href="{% static "css/workflow.css" %}" />

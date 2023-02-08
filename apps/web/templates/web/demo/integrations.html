@@ -1,5 +1,7 @@
 {% load static %}
 
+<script src="{% static "js/web-integration-demo-bundle.js" %}"></script>
+
 <style>
   {% for group in services_grouped %}
     .integrations-{{ forloop.counter0 }} {
@@ -16,4 +18,3 @@
 <integration-demo></integration-demo>
 
 {{ services_grouped|json_script:"services_grouped" }}
-<script src="{% static "js/web-integration-demo-bundle.js" %}"></script>
