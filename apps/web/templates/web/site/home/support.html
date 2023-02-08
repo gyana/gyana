@@ -3,7 +3,7 @@
 {% comment %} For the embedded hubspot form {% endcomment %}
 <script charset="utf-8" type="text/javascript" src="//js-eu1.hsforms.net/forms/v2.js"></script>
 
-<div class="bg-gray-20 border-t border-b border-gray">
+<div id="support-demo" class="bg-gray-20 border-t border-b border-gray">
   <div class="relative max-w-7xl mx-auto py-24 px-4 sm:px-6 lg:px-8">
     <div class="sm:flex sm:flex-col sm:align-center">
       <h2 class="text-3xl font-extrabold text-gray-900">
@@ -25,7 +25,7 @@
               {% if not forloop.last %}
                 <div class="-ml-px absolute mt-0.5 top-4 left-4 w-0.5 h-full {% if forloop.counter0 < step %}bg-indigo-600{% else %}bg-gray-300{% endif %}" aria-hidden="true"></div>
               {% endif %}
-              <a href="{% url 'web:support-demo' %}?step={{ forloop.counter0 }}" class="relative flex items-start group">
+              <a href="#" hx-get="{% url 'web:support-demo' %}?step={{ forloop.counter0 }}" hx-target="#support-demo" hx-swap="outerHTML" class="relative flex items-start group">
                 <span class="h-9 flex items-center">
                   <span class="relative w-8 h-8 flex items-center justify-center rounded-full {% if forloop.counter0 < step %}bg-indigo-600 group-hover:bg-indigo-800{% elif forloop.counter0 == step %}bg-white border-2 border-indigo-600{% else %}bg-white border-2 border-gray-300 group-hover:border-gray-400{% endif %}">
                     {% if forloop.counter0 < step %}

@@ -9,12 +9,7 @@
   {% include "web/site/home/hero.html" %}
   {% include "web/site/home/proof.html" %}
   {% include "web/site/home/features.html" %}
-
-  <turbo-frame id="web:support-demo" data-turbo="true">
-    {% include "web/site/home/support.html" %}
-  </turbo-frame>
-
+  {% include "web/site/home/support.html" %}
   {% include "web/site/home/scale.html" %}
-  {% comment %} {% include "web/site/home/testimonial.html" with testimonial=content.testimonial %} {% endcomment %}
   {% include "web/site/home/cta.html" %}
 {% endblock %}
