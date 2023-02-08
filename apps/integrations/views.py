@@ -53,10 +53,9 @@ class IntegrationList(ProjectMixin, SingleTableMixin, FilterView):
 # Tabs
 
 
-class IntegrationDetail(ProjectMixin, TurboUpdateView):
+class IntegrationDetail(ProjectMixin, DetailView):
     template_name = "integrations/detail.html"
     model = Integration
-    fields = ["name"]
 
     def get(self, request, *args, **kwargs):
         integration = self.get_object()
@@ -74,11 +73,6 @@ class IntegrationDetail(ProjectMixin, TurboUpdateView):
         context_data["table_id"] = table.id if table else None
 
         return context_data
-
-    def get_success_url(self) -> str:
-        return reverse(
-            "project_integrations:detail", args=(self.project.id, self.object.id)
-        )
 
 
 class IntegrationReferences(ReadyMixin, DetailView):

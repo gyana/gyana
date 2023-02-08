@@ -16,6 +16,11 @@ urlpatterns = [
     ),
     # frames
     path(
+        "<hashid:pk>/name",
+        login_and_integration_required(frames.IntegrationName.as_view()),
+        name="name",
+    ),
+    path(
         "<hashid:pk>/grid",
         cache.integration_grid(
             login_and_integration_required(frames.IntegrationGrid.as_view())

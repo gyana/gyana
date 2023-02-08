@@ -1,10 +1,12 @@
-from django.views.generic import TemplateView
+from django.urls.base import reverse
+from django.views.generic import TemplateView, UpdateView
 from django_tables2.tables import Table
 from django_tables2.views import SingleTableMixin
 
 from apps.base.core.bigquery import get_humanize_from_bigquery_type
 from apps.base.core.table_data import RequestConfig, get_table
 from apps.base.frames import TurboFrameDetailView
+from apps.integrations.forms import IntegrationNameForm
 from apps.integrations.tables import StructureTable
 from apps.projects.mixins import ProjectMixin
 from apps.tables.bigquery import get_bq_table_schema_from_table, get_query_from_table
@@ -87,3 +89,12 @@ class IntegrationSchema(TableInstanceMixin, SingleTableMixin, TurboFrameDetailVi
             {"type": get_humanize_from_bigquery_type(t.field_type), "name": str(t.name)}
             for t in get_bq_table_schema_from_table(self.table_instance)
         ]
+
+
+class IntegrationName(UpdateView):
+    template_name = "integrations/name.html"
+    model = Integration
+    form_class = IntegrationNameForm
+
+    def get_success_url(self) -> str:
+        return reverse("integrations:name", args=(self.object.id,))

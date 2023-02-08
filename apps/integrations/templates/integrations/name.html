@@ -1,0 +1,12 @@
+<form hx-post="{% url 'integrations:name' object.id %}" class="form">
+  {% csrf_token %}
+
+  <input
+    class="input__inline"
+    id="name"
+    type="text"
+    name="name"
+    value="{{ object.name }}"
+    onBlur="this.form.requestSubmit();"
+   />
+</form>

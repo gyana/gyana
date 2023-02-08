@@ -8,20 +8,7 @@
 <div class="workflow-detail__header">
   <h3 class="mr-auto flex justify-center items-center">
     <img class="h-12 w-12 mr-4" src="{% static object.icon %}" title="{{ object.name }}" />
-    <turbo-frame id="integration-name">
-      <form method="post" action="{% url 'project_integrations:detail' project.id object.id %}" class="form">
-        {% csrf_token %}
-
-        <input
-          class="input__inline"
-          id="name"
-          type="text"
-          name="name"
-          value="{{ object.name }}"
-          onBlur="this.form.requestSubmit();"
-         />
-      </form>
-    </turbo-frame>
+    {% include "integrations/name.html" %}
   </h3>
 
   {% if object.kind == "sheet" %}

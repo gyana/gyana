@@ -6,18 +6,17 @@ from apps.uploads.forms import UploadUpdateForm
 
 from .models import Integration
 
-
-class IntegrationForm(BaseModelForm):
-    class Meta:
-        model = Integration
-        fields = ["name"]
-
-
 KIND_TO_FORM_CLASS = {
     Integration.Kind.SHEET: SheetUpdateForm,
     Integration.Kind.UPLOAD: UploadUpdateForm,
     Integration.Kind.CUSTOMAPI: CustomApiUpdateForm,
 }
+
+
+class IntegrationNameForm(BaseModelForm):
+    class Meta:
+        model = Integration
+        fields = ["name"]
 
 
 class IntegrationUpdateForm(BaseModelForm):
