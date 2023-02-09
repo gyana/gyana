@@ -3,7 +3,6 @@ from django.urls import reverse
 from django.views.generic import UpdateView
 from django_tables2.views import SingleTableMixin
 
-from apps.base.frames import TurboFrameUpdateView
 from apps.runs.tables import GraphRunTable
 
 from .forms import ProjectRunForm
@@ -11,13 +10,12 @@ from .models import Project
 from .tasks import duplicate_project
 
 
-class ProjectRuns(SingleTableMixin, TurboFrameUpdateView):
+class ProjectRuns(SingleTableMixin, UpdateView):
     template_name = "projects/runs.html"
     model = Project
     form_class = ProjectRunForm
     table_class = GraphRunTable
     paginate_by = 10
-    turbo_frame_dom_id = "projects:runs"
     pk_url_kwarg = "project_id"
 
     def get_table_data(self):
