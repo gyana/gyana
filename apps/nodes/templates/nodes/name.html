@@ -3,7 +3,7 @@
 
   <form 
     hx-post="{% url 'nodes:name' object.id %}"
-    hx-trigger="submit,focusoff"
+    hx-trigger="submit,focusout"
   >
   {% csrf_token %}
     <input 

@@ -3,6 +3,7 @@ from decimal import Decimal
 
 import analytics
 from django.urls import reverse
+from django.views.generic import UpdateView
 from django_tables2.tables import Table as DjangoTable
 from django_tables2.views import SingleTableMixin
 from honeybadger import honeybadger
@@ -76,11 +77,10 @@ def add_output_context(context, widget, request, control, url=None):
         context["chart_id"] = chart_id
 
 
-class WidgetName(TurboFrameUpdateView):
+class WidgetName(UpdateView):
     model = Widget
     fields = ("name",)
     template_name = "widgets/name.html"
-    turbo_frame_dom_id = "widget-editable-name"
 
     def get_success_url(self) -> str:
         return reverse(

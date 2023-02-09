@@ -3,8 +3,8 @@
 <form 
   id="widget-name-update-form"
   class="flex flex-row items-center w-full"
-  method="POST" 
-  action="{% url 'widgets:name' object.id %}"
+  hx-post="{% url 'widgets:name' object.id %}"
+  hx-target="this" hx-trigger="submit,focusout" hx-swap="outerHTML"
 >
   {% csrf_token %}
 
@@ -15,7 +15,6 @@
     name="name"
     placeholder="Untitled widget" 
     value="{% if object.name %}{{ object.name }}{% endif %}"
-    onBlur="this.form.requestSubmit();"
    /> 
 
   <div class="ml-auto">
