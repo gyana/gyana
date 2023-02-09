@@ -34,9 +34,9 @@
       </a>
 
       {% comment %} TODO: {% if table_id %}
-        <turbo-frame id='exports:create_integration_table' class='ml-auto'>
+        <div hx-get="#" class='ml-auto'>
           {% include 'exports/create.html' with parent_id=table_id target_url='exports:create_integration_table' %}
-        </turbo-frame>
+        </div>
       {% endif %} {% endcomment %}
     </div>
 
