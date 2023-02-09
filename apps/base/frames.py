@@ -41,9 +41,7 @@ class TurboFrameDetailView(TurboFrameTemplateResponseMixin, DetailView):
 
 
 class TurboFrameUpdateView(TurboFrameTemplateResponseMixin, TurboUpdateView):
-    @property
-    def is_preview_request(self):
-        return self.request.POST.get("submit") == "Save & Preview"
+    pass
 
 
 class TurboFrameDeleteView(TurboFrameTemplateResponseMixin, DeleteView):

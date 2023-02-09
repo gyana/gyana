@@ -16,6 +16,7 @@ from apps.base.analytics import (
 from apps.base.core.table_data import RequestConfig, get_table
 from apps.base.frames import TurboFrameDetailView, TurboFrameUpdateView
 from apps.base.templates import template_exists
+from apps.base.views import LiveUpdateView
 from apps.nodes.exceptions import handle_node_exception
 
 from .bigquery import NodeResultNone, get_query_from_node
@@ -36,10 +37,9 @@ class NodeName(UpdateView):
         )
 
 
-class NodeUpdate(TurboFrameUpdateView):
+class NodeUpdate(LiveUpdateView):
     template_name = "nodes/update.html"
     model = Node
-    turbo_frame_dom_id = "workflow-modal"
 
     @property
     def preview_node_id(self):
