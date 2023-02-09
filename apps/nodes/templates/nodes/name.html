@@ -1,10 +1,9 @@
-<div class="flex flex-row items-center">
+<div hx-target="this" hx-swap="outerHTML" class="flex flex-row items-center">
   <i class='fas {{object.icon}} fa-lg text-blue mr-2'></i>
 
   <form 
-    id="node-name-update-form"
-    method="POST" 
-    action="{% url 'nodes:name' object.id %}"
+    hx-post="{% url 'nodes:name' object.id %}"
+    hx-trigger="submit,focusoff"
   >
   {% csrf_token %}
     <input 

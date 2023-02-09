@@ -3,7 +3,7 @@ import logging
 
 from django.urls import reverse
 from django.utils import timezone
-from django.views.generic import DetailView
+from django.views.generic import DetailView, UpdateView
 from django_tables2.views import SingleTableMixin
 from fuzzywuzzy import process
 
@@ -24,11 +24,10 @@ from .models import Node
 from .tables import ReferencesTable
 
 
-class NodeName(TurboFrameUpdateView):
+class NodeName(UpdateView):
     model = Node
     fields = ("name",)
     template_name = "nodes/name.html"
-    turbo_frame_dom_id = "node-editable-title"
 
     def get_success_url(self) -> str:
         return reverse(
