@@ -21,11 +21,10 @@
   <div class="overflow-auto">
     <form
       class="pad"
-      method="post"
       enctype='multipart/form-data'
       data-action="change->tf-modal#change"
       data-tf-modal-target='form'
-      action="{% url 'users:profile' %}"
+      hx-post="{% url 'users:profile' %}"
     >
       {% csrf_token %}
 

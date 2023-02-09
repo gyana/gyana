@@ -1,10 +1,10 @@
 from allauth.account.utils import send_email_confirmation
 from django.http import HttpResponse
 from django.urls import reverse
+from django.views.generic import UpdateView
 from turbo_response import TurboStream
 from turbo_response.response import TurboStreamResponse
 
-from apps.base.frames import TurboFrameUpdateView
 from apps.base.mixins import PageTitleMixin
 from apps.users.helpers import (
     require_email_confirmation,
@@ -15,12 +15,11 @@ from .forms import CustomUserChangeForm
 from .models import CustomUser
 
 
-class UserProfileModal(PageTitleMixin, TurboFrameUpdateView):
+class UserProfileModal(PageTitleMixin, UpdateView):
     template_name = "account/profile.html"
     model = CustomUser
     form_class = CustomUserChangeForm
     page_title = "Your Account"
-    turbo_frame_dom_id = "users:profile"
 
     def get_turbo_stream_response(self, context):
         context = self.get_context_data()
