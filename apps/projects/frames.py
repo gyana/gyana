@@ -1,5 +1,6 @@
 from django.http import Http404
 from django.urls import reverse
+from django.views.generic import UpdateView
 from django_tables2.views import SingleTableMixin
 
 from apps.base.frames import TurboFrameUpdateView
@@ -26,13 +27,12 @@ class ProjectRuns(SingleTableMixin, TurboFrameUpdateView):
         return reverse("projects:runs", args=(self.object.id,))
 
 
-class ProjectDuplicate(TurboFrameUpdateView):
+class ProjectDuplicate(UpdateView):
     model = Project
     fields = []
     extra_context = {"object_name": "project"}
     pk_url_kwarg = "project_id"
     template_name = "projects/duplicate.html"
-    turbo_frame_dom_id = "projects:duplicate"
 
     def form_valid(self, form):
         if not self.object.team.can_create_project:

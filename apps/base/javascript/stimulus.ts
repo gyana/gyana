@@ -14,7 +14,6 @@ const CONTEXTS = [
   require.context('../../teams/javascript/controllers', true, /\.js$/),
   require.context('../../web/javascript/controllers', true, /\.js$/),
   require.context('../../widgets/javascript/controllers', true, /\.js$/),
-  require.context('../../workflows/javascript/controllers', true, /\.js$/),
 ]
 
 for (const context of CONTEXTS) application.load(definitionsFromContext(context))

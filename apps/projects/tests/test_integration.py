@@ -242,7 +242,7 @@ def test_duplicate_simple_project(
     project_dict = get_instance_dict(project)
 
     r = client.post(f"/projects/{project.id}/duplicate")
-    assert r.status_code == 303
+    assert r.status_code == 302
     duplicate = Project.objects.exclude(id=project.id).first()
 
     assert duplicate.name == f"Copy of {project.name}"
@@ -296,5 +296,4 @@ def test_duplicate_project_disabled(client, project, project_factory):
     assertSelectorHasAttribute(r, "button", "disabled")
 
     r = client.post(f"/projects/{project.id}/duplicate")
-    assertOK(r)
-    assertSelectorText(r, "p", "Something went wrong")
+    assert r.status_code == 404

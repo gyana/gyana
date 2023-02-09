@@ -1,4 +1,8 @@
-<form id="integrations-name" hx-post="{% url 'integrations:name' object.id %}" class="form">
+<form id="integrations-name"
+  class="form"
+  hx-post="{% url 'integrations:name' object.id %}"
+  hx-swap="outerHTML"
+>
   {% csrf_token %}
 
   <input

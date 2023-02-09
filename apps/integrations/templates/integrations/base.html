@@ -143,9 +143,9 @@
 
       <p class="m-0">
         {% if object.kind == 'sheet' %}
-          • <turbo-frame id="sheets:status" src="{% url 'sheets:status' object.sheet.id %}">
+          • <span hx-get="{% url 'sheets:status' object.sheet.id %}" hx-trigger="load">
             {% include "sheets/status.html" with object=object.sheet %}
-          </turbo-frame>
+          </span>
         {% endif %}
       </p>
     </div>

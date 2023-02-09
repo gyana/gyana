@@ -6,16 +6,8 @@
 {% block app %}
 <div class="workflow-detail__header">
   {% include "workflows/name.html" %}
-  
-  <div
-    data-controller="workflow-last-run"
-    data-workflow-last-run-src-value="{% url "workflows:last_run" object.id %}"
-    class="mr-auto"
-  >
-    <turbo-frame id="workflow-last-run">
-      {% include "workflows/last_run.html" %}
-    </turbo-frame>
-  </div>
+
+  {% include "workflows/last_run.html" %}
 
   <div
     data-controller="popover"

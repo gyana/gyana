@@ -1,9 +1,9 @@
 from django.db.models import F
 from django.urls import reverse
-from django.views.generic import TemplateView, UpdateView
+from django.views.generic import DetailView, TemplateView, UpdateView
 from django_tables2 import MultiTableMixin
 
-from apps.base.frames import TurboFrameDetailView, TurboFrameUpdateView
+from apps.base.frames import TurboFrameUpdateView
 from apps.nodes.models import Node
 from apps.projects.mixins import ProjectMixin
 from apps.runs.tables import JobRunTable
@@ -49,10 +49,9 @@ class WorkflowOverview(ProjectMixin, TemplateView):
         return context_data
 
 
-class WorkflowLastRun(TurboFrameDetailView):
+class WorkflowLastRun(DetailView):
     template_name = "workflows/last_run.html"
     model = Workflow
-    turbo_frame_dom_id = "workflow-last-run"
 
 
 class WorkflowSettings(ProjectMixin, MultiTableMixin, TurboFrameUpdateView):

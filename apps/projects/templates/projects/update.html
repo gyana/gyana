@@ -38,7 +38,7 @@
         <h2 class="mr-2">OAuth2</h2>
       </div>
 
-      <turbo-frame id="oauth2:list" src="{% url 'project_oauth2:list' object.id %}" target="_top"></turbo-frame>
+      <div hx-get="{% url 'project_oauth2:list' object.id %}" hx-trigger="load" hx-swap="outerHTML"></div>
     </div>
   </div>
 

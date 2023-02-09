@@ -31,7 +31,7 @@ def test_cname_crudl(client, logged_in_user, heroku):
     heroku.reset_mock()
 
     # User on free plan can't create custom domain
-    r = client.get_turbo_frame(f"/teams/{team.id}/update", f"/teams/{team.id}/cnames/")
+    r = client.get_htmx_partial(f"/teams/{team.id}/update", f"/teams/{team.id}/cnames/")
     assertOK(r)
     assertSelectorText(
         r, "p", "You cannot create more custom domains on your current plan."
@@ -53,7 +53,7 @@ def test_cname_crudl(client, logged_in_user, heroku):
     )
     upgrade_to_pro(logged_in_user, team, pro_plan)
 
-    r = client.get_turbo_frame(f"/teams/{team.id}/update", f"/teams/{team.id}/cnames/")
+    r = client.get_htmx_partial(f"/teams/{team.id}/update", f"/teams/{team.id}/cnames/")
     assertOK(r)
     assertLink(r, f"/teams/{team.id}/cnames/new", "create one")
 
@@ -69,13 +69,13 @@ def test_cname_crudl(client, logged_in_user, heroku):
     # read and update not enabled
 
     # list
-    r = client.get_turbo_frame(f"/teams/{team.id}/update", f"/teams/{team.id}/cnames/")
+    r = client.get_htmx_partial(f"/teams/{team.id}/update", f"/teams/{team.id}/cnames/")
     assertOK(r)
     assertSelectorLength(r, "table tbody tr", 1)
     assertLink(r, f"/teams/{team.id}/cnames/{cname.id}/delete", title="Delete CNAME")
 
     # status indicator
-    r = client.get_turbo_frame(
+    r = client.get_htmx_partial(
         f"/teams/{team.id}/update",
         f"/teams/{team.id}/cnames/",
         f"/cnames/{cname.id}/status",
@@ -86,7 +86,7 @@ def test_cname_crudl(client, logged_in_user, heroku):
 
     heroku.get_domain().acm_status = "cert issued"
     heroku.reset_mock()
-    r = client.get_turbo_frame(
+    r = client.get_htmx_partial(
         f"/teams/{team.id}/update",
         f"/teams/{team.id}/cnames/",
         f"/cnames/{cname.id}/status",

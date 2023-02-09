@@ -19,7 +19,7 @@
         <h2 class="mr-2">Custom domains</h2>
         {% link_article 'overview' 'cnames' %}
       </div>
-      <turbo-frame id="cnames:list" src="{% url 'team_cnames:list' object.id %}"></turbo-frame>
+      <div hx-get="{% url 'team_cnames:list' object.id %}" hx-trigger="load" hx-swap="outerHTML"></div>
     </div>
   </div>
   <div class="pad border-t border-gray">

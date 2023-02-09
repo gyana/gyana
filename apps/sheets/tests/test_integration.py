@@ -202,7 +202,7 @@ def test_resync_after_source_update(
     # test: an outdated sheet information is displayed, and can be updated
 
     # sheet is out of date
-    r = client.get_turbo_frame(f"{DETAIL}", f"/sheets/{sheet.id}/status")
+    r = client.get_htmx_partial(f"{DETAIL}", f"/sheets/{sheet.id}/status")
     assertOK(r)
 
     r = client.get(f"{DETAIL}/configure")
@@ -212,7 +212,7 @@ def test_resync_after_source_update(
     r = client.post(f"{DETAIL}/sync")
 
     # sheet is up to date
-    r = client.get_turbo_frame(f"{DETAIL}", f"/sheets/{sheet.id}/status")
+    r = client.get_htmx_partial(f"{DETAIL}", f"/sheets/{sheet.id}/status")
     assertOK(r)
     assertNotContains(r, "sync the latest data")
 

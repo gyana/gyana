@@ -34,9 +34,9 @@
       </a>
 
       {% comment %} TODO: {% if table_id %}
-        <turbo-frame id='exports:create_integration_table' class='ml-auto'>
+        <div hx-get="#" class='ml-auto'>
           {% include 'exports/create.html' with parent_id=table_id target_url='exports:create_integration_table' %}
-        </turbo-frame>
+        </div>
       {% endif %} {% endcomment %}
     </div>
 
@@ -83,38 +83,38 @@
         </div>
       {% endif %}
       {% if request.GET.view == 'schema' %}
-        <turbo-frame
+        <div
           class="block w-full overflow-auto"
-          id="integrations:schema"
-          src="{% url 'integrations:schema' object.id %}?table_id={{ request.GET.table_id }}"
+          hx-get="{% url 'integrations:schema' object.id %}?table_id={{ request.GET.table_id }}"
+          hx-trigger="load"
         >
           <div class='placeholder-scr placeholder-scr--fillscreen'>
             <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
             <p class='placeholder-scr__title'>Loading schema...</p>
           </div>
-        </turbo-frame>
+        </div>
       {% elif request.GET.view == 'reference' %}
-        <turbo-frame
+        <div
           class="block w-full overflow-auto"
-          id="integrations:table_reference"
-          src="{% url 'integrations:table_reference' object.id %}?table_id={{ request.GET.table_id }}"
+          hx-get="{% url 'integrations:table_reference' object.id %}?table_id={{ request.GET.table_id }}"
+          hx-trigger="load"
         >
           <div class='placeholder-scr placeholder-scr--fillscreen'>
             <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
             <p class='placeholder-scr__title'>Loading detail...</p>
           </div>
-        </turbo-frame>
+        </div>
       {% else %}
-        <turbo-frame
+        <div
           class="block w-full overflow-auto"
-          id="integrations:grid"
-          src="{% url 'integrations:grid' object.id %}?table_id={{ request.GET.table_id }}"
+          hx-get="{% url 'integrations:grid' object.id %}?table_id={{ request.GET.table_id }}"
+          hx-trigger="load"
         >
           <div class='placeholder-scr placeholder-scr--fillscreen'>
             <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
             <p class='placeholder-scr__title'>Loading preview...</p>
           </div>
-        </turbo-frame>
+        </div>
       {% endif %}
     </div>
   </div>

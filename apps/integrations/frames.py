@@ -1,11 +1,10 @@
 from django.urls.base import reverse
-from django.views.generic import TemplateView, UpdateView
+from django.views.generic import DetailView, TemplateView, UpdateView
 from django_tables2.tables import Table
 from django_tables2.views import SingleTableMixin
 
 from apps.base.core.bigquery import get_humanize_from_bigquery_type
 from apps.base.core.table_data import RequestConfig, get_table
-from apps.base.frames import TurboFrameDetailView
 from apps.integrations.forms import IntegrationNameForm
 from apps.integrations.tables import StructureTable
 from apps.projects.mixins import ProjectMixin
@@ -43,7 +42,7 @@ class IntegrationOverview(ProjectMixin, TemplateView):
         return context_data
 
 
-class IntegrationGrid(TableInstanceMixin, SingleTableMixin, TurboFrameDetailView):
+class IntegrationGrid(TableInstanceMixin, SingleTableMixin, DetailView):
     template_name = "integrations/grid.html"
     model = Integration
     paginate_by = 15
@@ -60,11 +59,10 @@ class IntegrationGrid(TableInstanceMixin, SingleTableMixin, TurboFrameDetailView
         ).configure(table)
 
 
-class IntegrationPreview(TableInstanceMixin, SingleTableMixin, TurboFrameDetailView):
+class IntegrationPreview(TableInstanceMixin, SingleTableMixin, DetailView):
     template_name = "integrations/grid.html"
     model = Integration
     paginate_by = 5
-    turbo_frame_dom_id = "integrations:preview"
 
     def get_table(self, **kwargs):
         query = get_query_from_table(self.table_instance)
@@ -75,11 +73,10 @@ class IntegrationPreview(TableInstanceMixin, SingleTableMixin, TurboFrameDetailV
         ).configure(table)
 
 
-class IntegrationSchema(TableInstanceMixin, SingleTableMixin, TurboFrameDetailView):
+class IntegrationSchema(TableInstanceMixin, SingleTableMixin, DetailView):
     template_name = "integrations/schema.html"
     model = Integration
     paginate_by = 15
-    turbo_frame_dom_id = "integrations:schema"
     table_class = StructureTable
 
     def get_table_data(self, **kwargs):
