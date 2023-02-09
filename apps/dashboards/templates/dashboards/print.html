@@ -149,14 +149,15 @@
     >
       <div class="card card--none card--modal">
         {% block modal.body %}
-          <turbo-frame
+          <div
             class="overflow-hidden flex-1"
             data-tf-modal-target="turboFrame"
+            hx-trigger="hx-modal-load"
           >
             <div class="placeholder-scr placeholder-scr--fillscreen">
               <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-2x"></i>
             </div>
-          </turbo-frame>
+          </div>
         {% endblock modal.body %}
       </div>
     </div>

@@ -65,13 +65,8 @@ export default class extends Controller {
       </div>
     `
 
-    this.turboFrameTarget.removeAttribute('src')
     this.turboFrameTarget.setAttribute(
-      'id',
-      event.currentTarget.dataset.modalId
-    )
-    this.turboFrameTarget.setAttribute(
-      'src',
+      'hx-get',
       event.currentTarget.dataset.modalSrc
     )
 
@@ -96,6 +91,9 @@ export default class extends Controller {
     }
 
     this.modalTarget.removeAttribute('hidden')
+
+    htmx.process(this.turboFrameTarget);
+    this.turboFrameTarget.dispatchEvent(new CustomEvent('hx-modal-load'))
   }
 
   async submit(e) {
