@@ -1,23 +1,20 @@
-<turbo-frame id="dashboard-page-name">
-  <form
-    method="POST"
-    action="{% url "project_dashboards:page-name" project.id dashboard.id page.id %}"
-    class="form--no-layout w-full"
-  >
-    {% csrf_token %}
+<form
+  hx-post="{% url "project_dashboards:page-name" project.id dashboard.id page.id %}"
+  class="form--no-layout w-full"
+>
+  {% csrf_token %}
 
-    <input
-      class="input__inline mr-auto"
-      id="name"
-      type="text"
-      name="name"
-      placeholder="Untitled Page"
-      {% if page.name %}
-      value="{{ page.name }}"
-      size="{{ page.name|length }}"
-      {% endif %}
-      onblur="this.form.requestSubmit();"
-      oninput="this.size = this.value.length + 1"
-    />
-  </form>
-</turbo-frame>
+  <input
+    class="input__inline mr-auto"
+    id="name"
+    type="text"
+    name="name"
+    placeholder="Untitled Page"
+    {% if page.name %}
+    value="{{ page.name }}"
+    size="{{ page.name|length }}"
+    {% endif %}
+    onblur="this.form.requestSubmit();"
+    oninput="this.size = this.value.length + 1"
+  />
+</form>

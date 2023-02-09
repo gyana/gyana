@@ -7,12 +7,13 @@ from turbo_response.response import TurboStreamResponse
 
 from apps.base.frames import TurboFrameDetailView, TurboFrameUpdateView
 from apps.dashboards.forms import DashboardShareForm
+from apps.dashboards.mixins import PageMixin
 from apps.dashboards.tables import DashboardHistoryTable, DashboardUpdateTable
 from apps.projects.mixins import ProjectMixin
 from apps.widgets.models import Widget
 
 from .forms import DashboardForm, DashboardNameForm, DashboardVersionSaveForm
-from .models import Dashboard, DashboardVersion
+from .models import Dashboard, DashboardVersion, Page
 
 
 class DashboardOverview(ProjectMixin, TemplateView):
@@ -161,3 +162,20 @@ class DashboardName(UpdateView):
 
     def get_success_url(self) -> str:
         return reverse("dashboards:name", args=(self.object.id,))
+
+
+class DashboardPageName(PageMixin, UpdateView):
+    model = Page
+    fields = ["name"]
+    template_name = "dashboards/forms/name_page.html"
+
+    @property
+    def page(self):
+        # Doesnt take the page parameter
+        return self.object
+
+    def get_success_url(self) -> str:
+        return reverse(
+            "project_dashboards:page-name",
+            args=(self.project.id, self.dashboard.id, self.page.id),
+        )
