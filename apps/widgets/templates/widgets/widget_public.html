@@ -24,16 +24,16 @@
 
       {% include 'widgets/_widget_title.html' %}
     
-      <turbo-frame 
-        id="widgets-output-{{ object.id }}"
-        src="{% url 'dashboard_widgets:output' project.id dashboard.id object.id %}?mode={{ request.GET.mode|default:"edit" }}"
+      <div
+        hx-get="{% url 'dashboard_widgets:output' project.id dashboard.id object.id %}?mode={{ request.GET.mode|default:"edit" }}"
+        hx-trigger="load"
         style="display: flex;flex: 1 1 0%;min-height: 0;overflow: auto;height: 100%;"
       >
         <div class='placeholder-scr placeholder-scr--fillscreen'>
           <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
           <p class='placeholder-scr__title'>Loading widget...</p>
         </div>
-      </turbo-frame>
+      </div>
     </div>
   </div>
 </div>

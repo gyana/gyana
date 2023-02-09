@@ -10,9 +10,8 @@
 </div>
 
 <div class="w-full mb-4">
-  <turbo-frame id="widgets-output-{{ widget.id }}"
-               src="{% url 'dashboard_widgets:output' project.id dashboard.id object.id %}">
+  <div hx-get="{% url 'dashboard_widgets:output' project.id dashboard.id object.id %}" hx-trigger="load">
     Loading...
-  </turbo-frame>
+  </div>
 </div>
 {% endblock %}

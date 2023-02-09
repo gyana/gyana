@@ -3,7 +3,7 @@ from decimal import Decimal
 
 import analytics
 from django.urls import reverse
-from django.views.generic import UpdateView
+from django.views.generic import DetailView, UpdateView
 from django_tables2.tables import Table as DjangoTable
 from django_tables2.views import SingleTableMixin
 from honeybadger import honeybadger
@@ -258,14 +258,10 @@ class WidgetUpdate(DashboardMixin, TurboFrameUpdateView):
         return r
 
 
-class WidgetOutput(DashboardMixin, SingleTableMixin, TurboFrameDetailView):
+class WidgetOutput(DashboardMixin, SingleTableMixin, DetailView):
     template_name = "widgets/output.html"
     model = Widget
     paginate_by = 15
-
-    def get_turbo_frame_dom_id(self):
-        source = f"-{source}" if (source := self.request.GET.get("source")) else ""
-        return f"widgets-output-{self.object.id}{source}"
 
     def get_context_data(self, **kwargs):
         context = None
