@@ -1,4 +1,4 @@
-<p>
+<p hx-get="{% url "workflows:last_run" object.id %}" hx-trigger="gyana:run-workflow from:window" hx-swap="outerHTML">
   {% if object.last_success_run %}
   Last successful run at <strong>{% include 'columns/natural_datetime.html' with datetime=object.last_success_run.started_at %}</strong> •
     <strong>{{ object.output_nodes.count }} data source{{ object.output_nodes.count|pluralize }}</strong> created
