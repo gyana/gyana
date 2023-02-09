@@ -53,8 +53,7 @@
 
     <form
       id="dashboard-share-form"
-      method="post"
-      action="{% url "dashboards:share" object.id %}"
+      hx-post="{% url "dashboards:share" object.id %}"
       data-controller="live-update"
     >
       {% csrf_token %}

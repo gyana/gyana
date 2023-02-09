@@ -61,7 +61,7 @@ export default class extends Controller {
 
     this.disable(event)
 
-    const result = await fetch(form.action, {
+    const result = await fetch(form.getAttribute('hx-post') || form.action, {
       method: 'POST',
       body: data,
     })
