@@ -1,13 +1,12 @@
-from apps.base.frames import TurboFrameDetailView
+from django.views.generic import DetailView
 
 from .models import Sheet
 
 
-class SheetStatus(TurboFrameDetailView):
+class SheetStatus(DetailView):
     template_name = "sheets/status.html"
     model = Sheet
     fields = []
-    turbo_frame_dom_id = "sheets:status"
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
