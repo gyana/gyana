@@ -2,12 +2,11 @@ from django.urls import path
 
 from apps.teams.access import login_and_admin_required
 
-from . import views
+from . import frames, views
 
 app_name = "invites"
 team_urlpatterns = (
     [
-        path("", login_and_admin_required(views.InviteList.as_view()), name="list"),
         path(
             "new", login_and_admin_required(views.InviteCreate.as_view()), name="create"
         ),
@@ -26,9 +25,11 @@ team_urlpatterns = (
             login_and_admin_required(views.InviteDelete.as_view()),
             name="delete",
         ),
+        # frames
+        path("", login_and_admin_required(frames.InviteList.as_view()), name="list"),
         path(
             "<hashid:pk>/resend",
-            login_and_admin_required(views.InviteResend.as_view()),
+            login_and_admin_required(frames.InviteResend.as_view()),
             name="resend",
         ),
     ],
