@@ -1,8 +1,7 @@
 <form id="integrations-name"
   class="form"
   hx-post="{% url 'integrations:name' object.id %}"
-  hx-swap="outerHTML"
->
+  hx-trigger="submit,focusout" hx-swap="outerHTML">
   {% csrf_token %}
 
   <input
@@ -11,6 +10,5 @@
     type="text"
     name="name"
     value="{{ object.name }}"
-    onBlur="this.form.requestSubmit();"
    />
 </form>
