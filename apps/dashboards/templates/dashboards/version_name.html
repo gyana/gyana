@@ -1,6 +1,6 @@
 <form 
   hx-post="{% url 'dashboards:version-rename' object.id %}"
-  hx-target="this" hx-swap="outerHTML"
+  hx-trigger="submit,focusout" hx-target="this" hx-swap="outerHTML"
 >
   {% csrf_token %}
 
@@ -12,7 +12,6 @@
     {% if object.name != None %}
       value="{{ object.name }}"
     {% endif %}
-    onblur="this.form.requestSubmit();"
     placeholder="{{ placeholder }}"
   />
 </form>
