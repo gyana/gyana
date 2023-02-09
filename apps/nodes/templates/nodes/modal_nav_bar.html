@@ -4,26 +4,30 @@
 
 <nav class="tabbar">
   {% if object.kind == "formula" %}
-  <a class="tabbar__link {% if show_docs %}tabbar__link--active{% endif %}"
-    href="{% url 'nodes:formula' object.id %}?show_docs=true"
+  <a href="#"
+    class="tabbar__link {% if show_docs %}tabbar__link--active{% endif %}"
+    hx-get="{% url 'nodes:formula' object.id %}?show_docs=true"
   >
     Doc
   </a>
   {% endif %}
   {% for parent in parents %}
-    <a class="tabbar__link {% if preview_node.id == parent.id %} tabbar__link--active {% endif %}"
-      href="{% url 'nodes:grid' object.id %}?preview_node_id={{ parent.id }}">
+    <a href="#"
+      class="tabbar__link {% if preview_node.id == parent.id %} tabbar__link--active {% endif %}"
+      hx-get="{% url 'nodes:grid' object.id %}?preview_node_id={{ parent.id }}">
       Input {% if parents|length > 1 %} {{ forloop.counter }} {% endif %}
     </a>
   {% endfor %}
-  <a class="tabbar__link  {% if preview_node.id == object.id and not show_docs %} tabbar__link--active {% endif %}"
-    href="{% url 'nodes:grid' object.id %}?preview_node_id={{ object.id }}">
+  <a href="#"
+    class="tabbar__link  {% if preview_node.id == object.id and not show_docs %} tabbar__link--active {% endif %}"
+    hx-get="{% url 'nodes:grid' object.id %}?preview_node_id={{ object.id }}">
     Result
   </a>
   {% if node.kind == "output" %}
   
-  <a class="tabbar__link  {% if "references" in request.path %} tabbar__link--active {% endif %}"
-    href="{% url 'nodes:references' object.id %}">
+  <a href="#"
+    class="tabbar__link  {% if "references" in request.path %} tabbar__link--active {% endif %}"
+    hx-get="{% url 'nodes:references' object.id %}">
     References
   </a>
   

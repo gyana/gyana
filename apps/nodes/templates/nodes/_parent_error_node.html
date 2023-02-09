@@ -3,8 +3,9 @@
   <strong>{% if object.name %}{{object.name}}{% else %}{{object.display_name}}{% endif %}</strong>.
 
   <a
+    href="#"
     class='link'
-    href="{% url 'nodes:update' object.id %}"
+    hx-get="{% url 'nodes:update' object.id %}"
   >
     Reconfigure
   </a>

@@ -3,6 +3,7 @@ import logging
 
 from django.urls import reverse
 from django.utils import timezone
+from django.views.generic import DetailView
 from django_tables2.views import SingleTableMixin
 from fuzzywuzzy import process
 
@@ -89,11 +90,10 @@ class NodeUpdate(TurboFrameUpdateView):
         return base_url
 
 
-class NodeGrid(SingleTableMixin, TurboFrameDetailView):
+class NodeGrid(SingleTableMixin, DetailView):
     template_name = "nodes/grid.html"
     model = Node
     paginate_by = 15
-    turbo_frame_dom_id = "nodes:grid"
 
     def get_additional_context(self):
         additional_context = {
@@ -186,12 +186,9 @@ def filter_functions(function, q, category):
     return is_fuzzy and is_category
 
 
-class FormulaHelp(TurboFrameDetailView):
+class FormulaHelp(DetailView):
     model = Node
     template_name = "nodes/help/formula.html"
-    # This view replaces the node grid so we need to provide the same
-    # turbo frame dom id
-    turbo_frame_dom_id = "nodes:grid"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -210,8 +207,7 @@ class FormulaHelp(TurboFrameDetailView):
         return context
 
 
-class FunctionInfo(TurboFrameDetailView):
-    turbo_frame_dom_id = "nodes:function-info"
+class FunctionInfo(DetailView):
     template_name = "nodes/help/function_info.html"
     # Node provided for access check we could consider making these urls public but
     # right now they are unstyled
@@ -225,10 +221,9 @@ class FunctionInfo(TurboFrameDetailView):
         return context
 
 
-class OutputReference(TurboFrameDetailView):
+class OutputReference(DetailView):
     template_name = "nodes/references.html"
     model = Node
-    turbo_frame_dom_id = "nodes:grid"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
