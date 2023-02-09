@@ -3,7 +3,6 @@ from django.urls import reverse
 from django.views.generic import DetailView, TemplateView, UpdateView
 from django_tables2 import MultiTableMixin
 
-from apps.base.frames import TurboFrameUpdateView
 from apps.nodes.models import Node
 from apps.projects.mixins import ProjectMixin
 from apps.runs.tables import JobRunTable
@@ -54,13 +53,12 @@ class WorkflowLastRun(DetailView):
     model = Workflow
 
 
-class WorkflowSettings(ProjectMixin, MultiTableMixin, TurboFrameUpdateView):
+class WorkflowSettings(ProjectMixin, MultiTableMixin, UpdateView):
     template_name = "workflows/settings.html"
     model = Workflow
     form_class = WorkflowSettingsForm
     tables = [JobRunTable, ReferenceTable]
     paginate_by = 10
-    turbo_frame_dom_id = "workflows:settings"
 
     def get_tables_data(self):
         return [self.object.runs.all(), self.object.used_in]
