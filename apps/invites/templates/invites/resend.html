@@ -1,13 +1,9 @@
 {% load humanize %}
 
-<div id="invites-resend" class="flex gap-3">
+<div class="flex gap-3" hx-target="this" hx-swap="outerHTML">
   {% if record.expired %}Expired{% endif %}
-  <form
-    hx-post="{% url 'team_invites:resend' record.team.id record.id %}"
-    hx-target="#invites-resend" hx-swap="outerHTML"
-  >
+  <form hx-post="{% url 'team_invites:resend' record.team.id record.id %}">
     {% csrf_token %}
-
     <button
       class="button button--sm button--circle button--tertiary"
       type="submit"

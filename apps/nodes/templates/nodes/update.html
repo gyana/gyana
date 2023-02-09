@@ -16,9 +16,7 @@
 
       <div class="ml-auto flex flex-row gap-3 items-center">
       
-        <turbo-frame id='exports:create_node'>
-          {% include 'exports/create.html' with parent_id=node.id target_url='exports:create_node'%}
-        </turbo-frame>
+        {% include 'exports/create.html' with parent_id=node.id target_url='exports:create_node'%}
 
         {% if node.kind != "input" and node.kind != "output" %}
           {% link_article 'workflows' node.kind %}
@@ -116,8 +114,8 @@
 
   <div class="workflow-modal__section">
     <div class="workflow-modal__table">
-      <div id="nodes-grid" hx-get="{% url 'nodes:grid' preview_node_id %}"
-        hx-trigger="load" hx-target="#nodes-grid">
+      <div id="nodes:grid" hx-target="this" hx-get="{% url 'nodes:grid' preview_node_id %}"
+        hx-trigger="load">
         {% include 'nodes/modal_nav_bar.html' %}
         <div class='placeholder-scr placeholder-scr--fillscreen'>
           <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>

@@ -1,7 +1,7 @@
 from django.urls.base import reverse
 from django.utils.functional import cached_property
+from django.views.generic import CreateView
 
-from apps.base.frames import TurboFrameCreateView
 from apps.exports.tasks import export_to_gcs
 from apps.nodes.models import Node
 from apps.tables.models import Table
@@ -9,7 +9,7 @@ from apps.tables.models import Table
 from .models import Export
 
 
-class ExportCreate(TurboFrameCreateView):
+class ExportCreate(CreateView):
     template_name = "exports/create.html"
     model = Export
     fields = []
@@ -38,7 +38,6 @@ class ExportCreate(TurboFrameCreateView):
 
 class ExportCreateNode(ExportCreate):
     success_url = "exports:create_node"
-    turbo_frame_dom_id = "exports:create_node"
 
     @cached_property
     def parent(self):
@@ -51,7 +50,6 @@ class ExportCreateNode(ExportCreate):
 
 class ExportCreateIntegrationTable(ExportCreate):
     success_url = "exports:create_integration_table"
-    turbo_frame_dom_id = "exports:create_integration_table"
 
     @cached_property
     def parent(self):
