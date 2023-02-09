@@ -93,7 +93,7 @@ def test_integration_schema_and_preview(
     DETAIL = f"/projects/{project.id}/integrations/{integration.id}"
 
     # structure
-    r = client.get_turbo_frame(
+    r = client.get_htmx_partial(
         f"{DETAIL}?view=schema", f"/integrations/{integration.id}/schema?table_id="
     )
     assertOK(r)
@@ -105,7 +105,7 @@ def test_integration_schema_and_preview(
     assert bigquery.get_table.call_args.args == (table.bq_id,)
 
     # preview (default)
-    r = client.get_turbo_frame(
+    r = client.get_htmx_partial(
         f"{DETAIL}",
         f"/integrations/{integration.id}/grid?table_id=",
     )

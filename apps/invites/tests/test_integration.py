@@ -19,7 +19,7 @@ def test_invite_new_user_to_team(client, logged_in_user):
     assertOK(r)
     assertLink(r, f"/teams/{team.id}/members/", "Members")
 
-    r = client.get_turbo_frame(
+    r = client.get_htmx_partial(
         f"/teams/{team.id}/members/", f"/teams/{team.id}/invites/"
     )
     assertOK(r)

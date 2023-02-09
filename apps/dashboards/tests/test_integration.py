@@ -38,7 +38,7 @@ def test_dashboard_crudl(client, project, dashboard_factory):
     # read
     r = client.get(DETAIL)
     assertOK(r)
-    assertFormRenders(r, ["name"],  "#dashboards-name")
+    assertFormRenders(r, ["name"], "#dashboards-name")
     assertFormRenders(r, ["x", "y", "kind", "page"], "#dashboard-widget-create-form")
     assertLink(r, f"{DETAIL}/delete", "Delete")
 
@@ -268,7 +268,7 @@ def test_dashboard_page_name(
     assertOK(r)
 
     r = client.post(url, data={"name": "Test Page Name"})
-    assert r.status_code == 303
+    assert r.status_code == 302
     assert (
         r.url
         == f"/projects/{project.id}/dashboards/{dashboard.id}/pages/{page_1.id}/name"
