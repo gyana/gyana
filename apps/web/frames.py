@@ -2,7 +2,6 @@ import random
 
 from django.views.generic import TemplateView
 
-from apps.base.frames import TurboFrameTemplateView
 from apps.nodes.config import NODE_CONFIG
 from apps.web.content import get_content
 from apps.widgets.models import WIDGET_KIND_TO_WEB
@@ -24,14 +23,12 @@ def get_services_grouped(group_n):
     return services_grouped
 
 
-class HelpModal(TurboFrameTemplateView):
+class HelpModal(TemplateView):
     template_name = "web/help.html"
-    turbo_frame_dom_id = "web:help"
 
 
-class ChangelogModal(TurboFrameTemplateView):
+class ChangelogModal(TemplateView):
     template_name = "web/changelog.html"
-    turbo_frame_dom_id = "web:changelog"
 
 
 class IntegrationsDemo(TemplateView):
@@ -64,9 +61,8 @@ class DashboardsDemo(TemplateView):
         return context
 
 
-class SupportDemo(TurboFrameTemplateView):
+class SupportDemo(TemplateView):
     template_name = "web/site/home/support.html"
-    turbo_frame_dom_id = "web:support-demo"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
