@@ -93,11 +93,13 @@
         data-loading-false
       >
         <i class="fal fa-times fa-sm"></i>
+        Hello!
     </button>
-    <turbo-frame id="nodes:function-info" 
+    <div id="nodes:function-info" 
       data-formula-drawer-target='turboFrame'
       data-modal-src="{% url "nodes:function-info" node.id %}"
+      hx-trigger="hx-formula-draw-load" hx-target="this"
     >
-    </turbo-frame>
+    </div>
   </div>
 </div>
