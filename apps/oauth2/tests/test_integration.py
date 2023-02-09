@@ -21,7 +21,7 @@ def test_oauth2_crudl(client, logged_in_user, project_factory, mocker):
     project = project_factory(team=logged_in_user.teams.first())
 
     # create
-    r = client.get_turbo_frame(
+    r = client.get_htmx_partial(
         f"/projects/{project.id}/update", f"/projects/{project.id}/oauth2/"
     )
     assertOK(r)
@@ -95,7 +95,7 @@ def test_oauth2_crudl(client, logged_in_user, project_factory, mocker):
     }
 
     # list
-    r = client.get_turbo_frame(
+    r = client.get_htmx_partial(
         f"/projects/{project.id}/update", f"/projects/{project.id}/oauth2/"
     )
     assertOK(r)
