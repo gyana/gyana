@@ -92,7 +92,7 @@ export default class extends Controller {
 
     this.modalTarget.removeAttribute('hidden')
 
-    htmx.process(this.turboFrameTarget);
+    htmx.process(this.turboFrameTarget)
     this.turboFrameTarget.dispatchEvent(new CustomEvent('hx-modal-load'))
   }
 

@@ -12,14 +12,16 @@
     </div>
     <div class="tabbar">
       <a
+        href="#"
         class="tabbar__link {% if not request.GET.tab or request.GET.tab == 'version' %}tabbar__link--active{% endif %}"
-        href="{{ request.path }}?tab=version"
+        hx-get="{{ request.path }}?tab=version"
       >
         Named Versions
       </a>
       <a
+        href="#"
         class="tabbar__link {% if request.GET.tab == 'history' %}tabbar__link--active{% endif %}"
-        href="{{ request.path }}?tab=history"
+        hx-get="{{ request.path }}?tab=history"
       >
         Change history
       </a>
@@ -34,8 +36,7 @@
         This can lead to the dashboard looking different compared to when it was saved or widgets
         breaking if datasources have been changed or removed.
       </p>
-      <form method="post"
-        action="{% url 'project_dashboards:history' object.project.id object.id %}"
+      <form hx-post="{% url 'project_dashboards:history' object.project.id object.id %}"
         class='mb-2 flex flex-row'
       >
 
