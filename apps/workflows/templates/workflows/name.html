@@ -1,6 +1,6 @@
-<form id="workflows-name"
+<form class="form"
     hx-post="{% url "workflows:name" object.id %}"
-    class="form">
+    hx-swap="outerHTML">
   {% csrf_token %}
 
   <input

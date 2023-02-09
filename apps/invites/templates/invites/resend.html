@@ -4,7 +4,7 @@
   {% if record.expired %}Expired{% endif %}
   <form
     hx-post="{% url 'team_invites:resend' record.team.id record.id %}"
-    hx-target="#invites-resend"
+    hx-target="#invites-resend" hx-swap="outerHTML"
   >
     {% csrf_token %}
 

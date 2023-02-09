@@ -1,6 +1,6 @@
-<form id="dashboards-name"
+<form class="form--no-layout w-full"
   hx-post="{% url "dashboards:name" object.id %}"
-  class="form--no-layout w-full"
+  hx-swap="outerHTML"
 >
   {% csrf_token %}
 

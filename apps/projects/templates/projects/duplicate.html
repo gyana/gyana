@@ -4,7 +4,8 @@
     alert("Your project is being duplicated you should receive an e-mail once it's ready")
     </script>
   {% endif %}
-  <form hx-post="{% url 'projects:duplicate' project.id %}" hx-swap="projects-duplicate">
+  <form hx-post="{% url 'projects:duplicate' project.id %}"
+    hx-target="#projects-duplicate" hx-swap="outerHTML">
       {% csrf_token %}
       <button {% if not team.can_create_project %}disabled{% endif %}
               data-controller="tooltip"
