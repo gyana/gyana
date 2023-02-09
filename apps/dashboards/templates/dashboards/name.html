@@ -1,7 +1,7 @@
 <form id="dashboards-name"
   class="form--no-layout w-full"
   hx-post="{% url "dashboards:name" object.id %}"
-  hx-swap="outerHTML"
+  hx-trigger="submit,focusout" hx-swap="outerHTML"
 >
   {% csrf_token %}
 
@@ -12,7 +12,6 @@
     name="name"
     value="{{ object.name }}"
     size="{{ object.name|length }}"
-    onblur="this.form.requestSubmit();"
     oninput="this.size = this.value.length+1"
   />
 </form>
