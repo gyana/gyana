@@ -65,9 +65,7 @@ class DashboardHistoryTable(tables.Table):
         context = getattr(table, "context", Context())
         context["object"] = record
         context["placeholder"] = f"Version {next(self.row_counter)+1}"
-        return get_template("dashboards/columns/name_cell.html").render(
-            context.flatten()
-        )
+        return get_template("dashboards/version_name.html").render(context.flatten())
 
 
 class DashboardUpdateTable(tables.Table):

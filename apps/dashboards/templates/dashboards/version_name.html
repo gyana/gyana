@@ -1,7 +1,6 @@
 <form 
-  class="form--no-layout w-full"
-  method="post"
-  action="{% url 'dashboards:version-rename' object.id %}"
+  hx-post="{% url 'dashboards:version-rename' object.id %}"
+  hx-target="this" hx-swap="outerHTML"
 >
   {% csrf_token %}
 

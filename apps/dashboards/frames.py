@@ -5,7 +5,6 @@ from django_tables2 import SingleTableMixin
 from turbo_response import TurboStream
 from turbo_response.response import TurboStreamResponse
 
-from apps.base.frames import TurboFrameDetailView, TurboFrameUpdateView
 from apps.dashboards.forms import DashboardShareForm
 from apps.dashboards.mixins import PageMixin
 from apps.dashboards.tables import DashboardHistoryTable, DashboardUpdateTable
@@ -52,11 +51,10 @@ class DashboardOverview(ProjectMixin, TemplateView):
         return context_data
 
 
-class DashboardShare(TurboFrameUpdateView):
+class DashboardShare(UpdateView):
     template_name = "dashboards/share.html"
     form_class = DashboardShareForm
     model = Dashboard
-    turbo_frame_dom_id = "dashboard-share"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -71,36 +69,19 @@ class DashboardShare(TurboFrameUpdateView):
         )
 
 
-class DashboardPreview(TurboFrameDetailView):
-    template_name = "dashboards/preview.html"
-    model = Dashboard
-    turbo_frame_dom_id = "dashboard:preview"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["project"] = self.object.project
-        context["page"] = self.object.pages.get(
-            position=self.request.GET.get("dashboardPage", 1)
-        )
-        return context
-
-
-class DashboardSettings(ProjectMixin, TurboFrameUpdateView):
+class DashboardSettings(ProjectMixin, UpdateView):
     template_name = "dashboards/settings.html"
     model = Dashboard
     form_class = DashboardForm
-    turbo_frame_dom_id = "dashboard:settings"
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs["category"] = self.request.GET.get("category")
-
         return kwargs
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["categories"] = Dashboard.Category.choices
-
         return context
 
     def form_invalid(self, form):
@@ -114,17 +95,17 @@ class DashboardSettings(ProjectMixin, TurboFrameUpdateView):
         )
 
     def get_success_url(self) -> str:
-        return reverse(
-            "project_dashboards:detail", args=(self.project.id, self.object.id)
+        url = reverse(
+            "project_dashboards:settings", args=(self.project.id, self.object.id)
         )
+        return f'{url}?category={self.request.GET.get("category")}'
 
 
-class DashboardHistory(ProjectMixin, SingleTableMixin, TurboFrameUpdateView):
+class DashboardHistory(ProjectMixin, SingleTableMixin, UpdateView):
     template_name = "dashboards/history.html"
     model = Dashboard
     table_class = DashboardHistoryTable
     paginate_by = 20
-    turbo_frame_dom_id = "dashboard:history"
     form_class = DashboardVersionSaveForm
 
     def get_table_data(self):
@@ -143,13 +124,10 @@ class DashboardHistory(ProjectMixin, SingleTableMixin, TurboFrameUpdateView):
         )
 
 
-class DashboardVersionRename(TurboFrameUpdateView):
+class DashboardVersionRename(UpdateView):
     model = DashboardVersion
     fields = ("name",)
     template_name = "dashboards/version_name.html"
-
-    def get_turbo_frame_dom_id(self):
-        return f"version-name-{self.object.id}"
 
     def get_success_url(self) -> str:
         return reverse("dashboards:version-rename", args=(self.object.id,))

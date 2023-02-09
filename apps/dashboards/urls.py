@@ -54,11 +54,6 @@ urlpatterns = [
         name="share",
     ),
     path(
-        "<hashid:pk>/preview",
-        dashboard_is_in_template(frames.DashboardPreview.as_view()),
-        name="preview",
-    ),
-    path(
         "version/<hashid:pk>/restore",
         login_and_dashboardversion_required(views.DashboardRestore.as_view()),
         name="restore",
