@@ -1,15 +1,14 @@
-<form 
-  method="POST"
+<form
   id="control-update-form"
   data-controller="live-update"
   data-tf-modal-target="form"
   data-tf-modal-submit-on-close
   data-action="change->tf-modal#change"
-  action="{% if is_public %}
+  hx-post="{% if is_public %}
     {% url 'dashboard_controls:update-public' project.id dashboard.id object.id %}
   {% else %}
     {% url 'dashboard_controls:update-widget' project.id dashboard.id object.id %}
-  {% endif %}" 
+  {% endif %}"
   class="form--no-layout pad"
 >
   {% csrf_token %}

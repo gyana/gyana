@@ -3,24 +3,27 @@ from django.utils.functional import cached_property
 from turbo_response import TurboStream
 from turbo_response.response import HttpResponseSeeOther, TurboStreamResponse
 
-from apps.base.frames import TurboFrameUpdateView
+from apps.base.views import LiveUpdateView
 
 from .forms import ControlForm
 from .mixins import UpdateWidgetsMixin
 from .models import Control
 
 
-class ControlUpdate(UpdateWidgetsMixin, TurboFrameUpdateView):
+class ControlUpdate(UpdateWidgetsMixin, LiveUpdateView):
     template_name = "controls/update.html"
     model = Control
     form_class = ControlForm
-    turbo_frame_dom_id = "controls:update-widget"
 
     def get_stream_response(self, form):
         streams = self.get_widget_stream_responses(form.instance, form.instance.page)
         current_context = self.get_context_data()
         is_public = current_context.get("is_public", False)
-        template = "controls/control_public.html" if is_public else "controls/control-widget.html"
+        template = (
+            "controls/control_public.html"
+            if is_public
+            else "controls/control-widget.html"
+        )
 
         for control_widget in form.instance.page.control_widgets.iterator():
             context = {
