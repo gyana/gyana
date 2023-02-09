@@ -1,7 +1,7 @@
 <form
   class="form--no-layout w-full"
   hx-post="{% url "project_dashboards:page-name" project.id dashboard.id page.id %}"
-  hx-swap="outerHTML"
+  hx-trigger="submit,focusout" hx-swap="outerHTML"
 >
   {% csrf_token %}
 
@@ -15,7 +15,6 @@
     value="{{ page.name }}"
     size="{{ page.name|length }}"
     {% endif %}
-    onblur="this.form.requestSubmit();"
     oninput="this.size = this.value.length + 1"
   />
 </form>
