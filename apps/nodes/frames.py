@@ -14,8 +14,6 @@ from apps.base.analytics import (
     track_node,
 )
 from apps.base.core.table_data import RequestConfig, get_table
-from apps.base.frames import TurboFrameDetailView, TurboFrameUpdateView
-from apps.base.templates import template_exists
 from apps.base.views import LiveUpdateView
 from apps.nodes.exceptions import handle_node_exception
 
@@ -138,11 +136,10 @@ class NodeGrid(SingleTableMixin, DetailView):
         ).configure(table)
 
 
-class NodeCreditConfirmation(TurboFrameUpdateView):
+class NodeCreditConfirmation(UpdateView):
     model = Node
     fields = ("always_use_credits",)
     template_name = "nodes/errors/credit_exception.html"
-    turbo_frame_dom_id = "nodes:grid"
 
     def get_success_url(self) -> str:
         return reverse(
