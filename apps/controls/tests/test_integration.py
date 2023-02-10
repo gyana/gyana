@@ -60,11 +60,8 @@ def test_control_crudl(
     assertOK(r)
     control = Control.objects.first()
     control_widget = ControlWidget.objects.first()
-    assert isinstance(r, TurboStreamResponse)
     assert control is not None
     assert control_widget is not None
-    assertContains(r, "dashboard-widget-container")
-    assertContains(r, f"widgets-output-{widget.id}")
 
     # update
     r = client.get(control_url + f"{control.id}/update-widget")

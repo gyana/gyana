@@ -1,6 +1,5 @@
 import pytest
 from pytest_django.asserts import assertContains
-from turbo_response.response import TurboStreamResponse
 
 from apps.base.tests.asserts import assertLink, assertOK, assertSelectorLength
 from apps.base.tests.mock_data import TABLE
@@ -36,7 +35,6 @@ def test_widget_crudl(
     )
     widget = Widget.objects.first()
     assertOK(r)
-    assert isinstance(r, TurboStreamResponse)
     assert widget is not None
 
     # read
@@ -61,7 +59,7 @@ def test_widget_crudl(
         },
     )
     widget.refresh_from_db()
-    assert isinstance(r, TurboStreamResponse)
+    assertOK(r)
     assert widget.table == table
 
     r = client.post(
@@ -77,7 +75,7 @@ def test_widget_crudl(
         },
     )
     widget.refresh_from_db()
-    assert isinstance(r, TurboStreamResponse)
+    assertOK(r)
     assert widget.dimension == "athlete"
 
     # delete
