@@ -1,16 +1,17 @@
 from django.db import transaction
+from django.shortcuts import render
 from django.urls.base import reverse
+from django.views.generic import CreateView
 from turbo_response import TurboStream
 from turbo_response.response import TurboStreamResponse
 from turbo_response.views import TurboStreamDeleteView
 
-from apps.base.views import TurboCreateView
 from apps.controls.models import Control, ControlWidget
 
 from .mixins import UpdateWidgetsMixin
 
 
-class ControlWidgetCreate(UpdateWidgetsMixin, TurboCreateView):
+class ControlWidgetCreate(UpdateWidgetsMixin, CreateView):
     template_name = "controls/create.html"
     model = ControlWidget
     fields = ["x", "y", "page"]
@@ -26,25 +27,16 @@ class ControlWidgetCreate(UpdateWidgetsMixin, TurboCreateView):
             form.instance.control.save()
             super().form_valid(form)
 
-        return TurboStreamResponse(
-            [
-                *self.get_widget_stream_responses(
-                    form.instance.control, form.instance.page
-                ),
-                TurboStream("dashboard-widget-placeholder").remove.render(),
-                TurboStream("dashboard-widget-container")
-                .append.template(
-                    "controls/control-widget.html",
-                    {
-                        "object": form.instance,
-                        "control": form.instance.control,
-                        "project": self.dashboard.project,
-                        "dashboard": self.dashboard,
-                        "page": form.instance.page,
-                    },
-                )
-                .render(request=self.request),
-            ]
+        return render(
+            self.request,
+            "controls/control-widget.html",
+            {
+                "object": form.instance,
+                "control": form.instance.control,
+                "project": self.dashboard.project,
+                "dashboard": self.dashboard,
+                "page": form.instance.page,
+            },
         )
 
     def get_success_url(self) -> str:
