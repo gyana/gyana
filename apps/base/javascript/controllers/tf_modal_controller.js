@@ -27,6 +27,7 @@ export default class extends Controller {
     this.changeElement = null
     this.boundHandleKeyup = this.handleKeyup.bind(this)
     this.boundHandleClick = this.handleClick.bind(this)
+    this.forceClose = this.forceClose.bind(this)
   }
 
   connect() {
@@ -34,11 +35,13 @@ export default class extends Controller {
     // Close the modal when clicking outside of the frame
     // TODO: Fix clicking and draging outside of modal closing.
     this.modalTarget.addEventListener('click', this.boundHandleClick)
+    window.addEventListener('closeModal', this.forceClose)
   }
 
   disconnect() {
     window.removeEventListener('keyup', this.boundHandleKeyup)
     this.modalTarget.addEventListener('click', this.boundHandleClick)
+    window.removeEventListener('closeModal', this.forceClose)
   }
 
   onParamTargetConnected(target) {

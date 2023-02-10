@@ -2,13 +2,13 @@ import logging
 from decimal import Decimal
 
 import analytics
+from django.shortcuts import render
 from django.urls import reverse
 from django.views.generic import DetailView, UpdateView
+from django_htmx.http import retarget, trigger_client_event
 from django_tables2.tables import Table as DjangoTable
 from django_tables2.views import SingleTableMixin
 from honeybadger import honeybadger
-from turbo_response import TurboStream
-from turbo_response.response import TurboStreamResponse
 
 from apps.base.analytics import (
     WIDGET_COMPLETED_EVENT,
@@ -93,15 +93,15 @@ class WidgetUpdate(DashboardMixin, LiveUpdateView):
     model = Widget
 
     def get_turbo_stream_response(self, context):
-        return TurboStreamResponse(
-            [
-                TurboStream(f"widgets-output-{self.object.id}")
-                .update.template("widgets/output.html", context)
-                .render(request=self.request),
-                TurboStream(f"widget-name-{self.object.id}")
-                .replace.template("widgets/_widget_title.html", {"object": self.object})
-                .render(),
-            ]
+        return render(
+            self.request,
+            "widgets/widget_component.html",
+            {
+                "object": self.object,
+                "project": self.dashboard.project,
+                "dashboard": self.dashboard,
+                "is_new": True,
+            },
         )
 
     @property
@@ -245,7 +245,12 @@ class WidgetUpdate(DashboardMixin, LiveUpdateView):
             },
         )
 
-        return self.get_turbo_stream_response(context)
+        return retarget(
+            trigger_client_event(
+                self.get_turbo_stream_response(context), "closeModal", {}
+            ),
+            f"#widget-{self.object.id}",
+        )
 
     def form_invalid(self, form):
         r = super().form_invalid(form)
