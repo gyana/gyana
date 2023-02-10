@@ -78,8 +78,8 @@ preview mode.
               </form>
       
               <form
-                method="POST"
-                action="{% url 'dashboard_widgets:delete' project.id dashboard.id object.id %}"
+                hx-post="{% url 'dashboard_widgets:delete' project.id dashboard.id object.id %}"
+                hx-swap="delete" hx-target="#widget-{{ object.id }}"
                 class="form--no-layout"
               >
                 {% csrf_token %}

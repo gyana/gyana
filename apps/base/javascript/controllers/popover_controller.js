@@ -37,6 +37,8 @@ export default class extends Controller {
       trigger: this.element.dataset.trigger || 'click focus',
       triggerTarget: this.hasTriggerTarget ? this.triggerTarget : this.element,
       zIndex: 'calc(var(--z-ui) + 1)',
+      // Tippy dynamically inserts new HTML for the popper
+      onShow: (instance) => htmx.process(instance.popper),
     })
   }
 

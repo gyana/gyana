@@ -1,7 +1,7 @@
 import analytics
 from django.shortcuts import render
 from django.urls import reverse
-from turbo_response.views import TurboStreamDeleteView
+from django.views.generic import DeleteView
 
 from apps.base.analytics import WIDGET_CREATED_EVENT, WIDGET_DUPLICATED_EVENT
 from apps.base.views import TurboCreateView, TurboUpdateView
@@ -107,12 +107,9 @@ class WidgetDetail(DashboardMixin, TurboUpdateView):
         )
 
 
-class WidgetDelete(DashboardMixin, TurboStreamDeleteView):
+class WidgetDelete(DashboardMixin, DeleteView):
     template_name = "widgets/delete.html"
     model = Widget
-
-    def get_turbo_stream_target(self):
-        return f"widget-{self.object.pk}"
 
     def get_success_url(self) -> str:
         return reverse(
