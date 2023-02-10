@@ -3,12 +3,10 @@
 <form 
   id="widget-update-form"
   class="widget-update-sidebar__form"
-  action="{% url 'dashboard_widgets:update' project.id dashboard.id object.id %}" 
-  method="post"
+  hx-post="{% url 'dashboard_widgets:update' project.id dashboard.id object.id %}"
   data-controller="live-update" 
   data-action="
-    change->tf-modal#change 
-    turbo:submit-end->tf-modal#save 
+    change->tf-modal#change
     formset:remove->live-update#updateForm 
     formset:add->live-update#updateForm 
     formset:remove->tf-modal#change 
@@ -223,6 +221,7 @@
       name="submit"
       value="Save & Close"
       class="button button--success flex-1"
+      data-action="click->tf-modal#submit"
     >
       Save & Close
     </button>
@@ -232,6 +231,7 @@
       name="submit"
       value="Save & Preview"
       class="button button--outline button--success flex-1"
+      data-action="click->tf-modal#save"
     >
       Save & Preview
     </button>

@@ -108,10 +108,13 @@ export default class extends Controller {
     // so it know it isnt live anymore
     if (e.target.name) data.set(e.target.name, e.target.value)
 
-    const result = await fetch(this.formTarget.action, {
-      method: 'POST',
-      body: data,
-    })
+    const result = await fetch(
+      this.formTarget.getAttribute('hx-post') || this.formTarget.action,
+      {
+        method: 'POST',
+        body: data,
+      }
+    )
 
     const text = await result.text()
     const parser = new DOMParser()

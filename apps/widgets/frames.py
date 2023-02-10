@@ -19,6 +19,7 @@ from apps.base.core.table_data import RequestConfig, get_table
 from apps.base.core.utils import error_name_to_snake
 from apps.base.frames import TurboFrameDetailView, TurboFrameUpdateView
 from apps.base.templates import template_exists
+from apps.base.views import LiveUpdateView
 from apps.columns.currency_symbols import CURRENCY_SYMBOLS_MAP
 from apps.controls.bigquery import DATETIME_FILTERS
 from apps.dashboards.mixins import DashboardMixin
@@ -89,9 +90,8 @@ class WidgetName(UpdateView):
         )
 
 
-class WidgetUpdate(DashboardMixin, TurboFrameUpdateView):
+class WidgetUpdate(DashboardMixin, LiveUpdateView):
     model = Widget
-    turbo_frame_dom_id = "widget-modal"
 
     def get_turbo_stream_response(self, context):
         return TurboStreamResponse(
@@ -308,14 +308,10 @@ class WidgetOutput(DashboardMixin, SingleTableMixin, DetailView):
         return type("DynamicTable", (DjangoTable,), {})(data=[])
 
 
-class WidgetInput(DashboardMixin, SingleTableMixin, TurboFrameDetailView):
+class WidgetInput(DashboardMixin, SingleTableMixin, DetailView):
     template_name = "widgets/input.html"
     model = Widget
     paginate_by = 15
-
-    def get_turbo_frame_dom_id(self):
-        source = f"-{source}" if (source := self.request.GET.get("source")) else ""
-        return f"widgets-output-{self.object.id}{source}"
 
     def get_table(self, **kwargs):
         if self.object.table:
