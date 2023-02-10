@@ -2,8 +2,6 @@ from django.db.models import Count, Q
 from django.urls.base import reverse
 from django.views.generic import TemplateView, UpdateView
 from django_tables2 import SingleTableMixin
-from turbo_response import TurboStream
-from turbo_response.response import TurboStreamResponse
 
 from apps.base.views import LiveUpdateView
 from apps.dashboards.forms import DashboardShareForm
@@ -84,16 +82,6 @@ class DashboardSettings(ProjectMixin, UpdateView):
         context = super().get_context_data(**kwargs)
         context["categories"] = Dashboard.Category.choices
         return context
-
-    def form_invalid(self, form):
-        context = self.get_context_data()
-        return TurboStreamResponse(
-            [
-                TurboStream(self.turbo_frame_dom_id)
-                .replace.template(self.template_name, context)
-                .render()
-            ]
-        )
 
     def get_success_url(self) -> str:
         url = reverse(
