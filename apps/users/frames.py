@@ -2,8 +2,6 @@ from allauth.account.utils import send_email_confirmation
 from django.http import HttpResponse
 from django.urls import reverse
 from django.views.generic import UpdateView
-from turbo_response import TurboStream
-from turbo_response.response import TurboStreamResponse
 
 from apps.base.mixins import PageTitleMixin
 from apps.users.helpers import (
@@ -20,16 +18,6 @@ class UserProfileModal(PageTitleMixin, UpdateView):
     model = CustomUser
     form_class = CustomUserChangeForm
     page_title = "Your Account"
-
-    def get_turbo_stream_response(self, context):
-        context = self.get_context_data()
-        return TurboStreamResponse(
-            [
-                TurboStream(self.turbo_frame_dom_id)
-                .replace.template(self.template_name, context)
-                .render()
-            ]
-        )
 
     def get_object(self, queryset=None):
         return self.request.user
