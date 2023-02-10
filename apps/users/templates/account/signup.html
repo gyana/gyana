@@ -10,7 +10,7 @@
   </a>
   <p class="text-center text-black-50 my-4">or</p>
 
-  <form method="post" class="mb-8" data-turbo="false">
+  <form method="post" class="mb-8" hx-boost="false">
     {% csrf_token %}
 
     {{ form }}

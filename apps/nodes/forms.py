@@ -261,7 +261,7 @@ KIND_TO_FORM = {
     "sort": DefaultNodeForm,
     "limit": LimitNodeForm,
     # Is defined in the filter app and will be rendered via a
-    # different turbo frame
+    # different htmx partial
     "filter": DefaultNodeForm,
     "edit": DefaultNodeForm,
     "add": DefaultNodeForm,

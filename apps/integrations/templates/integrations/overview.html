@@ -9,7 +9,7 @@
       {% if integrations.sheet_count > 0 %}
         <span>
           <p class="text-black-50">
-            <a class="link" href="{% url 'project_integrations:list' project.id %}?kind=sheet" data-turbo-frame="_top">
+            <a class="link" href="{% url 'project_integrations:list' project.id %}?kind=sheet">
               {{ integrations.sheet_count|intcomma }} sheet{{ integrations.sheet_count|pluralize }}
             </a>
           </p>
@@ -18,7 +18,7 @@
       {% if integrations.upload_count > 0 %}
         <span>
           <p class="text-black-50">
-            <a class="link" href="{% url 'project_integrations:list' project.id %}?kind=upload" data-turbo-frame="_top">
+            <a class="link" href="{% url 'project_integrations:list' project.id %}?kind=upload">
               {{ integrations.upload_count|intcomma }} upload{{ integrations.upload_count|pluralize }}
             </a>
           </p>
@@ -29,7 +29,7 @@
 
     {% if integrations.ready > 0 %}
     <p class="text-black-50 ml-auto">
-      <a class="link" href="{% url 'project_integrations:list' project.id %}" data-turbo-frame="_top">
+      <a class="link" href="{% url 'project_integrations:list' project.id %}">
         {{ integrations.ready|intcomma }} integration{{ integrations.ready|pluralize }}
       </a>
     </p>
@@ -43,7 +43,6 @@
       class="card card--none card--flex gap-3 items-center flex-col"
       style="flex: 0 0 13rem; padding: 1.8rem 0.2rem;"
       href="{% url "project_integrations:detail" project.id integration.id %}"
-      data-turbo-frame="_top"
     >
       <img
         src="{% static integration.icon %}"
@@ -62,7 +61,6 @@
       <a
         href="{% url 'project_integrations:list' project.id %}"
         class="h3 link" 
-        data-turbo-frame="_top"
       >
         Create an integration to get started
       </a>
@@ -75,7 +73,7 @@
       <p class="text-black-50">
         <i class="fa fa-info-circle"></i>
         You have {{ integrations.attention|intcomma }} pending integration{{ integrations.attention|pluralize }} that need{{ integrations.attention|pluralize:"s," }}
-          your <a class="link" href="{% url 'project_integrations:list' project.id %}" data-turbo-frame="_top">attention</a>.
+          your <a class="link" href="{% url 'project_integrations:list' project.id %}" >attention</a>.
       </p>
       {% endif %} 
 

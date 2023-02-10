@@ -104,7 +104,7 @@
             {% if team.active_subscription.status == 'active' %}
               <tr>
                 <td>
-                  <a href="{% url 'teams:subscription' team.id %}" class="link" data-turbo="false">
+                  <a href="{% url 'teams:subscription' team.id %}" class="link" hx-boost="false">
                     Manage Subscription
                   </a>
                 </td>
@@ -113,7 +113,7 @@
             {% endif %}
             <tr>
               <td>
-                <a href="{% url 'teams:payments' team.id %}" class="link" data-turbo="false">
+                <a href="{% url 'teams:payments' team.id %}" class="link" hx-boost="false">
                   View Payments & Receipts
                 </a>
               </td>
@@ -122,7 +122,7 @@
             {% if team.active_subscription.status == 'active' %}
               <tr>
                 <td>
-                  <a href="{{ team.active_subscription.update_url }}" class="link" data-turbo="false">
+                  <a href="{{ team.active_subscription.update_url }}" class="link" hx-boost="false">
                     Update Payment Method
                   </a>
                 </td>

@@ -4,7 +4,7 @@
   <a
     class="sidebar__link sidebar__link--border"
     href="{{ object|admin_url }}"
-    data-turbo="false"
+    hx-boost="false"
   >
     <i class="fas fa-fw fa-user-cog {% if object|admin_url_found %}text-blue{% endif %}"></i>
     {% if object|admin_url_found %}
@@ -18,7 +18,7 @@
     class="form--no-layout"
     method="POST"
     action="{% url 'hijack:release' %}"
-    data-turbo="false"
+    hx-boost="false"
   >
     {% csrf_token %}
 

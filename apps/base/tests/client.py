@@ -9,7 +9,7 @@ def get_child_htmx_partial(client, page_response, frame_url):
     frames = soup.select(f'[hx-get="{frame_url}"]')
     assert (
         len(frames) == 1
-    ), f"""unable to find turbo frame in DOM with src {frame_url}
+    ), f"""unable to find htmx partial in DOM with src {frame_url}
 possible matches are {[f['src'] for f in soup.select('[hx-get]')]}"""
 
     frame = frames[0]
@@ -21,7 +21,7 @@ possible matches are {[f['src'] for f in soup.select('[hx-get]')]}"""
 
 
 def get_htmx_partial(client, page_url, *frame_urls):
-    # Validate and return response for turbo frame in a page, possibly recursively
+    # Validate and return response for htmx partial in a page, possibly recursively
 
     response = client.get(page_url)
     assert response.status_code == 200

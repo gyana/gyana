@@ -30,7 +30,6 @@ describe('dashboards', () => {
 
     cy.get('button[class*=tf-modal__close]').click({
       force: true,
-      turbo: false,
     })
     cy.get('input[value="Save & Preview"]').should('not.exist')
     cy.get(`#widget-${widgetStartId}`).contains('London')
@@ -39,10 +38,7 @@ describe('dashboards', () => {
     createWidget('msbar2d', 0, 400)
     cy.get('select[name=dimension]').select('Owner')
     cy.get('[data-formset-prefix-value=aggregations]').within((el) => {
-      cy.wrap(el)
-        .get('button')
-        .should('not.be.disabled')
-        .click()
+      cy.wrap(el).get('button').should('not.be.disabled').click()
     })
     cy.get('select[name=aggregations-0-column]').select('Employees')
     cy.get('select[name=aggregations-0-function]').select('SUM')

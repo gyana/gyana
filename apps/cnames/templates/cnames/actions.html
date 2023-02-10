@@ -1,7 +1,6 @@
 {% load humanize %}
 <a
   href="{% url 'team_cnames:delete' record.team.id record.id %}"
-  data-turbo-frame="_top"
   class="button button--sm button--circle button--tertiary"
   title="Delete CNAME"
 >

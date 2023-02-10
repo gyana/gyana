@@ -5,7 +5,7 @@
     <h3><i class="far fa-fw fa-sitemap text-black-50 mr-3"></i>Workflows</h3>
     {% if workflows.total > 0 %}
     <p class="text-black-50 ml-auto">
-      <a class="link" href="{% url 'project_workflows:list' project.id %}" data-turbo-frame="_top">
+      <a class="link" href="{% url 'project_workflows:list' project.id %}">
         {{ workflows.total }} workflow{{ workflows.total|pluralize }}
       </a>
       - {{ workflows.nodes|intcomma }} node{{ workflows.nodes|pluralize }}
@@ -20,7 +20,6 @@
       class="card card--none card--flex gap-3 items-center flex-col"
       style="flex: 0 0 13rem; padding: 1.8rem 0.2rem;"
       href="{% url "project_workflows:detail" project.id workflow.id %}"
-      data-turbo-frame="_top"
     >
       <i class="fas fa-fw fa-sitemap text-black-50" style="font-size: 1.6rem"></i>
       <p class="truncate w-full px-6 text-center small">{{ workflow.name }}</p>
@@ -39,7 +38,6 @@
       <a
         href="{% url 'project_workflows:list' project.id %}"
         class="h3 link" 
-        data-turbo-frame="_top"
       >
         Start transforming your data now
       </a>

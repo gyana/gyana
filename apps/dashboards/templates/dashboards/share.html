@@ -67,7 +67,6 @@
 
       <button
         class="button button--success button--sm w-full"
-        data-turbo-frame="dashboard-share"
         id="dashboard-share-update"
         name="submit"
         type="submit"
@@ -85,7 +84,7 @@
       <div data-controller="to-clipboard" class="clipboard-copy mb-4">
         <pre
           data-to-clipboard-target="target"
-          data-turbo="false"
+          hx-boost="false"
           target="_blank"
           rel="noreferrer noopener"
         >

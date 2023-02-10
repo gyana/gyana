@@ -5,7 +5,7 @@
     <div class="table__empty">
       <h3>You haven't setup any OAuth2 services</h3>
       <p>
-        You can <a href="{% url 'project_oauth2:create' project.id %}" class="link" data-turbo-frame="_top">connect one here</a>
+        You can <a href="{% url 'project_oauth2:create' project.id %}" class="link">connect one here</a>
       </p>
     </div>
   {% else %}
@@ -13,7 +13,7 @@
 
     <div class="pad flex flex-col space-y-8">
       <small>
-          <a href="{% url 'project_oauth2:create' project.id %}" class="link" data-turbo-frame="_top">
+          <a href="{% url 'project_oauth2:create' project.id %}" class="link">
             <i class="fa fa-fw fa-plus mr-2"></i>Authorize an external service</a>
       </small>
     </div>

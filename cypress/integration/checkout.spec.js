@@ -12,32 +12,30 @@ describe('checkout', () => {
     // new team with no billing
     cy.get('#sidebar-newteam').click()
     cy.get('input[name=name]').type('No billing')
-    cy.get('button[type=submit]').click({ turbo: false })
+    cy.get('button[type=submit]').click()
 
     // billing
     cy.get('#sidebar').within(() => cy.contains('Billing').click())
     cy.url().should('contain', `/teams/${newTeamId}/account`)
 
     // view plans
-    cy.contains('Upgrade').click({ turbo: false })
+    cy.contains('Upgrade').click()
     cy.url().should('contain', `/teams/${newTeamId}/pricing`)
 
     // checkout
-    getIframeBody('pricing').contains('Upgrade to Pro').click({ turbo: false })
+    getIframeBody('pricing').contains('Upgrade to Pro').click()
     cy.url().should('contain', `/teams/${newTeamId}/checkout`)
     cy.get('span[data-paddle-target=total]').should('not.be.empty')
     cy.get('span[data-paddle-target=recurring]').should('not.be.empty')
 
     // complete payment
     getIframeBody('pf_18567').find('input[name=postcode]').type('MK3 6EB')
-    getIframeBody('pf_18567')
-      .find('button[type=submit]')
-      .click({ turbo: false })
+    getIframeBody('pf_18567').find('button[type=submit]').click()
 
     getIframeBody('pf_18567')
       .find('button[data-testid=SPREEDLY_CARD_PaymentSelectionButton]')
       .first()
-      .click({ turbo: false })
+      .click()
 
     getIframeBody('pf_18567')
       .find('input[name=cardNumber]')
@@ -48,7 +46,7 @@ describe('checkout', () => {
     getIframeBody('pf_18567').find('input[name=cvv]').type('111')
     getIframeBody('pf_18567')
       .find('button[data-testid=cardPaymentFormSubmitButton]')
-      .click({ turbo: false })
+      .click()
 
     getIframeBody('pf_18567').find('[data-testid=paymentSuccess]', {
       timeout: 20000,

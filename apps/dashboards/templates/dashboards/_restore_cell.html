@@ -2,7 +2,7 @@
   method="POST"
   class="form--no-layout"
   action="{% url href object.id %}"
-  data-turbo-frame="_top"
+  hx-target="body"
 >
   {% csrf_token %}
 

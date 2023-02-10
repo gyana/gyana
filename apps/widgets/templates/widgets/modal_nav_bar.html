@@ -6,7 +6,6 @@
     <a href="#"
       class="tabbar__link {% if active_item == 'input' %}tabbar__link--active{%endif%}" 
       hx-get="{% url 'dashboard_widgets:input' project.id dashboard.id object.id %}?source=modal"
-      data-turbo-frame="widgets-output-{{object.id}}-modal"
     >
       Input
     </a>
@@ -14,7 +13,6 @@
   <a href="#"
     class="tabbar__link {% if active_item != 'input' %}tabbar__link--active{%endif%}" 
     hx-get="{% url 'dashboard_widgets:output' project.id dashboard.id object.id %}?source=modal"
-    data-turbo-frame="widgets-output-{{object.id}}-modal"
   >
     Preview
   </a>

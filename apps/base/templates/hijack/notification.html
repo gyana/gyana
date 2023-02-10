@@ -16,7 +16,7 @@ https://github.com/django-hijack/django-hijack/blob/master/hijack/templates/hija
       action="{% url 'hijack:release' %}"
       method="POST"
       class="hijack__actions"
-      data-turbo="false"
+      hx-boost="false"
     >
       {% csrf_token %}
 

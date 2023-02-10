@@ -2,7 +2,7 @@
 
 {% block app %}
 <div class="max-w-xl">
-  <form method="post" action="{% url 'team_invites:create' team.id %}" class="form pad" data-turbo="false">
+  <form method="post" action="{% url 'team_invites:create' team.id %}" class="form pad" hx-boost="false">
     {% csrf_token %}
 
     {{ form }}

@@ -46,7 +46,6 @@ class IntegrationGrid(TableInstanceMixin, SingleTableMixin, DetailView):
     template_name = "integrations/grid.html"
     model = Integration
     paginate_by = 15
-    turbo_frame_dom_id = "integrations:grid"
 
     def get_table(self, **kwargs):
         if not self.table_instance:

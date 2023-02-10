@@ -5,7 +5,7 @@
     <h3><i class="far fa-fw fa-chart-pie text-black-50 mr-3"></i>Dashboards</h3>
     {% if dashboards.total > 0 %}
     <p class="text-black-50 ml-auto">
-      <a class="link" href="{% url 'project_dashboards:list' project.id %}" data-turbo-frame="_top">
+      <a class="link" href="{% url 'project_dashboards:list' project.id %}">
         {{ dashboards.total }} dashboard{{ dashboards.total|pluralize }}
       </a>
       - {{ dashboards.widgets|intcomma }} widget{{ dashboards.widgets|pluralize }}
@@ -19,7 +19,6 @@
       class="card card--none card--flex gap-3 items-center flex-col"
       style="flex: 0 0 13rem; padding: 1.8rem 0.2rem;"
       href="{% url "project_dashboards:detail" project.id dashboard.id %}"
-      data-turbo-frame="_top"
     >
       <i class="fas fa-fw fa-chart-pie text-black-50" style="font-size: 1.6rem"></i>
       <p class="truncate text-center w-full px-6 small">{{ dashboard.name }}</p>
@@ -37,8 +36,7 @@
     <div class="table__empty table__empty--slim">
       <a
         href="{% url 'project_dashboards:list' project.id %}"
-        class="h3 link" 
-        data-turbo-frame="_top"
+        class="h3 link"
       >
         Display your metrics
       </a>

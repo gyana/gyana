@@ -114,7 +114,7 @@ class ProjectRunForm(BaseModelForm):
         if self.instance.team.is_free:
             daily_schedule_time.disabled = True
             daily_schedule_time.help_text = mark_safe(
-                f'Scheduling is only available on a paid plan <a class="link" href="{reverse("teams:pricing", args=(self.instance.team.id, ))}" data-turbo-frame="_top">learn more</a>'
+                f'Scheduling is only available on a paid plan <a class="link" href="{reverse("teams:pricing", args=(self.instance.team.id, ))}" hx-boost="false">learn more</a>'
             )
         else:
             daily_schedule_time.help_text = (

@@ -79,7 +79,7 @@
                       <img class="h-full object-cover object-left" src="{% static 'images/site/home/github.png' %}"/>
                     {% endif %}
                     {% if item.cta %}
-                      <a href="{% external_url item.cta.external_url %}" class="text-sm absolute bottom-0 inset-x-0 bg-gray-50 text-right flex items-center justify-end text-gray-600 gap-1 p-2 border-gray border-t" data-turbo-frame="_top">
+                      <a href="{% external_url item.cta.external_url %}" class="text-sm absolute bottom-0 inset-x-0 bg-gray-50 text-right flex items-center justify-end text-gray-600 gap-1 p-2 border-gray border-t">
                         {{ item.cta.message }}
                         {% heroicon 'external-link' class="w-5 h-5" style="solid" %}
                       </a>
