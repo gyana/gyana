@@ -44,7 +44,7 @@ def create_and_connect_node(client, kind, node_factory, table, workflow):
 
 def update_node(client, id, data):
     r = client.post(f"/nodes/{id}", data={"submit": "Save & Preview", **data})
-    assert r.status_code == 303
+    assert r.status_code == 302
     return r
 
 
@@ -65,7 +65,7 @@ def test_input_node(client, setup):
     r = update_node(client, input_node.id, {"input_table": table.id})
     input_node.refresh_from_db()
 
-    assert r.status_code == 303
+    assert r.status_code == 302
     assert input_node.input_table.id == table.id
 
 

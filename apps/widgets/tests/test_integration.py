@@ -42,7 +42,7 @@ def test_widget_crudl(
     # read
     r = client.get(f"{dashboard_url}/widgets/{widget.id}")
     assertOK(r)
-    r = client.get_turbo_frame(
+    r = client.get_htmx_partial(
         f"{dashboard_url}/widgets/{widget.id}",
         f"{dashboard_url}/widgets/{widget.id}/output",
     )

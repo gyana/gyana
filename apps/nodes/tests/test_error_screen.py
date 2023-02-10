@@ -100,7 +100,7 @@ def test_out_of_credits(mocker, client, setup, node_factory, logged_in_user, big
 
     r = client.get(f"/nodes/{sentiment_node.id}/grid")
     assertOK(r)
-    assertSelectorText(r, "turbo-frame", "99")
+    assertSelectorText(r, "body", "99")
     assertSelectorText(r, "h2", "You are about to exceed your credit limit")
 
 

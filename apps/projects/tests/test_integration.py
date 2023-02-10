@@ -191,7 +191,7 @@ def test_automate(client, logged_in_user, project_factory, graph_run_factory, is
     r = client.post(
         f"/projects/{project.id}/runs", data={"daily_schedule_time": "06:00"}
     )
-    assertRedirects(r, f"/projects/{project.id}/runs", status_code=303)
+    assertRedirects(r, f"/projects/{project.id}/runs", status_code=302)
 
     project.refresh_from_db()
 

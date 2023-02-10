@@ -103,7 +103,7 @@ def test_dashboard_share(
         f"/dashboards/{dashboard.id}/share",
         data={"shared_status": Dashboard.SharedStatus.PUBLIC},
     )
-    assertRedirects(r, f"/dashboards/{dashboard.id}/share", status_code=303)
+    assertRedirects(r, f"/dashboards/{dashboard.id}/share", status_code=302)
     dashboard.refresh_from_db()
     assert dashboard.shared_id is not None
     PUBLIC = f"/dashboards/{dashboard.shared_id}"
@@ -135,7 +135,7 @@ def test_dashboard_share(
             "password": "secret",
         },
     )
-    assertRedirects(r, f"/dashboards/{dashboard.id}/share", status_code=303)
+    assertRedirects(r, f"/dashboards/{dashboard.id}/share", status_code=302)
 
     # check access
     client.logout()
@@ -290,7 +290,7 @@ def test_dashboard_history(
     project_dashboard_url = f"/projects/{project.id}/dashboards/{dashboard.id}"
 
     r = client.post(f"{project_dashboard_url}/history", data={"name": ""})
-    assert r.status_code == 303
+    assert r.status_code == 302
 
     version_1 = dashboard.versions.first()
     assert version_1 is not None
@@ -305,7 +305,7 @@ def test_dashboard_history(
         f"/dashboards/version/{dashboard.versions.first().id}/rename",
         data={"name": "Empty dashboard"},
     )
-    assert r.status_code == 303
+    assert r.status_code == 302
     version_1.refresh_from_db()
     assert version_1.name == "Empty dashboard"
 

@@ -1,4 +1,3 @@
-
 import pytest
 from pytest_django.asserts import assertContains
 
@@ -26,7 +25,7 @@ def test_export_create_node(
 
     r = client.post(f"/exports/new/node/{node.id}")
 
-    assert r.status_code == 303
+    assert r.status_code == 302
     assert export_to_gcs.delay.call_count == 1
     assert export_to_gcs.delay.call_args.args[1] == logged_in_user.id
 
@@ -42,6 +41,6 @@ def test_export_create_integration_table(
 
     r = client.post(f"/exports/new/integration_table/{table.id}")
 
-    assert r.status_code == 303
+    assert r.status_code == 302
     assert export_to_gcs.delay.call_count == 1
     assert export_to_gcs.delay.call_args.args[1] == logged_in_user.id
