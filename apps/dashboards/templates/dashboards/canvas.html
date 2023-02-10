@@ -14,7 +14,7 @@
     <form
       id="dashboard-widget-create-form"
       hx-post="{% url 'dashboard_widgets:create' project.id dashboard.id %}?mode=edit"
-      hx-swap="beforebegin"
+      hx-swap="afterbegin" hx-target="#dashboard-widget-container"
       hidden
       data-canvas-target="form"
     >
@@ -29,7 +29,7 @@
     </form>
     <form
       hx-post="{% url 'dashboard_controls:create-widget' project.id dashboard.id %}"
-      hx-swap="beforebegin"
+      hx-swap="afterbegin" hx-target="#dashboard-widget-container"
       hidden
       data-canvas-target="formControl"
     >

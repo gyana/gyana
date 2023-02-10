@@ -1,7 +1,6 @@
 import analytics
+from django.shortcuts import render
 from django.urls import reverse
-from turbo_response import TurboStream
-from turbo_response.response import TurboStreamResponse
 from turbo_response.views import TurboStreamDeleteView
 
 from apps.base.analytics import WIDGET_CREATED_EVENT, WIDGET_DUPLICATED_EVENT
@@ -19,9 +18,7 @@ class WidgetCreate(DashboardMixin, TurboCreateView):
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-
         kwargs["dashboard"] = self.dashboard
-
         return kwargs
 
     def form_valid(self, form):
@@ -42,21 +39,15 @@ class WidgetCreate(DashboardMixin, TurboCreateView):
             },
         )
 
-        return TurboStreamResponse(
-            [
-                TurboStream("dashboard-widget-placeholder").remove.render(),
-                TurboStream("dashboard-widget-container")
-                .append.template(
-                    "widgets/widget_component.html",
-                    {
-                        "object": form.instance,
-                        "project": self.dashboard.project,
-                        "dashboard": self.dashboard,
-                        "is_new": True,
-                    },
-                )
-                .render(request=self.request),
-            ]
+        return render(
+            self.request,
+            "widgets/widget_component.html",
+            {
+                "object": form.instance,
+                "project": self.dashboard.project,
+                "dashboard": self.dashboard,
+                "is_new": True,
+            },
         )
 
     def get_success_url(self) -> str:
@@ -97,21 +88,16 @@ class WidgetDetail(DashboardMixin, TurboUpdateView):
             },
         )
         self.request.GET.mode = "edit"
-        return TurboStreamResponse(
-            [
-                TurboStream("dashboard-widget-placeholder").remove.render(),
-                TurboStream("dashboard-widget-container")
-                .append.template(
-                    "widgets/widget_component.html",
-                    {
-                        "object": clone,
-                        "project": self.dashboard.project,
-                        "dashboard": self.dashboard,
-                        "is_new": True,
-                    },
-                )
-                .render(request=self.request),
-            ]
+
+        return render(
+            self.request,
+            "widgets/widget_component.html",
+            {
+                "object": clone,
+                "project": self.dashboard.project,
+                "dashboard": self.dashboard,
+                "is_new": True,
+            },
         )
 
     def get_success_url(self) -> str:
