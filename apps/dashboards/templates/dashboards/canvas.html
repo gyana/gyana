@@ -8,7 +8,15 @@
   <div
     class="widgets__canvas"
     style="--background-color:{{ dashboard.background_color }};"
-    data-controller="canvas widget-list"
+    data-controller="widget-list"
+    x-data="{}"
+    @dragover.prevent="$event.dataTransfer.dropEffect = 'move'"
+    @drop="const {top, left} = $el.getBoundingClientRect()
+    const form = $refs.widget
+    form.elements['kind'].value = $event.dataTransfer.getData('application/gydashboard')
+    form.elements['x'].value = Math.round($event.clientX - left - 495/2)
+    form.elements['y'].value = Math.round($event.clientY - top - 390/2)
+    form.requestSubmit()"
   >
     {% comment %} Hidden form used by canvas controller {% endcomment %}
     <form
@@ -17,6 +25,7 @@
       hx-swap="afterbegin" hx-target="#dashboard-widget-container"
       hidden
       data-canvas-target="form"
+      x-ref="widget"
     >
       {% csrf_token %}
 
