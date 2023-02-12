@@ -55,8 +55,8 @@
     <form
       data-controller="tooltip"
       data-tooltip-content="Delete"
-      method="POST"
-      action="{% url 'dashboard_controls:delete-widget' project.id dashboard.id object.id %}"
+      hx-post="{% url 'dashboard_controls:delete-widget' project.id dashboard.id object.id %}"
+      hx-swap="delete" hx-target="#control-widget-{{ object.id }}"
     >
       {% csrf_token %}
 
