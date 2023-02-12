@@ -56,6 +56,8 @@ class ControlWidgetDelete(DashboardMixin, DeleteView):
     def form_valid(self, form):
         success_url = self.get_success_url()
 
+        print("hi", self.object.page.control_widgets.count())
+
         if self.object.page.control_widgets.count() != 1:
             return super().delete(self, form)
 
