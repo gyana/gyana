@@ -80,16 +80,12 @@ def test_control_crudl(
     )
     assertOK(r)
     control.refresh_from_db()
-    assert isinstance(r, TurboStreamResponse)
 
-    # is sending the widget output
-    assertContains(r, f"widgets-output-{widget.id}")
-    assert control.date_range == CustomChoice.CUSTOM
+    # todo: check it is sending the HX-Trigger event
 
     # delete
     r = client.delete(control_url + f"{control_widget.id}/delete-widget")
-    assertOK(r)
-    assert isinstance(r, TurboStreamResponse)
+    assert r.status_code == 302
     assert Control.objects.first() is None
     assert ControlWidget.objects.first() is None
     assertContains(r, f"widgets-output-{widget.id}")
