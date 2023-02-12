@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.urls import reverse
 from django.utils.functional import cached_property
-from django_htmx.http import trigger_client_event
+from django_htmx.http import retarget, trigger_client_event
 from turbo_response.response import HttpResponseSeeOther
 
 from apps.base.views import LiveUpdateView
@@ -25,6 +25,9 @@ class ControlUpdate(DashboardMixin, LiveUpdateView):
             else "controls/control-widget.html"
         )
 
+        # todo: fix for multiple control widgets
+        control_widget = form.instance.page.control_widgets.first()
+
         res = render(
             self.request,
             template,
@@ -38,7 +41,12 @@ class ControlUpdate(DashboardMixin, LiveUpdateView):
             },
         )
 
-        return trigger_client_event(res, "gy-control", {})
+        return retarget(
+            trigger_client_event(
+                trigger_client_event(res, "gy-control", {}), "closeModal", {}
+            ),
+            f"#control-widget-{control_widget.id}",
+        )
 
     def form_valid(self, form):
         r = super().form_valid(form)
