@@ -62,7 +62,7 @@ class Control(HistoryModel):
     widget = models.OneToOneField("widgets.Widget", on_delete=models.CASCADE, null=True)
 
     def __str__(self):
-        return self.pk
+        return str(self.pk)
 
     def save(self, **kwargs):
         skip_dashboard_update = kwargs.pop("skip_dashboard_update", False)

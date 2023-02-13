@@ -1,46 +1,52 @@
+from django.shortcuts import render
 from django.urls import reverse
 from django.utils.functional import cached_property
-from turbo_response import TurboStream
-from turbo_response.response import HttpResponseSeeOther, TurboStreamResponse
+from django_htmx.http import retarget, trigger_client_event
+from turbo_response.response import HttpResponseSeeOther
 
 from apps.base.views import LiveUpdateView
+from apps.dashboards.mixins import DashboardMixin
 
 from .forms import ControlForm
-from .mixins import UpdateWidgetsMixin
 from .models import Control
 
 
-class ControlUpdate(UpdateWidgetsMixin, LiveUpdateView):
+class ControlUpdate(DashboardMixin, LiveUpdateView):
     template_name = "controls/update.html"
     model = Control
     form_class = ControlForm
 
     def get_stream_response(self, form):
-        streams = self.get_widget_stream_responses(form.instance, form.instance.page)
-        current_context = self.get_context_data()
-        is_public = current_context.get("is_public", False)
+        context = self.get_context_data()
+        is_public = context.get("is_public", False)
         template = (
             "controls/control_public.html"
             if is_public
             else "controls/control-widget.html"
         )
 
-        for control_widget in form.instance.page.control_widgets.iterator():
-            context = {
+        # todo: fix for multiple control widgets
+        control_widget = form.instance.page.control_widgets.first()
+
+        res = render(
+            self.request,
+            template,
+            {
                 "object": control_widget,
                 "control": form.instance,
                 "dashboard": self.dashboard,
                 "project": self.project,
                 "is_public": is_public,
                 "request": self.request,
-            }
-            streams.append(
-                TurboStream(f"control-widget-{control_widget.id}")
-                .replace.template(template, context)
-                .render(request=self.request)
-            )
+            },
+        )
 
-        return TurboStreamResponse(streams)
+        return retarget(
+            trigger_client_event(
+                trigger_client_event(res, "gy-control", {}), "closeModal", {}
+            ),
+            f"#control-widget-{control_widget.id}",
+        )
 
     def form_valid(self, form):
         r = super().form_valid(form)

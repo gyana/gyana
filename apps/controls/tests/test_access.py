@@ -38,13 +38,12 @@ def test_control_widget_project_required(
     assertLoginRedirect(client, url)
 
     client.force_login(user)
-    call = client.delete if "delete" in url else client.get
-    r = call(url)
+    r = client.get(url)
     assert r.status_code == 404
 
     dashboard.project.team = user.teams.first()
     dashboard.project.save()
-    r = call(url)
+    r = client.get(url)
     assertOK(r)
 
 

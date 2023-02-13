@@ -1,17 +1,15 @@
 from django.db import transaction
+from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls.base import reverse
-from django.views.generic import CreateView
-from turbo_response import TurboStream
-from turbo_response.response import TurboStreamResponse
-from turbo_response.views import TurboStreamDeleteView
+from django.views.generic import CreateView, DeleteView
+from django_htmx.http import trigger_client_event
 
 from apps.controls.models import Control, ControlWidget
+from apps.dashboards.mixins import DashboardMixin
 
-from .mixins import UpdateWidgetsMixin
 
-
-class ControlWidgetCreate(UpdateWidgetsMixin, CreateView):
+class ControlWidgetCreate(DashboardMixin, CreateView):
     template_name = "controls/create.html"
     model = ControlWidget
     fields = ["x", "y", "page"]
@@ -27,7 +25,7 @@ class ControlWidgetCreate(UpdateWidgetsMixin, CreateView):
             form.instance.control.save()
             super().form_valid(form)
 
-        return render(
+        res = render(
             self.request,
             "controls/control-widget.html",
             {
@@ -39,6 +37,8 @@ class ControlWidgetCreate(UpdateWidgetsMixin, CreateView):
             },
         )
 
+        return trigger_client_event(res, "gy-control", {})
+
     def get_success_url(self) -> str:
         return reverse(
             "project_dashboards:detail",
@@ -49,25 +49,18 @@ class ControlWidgetCreate(UpdateWidgetsMixin, CreateView):
         )
 
 
-class ControlWidgetDelete(UpdateWidgetsMixin, TurboStreamDeleteView):
+class ControlWidgetDelete(DashboardMixin, DeleteView):
     template_name = "controls/delete.html"
     model = ControlWidget
 
-    def delete(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        self.object_id = self.object.id
-        page = self.object.page
+    def form_valid(self, form):
+        success_url = self.get_success_url()
+
         if self.object.page.control_widgets.count() != 1:
-            return super().delete(request, *args, **kwargs)
+            return super().delete(self, form)
 
         self.object.page.control.delete()
-
-        return TurboStreamResponse(
-            [
-                *self.get_widget_stream_responses(None, page),
-                TurboStream(f"control-widget-{self.object_id}").remove.render(),
-            ]
-        )
+        return trigger_client_event(HttpResponseRedirect(success_url), "gy-control", {})
 
     def get_success_url(self) -> str:
         return reverse(
@@ -77,6 +70,3 @@ class ControlWidgetDelete(UpdateWidgetsMixin, TurboStreamDeleteView):
                 self.dashboard.id,
             ),
         )
-
-    def get_turbo_stream_target(self):
-        return f"control-widget-{self.object_id}"

@@ -9,6 +9,7 @@
   {% else %}
     {% url 'dashboard_controls:update-widget' project.id dashboard.id object.id %}
   {% endif %}"
+  hx-swap="outerHTML"
   class="form--no-layout pad"
 >
   {% csrf_token %}
@@ -23,8 +24,7 @@
     class="button button--success button--sm mt-3 w-full"
     name="submit"
     type="submit"
-    value="Save &amp; Close"
-    data-action="click->tf-modal#forceClose"
+    value="Save & Close"
   >
     Apply
   </button>

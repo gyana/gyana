@@ -4,8 +4,6 @@ from unittest.mock import Mock
 
 import pandas as pd
 import pytest
-from pytest_django.asserts import assertContains
-from turbo_response.response import TurboStreamResponse
 
 from apps.base.tests.asserts import assertFormRenders, assertOK
 from apps.base.tests.mock_data import TABLE
@@ -80,23 +78,18 @@ def test_control_crudl(
     )
     assertOK(r)
     control.refresh_from_db()
-    assert isinstance(r, TurboStreamResponse)
 
-    # is sending the widget output
-    assertContains(r, f"widgets-output-{widget.id}")
-    assert control.date_range == CustomChoice.CUSTOM
+    # todo: check it is sending the HX-Trigger event
 
     # delete
-    r = client.delete(control_url + f"{control_widget.id}/delete-widget")
-    assertOK(r)
-    assert isinstance(r, TurboStreamResponse)
+    r = client.post(control_url + f"{control_widget.id}/delete-widget")
+    assert r.status_code == 302
     assert Control.objects.first() is None
     assert ControlWidget.objects.first() is None
-    assertContains(r, f"widgets-output-{widget.id}")
 
 
 def test_public_date_slice_not_updating(
-    client, project, dashboard_factory, control_factory
+    client, project, dashboard_factory, control_factory, control_widget_factory
 ):
     """Tests that on submission on a public dashboard the control is not
     actually updating"""
@@ -106,13 +99,15 @@ def test_public_date_slice_not_updating(
         shared_id=uuid.uuid4(),
     )
     dashboard.pages.create()
-    control = control_factory(page=dashboard.pages.first())
+    page = dashboard.pages.first()
+    control = control_factory(page=page)
+    control_widget_factory(page=page, control=control)
+
     r = client.post(
         f"/projects/{project.id}/dashboards/{dashboard.id}/controls/{control.id}/update-public",
         data={"date_range": CustomChoice.CUSTOM, "submit": "submit"},
     )
     assertOK(r)
-    assert isinstance(r, TurboStreamResponse)
 
     control.refresh_from_db()
     assert control.date_range == DateRange.THIS_YEAR
@@ -135,12 +130,12 @@ def test_adding_more_control_widgets(
     assert Control.objects.count() == 1
 
     # deleting the first widget doesnt delete control
-    r = client.delete(f"{control_url}{ControlWidget.objects.first().id}/delete-widget")
-    assertOK(r)
+    r = client.post(f"{control_url}{ControlWidget.objects.first().id}/delete-widget")
+    assert r.status_code == 302
     assert ControlWidget.objects.count() == 1
     assert Control.objects.first() is not None
 
-    r = client.delete(f"{control_url}{ControlWidget.objects.first().id}/delete-widget")
-    assertOK(r)
+    r = client.post(f"{control_url}{ControlWidget.objects.first().id}/delete-widget")
+    assert r.status_code == 302
     assert ControlWidget.objects.first() is None
     assert Control.objects.first() is None

@@ -7,7 +7,8 @@
 
   <div 
     hx-get="{% url 'dashboard_widgets:output' project.id dashboard.id object.id %}?mode={{ request.GET.mode|default:"edit" }}"
-    hx-trigger="load"
+    {% comment %}todo: original logic to refresh widget = "not (object.has_control) and object.date_column and object.is_valid"{% endcomment %}
+    hx-trigger="load,gy-control from:window"
     style="display: flex;flex: 1 1 0%;min-height: 0;overflow: auto;height: 100%;"
   >
     <div class='placeholder-scr placeholder-scr--fillscreen'>
