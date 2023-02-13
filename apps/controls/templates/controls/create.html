@@ -6,7 +6,9 @@
     <div
       id="control-widget"
       class="dashboard-sidebar__item w-full cursor-draggable"
-      ondragstart="event.dataTransfer.setData('application/gydashboard', 'control');event.dataTransfer.effectAllowed = 'move';"
+      x-data={}
+      @dragstart="$event.dataTransfer.setData('application/gydashboard', 'control')
+        $event.dataTransfer.effectAllowed = 'move';"
       draggable="true"
     >
       <i class="dashboard-sidebar__icon fas fa-fw fa-lg fa-calendar mr-2"></i>
