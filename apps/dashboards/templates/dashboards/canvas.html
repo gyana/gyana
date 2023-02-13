@@ -1,31 +1,6 @@
 {% load static %}
 {% load waffle_tags %}
 
-<script>
-  function drop($el, $event, $refs) {
-    // Get offset relative to canvas, not drop target (which could be any widget).
-    const {top, left} = $el.getBoundingClientRect()
-    const offsetX = Math.round($event.clientX - left)
-    const offsetY = Math.round($event.clientY - top)
-
-    // use a hidden form to create a widget/control and add to canvas via HTMX
-    const kind = $event.dataTransfer.getData('application/gydashboard')
-
-    if (kind === 'control') {
-      const form = $refs.control
-      form.elements['x'].value = offsetX - 150 // default width is 300
-      form.elements['y'].value = offsetY - 50 // default height is 100
-      form.requestSubmit()
-    } else {
-      const form = $refs.widget
-      form.elements['kind'].value = kind
-      form.elements['x'].value = offsetX - 248 // default width is 495
-      form.elements['y'].value = offsetY - 195 // default height is 390
-      form.requestSubmit()
-    }
-  }
-</script>
-
 <div
   class="widgets"
   style="padding-right: calc({{ dashboard.width }}px + 1.6rem);"
@@ -36,7 +11,27 @@
     data-controller="widget-list"
     x-data="{}"
     @dragover.prevent="$event.dataTransfer.dropEffect = 'move'"
-    @drop="drop($el, $event, $refs)"
+    @drop="const {top, left} = $el.getBoundingClientRect()
+
+      // get offset relative to canvas, not drop target (which could be any widget)
+      const offsetX = Math.round($event.clientX - left)
+      const offsetY = Math.round($event.clientY - top)
+
+      // use a hidden form to create a widget/control and add to canvas via HTMX
+      const kind = $event.dataTransfer.getData('application/gydashboard')
+
+      if (kind === 'control') {
+        const form = $refs.control
+        form.elements['x'].value = offsetX - 150 // default width is 300
+        form.elements['y'].value = offsetY - 50 // default height is 100
+        form.requestSubmit()
+      } else {
+        const form = $refs.widget
+        form.elements['kind'].value = kind
+        form.elements['x'].value = offsetX - 248 // default width is 495
+        form.elements['y'].value = offsetY - 195 // default height is 390
+        form.requestSubmit()
+      }"
   >
     {% comment %} Hidden form used by Alpine/HTMX {% endcomment %}
     <form

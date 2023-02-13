@@ -9,6 +9,7 @@
     "dbaeumer.vscode-eslint",
     "batisteo.vscode-django",
     "bradlc.vscode-tailwindcss",
-    "monosans.djlint"
+    "monosans.djlint",
+    "pcbowers.alpine-intellisense"
   ]
 }

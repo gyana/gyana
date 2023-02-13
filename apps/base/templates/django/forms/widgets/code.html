@@ -1,7 +1,14 @@
-<div data-controller="code-input" class="w-full">
+<div class="w-full">
   <textarea
+    x-init="const mirror = CodeMirror.fromTextArea(($el), {
+      lineNumbers: true,
+      lineWrapping: true,
+    })
+  
+    mirror.on('blur', function (cm) {
+      cm.save()
+    })"
     name="{{ widget.name }}"
-    data-code-input-target="textarea"
     {% include "django/forms/widgets/attrs.html" %}
   >{% if widget.value %}{{ widget.value }}{% endif %}</textarea>
 </div>
