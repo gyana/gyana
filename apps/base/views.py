@@ -1,7 +1,6 @@
 from django.db import transaction
 from django.utils.datastructures import MultiValueDict
 from django.views.generic.edit import CreateView, UpdateView
-from turbo_response.mixins import TurboFormMixin
 
 
 class LiveMixin:
