@@ -59,7 +59,7 @@
   data-controller="tf-modal on-submit-loading turbo-loading"
   hx-boost="true"
 >
-  <header x-data="{ running: false }" class="widgets__export-header" data-html2canvas-ignore>
+  <header x-data="{running: false}" class="widgets__export-header" data-html2canvas-ignore>
     <input x-ref="input" class="input__inline"
       type="text"
       name="filename"
@@ -67,13 +67,11 @@
 
     <button
       class="button button--sm relative"
-      class="link small"
+      :class="{running: 'bg-transparent'}"
       @click="running = true
-        console.log('hi')
         await $nextTick()
         await SiteJS.dashboards.PDF.exportPDF($refs.input.value || '{{ dashboard.name|slugify }}.pdf')
         running = false"
-      :style="running && 'color: transparent;'"
       :disabled="running"
     >
       Export as PDF
