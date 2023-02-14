@@ -202,7 +202,7 @@ def test_integration_create_pending_load_and_approve(
     assert team.row_count == 0
 
     r = client.post(f"{DETAIL}/done")
-    assertRedirects(r, DETAIL, status_code=303)
+    assertRedirects(r, DETAIL)
 
     team.refresh_from_db()
     assert team.row_count == 10

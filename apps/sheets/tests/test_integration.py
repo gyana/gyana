@@ -69,7 +69,7 @@ def test_sheet_create(
     assert integration.created_by == logged_in_user
     DETAIL = f"/projects/{project.id}/integrations/{integration.id}"
 
-    assertRedirects(r, f"{DETAIL}/load", status_code=303, target_status_code=302)
+    assertRedirects(r, f"{DETAIL}/load", target_status_code=302)
 
     # Task should have ran already
     assert integration.runs.count() == 1

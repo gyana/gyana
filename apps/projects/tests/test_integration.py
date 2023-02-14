@@ -44,7 +44,7 @@ def test_project_crudl(client, logged_in_user):
     )
     project = team.project_set.first()
     assert project is not None
-    assertRedirects(r, f"/projects/{project.id}", status_code=303)
+    assertRedirects(r, f"/projects/{project.id}")
 
     # read
     r = client.get(f"/projects/{project.id}")
@@ -74,7 +74,7 @@ def test_project_crudl(client, logged_in_user):
             "access": "everyone",
         },
     )
-    assertRedirects(r, f"/projects/{project.id}/update", status_code=303)
+    assertRedirects(r, f"/projects/{project.id}/update")
 
     project.refresh_from_db()
     assert project.name == "KPIs"

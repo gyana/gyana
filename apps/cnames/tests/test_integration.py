@@ -58,7 +58,7 @@ def test_cname_crudl(client, logged_in_user, heroku):
     assertLink(r, f"/teams/{team.id}/cnames/new", "create one")
 
     r = client.post(f"/teams/{team.id}/cnames/new", data={"domain": "test.domain.com"})
-    assertRedirects(r, f"/teams/{team.id}/update", status_code=303)
+    assertRedirects(r, f"/teams/{team.id}/update")
 
     assert team.cname_set.count() == 1
     cname = team.cname_set.first()
@@ -168,7 +168,7 @@ def test_cname_middleware_for_public_dashboard(
         f"/projects/{project.id}/update",
         data={"name": "Project", "access": "everyone", "cname": cname.id},
     )
-    assertRedirects(r, f"/projects/{project.id}/update", status_code=303)
+    assertRedirects(r, f"/projects/{project.id}/update")
 
     # public dashboard on our domain
     r = client.get(SHARED)
