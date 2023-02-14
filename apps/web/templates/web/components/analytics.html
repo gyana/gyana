@@ -6,6 +6,7 @@
   analytics.page();
   {% if user.id %}analytics.identify("{{user.id}}", {email: "{{ user.email }}"});{% endif %}
   {% if DEBUG %}analytics.debug();{% endif %}
+  {% comment %} todo: keep or use htmx equivalent {% endcomment %}
   document.documentElement.addEventListener("turbo:visit", function (e) {window.analytics.page();});
   }}();
 </script>

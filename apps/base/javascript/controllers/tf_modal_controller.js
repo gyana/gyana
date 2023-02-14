@@ -3,9 +3,9 @@ import { Controller } from '@hotwired/stimulus'
 const debounceTime = 450
 
 /**
- * Modal controller with content populated by a turbo-frame.
+ * Modal controller with content populated by a htmx request.
  *
- * Pass turbo-frame specific details via data attributes:
+ * Pass htmx specific details via data attributes:
  * `data-modal-src`, `data-modal-id`
  *
  * @example
@@ -16,11 +16,11 @@ const debounceTime = 450
  *   data-modal-id="web:help"
  *   data-modal-classes="tf-modal--tall"
  * >
- *  Click me to open a turbo-frame modal!
+ *  Click me to open a htmx modal!
  * </button>
  */
 export default class extends Controller {
-  static targets = ['modal', 'turboFrame', 'closingWarning', 'form', 'onParam']
+  static targets = ['modal', 'htmx', 'closingWarning', 'form', 'onParam']
 
   initialize() {
     this.changed = false
@@ -54,27 +54,24 @@ export default class extends Controller {
 
     if (params.get('modal_item')) {
       // This is a little hacky, it simulates a click because we need the
-      // data attributes with the turbo-frame src/id.
+      // data attributes with the htmx src.
       this.onParamTarget.click()
     }
   }
 
   open(event) {
-    // Turbo removes the placeholder every time, we need to add it to indicate
+    // HTMX removes the placeholder every time, we need to add it to indicate
     // a loading state.
-    this.turboFrameTarget.innerHTML = `
+    this.htmxTarget.innerHTML = `
       <div class='placeholder-scr placeholder-scr--fillscreen'>
         <i class='placeholder-scr__icon fad fa-spinner-third fa-spin fa-2x'></i>
       </div>
     `
 
-    this.turboFrameTarget.setAttribute(
-      'hx-get',
-      event.currentTarget.dataset.modalSrc
-    )
+    this.htmxTarget.setAttribute('hx-get', event.currentTarget.dataset.modalSrc)
 
     if (event.currentTarget.dataset.modalTarget) {
-      this.turboFrameTarget.setAttribute(
+      this.htmxTarget.setAttribute(
         'target',
         event.currentTarget.dataset.modalTarget
       )
@@ -95,8 +92,8 @@ export default class extends Controller {
 
     this.modalTarget.removeAttribute('hidden')
 
-    htmx.process(this.turboFrameTarget)
-    this.turboFrameTarget.dispatchEvent(new CustomEvent('hx-modal-load'))
+    htmx.process(this.htmxTarget)
+    this.htmxTarget.dispatchEvent(new CustomEvent('hx-modal-load'))
   }
 
   async submit(e) {
@@ -247,10 +244,7 @@ export default class extends Controller {
   }
 
   handleClick(event) {
-    if (
-      this.hasTurboFrameTarget &&
-      !this.turboFrameTarget.contains(event.target)
-    ) {
+    if (this.hashtmxTarget && !this.htmxTarget.contains(event.target)) {
       this.close(event)
     }
   }
