@@ -2,10 +2,9 @@ import analytics
 from django.shortcuts import redirect
 from django.urls.base import reverse
 from django.views.generic import DetailView
-from django.views.generic.edit import DeleteView
+from django.views.generic.edit import CreateView, DeleteView, UpdateView
 
 from apps.base.analytics import PROJECT_CREATED_EVENT
-from apps.base.views import TurboCreateView, TurboUpdateView
 from apps.teams.mixins import TeamMixin
 
 from .forms import ProjectCreateForm, ProjectUpdateForm
@@ -19,7 +18,7 @@ class ProjectTeamMixin:
         return context
 
 
-class ProjectCreate(TeamMixin, TurboCreateView):
+class ProjectCreate(TeamMixin, CreateView):
     template_name = "projects/create.html"
     model = Project
     form_class = ProjectCreateForm
@@ -56,7 +55,7 @@ class ProjectDetail(ProjectTeamMixin, DetailView):
         return super().get(request, *args, **kwargs)
 
 
-class ProjectUpdate(ProjectTeamMixin, TurboUpdateView):
+class ProjectUpdate(ProjectTeamMixin, UpdateView):
     template_name = "projects/update.html"
     model = Project
     form_class = ProjectUpdateForm

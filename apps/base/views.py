@@ -60,15 +60,3 @@ class LiveUpdateView(LiveMixin, UpdateView):
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         return super().post(request, *args, **kwargs)
-
-
-class TurboCreateView(LiveMixin, TurboFormMixin, CreateView):
-    def post(self, request, *args, **kwargs):
-        self.object = None
-        return super().post(request, *args, **kwargs)
-
-
-class TurboUpdateView(LiveMixin, TurboFormMixin, UpdateView):
-    def post(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        return super().post(request, *args, **kwargs)

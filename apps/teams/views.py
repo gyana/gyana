@@ -5,13 +5,12 @@ from django.http import HttpResponse
 from django.http.response import Http404
 from django.shortcuts import redirect
 from django.urls import reverse
-from django.views.generic import DeleteView, DetailView
+from django.views.generic import CreateView, DeleteView, DetailView, UpdateView
 from django_tables2.views import SingleTableMixin, SingleTableView
 from djpaddle.models import Plan
 from djpaddle.views import PaddlePostCheckoutApiView as BasePaddlePostCheckoutApiView
 
 from apps.base.analytics import CHECKOUT_COMPLETED_EVENT, CHECKOUT_OPENED_EVENT
-from apps.base.views import TurboCreateView, TurboUpdateView
 
 from .forms import MembershipUpdateForm, TeamCreateForm, TeamUpdateForm
 from .mixins import TeamMixin
@@ -20,7 +19,7 @@ from .paddle import get_plan_price_for_currency, list_payments_for_team
 from .tables import TeamMembershipTable, TeamPaymentsTable, TeamProjectsTable
 
 
-class TeamCreate(TurboCreateView):
+class TeamCreate(CreateView):
     model = Team
     form_class = TeamCreateForm
     template_name = "teams/create.html"
@@ -109,7 +108,7 @@ class TeamPayments(SingleTableMixin, DetailView):
         return {"order_by": "-payout_date"}
 
 
-class TeamUpdate(TurboUpdateView):
+class TeamUpdate(UpdateView):
     template_name = "teams/update.html"
     form_class = TeamUpdateForm
     model = Team
@@ -154,7 +153,7 @@ class TeamDetail(SingleTableMixin, DetailView):
         return self.projects
 
 
-class TeamAccount(TurboUpdateView):
+class TeamAccount(UpdateView):
     template_name = "teams/account.html"
     model = Team
     pk_url_kwarg = "team_id"
@@ -178,7 +177,7 @@ class MembershipList(TeamMixin, SingleTableView):
         return Membership.objects.filter(team=self.team).all()
 
 
-class MembershipUpdate(TeamMixin, TurboUpdateView):
+class MembershipUpdate(TeamMixin, UpdateView):
     template_name = "members/update.html"
     model = Membership
     form_class = MembershipUpdateForm

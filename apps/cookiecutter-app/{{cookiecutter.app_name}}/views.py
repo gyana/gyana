@@ -1,8 +1,6 @@
 from django.urls import reverse_lazy
-from django.views.generic import DetailView, ListView
-from django.views.generic.edit import DeleteView
+from django.views.generic import DetailView, ListView, DeleteView,  CreateView, UpdateView
 from django_tables2 import SingleTableView
-from apps.base.views import TurboCreateView, TurboUpdateView
 
 from .forms import {{ cookiecutter.model_name }}Form
 from .models import {{ cookiecutter.model_name }}
@@ -16,7 +14,7 @@ class {{ cookiecutter.model_name }}List(SingleTableView):
     paginate_by = 20
 
 
-class {{ cookiecutter.model_name }}Create(TurboCreateView):
+class {{ cookiecutter.model_name }}Create(CreateView):
     template_name = "{{ cookiecutter.app_name }}/create.html"
     model = {{ cookiecutter.model_name }}
     form_class = {{ cookiecutter.model_name }}Form
@@ -28,7 +26,7 @@ class {{ cookiecutter.model_name }}Detail(DetailView):
     model = {{ cookiecutter.model_name }}
 
 
-class {{ cookiecutter.model_name }}Update(TurboUpdateView):
+class {{ cookiecutter.model_name }}Update(UpdateView):
     template_name = "{{ cookiecutter.app_name }}/update.html"
     model = {{ cookiecutter.model_name }}
     form_class = {{ cookiecutter.model_name }}Form

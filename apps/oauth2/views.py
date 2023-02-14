@@ -1,17 +1,16 @@
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.views.generic import DetailView
-from django.views.generic.edit import DeleteView
+from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from requests_oauthlib import OAuth2Session
 
-from apps.base.views import TurboCreateView, TurboUpdateView
 from apps.projects.mixins import ProjectMixin
 
 from .forms import OAuth2CreateForm, OAuth2UpdateForm
 from .models import OAuth2
 
 
-class OAuth2Create(ProjectMixin, TurboCreateView):
+class OAuth2Create(ProjectMixin, CreateView):
     template_name = "oauth2/create.html"
     model = OAuth2
     form_class = OAuth2CreateForm
@@ -25,7 +24,7 @@ class OAuth2Create(ProjectMixin, TurboCreateView):
         return reverse("project_oauth2:update", args=(self.project.id, self.object.id))
 
 
-class OAuth2Update(ProjectMixin, TurboUpdateView):
+class OAuth2Update(ProjectMixin, UpdateView):
     template_name = "oauth2/update.html"
     model = OAuth2
     form_class = OAuth2UpdateForm

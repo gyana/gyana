@@ -1,8 +1,8 @@
+from django.http.response import HttpResponseSeeOther
 from django.shortcuts import render
 from django.urls import reverse
 from django.utils.functional import cached_property
 from django_htmx.http import retarget, trigger_client_event
-from turbo_response.response import HttpResponseSeeOther
 
 from apps.base.views import LiveUpdateView
 from apps.dashboards.mixins import DashboardMixin
@@ -83,6 +83,7 @@ class ControlPublicUpdate(ControlUpdate):
 
     def form_valid(self, form):
         if form.is_live:
+            HttpResponseSeeOther
             return HttpResponseSeeOther(self.get_success_url())
         return self.get_stream_response(form)
 

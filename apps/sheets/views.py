@@ -2,9 +2,9 @@ import analytics
 from django.conf import settings
 from django.urls import reverse
 from django.urls.base import reverse
+from django.views.generic import CreateView
 
 from apps.base.analytics import INTEGRATION_CREATED_EVENT, NEW_INTEGRATION_START_EVENT
-from apps.base.views import TurboCreateView
 from apps.integrations.models import Integration
 from apps.integrations.tasks import run_integration
 from apps.projects.mixins import ProjectMixin
@@ -13,7 +13,7 @@ from .forms import SheetCreateForm
 from .models import Sheet
 
 
-class SheetCreate(ProjectMixin, TurboCreateView):
+class SheetCreate(ProjectMixin, CreateView):
     template_name = "sheets/create.html"
     model = Sheet
     form_class = SheetCreateForm

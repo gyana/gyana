@@ -1,16 +1,16 @@
 from django.conf import settings
 from django.urls.base import reverse
+from django.views.generic import CreateView
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import DeleteView
 
-from apps.base.views import TurboCreateView
 from apps.teams.mixins import TeamMixin
 
 from .forms import CNameForm
 from .models import CName
 
 
-class CNameCreate(TeamMixin, TurboCreateView):
+class CNameCreate(TeamMixin, CreateView):
     template_name = "cnames/create.html"
     model = CName
     form_class = CNameForm

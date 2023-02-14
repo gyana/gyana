@@ -10,7 +10,7 @@ from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.debug import sensitive_post_parameters
 from django.views.generic.base import TemplateView
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import CreateView, DeleteView, FormView
+from django.views.generic.edit import CreateView, DeleteView, FormView, UpdateView
 from django_tables2 import SingleTableView
 
 from apps.base.analytics import (
@@ -18,14 +18,13 @@ from apps.base.analytics import (
     DASHBOARD_CREATED_EVENT_FROM_INTEGRATION,
     DASHBOARD_DUPLICATED_EVENT,
 )
-from apps.base.views import TurboCreateView, TurboUpdateView
-from apps.dashboards.mixins import DashboardMixin, PageMixin
+from apps.dashboards.mixins import PageMixin
 from apps.dashboards.tables import DashboardTable
 from apps.integrations.models import Integration
 from apps.projects.mixins import ProjectMixin
 from apps.widgets.models import WIDGET_CHOICES_ARRAY, Widget
 
-from .forms import DashboardCreateForm, DashboardLoginForm, DashboardNameForm
+from .forms import DashboardCreateForm, DashboardLoginForm
 from .models import Dashboard, DashboardUpdate, DashboardVersion, Page
 
 
@@ -49,7 +48,7 @@ class DashboardList(ProjectMixin, SingleTableView):
         return Dashboard.objects.filter(project=self.project).all()
 
 
-class DashboardCreate(ProjectMixin, TurboCreateView):
+class DashboardCreate(ProjectMixin, CreateView):
     template_name = "dashboards/create.html"
     model = Dashboard
     form_class = DashboardCreateForm
@@ -79,7 +78,7 @@ class DashboardCreate(ProjectMixin, TurboCreateView):
         return r
 
 
-class DashboardCreateFromIntegration(ProjectMixin, TurboCreateView):
+class DashboardCreateFromIntegration(ProjectMixin, CreateView):
     model = Dashboard
     template_name = "dashboards/create_from_integration.html"
     fields = ("project",)
@@ -142,7 +141,7 @@ class DashboardDelete(ProjectMixin, DeleteView):
         return reverse("project_dashboards:list", args=(self.project.id,))
 
 
-class DashboardDuplicate(TurboUpdateView):
+class DashboardDuplicate(UpdateView):
     template_name = "components/_duplicate.html"
     model = Dashboard
     fields = []
@@ -285,7 +284,7 @@ class PageDelete(PageMixin, DeleteView):
         return f"{reverse('project_dashboards:detail', args=(self.project.id, self.dashboard.id))}?dashboardPage={min(self.object.position, self.dashboard.pages.count()-1)}"
 
 
-class DashboardRestore(TurboUpdateView):
+class DashboardRestore(UpdateView):
     model = DashboardVersion
     fields = []
     template_name = "components/dummy.html"
@@ -307,7 +306,7 @@ class DashboardUpdateRestore(DashboardRestore):
     model = DashboardUpdate
 
 
-class PageMove(PageMixin, TurboUpdateView):
+class PageMove(PageMixin, UpdateView):
     model = Page
     fields = []
     template_name = "dashboards/forms/move_page.html"

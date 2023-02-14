@@ -1,17 +1,16 @@
 import analytics
 from django.shortcuts import render
 from django.urls import reverse
-from django.views.generic import DeleteView
+from django.views.generic import CreateView, DeleteView, UpdateView
 
 from apps.base.analytics import WIDGET_CREATED_EVENT, WIDGET_DUPLICATED_EVENT
-from apps.base.views import TurboCreateView, TurboUpdateView
 from apps.dashboards.mixins import DashboardMixin
 
 from .forms import WidgetCreateForm, WidgetDuplicateForm
 from .models import Widget
 
 
-class WidgetCreate(DashboardMixin, TurboCreateView):
+class WidgetCreate(DashboardMixin, CreateView):
     template_name = "widgets/create.html"
     model = Widget
     form_class = WidgetCreateForm
@@ -61,7 +60,7 @@ class WidgetCreate(DashboardMixin, TurboCreateView):
         )
 
 
-class WidgetDetail(DashboardMixin, TurboUpdateView):
+class WidgetDetail(DashboardMixin, UpdateView):
     template_name = "widgets/detail.html"
     model = Widget
     form_class = WidgetDuplicateForm
@@ -118,7 +117,7 @@ class WidgetDelete(DashboardMixin, DeleteView):
         )
 
 
-class WidgetMovePage(DashboardMixin, TurboUpdateView):
+class WidgetMovePage(DashboardMixin, UpdateView):
     model = Widget
     fields = ("page",)
     template_name = "widgets/forms/move_page.html"

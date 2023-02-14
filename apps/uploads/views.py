@@ -1,8 +1,8 @@
 import analytics
 from django.urls import reverse
+from django.views.generic import CreateView
 
 from apps.base.analytics import INTEGRATION_CREATED_EVENT, NEW_INTEGRATION_START_EVENT
-from apps.base.views import TurboCreateView
 from apps.integrations.models import Integration
 from apps.integrations.tasks import run_integration
 from apps.projects.mixins import ProjectMixin
@@ -12,7 +12,7 @@ from .forms import UploadCreateForm
 from .models import Upload
 
 
-class UploadCreate(ProjectMixin, TurboCreateView):
+class UploadCreate(ProjectMixin, CreateView):
     template_name = "uploads/create.html"
     model = Upload
     form_class = UploadCreateForm
