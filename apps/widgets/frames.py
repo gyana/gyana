@@ -92,7 +92,7 @@ class WidgetName(UpdateView):
 class WidgetUpdate(DashboardMixin, LiveUpdateView):
     model = Widget
 
-    def get_turbo_stream_response(self, context):
+    def get_htmx_response(self, context):
         return render(
             self.request,
             "widgets/widget_component.html",
@@ -246,9 +246,7 @@ class WidgetUpdate(DashboardMixin, LiveUpdateView):
         )
 
         return retarget(
-            trigger_client_event(
-                self.get_turbo_stream_response(context), "closeModal", {}
-            ),
+            trigger_client_event(self.get_htmx_response(context), "closeModal", {}),
             f"#widget-{self.object.id}",
         )
 
@@ -258,7 +256,7 @@ class WidgetUpdate(DashboardMixin, LiveUpdateView):
             # This is called when the x/close button is clicked
             context = self.get_output_context()
 
-            return self.get_turbo_stream_response(context)
+            return self.get_htmx_response(context)
         return r
 
 

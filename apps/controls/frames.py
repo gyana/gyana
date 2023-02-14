@@ -1,4 +1,4 @@
-from django.http.response import HttpResponseSeeOther
+from django.http.response import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django.utils.functional import cached_property
@@ -83,8 +83,7 @@ class ControlPublicUpdate(ControlUpdate):
 
     def form_valid(self, form):
         if form.is_live:
-            HttpResponseSeeOther
-            return HttpResponseSeeOther(self.get_success_url())
+            return HttpResponseRedirect(self.get_success_url())
         return self.get_stream_response(form)
 
     @cached_property

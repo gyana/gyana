@@ -34,5 +34,5 @@ accounts_urlpatterns = [
         xframe_options_sameorigin_allowlist(SignupView.as_view()),
         name="account_signup",
     ),
-    path("", include("turbo_allauth.urls")),
+    path("", include("allauth.urls")),
 ]
