@@ -26,8 +26,6 @@
   {% comment %} Enables iframe embedding with top navigation {% endcomment %}
   {% if request.GET.iframe %}
     <base target="_parent">
-  {% else %}
-    <script src="{% static "js/turbo-bundle.js" %}"></script>
   {% endif %}
   <script src="{% static "js/stimulus-bundle.js" %}"></script>
 
@@ -37,9 +35,6 @@
   <script src="//unpkg.com/alpinejs" defer></script>
 
   {% block head %}
-    {% comment %} Default is for app e.g. app_base, landing_base {% endcomment %}
-    <meta name="turbo-cache-control" content="no-cache" />
-
     <link
       href="//fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap"
       rel="stylesheet"
