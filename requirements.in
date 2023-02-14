@@ -27,8 +27,6 @@ django-simple-history
 django-storages[google]
 django-tables2
 django-timezone-field
-django-turbo-allauth
-django-turbo-response
 django-waffle
 djangorestframework
 fuzzywuzzy
