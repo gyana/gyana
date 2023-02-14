@@ -3,7 +3,7 @@ import { GyanaEvents } from 'apps/base/javascript/events'
 
 /**
  * Adds event listeners to node forms in order to dispatch React events.
- * Syncs react and turbo states.
+ * Syncs react and HTML states.
  */
 export default class extends Controller {
   static values = {
