@@ -116,9 +116,7 @@
 </div>
 
 <div class="flex flex-col pad overflow-hidden">
-  {% comment %} Click a hidden submit button for Turbo to capture event {% endcomment %}
-  <form method="get" onchange="this.querySelector('button').click()">
-    <button type="submit" hidden></button>
+  <form method="get" onchange="this.requestSubmit()">
     <div class='flex flex-row space-x-4 w-1/2 mb-4'>
       {{ filter.form.name }}
       {{ filter.form.kind }}
