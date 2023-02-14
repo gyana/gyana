@@ -6,7 +6,7 @@
     <div
       id="control-widget"
       class="dashboard-sidebar__item w-full cursor-draggable"
-      x-data={}
+      x-data
       @dragstart="$event.dataTransfer.setData('application/gydashboard', 'control')
         $event.dataTransfer.effectAllowed = 'move';"
       draggable="true"

@@ -225,7 +225,7 @@
                             {% if choice_category|lower == category_id|lower %}
                                 <div id="widget-{{ id }}"
                                       class="dashboard-sidebar__item w-full cursor-draggable"
-                                      x-data={}
+                                      x-data
                                       @dragstart="$event.dataTransfer.setData('application/gydashboard', '{{ id }}')
                                         $event.dataTransfer.effectAllowed = 'move';"
                                       draggable="true">
@@ -262,4 +262,6 @@
 
   <script src="{% static 'js/components-bundle.js' %}"></script>
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+  <script src="{% static 'js/dashboards-bundle.js' %}"></script>
 {% endblock body.javascript %}
