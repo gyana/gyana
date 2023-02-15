@@ -41,7 +41,7 @@ def test_team_crudl(client, logged_in_user, bigquery, flag_factory, settings):
     r = client.post("/teams/new", data={"name": "Neera"})
     assert logged_in_user.teams.count() == 2
     new_team = logged_in_user.teams.first()
-    assertRedirects(r, f"/teams/{new_team.id}/pricing", status_code=303)
+    assertRedirects(r, f"/teams/{new_team.id}/pricing", status_code=302)
 
     assert bigquery.create_dataset.call_count == 1
     assert bigquery.create_dataset.call_args.args == (new_team.tables_dataset_id,)

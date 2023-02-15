@@ -139,7 +139,7 @@ def test_integration_schema_and_preview(
     SORT_URL = (
         f"/integrations/{integration.id}/grid?table_id=&page=2&sort={md5('name')}"
     )
-    assertLink(r, SORT_URL)
+    assertLink(r, SORT_URL, htmx=True)
 
     r = client.get(SORT_URL)
     assertOK(r)
