@@ -3,7 +3,8 @@ import http
 from django.db import transaction
 from django.http import HttpResponseRedirect
 from django.utils.datastructures import MultiValueDict
-from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic.edit import CreateView as BaseCreateView
+from django.views.generic.edit import UpdateView as BaseUpdateView
 
 
 class LiveMixin:
@@ -48,22 +49,6 @@ class LiveMixin:
         return response
 
 
-class LiveCreateView(LiveMixin, CreateView):
-    def post(self, request, *args, **kwargs):
-        self.object = None
-        return super().post(request, *args, **kwargs)
-
-
-class LiveUpdateView(LiveMixin, UpdateView):
-    @property
-    def is_preview_request(self):
-        return self.request.POST.get("submit") == "Save & Preview"
-
-    def post(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        return super().post(request, *args, **kwargs)
-
-
 class HttpResponseSeeOther(HttpResponseRedirect):
     """Redirect with 303 status"""
 
@@ -85,13 +70,25 @@ class FormMixin:
         return HttpResponseSeeOther(self.get_success_url())
 
 
-class CreateView(LiveMixin, FormMixin, CreateView):
+class CreateView(FormMixin, BaseCreateView):
+    pass
+
+
+class UpdateView(FormMixin, BaseUpdateView):
+    pass
+
+
+class LiveCreateView(LiveMixin, CreateView):
     def post(self, request, *args, **kwargs):
-        self.object = None
+        self.object = self.get_object()
         return super().post(request, *args, **kwargs)
 
 
-class UpdateView(LiveMixin, FormMixin, UpdateView):
+class LiveUpdateView(LiveMixin, UpdateView):
+    @property
+    def is_preview_request(self):
+        return self.request.POST.get("submit") == "Save & Preview"
+
     def post(self, request, *args, **kwargs):
         self.object = self.get_object()
         return super().post(request, *args, **kwargs)
