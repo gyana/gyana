@@ -75,7 +75,7 @@ def test_dashboard_crudl(client, project, dashboard_factory):
     dashboard_factory.create_batch(30, project=project)
     r = client.get(f"{LIST}/")
     assertOK(r)
-    assertLink(r, f"{LIST}/?page=2", "2")
+    assertLink(r, f"{LIST}/?page=2", "2", htmx=True)
     r = client.get(f"{LIST}/?page=2")
     assertOK(r)
 

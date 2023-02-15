@@ -11,13 +11,15 @@ BS4_TYPES = [NavigableString, TemplateString, CData]
 pytestmark = pytest.mark.django_db
 
 
-def assertLink(response, url, text=None, title=None, tooltip=None, total=1):
+def assertLink(response, url, text=None, title=None, tooltip=None, htmx=False, total=1):
     __tracebackhide__ = True
 
     soup = BeautifulSoup(response.content)
     original_matches = soup.select("a")
 
-    matches = [m for m in original_matches if m.get("href") == url]
+    attr = "hx-get" if htmx else "href"
+
+    matches = [m for m in original_matches if m.get(attr) == url]
 
     if text is not None:
         matches = [m for m in matches if text in m.get_text(types=BS4_TYPES)]

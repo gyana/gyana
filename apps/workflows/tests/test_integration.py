@@ -48,7 +48,7 @@ def test_workflow_crudl(client, project, workflow_factory):
     workflow_factory.create_batch(30, project=project)
     r = client.get(f"{project_url}/workflows/")
     assertOK(r)
-    assertLink(r, f"{project_url}/workflows/?page=2", "2")
+    assertLink(r, f"{project_url}/workflows/?page=2", "2", htmx=True)
     r = client.get(f"{project_url}/workflows/?page=2")
     assertOK(r)
 

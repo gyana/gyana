@@ -120,7 +120,9 @@ def test_integration_schema_and_preview(
     )
 
     # preview page 2
-    assertLink(r, f"/integrations/{integration.id}/grid?table_id=&page=2", "2")
+    assertLink(
+        r, f"/integrations/{integration.id}/grid?table_id=&page=2", "2", htmx=True
+    )
 
     r = client.get(f"/integrations/{integration.id}/grid?table_id=&page=2")
     assertOK(r)
