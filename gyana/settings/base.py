@@ -61,6 +61,8 @@ DJANGO_APPS = [
 # Put your third-party apps here
 THIRD_PARTY_APPS = [
     "allauth",  # allauth account/registration management
+    "turbo_allauth",
+    "turbo_response",
     "allauth.account",
     "allauth.socialaccount",
     "allauth.socialaccount.providers.google",

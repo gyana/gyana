@@ -3,7 +3,7 @@ from django.db.models.query import QuerySet
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.utils import timezone
-from django.views.generic import CreateView, DeleteView, DetailView, UpdateView
+from django.views.generic import DeleteView, DetailView
 from django_tables2 import SingleTableView
 
 from apps.base.analytics import (
@@ -11,6 +11,7 @@ from apps.base.analytics import (
     WORKFLOW_CREATED_EVENT_FROM_INTEGRATION,
     WORKFLOW_DUPLICATED_EVENT,
 )
+from apps.base.views import CreateView, UpdateView
 from apps.integrations.models import Integration
 from apps.nodes.config import get_node_config_with_arity
 from apps.nodes.models import Node

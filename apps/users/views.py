@@ -3,11 +3,11 @@ import jwt
 from django.conf import settings
 from django.shortcuts import redirect
 from django.urls import reverse
-from django.views.generic import UpdateView
 from django.views.generic.base import View
 
 from apps.base.analytics import ONBOARDING_COMPLETED_EVENT
 from apps.base.mixins import PageTitleMixin
+from apps.base.views import UpdateView
 
 from .forms import UserNameForm, UserOnboardingForm
 from .models import CustomUser

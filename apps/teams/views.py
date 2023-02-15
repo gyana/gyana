@@ -5,12 +5,13 @@ from django.http import HttpResponse
 from django.http.response import Http404
 from django.shortcuts import redirect
 from django.urls import reverse
-from django.views.generic import CreateView, DeleteView, DetailView, UpdateView
+from django.views.generic import DeleteView, DetailView
 from django_tables2.views import SingleTableMixin, SingleTableView
 from djpaddle.models import Plan
 from djpaddle.views import PaddlePostCheckoutApiView as BasePaddlePostCheckoutApiView
 
 from apps.base.analytics import CHECKOUT_COMPLETED_EVENT, CHECKOUT_OPENED_EVENT
+from apps.base.views import CreateView, UpdateView
 
 from .forms import MembershipUpdateForm, TeamCreateForm, TeamUpdateForm
 from .mixins import TeamMixin

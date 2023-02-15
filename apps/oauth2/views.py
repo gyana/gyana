@@ -1,9 +1,10 @@
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.views.generic import DetailView
-from django.views.generic.edit import CreateView, DeleteView, UpdateView
+from django.views.generic.edit import DeleteView
 from requests_oauthlib import OAuth2Session
 
+from apps.base.views import CreateView, UpdateView
 from apps.projects.mixins import ProjectMixin
 
 from .forms import OAuth2CreateForm, OAuth2UpdateForm

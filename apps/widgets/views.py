@@ -1,9 +1,10 @@
 import analytics
 from django.shortcuts import render
 from django.urls import reverse
-from django.views.generic import CreateView, DeleteView, UpdateView
+from django.views.generic import DeleteView
 
 from apps.base.analytics import WIDGET_CREATED_EVENT, WIDGET_DUPLICATED_EVENT
+from apps.base.views import CreateView, UpdateView
 from apps.dashboards.mixins import DashboardMixin
 
 from .forms import WidgetCreateForm, WidgetDuplicateForm

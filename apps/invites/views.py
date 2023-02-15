@@ -4,11 +4,12 @@ from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.crypto import get_random_string
 from django.views.generic import DetailView
-from django.views.generic.edit import CreateView, DeleteView, UpdateView
+from django.views.generic.edit import DeleteView
 from invitations.adapters import get_invitations_adapter
 from invitations.views import AcceptInvite, accept_invitation
 
 from apps.base.analytics import INVITE_SENT_EVENT
+from apps.base.views import CreateView, UpdateView
 from apps.teams.mixins import TeamMixin
 
 from .forms import InviteForm, InviteUpdateForm

@@ -2,9 +2,10 @@ import analytics
 from django.shortcuts import redirect
 from django.urls.base import reverse
 from django.views.generic import DetailView
-from django.views.generic.edit import CreateView, DeleteView, UpdateView
+from django.views.generic.edit import DeleteView
 
 from apps.base.analytics import PROJECT_CREATED_EVENT
+from apps.base.views import CreateView, UpdateView
 from apps.teams.mixins import TeamMixin
 
 from .forms import ProjectCreateForm, ProjectUpdateForm

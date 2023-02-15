@@ -10,7 +10,7 @@ from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.debug import sensitive_post_parameters
 from django.views.generic.base import TemplateView
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import CreateView, DeleteView, FormView, UpdateView
+from django.views.generic.edit import CreateView, DeleteView, FormView
 from django_tables2 import SingleTableView
 
 from apps.base.analytics import (
@@ -18,13 +18,14 @@ from apps.base.analytics import (
     DASHBOARD_CREATED_EVENT_FROM_INTEGRATION,
     DASHBOARD_DUPLICATED_EVENT,
 )
-from apps.dashboards.mixins import PageMixin
+from apps.base.views import CreateView, UpdateView
+from apps.dashboards.mixins import DashboardMixin, PageMixin
 from apps.dashboards.tables import DashboardTable
 from apps.integrations.models import Integration
 from apps.projects.mixins import ProjectMixin
 from apps.widgets.models import WIDGET_CHOICES_ARRAY, Widget
 
-from .forms import DashboardCreateForm, DashboardLoginForm
+from .forms import DashboardCreateForm, DashboardLoginForm, DashboardNameForm
 from .models import Dashboard, DashboardUpdate, DashboardVersion, Page
 
 
