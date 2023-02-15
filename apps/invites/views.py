@@ -3,8 +3,7 @@ from django.contrib import messages
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils.crypto import get_random_string
-from django.views.generic import DetailView
-from django.views.generic.edit import DeleteView
+from django.views.generic import DeleteView, DetailView
 from invitations.adapters import get_invitations_adapter
 from invitations.views import AcceptInvite, accept_invitation
 

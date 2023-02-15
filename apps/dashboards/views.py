@@ -8,9 +8,8 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.debug import sensitive_post_parameters
+from django.views.generic import DeleteView, DetailView, FormView
 from django.views.generic.base import TemplateView
-from django.views.generic.detail import DetailView
-from django.views.generic.edit import CreateView, DeleteView, FormView
 from django_tables2 import SingleTableView
 
 from apps.base.analytics import (

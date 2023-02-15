@@ -4,8 +4,7 @@ from django.db.models.query import QuerySet
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils import timezone
-from django.views.generic import DetailView
-from django.views.generic.edit import DeleteView
+from django.views.generic import DeleteView, DetailView
 from django_filters.views import FilterView
 from django_tables2.views import SingleTableMixin
 from waffle import flag_is_active

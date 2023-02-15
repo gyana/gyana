@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.urls.base import reverse
+from django.views.generic import DeleteView
 from django.views.generic.base import TemplateView
-from django.views.generic.edit import DeleteView
 
 from apps.base.views import CreateView
 from apps.teams.mixins import TeamMixin

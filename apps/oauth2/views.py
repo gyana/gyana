@@ -1,7 +1,6 @@
 from django.shortcuts import redirect
 from django.urls import reverse
-from django.views.generic import DetailView
-from django.views.generic.edit import DeleteView
+from django.views.generic import DeleteView, DetailView
 from requests_oauthlib import OAuth2Session
 
 from apps.base.views import CreateView, UpdateView
