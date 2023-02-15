@@ -92,7 +92,7 @@ def test_invite_existing_user_to_team(client, logged_in_user):
         f"/login/?next={invite_link}",
         data={"login": "invite@gyana.com", "password": "seewhatmatters"},
     )
-    assertRedirects(r, invite_link, status_code=303, fetch_redirect_response=False)
+    assertRedirects(r, invite_link, status_code=302, fetch_redirect_response=False)
 
     r = client.get(invite_link)
     assertRedirects(r, f"/teams/{team.id}")

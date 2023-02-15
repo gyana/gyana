@@ -26,7 +26,7 @@ def test_login(client):
     r = client.post(
         "/login/", data={"login": "test@gyana.com", "password": "seewhatmatters"}
     )
-    assertRedirects(r, "/", status_code=303, target_status_code=302)
+    assertRedirects(r, "/", status_code=302, target_status_code=302)
 
     r = client.get("/")
     assertRedirects(r, "/teams/new")
@@ -62,7 +62,7 @@ def test_reset_password(client):
     assertFormRenders(r, ["email"])
 
     r = client.post("/password/reset/", data={"email": "test@gyana.com"})
-    assertRedirects(r, "/password/reset/done/", status_code=303)
+    assertRedirects(r, "/password/reset/done/", status_code=302)
 
     assert len(mail.outbox) == 1
     link = re.search("(?P<url>https?://[^\s]+)", mail.outbox[0].body).group("url")
@@ -83,13 +83,13 @@ def test_reset_password(client):
         set_password_url,
         data={"password1": "senseknowdecide", "password2": "senseknowdecide"},
     )
-    assertRedirects(r, "/password/reset/key/done/", status_code=303)
+    assertRedirects(r, "/password/reset/key/done/", status_code=302)
 
     # login
     r = client.post(
         "/login/", data={"login": "test@gyana.com", "password": "senseknowdecide"}
     )
-    assertRedirects(r, "/", status_code=303, target_status_code=302)
+    assertRedirects(r, "/", status_code=302, target_status_code=302)
     assertRedirects(client.get("/"), "/teams/new")
 
 

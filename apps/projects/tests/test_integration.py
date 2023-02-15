@@ -191,7 +191,7 @@ def test_automate(client, logged_in_user, project_factory, graph_run_factory, is
     r = client.post(
         f"/projects/{project.id}/runs", data={"daily_schedule_time": "06:00"}
     )
-    assertRedirects(r, f"/projects/{project.id}/runs", status_code=302)
+    assertRedirects(r, f"/projects/{project.id}/runs", status_code=303)
 
     project.refresh_from_db()
 
@@ -242,7 +242,7 @@ def test_duplicate_simple_project(
     project_dict = get_instance_dict(project)
 
     r = client.post(f"/projects/{project.id}/duplicate")
-    assert r.status_code == 302
+    assert r.status_code == 303
     duplicate = Project.objects.exclude(id=project.id).first()
 
     assert duplicate.name == f"Copy of {project.name}"

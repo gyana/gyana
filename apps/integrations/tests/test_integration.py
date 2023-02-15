@@ -51,7 +51,7 @@ def test_integration_crudl(client, logged_in_user, sheet_factory):
     # name
     new_name = "Superduper integration"
     r = client.post(f"/integrations/{integration.id}/name", data={"name": new_name})
-    assertRedirects(r, f"/integrations/{integration.id}/name", status_code=302)
+    assertRedirects(r, f"/integrations/{integration.id}/name", status_code=303)
     integration.refresh_from_db()
     assert integration.name == new_name
 

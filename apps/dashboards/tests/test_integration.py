@@ -45,13 +45,13 @@ def test_dashboard_crudl(client, project, dashboard_factory):
     # update/rename
     new_name = "Superduper dashboard"
     r = client.post(f"/dashboards/{dashboard.id}/name", data={"name": new_name})
-    assertRedirects(r, f"/dashboards/{dashboard.id}/name", status_code=302)
+    assertRedirects(r, f"/dashboards/{dashboard.id}/name", status_code=303)
     dashboard.refresh_from_db()
     assert dashboard.name == new_name
 
     # add page
     r = client.post(f"{DETAIL}/pages/new")
-    assertRedirects(r, f"{DETAIL}?dashboardPage=2", status_code=302)
+    assertRedirects(r, f"{DETAIL}?dashboardPage=2", status_code=303)
     page = dashboard.pages.last()
     assert page.position == 2
 
@@ -60,7 +60,7 @@ def test_dashboard_crudl(client, project, dashboard_factory):
 
     # delete page
     r = client.delete(f"{DETAIL}/pages/{page.id}")
-    assertRedirects(r, f"{DETAIL}?dashboardPage=1", status_code=302)
+    assertRedirects(r, f"{DETAIL}?dashboardPage=1")
     assert dashboard.pages.count() == 1
 
     # delete
@@ -103,7 +103,7 @@ def test_dashboard_share(
         f"/dashboards/{dashboard.id}/share",
         data={"shared_status": Dashboard.SharedStatus.PUBLIC},
     )
-    assertRedirects(r, f"/dashboards/{dashboard.id}/share", status_code=302)
+    assertRedirects(r, f"/dashboards/{dashboard.id}/share", status_code=303)
     dashboard.refresh_from_db()
     assert dashboard.shared_id is not None
     PUBLIC = f"/dashboards/{dashboard.shared_id}"
@@ -135,7 +135,7 @@ def test_dashboard_share(
             "password": "secret",
         },
     )
-    assertRedirects(r, f"/dashboards/{dashboard.id}/share", status_code=302)
+    assertRedirects(r, f"/dashboards/{dashboard.id}/share", status_code=303)
 
     # check access
     client.logout()
@@ -268,7 +268,7 @@ def test_dashboard_page_name(
     assertOK(r)
 
     r = client.post(url, data={"name": "Test Page Name"})
-    assert r.status_code == 302
+    assert r.status_code == 303
     assert (
         r.url
         == f"/projects/{project.id}/dashboards/{dashboard.id}/pages/{page_1.id}/name"
@@ -290,7 +290,7 @@ def test_dashboard_history(
     project_dashboard_url = f"/projects/{project.id}/dashboards/{dashboard.id}"
 
     r = client.post(f"{project_dashboard_url}/history", data={"name": ""})
-    assert r.status_code == 302
+    assert r.status_code == 303
 
     version_1 = dashboard.versions.first()
     assert version_1 is not None
@@ -305,7 +305,7 @@ def test_dashboard_history(
         f"/dashboards/version/{dashboard.versions.first().id}/rename",
         data={"name": "Empty dashboard"},
     )
-    assert r.status_code == 302
+    assert r.status_code == 303
     version_1.refresh_from_db()
     assert version_1.name == "Empty dashboard"
 

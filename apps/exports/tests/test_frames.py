@@ -1,5 +1,5 @@
 import pytest
-from pytest_django.asserts import assertContains
+from pytest_django.asserts import assertContains, assertRedirects
 
 from apps.base.tests.asserts import assertOK
 from apps.nodes.models import Node
@@ -19,13 +19,14 @@ def test_export_create_node(
 ):
 
     node = node_factory(kind=Node.Kind.INPUT, workflow__project=project)
-    r = client.get(f"/exports/new/node/{node.id}")
+    EXPORT_URL = f"/exports/new/node/{node.id}"
+
+    r = client.get(EXPORT_URL)
     assertOK(r)
     assertContains(r, "fa-download")
 
-    r = client.post(f"/exports/new/node/{node.id}")
-
-    assert r.status_code == 302
+    r = client.post(EXPORT_URL)
+    assertRedirects(r, EXPORT_URL, status_code=303)
     assert export_to_gcs.delay.call_count == 1
     assert export_to_gcs.delay.call_args.args[1] == logged_in_user.id
 
@@ -35,12 +36,13 @@ def test_export_create_integration_table(
 ):
 
     table = integration_table_factory(integration__project=project)
-    r = client.get(f"/exports/new/integration_table/{table.id}")
+    EXPORT_URL = f"/exports/new/integration_table/{table.id}"
+
+    r = client.get(EXPORT_URL)
     assertOK(r)
     assertContains(r, "fa-download")
 
-    r = client.post(f"/exports/new/integration_table/{table.id}")
-
-    assert r.status_code == 302
+    r = client.post(EXPORT_URL)
+    assertRedirects(r, EXPORT_URL, status_code=303)
     assert export_to_gcs.delay.call_count == 1
     assert export_to_gcs.delay.call_args.args[1] == logged_in_user.id
