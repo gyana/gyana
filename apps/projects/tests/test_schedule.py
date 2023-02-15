@@ -55,7 +55,7 @@ def test_sheet_schedule(client, logged_in_user, sheet_factory, mocker, is_paid):
         f"/teams/{team.id}/update",
         data={"name": "Team", "timezone": "Asia/Shanghai"},
     )
-    assertRedirects(r, f"/teams/{team.id}/update")
+    assertRedirects(r, f"/teams/{team.id}/update", status_code=303)
 
     periodic_task.refresh_from_db()
     assert str(periodic_task.crontab.timezone) == "Asia/Shanghai"

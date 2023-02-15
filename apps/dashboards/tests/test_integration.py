@@ -33,7 +33,7 @@ def test_dashboard_crudl(client, project, dashboard_factory):
     assert dashboard is not None
     assert dashboard.pages.first() is not None
     DETAIL = f"{LIST}/{dashboard.id}"
-    assertRedirects(r, DETAIL)
+    assertRedirects(r, DETAIL, status_code=303)
 
     # read
     r = client.get(DETAIL)
@@ -205,7 +205,7 @@ def test_dashboard_duplication(
     assert project.dashboard_set.count() == 2
     new_dashboard = project.dashboard_set.exclude(id=dashboard.id).first()
 
-    assertRedirects(r, f"/projects/{project.id}/dashboards/")
+    assertRedirects(r, f"/projects/{project.id}/dashboards/", status_code=303)
     assert new_dashboard is not None
     assert new_dashboard.name == f"Copy of {name}"
 

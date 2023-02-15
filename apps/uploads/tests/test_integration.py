@@ -44,7 +44,7 @@ def test_upload_create(client, logged_in_user, project, bigquery):
     assert bigquery.query.call_count == 0
 
     DETAIL = f"/projects/{project.id}/integrations/{integration.id}"
-    assertRedirects(r, f"{DETAIL}/load", target_status_code=302)
+    assertRedirects(r, f"{DETAIL}/load", status_code=303, target_status_code=302)
 
     # complete the sync
     # it will happen immediately as celery is run in eager mode

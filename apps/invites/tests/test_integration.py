@@ -33,7 +33,7 @@ def test_invite_new_user_to_team(client, logged_in_user):
         f"/teams/{team.id}/invites/new",
         data={"email": "invite@gyana.com", "role": "member"},
     )
-    assertRedirects(r, f"/teams/{team.id}/members/")
+    assertRedirects(r, f"/teams/{team.id}/members/", status_code=303)
 
     # accept
     assert len(mail.outbox) == 1
@@ -92,7 +92,7 @@ def test_invite_existing_user_to_team(client, logged_in_user):
         f"/login/?next={invite_link}",
         data={"login": "invite@gyana.com", "password": "seewhatmatters"},
     )
-    assertRedirects(r, invite_link, fetch_redirect_response=False)
+    assertRedirects(r, invite_link, status_code=303, fetch_redirect_response=False)
 
     r = client.get(invite_link)
     assertRedirects(r, f"/teams/{team.id}")

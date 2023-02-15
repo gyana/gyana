@@ -22,7 +22,7 @@ def test_workflow_crudl(client, project, workflow_factory):
     r = client.post(f"{project_url}/workflows/new", data={"project": project.id})
     workflow = project.workflow_set.first()
     assert workflow is not None
-    assertRedirects(r, f"{project_url}/workflows/{workflow.id}")
+    assertRedirects(r, f"{project_url}/workflows/{workflow.id}", status_code=303)
 
     # read
     r = client.get(f"{project_url}/workflows/{workflow.id}")
@@ -66,7 +66,7 @@ def test_workflow_duplication(client, project, workflow_factory, node_factory):
     join_node.parents.add(input_2, through_defaults={"position": 0})
 
     r = client.post(f"/workflows/{workflow.id}/duplicate")
-    assertRedirects(r, f"/projects/{project.id}/workflows/")
+    assertRedirects(r, f"/projects/{project.id}/workflows/", status_code=303)
 
     assert Workflow.objects.count() == 2
     assert Node.objects.count() == 6

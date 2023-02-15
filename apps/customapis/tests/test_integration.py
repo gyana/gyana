@@ -70,7 +70,7 @@ def test_customapi_create(client, logged_in_user, project, bigquery, request_saf
     customapi = integration.customapi
     DETAIL = f"/projects/{project.id}/integrations/{integration.id}"
 
-    assertRedirects(r, f"{DETAIL}/configure")
+    assertRedirects(r, f"{DETAIL}/configure", status_code=303)
 
     # configure
     r = client.get(f"{DETAIL}/configure")

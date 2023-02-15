@@ -41,7 +41,7 @@ def test_team_crudl(client, logged_in_user, bigquery, flag_factory, settings):
     r = client.post("/teams/new", data={"name": "Neera"})
     assert logged_in_user.teams.count() == 2
     new_team = logged_in_user.teams.first()
-    assertRedirects(r, f"/teams/{new_team.id}/pricing")
+    assertRedirects(r, f"/teams/{new_team.id}/pricing", status_code=303)
 
     assert bigquery.create_dataset.call_count == 1
     assert bigquery.create_dataset.call_args.args == (new_team.tables_dataset_id,)
@@ -79,7 +79,7 @@ def test_team_crudl(client, logged_in_user, bigquery, flag_factory, settings):
         f"/teams/{new_team.id}/update",
         data={"name": "Agni", "timezone": "Asia/Kolkata", "beta": True},
     )
-    assertRedirects(r, f"/teams/{new_team.id}/update")
+    assertRedirects(r, f"/teams/{new_team.id}/update", status_code=303)
     new_team.refresh_from_db()
     assert new_team.name == "Agni"
     assert str(new_team.timezone) == "Asia/Kolkata"
@@ -136,7 +136,7 @@ def test_member_crudl(client, logged_in_user):
     assertLink(r, f"{MEMBERSHIP_URL}/delete", "Delete")
 
     r = client.post(f"{MEMBERSHIP_URL}/update", data={"role": "member"})
-    assertRedirects(r, f"/teams/{team.id}/members/")
+    assertRedirects(r, f"/teams/{team.id}/members/", status_code=303)
     membership.refresh_from_db()
     assert membership.role == "member"
 

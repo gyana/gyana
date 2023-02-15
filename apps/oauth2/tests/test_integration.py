@@ -32,7 +32,9 @@ def test_oauth2_crudl(client, logged_in_user, project_factory, mocker):
     oauth2 = project.oauth2_set.first()
     oauth2.name == "Github"
 
-    assertRedirects(r, f"/projects/{project.id}/oauth2/{oauth2.id}/update")
+    assertRedirects(
+        r, f"/projects/{project.id}/oauth2/{oauth2.id}/update", status_code=303
+    )
 
     # update
     r = client.get(f"/projects/{project.id}/oauth2/{oauth2.id}/update")
@@ -60,7 +62,9 @@ def test_oauth2_crudl(client, logged_in_user, project_factory, mocker):
             "scope": "repo",
         },
     )
-    assertRedirects(r, f"/oauth2/{oauth2.id}/login", target_status_code=302)
+    assertRedirects(
+        r, f"/oauth2/{oauth2.id}/login", status_code=303, target_status_code=302
+    )
 
     # oauth2 login
     r = client.get(f"/oauth2/{oauth2.id}/login")

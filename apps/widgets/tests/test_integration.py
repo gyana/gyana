@@ -99,7 +99,7 @@ def test_widget_move_page(
     assertSelectorLength(r, "option", 2)
 
     r = client.post(url, data={"page": page_2.id})
-    assert r.status_code == 302
+    assert r.status_code == 303
     assert r.url == f"/projects/{project.id}/dashboards/{dashboard.id}?dashboardPage=2"
     widget.refresh_from_db()
 
