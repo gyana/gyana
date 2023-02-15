@@ -1,9 +1,9 @@
 from allauth.account.utils import send_email_confirmation
 from django.http import HttpResponse
 from django.urls import reverse
-from django.views.generic import UpdateView
 
 from apps.base.mixins import PageTitleMixin
+from apps.base.views import UpdateView
 from apps.users.helpers import (
     require_email_confirmation,
     user_has_confirmed_email_address,

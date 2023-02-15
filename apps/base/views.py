@@ -3,7 +3,8 @@ import http
 from django.db import transaction
 from django.http import HttpResponseRedirect
 from django.utils.datastructures import MultiValueDict
-from django.views.generic.edit import CreateView, UpdateView
+
+from apps.base.views import CreateView, UpdateView
 
 
 class LiveMixin:

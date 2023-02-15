@@ -1,8 +1,8 @@
 from django.http import Http404
-from django.urls import reverse
-from django.views.generic import UpdateView
+from django.urls import reverse_lazy
 from django_tables2.views import SingleTableMixin
 
+from apps.base.views import UpdateView
 from apps.runs.tables import GraphRunTable
 
 from .forms import ProjectRunForm

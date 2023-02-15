@@ -1,7 +1,7 @@
 from django.urls.base import reverse
 from django.utils.functional import cached_property
-from django.views.generic import CreateView
 
+from apps.base.views import CreateView
 from apps.exports.tasks import export_to_gcs
 from apps.nodes.models import Node
 from apps.tables.models import Table

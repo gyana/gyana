@@ -1,8 +1,9 @@
 from django.db.models import F
 from django.urls import reverse
-from django.views.generic import DetailView, TemplateView, UpdateView
+from django.views.generic import DetailView, TemplateView
 from django_tables2 import MultiTableMixin
 
+from apps.base.views import UpdateView
 from apps.nodes.models import Node
 from apps.projects.mixins import ProjectMixin
 from apps.runs.tables import JobRunTable

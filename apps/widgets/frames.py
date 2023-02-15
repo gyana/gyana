@@ -4,7 +4,7 @@ from decimal import Decimal
 import analytics
 from django.shortcuts import render
 from django.urls import reverse
-from django.views.generic import DetailView, UpdateView
+from django.views.generic import DetailView
 from django_htmx.http import retarget, trigger_client_event
 from django_tables2.tables import Table as DjangoTable
 from django_tables2.views import SingleTableMixin
@@ -18,7 +18,7 @@ from apps.base.analytics import (
 from apps.base.core.table_data import RequestConfig, get_table
 from apps.base.core.utils import error_name_to_snake
 from apps.base.templates import template_exists
-from apps.base.views import LiveUpdateView
+from apps.base.views import LiveUpdateView, UpdateView
 from apps.columns.currency_symbols import CURRENCY_SYMBOLS_MAP
 from apps.controls.bigquery import DATETIME_FILTERS
 from apps.dashboards.mixins import DashboardMixin

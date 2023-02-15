@@ -1,9 +1,10 @@
 from django.db.models.query import QuerySet
 from django.http.response import HttpResponseRedirect
 from django.urls import reverse
-from django.views.generic import ListView, UpdateView
+from django.views.generic import ListView
 from django_tables2 import SingleTableView
 
+from apps.base.views import UpdateView
 from apps.teams.mixins import TeamMixin
 
 from .models import Invite

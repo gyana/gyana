@@ -2,9 +2,10 @@ from django.db import transaction
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls.base import reverse
-from django.views.generic import CreateView, DeleteView
+from django.views.generic import DeleteView
 from django_htmx.http import trigger_client_event
 
+from apps.base.views import CreateView
 from apps.controls.models import Control, ControlWidget
 from apps.dashboards.mixins import DashboardMixin
 

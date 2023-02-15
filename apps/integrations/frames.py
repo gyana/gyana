@@ -1,10 +1,11 @@
 from django.urls.base import reverse
-from django.views.generic import DetailView, TemplateView, UpdateView
+from django.views.generic import DetailView, TemplateView
 from django_tables2.tables import Table
 from django_tables2.views import SingleTableMixin
 
 from apps.base.core.bigquery import get_humanize_from_bigquery_type
 from apps.base.core.table_data import RequestConfig, get_table
+from apps.base.views import UpdateView
 from apps.integrations.forms import IntegrationNameForm
 from apps.integrations.tables import StructureTable
 from apps.projects.mixins import ProjectMixin
