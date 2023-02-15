@@ -3,7 +3,7 @@ from django.urls.base import reverse
 from django.views.generic import TemplateView
 from django_tables2 import SingleTableMixin
 
-from apps.base.views import LiveUpdateView, UpdateView
+from apps.base.views import UpdateView
 from apps.dashboards.forms import DashboardShareForm
 from apps.dashboards.mixins import PageMixin
 from apps.dashboards.tables import DashboardHistoryTable, DashboardUpdateTable
@@ -50,7 +50,7 @@ class DashboardOverview(ProjectMixin, TemplateView):
         return context_data
 
 
-class DashboardShare(LiveUpdateView):
+class DashboardShare(UpdateView):
     template_name = "dashboards/share.html"
     form_class = DashboardShareForm
     model = Dashboard

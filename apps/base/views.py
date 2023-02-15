@@ -70,21 +70,13 @@ class FormMixin:
         return HttpResponseSeeOther(self.get_success_url())
 
 
-class CreateView(FormMixin, BaseCreateView):
-    pass
-
-
-class UpdateView(FormMixin, BaseUpdateView):
-    pass
-
-
-class LiveCreateView(LiveMixin, CreateView):
+class CreateView(LiveMixin, FormMixin, BaseCreateView):
     def post(self, request, *args, **kwargs):
-        self.object = self.get_object()
+        self.object = None
         return super().post(request, *args, **kwargs)
 
 
-class LiveUpdateView(LiveMixin, UpdateView):
+class UpdateView(LiveMixin, FormMixin, BaseUpdateView):
     @property
     def is_preview_request(self):
         return self.request.POST.get("submit") == "Save & Preview"

@@ -18,7 +18,7 @@ from apps.base.analytics import (
 from apps.base.core.table_data import RequestConfig, get_table
 from apps.base.core.utils import error_name_to_snake
 from apps.base.templates import template_exists
-from apps.base.views import LiveUpdateView, UpdateView
+from apps.base.views import UpdateView
 from apps.columns.currency_symbols import CURRENCY_SYMBOLS_MAP
 from apps.controls.bigquery import DATETIME_FILTERS
 from apps.dashboards.mixins import DashboardMixin
@@ -89,7 +89,7 @@ class WidgetName(UpdateView):
         )
 
 
-class WidgetUpdate(DashboardMixin, LiveUpdateView):
+class WidgetUpdate(DashboardMixin, UpdateView):
     model = Widget
 
     def get_htmx_response(self, context):
