@@ -2,8 +2,7 @@
   method="POST"
   action="{% url 'project_dashboards:page-move' project.id dashboard.id page.id %}"
   target="_top"
-  data-controller="autosubmit"
-  data-action="change->autosubmit#onchange"
+  @change="$el.submit()"
 >
   {% csrf_token %}
 
@@ -11,7 +10,7 @@
     {% for dashboard_page in dashboard.pages.all %}
       <option 
         value="{{ dashboard_page.position }}"
-        {% if dashboard_page.position == page.position %}data-autosubmit-target="selected"{% endif %}
+        {% if dashboard_page.position == page.position %}selected{% endif %}
       >
         {{ dashboard_page.position }}
       </option>
