@@ -9,6 +9,7 @@ module.exports = {
   },
   entry: {
     automate: './apps/projects/javascript/automate-flow.tsx',
+    base: './apps/base/javascript/index.ts',
     components: './apps/base/javascript/components.ts',
     dashboards: './apps/dashboards/javascript/index.ts',
     fontawesome: './apps/base/styles/vendors/fontawesome.css',

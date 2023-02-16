@@ -41,13 +41,12 @@
 
   {% include "web/components/team_sidebar.html" %}
 
-  <div id="sidebar" class="sidebar" data-controller="web-sidebar">
+  <div id="sidebar" class="sidebar">
     
     <input
       id="sidebar-toggle"
       type="checkbox"
       role="button"
-      data-web-sidebar-target="toggle"
       {% if not sidebar_collapsed and request.resolver_match.view_name not in 'project_workflows:detail,project_dashboards:detail,projects:automate' %}
       checked
       {% endif %}
@@ -139,7 +138,8 @@
         class="sidebar__link"
         for="sidebar-toggle"
         {% if request.resolver_match.view_name not in 'project_workflows:detail,project_dashboards:detail,projects:automate' %}
-        data-action="click->web-sidebar#toggle"
+        x-data
+        @click="SiteJS.base.Api.getApiClient().action(window.schema, ['toggle-sidebar', 'create'])"
         {% endif %}
         data-controller="tooltip"
         data-tooltip-placement="right"
