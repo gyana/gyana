@@ -2,8 +2,8 @@
   <div
     class="label {{ field.field.widget.attrs.class }}"
     {% if field.field.initial %}
-      data-controller="reset-default"
-      data-reset-default-initial-value="{{ field.field.initial }}"
+      x-data="{ changed: false, initial: '{{ field.field.initial }}', target: null }"
+      @change="target = $event.target; if (target.value !== initial) changed = true"
     {% endif %}
   >
     <label
@@ -21,8 +21,8 @@
 
         <a
           class="small link float-right"
-          data-reset-default-target="control"
-          hidden
+          x-show="changed"
+          @click.prevent="target.value = initial; changed = false"
         >
           Reset to default
         </a>
