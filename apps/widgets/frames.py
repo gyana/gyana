@@ -2,6 +2,7 @@ import logging
 from decimal import Decimal
 
 import analytics
+from django import forms
 from django.shortcuts import render
 from django.urls import reverse
 from django.views.generic import DetailView
@@ -26,7 +27,13 @@ from apps.tables.bigquery import get_query_from_table
 from apps.tables.models import Table
 from apps.widgets.visuals import chart_to_output, metric_to_output, table_to_output
 
-from .forms import FORMS, STYLE_FORMS, DefaultStyleForm, WidgetSourceForm
+from .forms import (
+    FORMS,
+    STYLE_FORMS,
+    DefaultStyleForm,
+    TextWidgetForm,
+    WidgetSourceForm,
+)
 from .models import Widget
 
 
@@ -260,10 +267,16 @@ class WidgetUpdate(DashboardMixin, UpdateView):
         return r
 
 
-class WidgetOutput(DashboardMixin, SingleTableMixin, DetailView):
+class WidgetOutput(DashboardMixin, SingleTableMixin, UpdateView):
     template_name = "widgets/output.html"
     model = Widget
     paginate_by = 15
+
+    def get_form_class(self):
+        if self.object.kind == Widget.Kind.TEXT:
+            return TextWidgetForm
+
+        return forms.Form
 
     def get_context_data(self, **kwargs):
         context = None
@@ -309,6 +322,12 @@ class WidgetOutput(DashboardMixin, SingleTableMixin, DetailView):
             ).configure(table)
         return type("DynamicTable", (DjangoTable,), {})(data=[])
 
+    def get_success_url(self):
+        return reverse(
+            "dashboard_widgets:output",
+            args=(self.dashboard.project.id, self.dashboard.id, self.object.id),
+        )
+
 
 class WidgetInput(DashboardMixin, SingleTableMixin, DetailView):
     template_name = "widgets/input.html"
@@ -323,3 +342,9 @@ class WidgetInput(DashboardMixin, SingleTableMixin, DetailView):
                 self.request, paginate=self.get_table_pagination(table)
             ).configure(table)
         return type("DynamicTable", (DjangoTable,), {})(data=[])
+
+
+class WidgetTextUpdate(UpdateView):
+    model = Widget
+    fields = ("text_content",)
+    template_name = "widgets/name.html"

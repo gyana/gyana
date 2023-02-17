@@ -1,13 +1,25 @@
-<div class="flex flex-col flex-1">
+<form class="form--no-layout w-full"
+  hx-post="{% url 'dashboard_widgets:output' dashboard.project.id dashboard.id object.id %}"
+  hx-trigger="text-change delay:1000"
+  hx-swap="none"
+  x-data="{text: '{{ object.text_content|default_if_none:"[]"|escapejs }}' }"
+  {% if widget.page.dashboard.font_color %}
+  style="color: {{ widget.page.dashboard.font_color }};"
+  {% endif %}
+  >
+  {% csrf_token %}
+  <div class="hidden">
+    {{ form }}
+  </div>
+
   <div
-    data-controller="widget-visuals-text"
-    data-widget-visuals-text-text-value="{{ object.text_content }}"
-    data-widget-visuals-text-id-value="{{ object.id }}"
-    {% if request.GET.mode != "edit" %}
-    data-widget-visuals-text-read-only-value="true"
-    {% endif %}
-    {% if widget.page.dashboard.font_color %}
-    style="color: {{ widget.page.dashboard.font_color }};"
-    {% endif %}
-  ></div>
-</div>
+    class="w-full"
+    x-init="const readOnly = {% if request.GET.mode != 'edit' %}true{% else %}false{% endif %}
+    const editor = SiteJS.widgets.Text.quill($el, readOnly)
+    editor.setContents(JSON.parse($data.text))
+    editor.on('text-change', () => {
+      $data.text = JSON.stringify(editor.getContents()['ops'])
+      $dispatch('text-change')
+    })"
+  />
+</form>

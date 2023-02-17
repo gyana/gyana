@@ -351,6 +351,19 @@ class StackedChartForm(GenericWidgetForm):
         return fields
 
 
+class TextWidgetForm(LiveFormsetMixin, BaseModelForm):
+    class Meta:
+        model = Widget
+        fields = ["text_content"]
+        widgets = {"text_content": forms.HiddenInput(attrs={"x-model": "text"})}
+
+    def __init__(self, *args, **kwargs):
+        # https://stackoverflow.com/a/30766247/15425660
+        project = kwargs.pop("project", None)
+
+        super().__init__(*args, **kwargs)
+
+
 class IframeWidgetForm(LiveFormsetMixin, BaseModelForm):
     url = forms.URLField(
         label="Embed URL",

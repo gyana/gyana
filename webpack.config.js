@@ -21,6 +21,7 @@ module.exports = {
     'web-integration-demo': './apps/web/javascript/integration-demo.tsx',
     'web-workflow-demo': './apps/web/javascript/workflow-demo.tsx',
     'web-dashboard-demo': './apps/web/javascript/dashboard-demo.tsx',
+    widgets: './apps/widgets/javascript/index.ts',
     workflow: './apps/workflows/javascript/dnd-flow.tsx',
   },
   output: {
