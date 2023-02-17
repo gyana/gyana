@@ -77,12 +77,7 @@ class ColumnForm(BaseLiveSchemaForm):
 
 class ColumnFormWithFormatting(ColumnForm):
     formatting_unfolded = forms.BooleanField(initial=False, required=False)
-    formatting_unfolded.widget.attrs.update(
-        {
-            "data-column-format-target": "hiddenInput",
-            "class": "hidden",
-        }
-    )
+    formatting_unfolded.widget.attrs.update({"x-model": "open", "class": "hidden"})
     template_name = "columns/forms/column_form.html"
 
     class Meta:
@@ -169,12 +164,7 @@ class AggregationColumnForm(BaseLiveSchemaForm):
 
 class AggregationFormWithFormatting(AggregationColumnForm):
     formatting_unfolded = forms.BooleanField(initial=False, required=False)
-    formatting_unfolded.widget.attrs.update(
-        {
-            "data-column-format-target": "hiddenInput",
-            "class": "hidden",
-        }
-    )
+    formatting_unfolded.widget.attrs.update({"x-model": "open", "class": "hidden"})
     template_name = "columns/forms/column_form.html"
 
     class Meta:

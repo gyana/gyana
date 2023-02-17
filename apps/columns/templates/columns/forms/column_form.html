@@ -2,12 +2,13 @@
 {% include 'django/forms/field.html' with field=form.part %}
 {% include 'django/forms/field.html' with field=form.function %}
 
-<div class='formatting' data-controller='column-format'>
+<div class='formatting'
+  x-data="{ open: {{ form.formatting_unfolded.value|yesno:"true,false" }} }">
   <button 
     type='button'
-    class="small link link--foldable {% if form.formatting_unfolded.value %}link--unfolded {% endif %} ml-auto"
-    data-action='column-format#handle'
-    data-column-format-target='button'
+    class="small link link--foldable ml-auto"
+    :class="{ 'link--unfolded': open }"
+    @click="open = !open"
   >
     Formatting
   </button>
@@ -15,9 +16,8 @@
   {{ form.formatting_unfolded }}
 
   <div
+    x-show="open"
     class="input-group"
-    data-column-format-target='inputs' 
-    {% if not form.formatting_unfolded.value %}hidden{% endif %}
   >
     {% include 'django/forms/field.html' with field=form.name %}
 
