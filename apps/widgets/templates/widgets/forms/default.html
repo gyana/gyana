@@ -134,39 +134,39 @@
 
     {% if form.date_column %}
       <fieldset>
-        <div class='formset-wrapper' data-controller='widget-slice' >
+        <div class='formset-wrapper'
+          x-data="{ open: {{ show_date_column|yesno:"true,false" }} }">
           <label>Date range</label>
           <div>
-            <div
-              data-widget-slice-target="input"
-              {% if not show_date_column%}hidden{%endif%}
-            >
+            <div x-show="open">
               <p class="input__help-text">{{ form.date_column.help_text }}</p>
               <div class='flex flex-row items-center gap-2'>
                 {{form.date_column}}
                 <button 
                   type='button'
-                  data-action="widget-slice#remove"
+                  @click="open = false"
                   class='button button--sm button--tertiary button--circle'
                 ><i class='fa fa-times'></i>
                 </button>
               </div>
             </div>
-          <button 
-            class="button button--sm"
-            data-widget-slice-target='addButton' 
-            type='button' 
-            data-action="widget-slice#add" 
-            hx-boost='false'
-            {% if show_date_column %}hidden{%endif%}
-          >
-            <i class='fa fa-plus'></i> Add date control column
-          </button>
+            {% comment %} todo: why does alpine not pick this up {% endcomment %}
+            {% if not show_date_column %}
+              <button 
+                class="button button--sm"
+                type='button' 
+                @click="open = true"
+                x-show="!open"
+                hx-boost='false'
+              >
+                <i class='fa fa-plus'></i> Add date control column
+              </button>
+            {% endif %}
           </div>
         
           {% if formsets.control %}
             {% with formset=formsets.control %}
-              <fieldset data-widget-slice-target='control'>
+              <fieldset x-show="open">
                 <p class='input__help-text'>You can add date range that overrides the page wide date range control.</p>
                 {% include "components/formset.html" with formset=formset %}
               </fieldset>
@@ -175,7 +175,7 @@
 
 
         {% if form.kind.value == 'metric' %}
-          <div class='flex flex-row' data-widget-slice-target='compare'>
+          <div class='flex flex-row' x-show="open">
             <label class="input__toggle" for="{{ form.compare_previous_period.id_for_label }}">
               <p class="input__help-text">{{ form.compare_previous_period.label}}</p>
 
