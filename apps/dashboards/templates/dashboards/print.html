@@ -118,14 +118,18 @@
         <div
           class="widgets__canvas"
           style="--background-color:{{ object.background_color }};overflow:hidden;"
-          data-controller="widget-list"
+          x-data
         > 
           <div
             id="dashboard-widget-container-{{ forloop.counter }}"
             data-width="{{ object.width }}"
             data-height="{{ object.height }}"
             style="width:{{ object.width }}px;height:{{object.height}}px;"
-            data-widget-list-target="dashboard"
+            @resize.window="const scale = Math.min($root.clientWidth / parseInt($el.style.width))
+            $el.style.transformOrigin = '0 0'
+            $el.style.transform = 'scale(' + scale + ')'
+            $el.style.height =
+            $el.dataset.height * scale + 'px'"
           >
             {% for widget in page.widgets.all %}
               {% include 'widgets/widget_public.html' with object=widget %}

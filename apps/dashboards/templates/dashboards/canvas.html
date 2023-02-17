@@ -8,7 +8,6 @@
   <div
     class="widgets__canvas"
     style="--background-color:{{ dashboard.background_color }};"
-    data-controller="widget-list"
     x-data="{}"
     @dragover.prevent="$event.dataTransfer.dropEffect = 'move'"
     @drop="const {top, left} = $el.getBoundingClientRect()

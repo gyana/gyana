@@ -7,12 +7,20 @@ preview mode.
 {% endcomment %}
 <gy-widget
   id="{% block widget.id %}widget-{{ object.id }}{% endblock widget.id %}"
+  x-data
+  @mousedown.window="if ($el.contains($event.target)) {
+    $el.dataset.focused = true
+    $el.style.zIndex = 1
+  } else {
+    $el.dataset.focused = false
+    $el.style.zIndex = null
+  }"
 >
   <template
     id="{% block widget.templateId %}widget-{{ object.id }}{% endblock widget.templateId %}-template"
   >
     <div
-      class="h-full w-full"
+      class="h-full w-full" 
       data-id="{{ object.id }}"
       data-x="{{ object.x }}"
       data-y="{{ object.y }}"
