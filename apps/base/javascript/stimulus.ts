@@ -10,7 +10,6 @@ const CONTEXTS = [
   require.context('../../base/javascript/controllers', true, /\.js$/),
   require.context('../../columns/javascript/controllers', true, /\.js$/),
   require.context('../../nodes/javascript/controllers', true, /\.js$/),
-  require.context('../../teams/javascript/controllers', true, /\.js$/),
 ]
 
 for (const context of CONTEXTS)
