@@ -2,7 +2,8 @@
 
 {% include 'nodes/modal_nav_bar.html' %}
 
-<div class="formula" data-controller='formula-drawer'>
+<div class="formula"
+  x-data="{ 'closed': true }">
   <div class="formula__content">
     <h1>Formula Docs</h2>
     <p>
@@ -74,7 +75,14 @@
 
       {% for function in functions %}
 
-      <div class='function-pill' data-action="click->formula-drawer#open" data-modal-src="{{function.id}}">
+      <div class='function-pill'
+        @click="closed = false
+        const url = new URL(location.origin + `{% url 'nodes:function-info' node.id %}`)
+        url.searchParams.set('function', '{{ function.id }}')
+        $refs.htmx.setAttribute('hx-get', `${url.pathname}?${url.searchParams.toString()}`)
+        htmx.process($refs.htmx)
+        $dispatch('hx-formula-draw-load')
+        ">
         <h4>
           <i class="fa {{ function.icon }} text-blue"></i> {{function.name}}(
             <em>{% include 'nodes/help/_arguments.html' with arguments=function.arguments %}</em>
@@ -86,20 +94,19 @@
 
     </div>
   </div>
-  <div class="formula__drawer closed" data-formula-drawer-target='drawer'>
+  <div class="formula__drawer"
+    :class="{'closed': closed}">
     <button
         class="absolute top-4 right-4"
-        data-action="click->formula-drawer#close"
+        @click="closed = true"
         data-loading-false
       >
         <i class="fal fa-times fa-sm"></i>
-        Hello!
     </button>
-    <div id="nodes:function-info" 
-      data-formula-drawer-target='htmx'
-      data-modal-src="{% url "nodes:function-info" node.id %}"
-      hx-trigger="hx-formula-draw-load" hx-target="this"
-    >
-    </div>
+    <div id="nodes:function-info"
+      hx-trigger="hx-formula-draw-load from:window"
+      hx-target="this"
+      x-ref="htmx"
+    />
   </div>
 </div>
