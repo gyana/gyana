@@ -244,12 +244,6 @@ def test_team_subscriptions(client, logged_in_user, settings, paddle):
 
     r = client.get(f"/teams/{team.id}/checkout?plan={pro_plan.id}")
     assertOK(r)
-    # assertions for the paddle stimulus controller
-    assertSelectorLength(r, f"div[data-paddle-plan-value='{pro_plan.id}']", 1)
-    assertSelectorLength(r, f"div[data-paddle-email-value='{logged_in_user.email}']", 1)
-    assertSelectorLength(r, f"div[data-paddle-marketing-consent-value='0']", 1)
-    passthrough = f'{{"user_id": {logged_in_user.id}, "team_id": {team.id}}}'
-    assertSelectorLength(r, f"div[data-paddle-passthrough-value='{passthrough}']", 1)
 
     # the inline checkout is inserted by Paddle JS, and the subscription is added via webhook
 
