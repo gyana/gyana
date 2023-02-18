@@ -14,7 +14,7 @@
   x-init="{% if DJPADDLE_SANDBOX %}Paddle.Environment.set('sandbox'){% endif %}
 
     Paddle.Setup({
-      vendor: '{{ DJPADDLE_VENDOR_ID }}',
+      vendor: {{ DJPADDLE_VENDOR_ID }},
       debug: {{ debug|yesno:'true,false' }},
       eventCallback: (data) => {
 
@@ -27,9 +27,6 @@
           window.checkoutComplete(data.eventData)
 
           completed = true
-
-          this.checkoutMessageTarget.setAttribute('hidden', '')
-          this.successMessageTarget.removeAttribute('hidden')
         }
       },
     })
@@ -44,8 +41,7 @@
       frameTarget: 'checkout-container',
       frameInitialHeight: 416,
       frameStyle: 'width:100%; min-width:286px; background-color: transparent; border: none;',
-    })
-  }"
+    })"
   >
   <div class="flex flex-row items-center">
     <div x-show="!completed" class="pad w-1/2">
