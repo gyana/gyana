@@ -19,11 +19,11 @@
       <strong>Cost</strong> from <strong>Revenue</strong> and multiple the resulting
       <strong>Profit</strong> with the <strong>Tax</strong> value.
     </p>
-    <div data-controller='codemirror'>
-      <script id="columns" type="application/json">
-      ["Revenue", "Cost", "Tax"]
-    </script>
-      <textarea data-codemirror-target='textarea'
+    <div>
+      <textarea
+        x-data
+        x-init="const columns = ['Revenue', 'Cost', 'Tax']
+          SiteJS.columns.Formula.init($el, columns)"
         class="textarea"
         name="{{ widget.name }}"
         readonly
@@ -35,11 +35,11 @@
       To generate full names, we can combine the <strong>first_name</strong>
       and <strong>last_name</strong> columns. We also clean the names from unnecessary
       whitespace.
-      <div data-controller='codemirror'>
-        <script id="columns" type="application/json">
-      ["last_name", "first_name"]
-    </script>
-        <textarea data-codemirror-target='textarea'
+      <div>
+        <textarea 
+          x-data
+          x-init="const columns = ['last_name', 'first_name']
+            SiteJS.columns.Formula.init($el, columns)"
           class="textarea"
           name="{{ widget.name }}"
           readonly

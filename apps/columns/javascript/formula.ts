@@ -1,4 +1,3 @@
-import { Controller } from '@hotwired/stimulus'
 import CodeMirror from 'codemirror/lib/codemirror.js'
 import 'codemirror/addon/mode/simple.js'
 import 'codemirror/addon/hint/show-hint.js'
@@ -7,62 +6,56 @@ import 'codemirror/addon/edit/matchbrackets.js'
 import 'codemirror/addon/display/placeholder.js'
 import 'codemirror/addon/lint/lint.js'
 
-const functions = require('../../functions.json')
+const functions = require('../functions.json')
 
-// Codemirror editor for formula language with auto-complete, syntax highlighting and linting.
+const init = ($el, columns) => {
+  // For compatability with SortableJS, avoid repeating the init
+  // todo: perhaps not required with Alpine
+  if ($el.dataset.codemirrorReady) {
+    return
+  }
 
-export default class extends Controller {
-  static targets = ['textarea']
+  const column_config = columns.map((col) => ({
+    text: col,
+    loweredText: col.toLowerCase(),
+    className: 'text-pink',
+  }))
 
-  connect() {
-    if (this.textareaTarget.dataset.codemirrorIgnore) {
+  const readOnly = $el.attributes['readonly'] ? 'nocursor' : false
+
+  registerLinter(column_config)
+
+  const editor = CodeMirror.fromTextArea($el, {
+    mode: 'gyanaformula',
+    hintOptions: {
+      hint: autocomplete(column_config),
+      completeSingle: false,
+    },
+    autoCloseBrackets: true,
+    matchBrackets: true,
+    lint: true,
+    selfContain: true,
+    readOnly,
+    lineWrapping: true,
+  })
+
+  // From https://stackoverflow.com/a/54377763
+  editor.on('inputRead', function (instance) {
+    if (instance.state.completionActive) {
       return
     }
+    var cur = instance.getCursor()
+    var token = instance.getTokenAt(cur)
+    if (token.type && token.type != 'comment') {
+      CodeMirror.commands.autocomplete(instance)
+    }
+  })
 
-    const columns = JSON.parse(
-      this.element.querySelector('#columns').innerHTML
-    ).map((column) => ({
-      text: column,
-      loweredText: column.toLowerCase(),
-      className: 'text-pink',
-    }))
+  editor.on('blur', function (cm) {
+    cm.save()
+  })
 
-    const readOnly = this.textareaTarget.attributes['readonly']
-      ? 'nocursor'
-      : false
-
-    registerLinter(columns)
-
-    this.CodeMirror = CodeMirror.fromTextArea(this.textareaTarget, {
-      mode: 'gyanaformula',
-      hintOptions: {
-        hint: autocomplete(columns),
-        completeSingle: false,
-      },
-      autoCloseBrackets: true,
-      matchBrackets: true,
-      lint: true,
-      selfContain: true,
-      readOnly,
-      lineWrapping: true,
-    })
-
-    // From https://stackoverflow.com/a/54377763
-    this.CodeMirror.on('inputRead', function (instance) {
-      if (instance.state.completionActive) {
-        return
-      }
-      var cur = instance.getCursor()
-      var token = instance.getTokenAt(cur)
-      if (token.type && token.type != 'comment') {
-        CodeMirror.commands.autocomplete(instance)
-      }
-    })
-
-    this.CodeMirror.on('blur', function (cm) {
-      cm.save()
-    })
-  }
+  $el.dataset.codemirrorReady = true
 }
 
 // Syntax highlighting
@@ -164,3 +157,7 @@ const registerLinter = (columns) =>
 
     return result
   })
+
+export const Formula = {
+  init,
+}

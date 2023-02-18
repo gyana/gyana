@@ -89,7 +89,7 @@ export default class extends Controller {
           return false
         }
 
-        if (toEl.dataset.controller === 'codemirror') {
+        if ('morphdomIgnore' in toEl.dataset) {
           return false
         }
 

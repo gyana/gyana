@@ -2,15 +2,16 @@
 {% block header %}Formula error{% endblock %}
 {% block error_message %}
   We cannot parse the formula:
-  <div data-controller='codemirror'>
-    {{columns|json_script:'columns'}}
-    <textarea data-codemirror-target='textarea'
+
+  <div>
+    <textarea
+      x-data
+      x-init="const columns = {{ columns }}
+        SiteJS.columns.Formula.init($el, columns)"
       class="textarea"
       name="error"
       readonly
-    >  
-      {{formula}}
-    </textarea>
+      >{{formula}}</textarea>
   </div>
   <p>Try checking the syntax again!</p>
 {% endblock %}

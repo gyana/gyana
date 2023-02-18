@@ -10,6 +10,7 @@ module.exports = {
   entry: {
     automate: './apps/projects/javascript/automate-flow.tsx',
     base: './apps/base/javascript/index.ts',
+    columns: './apps/columns/javascript/index.ts',
     components: './apps/base/javascript/components.ts',
     dashboards: './apps/dashboards/javascript/index.ts',
     fontawesome: './apps/base/styles/vendors/fontawesome.css',
@@ -22,7 +23,7 @@ module.exports = {
     'web-workflow-demo': './apps/web/javascript/workflow-demo.tsx',
     'web-dashboard-demo': './apps/web/javascript/dashboard-demo.tsx',
     widgets: './apps/widgets/javascript/index.ts',
-    workflow: './apps/workflows/javascript/dnd-flow.tsx',
+    workflows: './apps/workflows/javascript/dnd-flow.tsx',
   },
   output: {
     path: path.resolve(__dirname, './static'),

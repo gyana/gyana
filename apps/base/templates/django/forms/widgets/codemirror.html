@@ -1,9 +1,11 @@
-<div data-controller='codemirror'>
-  {{ columns|json_script:"columns" }}
-  <textarea data-codemirror-target='textarea'
-            data-live-update-ignore
-            class="textarea"
-            name="{{ widget.name }}"
-            placeholder="E.g. (Column_A + Column_B)/100 ..."
+<div data-morphdom-ignore>
+  <textarea
+  x-data
+  x-init="const columns = {{ columns }}
+    SiteJS.columns.Formula.init($el, columns)"
+  data-live-update-ignore
+  class="textarea"
+  name="{{ widget.name }}"
+  placeholder="E.g. (Column_A + Column_B)/100 ..."
   >{% if widget.value %}{{ widget.value }}{% endif %}</textarea>
 </div>
