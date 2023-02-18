@@ -21,7 +21,7 @@
 
         <a
           class="small link float-right"
-          x-show="changed"
+          {% if field.field.initial %}x-show="changed"{% else %}style="display: none;"{% endif%}
           @click.prevent="target.value = initial; changed = false"
         >
           Reset to default
