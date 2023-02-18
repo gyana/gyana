@@ -1,9 +1,12 @@
 <div hx-target="this" hx-swap="outerHTML" class="flex flex-row items-center">
   <i class='fas {{object.icon}} fa-lg text-blue mr-2'></i>
 
-  <form 
+  <form
+    x-data
+    @submit="$dispatch('gyana:update-node-name-{{ object.id }}', { value: $refs.input.value })"
+    @focusout="$dispatch('submit')"
     hx-post="{% url 'nodes:name' object.id %}"
-    hx-trigger="submit,focusout"
+    hx-trigger="submit"
   >
   {% csrf_token %}
     <input 
@@ -12,7 +15,7 @@
       type="text" 
       name="name"
       value="{% if object.name %}{{ object.name }}{% else %}{{ object.display_name|capfirst }}{% endif %}"
-      onBlur="this.form.requestSubmit();"
+      x-ref="input"
      />
   </form>
 </div>

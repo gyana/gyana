@@ -4,11 +4,7 @@
 {% if parent_error_node is None %}
 
   {% if node.kind == "input" or node.has_enough_parents %}
-  <div
-    class="workflow-modal__section workflow-modal__{{ node.kind }}"
-    data-controller="node-update"
-    data-node-update-id-value="{{ node.id }}"
-  >
+  <div class="workflow-modal__section workflow-modal__{{ node.kind }}">
     <div class="workflow-modal__header">
       {% include 'nodes/name.html' %}
 
@@ -36,6 +32,9 @@
         formset:remove->tf-modal#change 
         formset:add->tf-modal#change
       "
+      x-data
+      @submit="$dispatch('gyana:update-workflow')
+        $dispatch('gyana:update-node-{{ object.id }}')"
     >
 
       <div data-cy="update-sidebar" class="workflow-detail__sidebar">

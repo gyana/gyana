@@ -128,16 +128,25 @@ export default class extends Controller {
     if ([200, 201].includes(result.status)) {
       // For nodes, we need to dispatch events
       // that are usually triggered on the default submit event
-      const nodeUpdateElement = this.element.querySelector(
-        '[data-controller=node-update]'
-      )
+
+      // const nodeUpdateElement = this.element.querySelector(
+      //   '[data-controller=node-update]'
+      // )
+      // if (nodeUpdateElement) {
+      //   this.application
+      //     .getControllerForElementAndIdentifier(
+      //       nodeUpdateElement,
+      //       'node-update'
+      //     )
+      //     .sendNodeEvents()
+      // }
+
+      // Fix this
+
+      const nodeUpdateElement = this.element.querySelector('#node-update-form')
+
       if (nodeUpdateElement) {
-        this.application
-          .getControllerForElementAndIdentifier(
-            nodeUpdateElement,
-            'node-update'
-          )
-          .sendNodeEvents()
+        window.dispatchEvent(new Event('submit'))
       }
 
       this.forceClose()
