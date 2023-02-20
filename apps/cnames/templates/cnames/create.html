@@ -14,9 +14,10 @@
       In your DNS provider, add a CNAME record pointing to:
     </p>
 
-    <div data-controller="to-clipboard" class='clipboard-copy'>
-      <pre class="text-xl p-2" data-to-clipboard-target='target'>{{ cname_domain }}</pre>
-      <button id="share-link-to-clipboard" type="button" data-action="to-clipboard#copy">
+    <div x-data class='clipboard-copy'>
+      <pre class="text-xl p-2" x-ref="content">{{ cname_domain }}</pre>
+      <button type="button"
+        @click="navigator.clipboard.writeText($refs.content.innerText)">
         <i class='fa fa-clipboard'></i>
       </button>
     </div>

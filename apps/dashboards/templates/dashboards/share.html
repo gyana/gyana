@@ -35,16 +35,17 @@
     </p>
 
     {% if object.shared_status != "private" %}
-    <div data-controller="to-clipboard" class="clipboard-copy mb-4">
+    <div x-data class="clipboard-copy mb-4">
       <a
         href="{{ dashboard.public_url }}"
         target="_blank"
         rel="noreferrer noopener"
       >
-        <pre data-to-clipboard-target="target">{{ dashboard.public_url }}</pre>
+        <pre x-ref="content">{{ dashboard.public_url }}</pre>
       </a>
 
-      <button id="share-link-to-clipboard" type="button" data-action="to-clipboard#copy">
+      <button type="button"
+        @click="navigator.clipboard.writeText($refs.content.innerText)">
         <i class="fa fa-clipboard"></i>
       </button>
     </div>
@@ -81,9 +82,9 @@
       <h3 class="mb-3">Embed code</h3>
       <p class="mb-4">Since this dashboard is shared, you can also embed it on your website.</p>
 
-      <div data-controller="to-clipboard" class="clipboard-copy mb-4">
+      <div x-data class="clipboard-copy mb-4">
         <pre
-          data-to-clipboard-target="target"
+          x-ref="content"
           hx-boost="false"
           target="_blank"
           rel="noreferrer noopener"
@@ -91,7 +92,8 @@
           &lt;iframe src="{{ dashboard.public_url }}" frameborder="0" style="position:width:100%;height:100%;"&gt;&lt;/iframe&gt;
       </pre>
   
-        <button id="share-link-to-clipboard" type="button" data-action="to-clipboard#copy">
+        <button type="button"
+          @click="navigator.clipboard.writeText($refs.content.innerText)">
           <i class="fa fa-clipboard"></i>
         </button>
       </div>

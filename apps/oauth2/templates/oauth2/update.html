@@ -16,11 +16,12 @@
     <p class="mb-2">
       You'll need to enter this callback URL:
     </p>
-    <div data-controller="to-clipboard" class='clipboard-copy mb-4'>
-      <p data-to-clipboard-target='target'>
+    <div x-data class='clipboard-copy mb-4'>
+      <p x-ref="content">
         {{ object.callback_url }}
       </p>
-      <button id="share-link-to-clipboard" type="button" data-action="to-clipboard#copy">
+      <button type="button"
+        @click="navigator.clipboard.writeText($refs.content.innerText)">
         <i class='fa fa-clipboard'></i>
       </button>
     </div>

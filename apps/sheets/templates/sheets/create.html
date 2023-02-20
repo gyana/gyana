@@ -16,9 +16,11 @@
       Share your Google Sheet with <strong>Viewer</strong> access to this account:
     </p>
 
-    <div data-controller="to-clipboard" class='clipboard-copy'>
-      <pre class="text-xl p-2" data-to-clipboard-target='target'>{{ service_account }}</pre>
-      <button id="share-link-to-clipboard" type="button" data-action="to-clipboard#copy">
+    <div x-data class="clipboard-copy">
+      <pre class="text-xl p-2" x-ref="content">{{ service_account }}</pre>
+      <button
+        type="button"
+        @click="navigator.clipboard.writeText($refs.content.innerText)">
         <i class='fa fa-clipboard'></i>
       </button>
     </div>
