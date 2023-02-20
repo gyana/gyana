@@ -1,5 +1,5 @@
 import { getApiClient } from 'apps/base/javascript/api'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import ReactDOM from 'react-dom'
 import GoogleUploader from '../upload'
 
@@ -24,6 +24,29 @@ const GCSFileUpload_: React.FC<IProps> = ({ name, value }) => {
   const [progress, setProgress] = useState(0)
   const [stage, setStage] = useState<Stage>('initial')
   const [error, setError] = useState<string>()
+
+  // prevent browser from catching files.
+  const handleDragover = useCallback((event) => event.preventDefault(), [])
+
+  const handleDrop = useCallback((event) => {
+    event.preventDefault()
+
+    if (fileRef.current) {
+      fileRef.current.files = event.dataTransfer.files
+
+      // trigger the upload
+      fileRef.current.dispatchEvent(new Event('change'))
+    }
+  }, [])
+
+  useEffect(() => {
+    document.addEventListener('dragover', handleDragover)
+    window.addEventListener('drop', handleDrop)
+    return () => {
+      document.removeEventListener('dragover', handleDragover)
+      window.removeEventListener('drop', handleDrop)
+    }
+  }, [])
 
   useEffect(() => {
     if (fileRef.current && inputFileRef.current && inputNameRef.current) {

@@ -4,11 +4,7 @@
 {% block main %}
   {% block notifications %}{% endblock %}
 
-  <section
-    class="project"
-    data-controller="dropzone"
-    data-sheets-url="{% url 'project_integrations_sheets:create' project.id %}"
-  >
+  <section class="project">
     <section class="project-settings {% block app-class %}{% endblock %}">
       {% block app %}{% endblock %}
     </section>
