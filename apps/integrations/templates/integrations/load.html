@@ -6,17 +6,32 @@
 <div class="pad flex flex-1 justify-center items-center">
   <div class='flex flex-col flex-1 max-w-3xl'>
     <div class="flex flex-1 justify-center items-center">
-      <div
-        class='integration__file-validate'
-        data-controller="celery-progress"
-        data-celery-progress-task-url-value="{% url 'celery_progress:task_status' integration.latest_run.task_id %}"
-        data-celery-progress-script-url-value="{% static 'celery_progress/celery_progress.js' %}"
-        data-celery-progress-redirect-url-value="{% url 'project_integrations:done' project.id object.id %}"
-        {% if done %} data-celery-progress-done-value {% endif %}
-      >
-        <i class="fad fa-fw fa-spinner-third fa-spin fa-3x text-blue"></i>
+      <div class='integration__file-validate'
+        x-data="{ status: 'load', message: '' }"
+        x-init="{% if done %}$data.status = 'done'
+          htmx.ajax('GET', '{% url 'project_integrations:done' project.id object.id %}', 'body')
+          {% else %}
+          $data.initialUrl = window.location.href
 
-        <div class="flex flex-col gap-4">
+          CeleryProgressBar.initProgressBar('{% url 'celery_progress:task_status' integration.latest_run.task_id %}', {
+            onSuccess: () => {
+              // If the user has navigated away from the page the task started on
+              // we don't want to forcibly navigate them away.
+              if ($data.initialUrl != window.location.href) return
+              $data.status = 'done'
+              setTimeout(() => {
+                htmx.ajax('GET', '{% url 'project_integrations:done' project.id object.id %}', 'body')
+              }, 750)
+            },
+            onError: (progressBarElement, progressBarMessageElement, excMessage, data) => {
+              $data.status = 'error'
+              $data.message = excMessage
+            },
+          }){% endif %}"
+      >
+        <i x-show="status === 'load'" class="fad fa-fw fa-spinner-third fa-spin fa-3x text-blue"></i>
+
+        <div x-show="status === 'load'" class="flex flex-col gap-4">
           <h1>Validating and importing your {{ object.kind }}...</h1>
           <p>
             This can take anywhere from a few seconds to a minute.
@@ -26,15 +41,15 @@
           </p>
         </div>
 
-        <template id="success-template">
+        <div x-cloak x-show="status === 'done'">
           <i class="fas fa-fw fa-check fa-3x text-green"></i>
 
           <div class='flex flex-col'>
             <h1>{{ object.kind|title }} successfully imported</h4>
           </div>
-        </template>
+        </div>
 
-        <template id="failure-template">
+        <div x-cloak x-show="status === 'error'">
           <i class="fas fa-fw fa-times text-red fa-3x mr-4"></i>
 
           <div class="flex flex-col space-y-4">
@@ -43,8 +58,7 @@
               {% link_article 'integrations' 'error' %}
             </div>
 
-            <p id="failure-message">
-            </p>
+            <p x-text="message"></p>
 
             {% if object.kind == 'upload' %}
             <p>
@@ -74,9 +88,14 @@
               </div>
             </form>
           </div>
-        </template>
+        </div>
+        {% comment %} required for Celery Progress to not error {% endcomment %}
+        <div id="progress-bar" style="display:none;">
+          <div id="progress-bar-message"></div>
+        </div>
       </div>
     </div>
   </div>
 </div>
 {% endblock %}
+
