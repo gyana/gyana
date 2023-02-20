@@ -53,7 +53,7 @@ FORMSET_LABELS = {
     "queryparams": "Query Params",
     "httpheaders": "HTTP Headers",
     "formdataentries": "Form Data",
-    "formurlencodedentries": "Form Data",
+    "formurlencodedentries": "Form URL Encoded",
 }
 
 

@@ -1,52 +1,54 @@
 {% comment %} https://docs.djangoproject.com/en/4.0/ref/forms/api/#attributes-of-boundfield {% endcomment %}
-{% if form.form_description %}
-  <div class="form__description">{{ form.form_description }}</div>
-{% endif %}
+<div class="form" x-data="{ {% for field in form.visible_fields %}{{ field.name }}: '{{ field.value }}', {% endfor %}  }">
+  {% if form.form_description %}
+    <div class="form__description">{{ form.form_description }}</div>
+  {% endif %}
 
-{% for hidden_field in form.hidden_fields %}
-  {{ hidden_field }}
-{% endfor %}
-
-<div x-data="{ {% for field in form.visible_fields %}{{ field.name }}: '{{ field.value }}', {% endfor %}  }" class="input-group">
-  {% for bound_field in form.visible_fields %}
-    {% if bound_field.name in form.extra_fields %}
-      {% comment %} Skip rendering extra_fields, they are rendered later {% endcomment %}
-    {% else %}
-      {% include 'django/forms/field.html' with field=bound_field %}
-    {% endif %}
+  {% for hidden_field in form.hidden_fields %}
+    {{ hidden_field }}
   {% endfor %}
 
-  {% if form.extra_fields %}
-    <details class="form__extra">
-      <summary>
-        <p class="link small cursor-pointer">
-          <i class="fas fa-fw fa-angle-down"></i> Advanced
-        </p>
-      </summary>
+  <div class="input-group">
+    {% for bound_field in form.visible_fields %}
+      {% if bound_field.name in form.extra_fields %}
+        {% comment %} Skip rendering extra_fields, they are rendered later {% endcomment %}
+      {% else %}
+        {% include 'django/forms/field.html' with field=bound_field %}
+      {% endif %}
+    {% endfor %}
 
-      <div
-        class="input-group"
-      >
-        {% for bound_field in form.visible_fields  %}
-          {% if bound_field.name in form.extra_fields %}
-            {% include "django/forms/field.html" with field=bound_field %}
-          {% endif %}
-        {% endfor %}
-      </div>
-    </details>
-  {% endif %}
+    {% if form.extra_fields %}
+      <details class="form__extra">
+        <summary>
+          <p class="link small cursor-pointer">
+            <i class="fas fa-fw fa-angle-down"></i> Advanced
+          </p>
+        </summary>
+
+        <div
+          class="input-group"
+        >
+          {% for bound_field in form.visible_fields  %}
+            {% if bound_field.name in form.extra_fields %}
+              {% include "django/forms/field.html" with field=bound_field %}
+            {% endif %}
+          {% endfor %}
+        </div>
+      </details>
+    {% endif %}
+  </div>
+
+  {% for label, formset in form.get_formsets.items %}
+    <fieldset {% if formset.show %}x-show="{{ formset.show }}"{% endif %}>
+      <label>{{ label }}</label>
+
+      {% include "components/formset.html" with formset=formset %}
+    </fieldset>
+  {% endfor %}
+
+  {% for error in form.non_field_errors %}
+    <p class="text-red">
+      {{ error|escape }}
+    </p>
+  {% endfor %}
 </div>
-
-{% for label, formset in form.get_formsets.items %}
-  <fieldset>
-    <label>{{ label }}</label>
-
-    {% include "components/formset.html" with formset=formset %}
-  </fieldset>
-{% endfor %}
-
-{% for error in form.non_field_errors %}
-  <p class="text-red">
-    {{ error|escape }}
-  </p>
-{% endfor %}

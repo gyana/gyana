@@ -7,11 +7,13 @@ class BaseInlineFormset(BaseInlineFormSet):
         super().add_fields(form, index)
         form.fields["DELETE"].widget = forms.HiddenInput()
 
+
 class RequiredInlineFormset(BaseInlineFormset):
     def __init__(self, *args, **kwargs):
         self.names = kwargs.pop("names", None)
         self.max_num = kwargs.pop("max_num", self.max_num)
         self.min_num = kwargs.pop("min_num", self.min_num)
+        self.show = getattr(self.__class__, "show", None)
         super().__init__(*args, **kwargs)
         self.can_add = self.total_form_count() < self.max_num
         self.hide_delete_button = self.min_num == self.max_num
@@ -43,4 +45,3 @@ class RequiredInlineFormset(BaseInlineFormset):
             if not commit:
                 self.saved_forms.append(form)
         return self.new_objects
-

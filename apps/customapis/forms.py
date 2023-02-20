@@ -19,11 +19,6 @@ from .models import (
 
 HEADERS_PATH = "apps/customapis/requests/headers.txt"
 
-FORMAT_TO_FIELDS = {
-    FormDataEntry.Format.TEXT: ["text"],
-    FormDataEntry.Format.FILE: ["file"],
-}
-
 
 @cache
 def get_headers():
@@ -66,16 +61,15 @@ HttpHeaderFormset = forms.inlineformset_factory(
 )
 
 
-class FormDataEntryForm(LiveModelForm):
+class FormDataEntryForm(BaseModelForm):
     class Meta:
         model = FormDataEntry
         fields = ["format", "key", "text", "file"]
+        show = {
+            "text": f"format == '{FormDataEntry.Format.TEXT}'",
+            "file": f"format == '{FormDataEntry.Format.FILE}'",
+        }
         help_texts = {"format": "Format", "key": "Key", "text": "Text", "file": "File"}
-
-    def get_live_fields(self):
-        live_fields = ["format", "key"]
-        live_fields += FORMAT_TO_FIELDS[self.get_live_field("format")]
-        return live_fields
 
 
 FormDataEntryFormset = forms.inlineformset_factory(
@@ -86,6 +80,8 @@ FormDataEntryFormset = forms.inlineformset_factory(
     extra=0,
     formset=RequiredInlineFormset,
 )
+
+FormDataEntryFormset.show = f"body == '{CustomApi.Body.FORM_DATA}'"
 
 
 class FormURLEncodedEntryForm(LiveModelForm):
@@ -104,14 +100,7 @@ FormURLEncodedEntryFormset = forms.inlineformset_factory(
     formset=RequiredInlineFormset,
 )
 
-BODY_TO_FORMSETS = {
-    CustomApi.Body.FORM_DATA: [FormDataEntryFormset],
-    CustomApi.Body.X_WWW_FORM_URLENCODED: [FormURLEncodedEntryFormset],
-}
-
-
-def is_authorization(v):
-    return f"authorization == {v}"
+FormURLEncodedEntryFormset.show = f"body == '{CustomApi.Body.X_WWW_FORM_URLENCODED}'"
 
 
 class CustomApiCreateForm(BaseModelForm):
@@ -169,10 +158,10 @@ class CustomApiUpdateForm(LiveFormsetMixin, LiveModelForm):
             "api_key_key": f"authorization == '{CustomApi.Authorization.API_KEY}'",
             "api_key_value": f"authorization == '{CustomApi.Authorization.API_KEY}'",
             "api_key_add_to": f"authorization == '{CustomApi.Authorization.API_KEY}'",
-            "bearer_token": f"authorization == '{Auth.BEARER_TOKEN}'",
-            "username": f"authorization == '{Auth.BASIC_AUTH}' || authorization == '{Auth.DIGEST_AUTH}'",
+            "bearer_token": f"authorization == '{CustomApi.Authorization.BEARER_TOKEN}'",
+            "username": f"authorization == '{CustomApi.Authorization.BASIC_AUTH}' || authorization == '{CustomApi.Authorization.DIGEST_AUTH}'",
             "password": f"authorization == '{CustomApi.Authorization.BASIC_AUTH}' || authorization == '{CustomApi.Authorization.DIGEST_AUTH}'",
-            "oauth2": f"authorization == '{Auth.OAUTH2}'",
+            "oauth2": f"authorization == '{CustomApi.Authorization.OAUTH2}'",
             "body_raw": f"body == '{CustomApi.Body.RAW}'",
             "body_binary": f"body == '{CustomApi.Body.BINARY}'",
         }
@@ -205,17 +194,19 @@ class CustomApiUpdateForm(LiveFormsetMixin, LiveModelForm):
 
         self.fields["url"].required = True
 
-        if self.get_live_field("authorization") == Auth.OAUTH2:
-            field = self.fields["oauth2"]
-            project = self.instance.integration.project
+        field = self.fields["oauth2"]
+        project = self.instance.integration.project
 
-            field.queryset = project.oauth2_set.filter(token__isnull=False).all()
-            settings_url = reverse("projects:update", args=(project.id,))
-            field.help_text = mark_safe(
-                f'You can authorize services with OAuth2 in your project <a href="{settings_url}" class="link">settings</a>'
-            )
+        field.queryset = project.oauth2_set.filter(token__isnull=False).all()
+        settings_url = reverse("projects:update", args=(project.id,))
+        field.help_text = mark_safe(
+            f'You can authorize services with OAuth2 in your project <a href="{settings_url}" class="link">settings</a>'
+        )
 
     def get_live_formsets(self):
-        live_formsets = BODY_TO_FORMSETS.get(self.get_live_field("body"), [])
-        live_formsets += [QueryParamFormset, HttpHeaderFormset]
-        return live_formsets
+        return [
+            FormDataEntryFormset,
+            FormURLEncodedEntryFormset,
+            QueryParamFormset,
+            HttpHeaderFormset,
+        ]
