@@ -1,6 +1,6 @@
 <div
   class="collapsable flex flex-col max-h-0 overflow-hidden"
-  data-collapsable-target="body"
+  :style="{ maxHeight: open ? $el.scrollHeight + 'px' : null }"
 >
   <div class="flex flex-col gap-3 pt-4">
     <div

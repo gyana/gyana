@@ -12,14 +12,14 @@
 // </div>
 // </div>
 // ```
-[data-controller='collapsable'] {
+.collapsable-component {
   position: relative;
 
-  [data-action] {
+  .cursor-pointer {
     cursor: pointer;
   }
 
-  [data-action]::after {
+  .cursor-pointer::after {
     content: '\f078';
     display: inline;
     font-family: 'Font Awesome 5 Pro';
@@ -29,7 +29,7 @@
     right: 1.6rem;
   }
 
-  &.active [data-action]::after {
+  &.active .cursor-pointer::after {
     content: '\f077';
   }
 
