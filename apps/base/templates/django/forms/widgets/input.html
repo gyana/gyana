@@ -2,7 +2,7 @@
 {{ widget.label }}
 
 <input
-  x-model="{{ widget.name }}"
+  x-model="{{ widget.name|form_name }}"
   type="{{ widget.type }}"
   name="{{ widget.name }}"
   {% if widget.value != None %}

@@ -1,5 +1,6 @@
-<div class="formset-wrapper {% cycle 'row1' 'row2' %} formset_row-{{ formset.prefix }}" {% if form.DELETE.value %}
-  style="display: none;" {% endif %}
+<div x-ref="wrapper_{{ forloop.counter0 }}"
+  class="formset-wrapper {% cycle 'row1' 'row2' %} formset_row-{{ formset.prefix }}"
+  {% if form.DELETE.value %}style="display: none;" {% endif %}
   data-formset-index="{{ forloop.counter0 }}"
 >
   {% if formset.names %}
@@ -17,6 +18,20 @@
       class="button button--sm button--circle button--tertiary ml-4" 
       type="submit"
       data-action="click->formset#remove"
+      @click.prevent="const wrapper = $refs.wrapper_{{ forloop.counter0 }}
+  
+      // If the field has `data-new-record` set, then it was added dynamically. Otherwise we
+      // need to 'check' the hidden delete input. Django will then delete it on the post request.
+  
+      if (wrapper.dataset.newRecord === 'true') {
+        wrapper.remove()
+      } else {
+        wrapper.style.display = 'none'
+  
+        const input = wrapper.querySelector(`input[name*='-DELETE']`)
+        input.value = 'on'
+        input.setAttribute('checked', '')
+      }"
     >
       <i class="far fa-fw fa-times"></i>
     </button>

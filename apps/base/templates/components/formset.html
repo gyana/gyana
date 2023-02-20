@@ -1,31 +1,38 @@
 {% load static %}
 
-<div data-controller="formset" data-formset-prefix-value="{{ formset.get_default_prefix }}">
+<div x-data>
   {% comment %}
   `formset.empty_form` is an empty form with a `__prefix__` placeholder
   {% endcomment %}
 
-  <template data-formset-target="template">
+  <template x-ref="template">
     {% include 'components/formset_row.html' with form=formset.empty_form %}
   </template>
 
   {{ formset.management_form }}
-  <div data-formset-target="target">
+  
+  <div x-ref="forms">
     {% for form in formset.forms %}
       {% include 'components/formset_row.html' with form=form %}
     {% endfor %}
-
   </div>
 
-    <button 
-      id="{{ formset.get_default_prefix }}-add" 
-      type="submit" 
-      class="button button--sm button--rounded  " 
-      data-action="click->formset#add"
-      {% if formset.can_add == False %}disabled{% endif %}
-    >
-      <i class="far fa-fw fa-plus"></i> Add new
-    </button>
+  <button 
+    id="{{ formset.get_default_prefix }}-add" 
+    type="submit" 
+    class="button button--sm button--rounded"
+    @click.prevent="const TOTAL_FORMS = $root.querySelector('#id_{{ formset.get_default_prefix }}-TOTAL_FORMS')
+    const total = parseInt(TOTAL_FORMS.value)
+
+    const content = $refs.template.innerHTML.replace(/__prefix__/g, total)
+    $refs.forms.insertAdjacentHTML('beforeend', content)
+
+    // Increment the total forms index, for consistency with live update form
+    TOTAL_FORMS.value = parseInt(total) + 1"
+    {% if formset.can_add == False %}disabled{% endif %}
+  >
+    <i class="far fa-fw fa-plus"></i> Add new
+  </button>
 </div>
 
 {{ formset.media }}

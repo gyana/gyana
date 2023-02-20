@@ -35,7 +35,7 @@ fieldset {
     }
   }
 
-  [data-formset-target='target'] {
+  [x-ref='forms'] {
     display: flex;
     flex-direction: column;
     gap: 1.6rem;
