@@ -19,27 +19,6 @@ from .models import (
 
 HEADERS_PATH = "apps/customapis/requests/headers.txt"
 
-AUTHORIZATION_TO_FIELDS = {
-    CustomApi.Authorization.NO_AUTH: [],
-    CustomApi.Authorization.API_KEY: [
-        "api_key_key",
-        "api_key_value",
-        "api_key_add_to",
-    ],
-    CustomApi.Authorization.BEARER_TOKEN: ["bearer_token"],
-    CustomApi.Authorization.BASIC_AUTH: ["username", "password"],
-    CustomApi.Authorization.DIGEST_AUTH: ["username", "password"],
-    CustomApi.Authorization.OAUTH2: ["oauth2"],
-}
-
-BODY_TO_FIELDS = {
-    CustomApi.Body.NONE: [],
-    CustomApi.Body.FORM_DATA: [],
-    CustomApi.Body.X_WWW_FORM_URLENCODED: [],
-    CustomApi.Body.RAW: ["body_raw"],
-    CustomApi.Body.BINARY: ["body_binary"],
-}
-
 FORMAT_TO_FIELDS = {
     FormDataEntry.Format.TEXT: ["text"],
     FormDataEntry.Format.FILE: ["file"],
@@ -131,6 +110,10 @@ BODY_TO_FORMSETS = {
 }
 
 
+def is_authorization(v):
+    return f"authorization == {v}"
+
+
 class CustomApiCreateForm(BaseModelForm):
     name = forms.CharField(
         max_length=255,
@@ -182,6 +165,17 @@ class CustomApiUpdateForm(LiveFormsetMixin, LiveModelForm):
             "body_raw",
             "body_binary",
         ]
+        show = {
+            "api_key_key": f"authorization == '{CustomApi.Authorization.API_KEY}'",
+            "api_key_value": f"authorization == '{CustomApi.Authorization.API_KEY}'",
+            "api_key_add_to": f"authorization == '{CustomApi.Authorization.API_KEY}'",
+            "bearer_token": f"authorization == '{Auth.BEARER_TOKEN}'",
+            "username": f"authorization == '{Auth.BASIC_AUTH}' || authorization == '{Auth.DIGEST_AUTH}'",
+            "password": f"authorization == '{CustomApi.Authorization.BASIC_AUTH}' || authorization == '{CustomApi.Authorization.DIGEST_AUTH}'",
+            "oauth2": f"authorization == '{Auth.OAUTH2}'",
+            "body_raw": f"body == '{CustomApi.Body.RAW}'",
+            "body_binary": f"body == '{CustomApi.Body.BINARY}'",
+        }
         widgets = {
             "api_key_value": forms.PasswordInput(render_value=True),
             "bearer_token": forms.PasswordInput(render_value=True),
@@ -204,12 +198,14 @@ class CustomApiUpdateForm(LiveFormsetMixin, LiveModelForm):
             )
         }
 
+    forms.ModelChoiceField
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.fields["url"].required = True
 
-        if self.get_live_field("authorization") == CustomApi.Authorization.OAUTH2:
+        if self.get_live_field("authorization") == Auth.OAUTH2:
             field = self.fields["oauth2"]
             project = self.instance.integration.project
 
@@ -218,18 +214,6 @@ class CustomApiUpdateForm(LiveFormsetMixin, LiveModelForm):
             field.help_text = mark_safe(
                 f'You can authorize services with OAuth2 in your project <a href="{settings_url}" class="link">settings</a>'
             )
-
-    def get_live_fields(self):
-        live_fields = [
-            "url",
-            "json_path",
-            "http_request_method",
-            "authorization",
-            "body",
-        ]
-        live_fields += AUTHORIZATION_TO_FIELDS[self.get_live_field("authorization")]
-        live_fields += BODY_TO_FIELDS[self.get_live_field("body")]
-        return live_fields
 
     def get_live_formsets(self):
         live_formsets = BODY_TO_FORMSETS.get(self.get_live_field("body"), [])

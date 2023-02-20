@@ -7,7 +7,7 @@
   {{ hidden_field }}
 {% endfor %}
 
-<div class="input-group">
+<div x-data="{ {% for field in form.visible_fields %}{{ field.name }}: '{{ field.value }}', {% endfor %}  }" class="input-group">
   {% for bound_field in form.visible_fields %}
     {% if bound_field.name in form.extra_fields %}
       {% comment %} Skip rendering extra_fields, they are rendered later {% endcomment %}

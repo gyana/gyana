@@ -13,7 +13,7 @@
         method="POST"
         action="{{ request.get_full_path }}"
         {% if object.kind == 'customapi' %}
-          data-controller="live-update"
+          {% comment %} data-controller="live-update" {% endcomment %}
           enctype='multipart/form-data'
           data-action="
           formset:remove->live-update#updateForm 

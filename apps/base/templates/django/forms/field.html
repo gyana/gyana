@@ -1,6 +1,9 @@
 {% if field %}
   <div
     class="label {{ field.field.widget.attrs.class }}"
+    {% if form.show %}
+      {% if form.show|get_item:field.name %}x-show="{{ form.show|get_item:field.name }}"{% endif %}
+    {% endif %}
     {% if field.field.initial %}
       x-data="{ changed: false, initial: '{{ field.field.initial }}', target: null }"
       @change="target = $event.target; if (target.value !== initial) changed = true"

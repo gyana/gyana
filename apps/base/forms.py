@@ -5,10 +5,27 @@ from django.contrib.postgres.search import TrigramSimilarity
 from django.db import transaction
 from django.db.models import Case, Q, When
 from django.db.models.functions import Greatest
+from django.forms.models import ModelFormOptions
 from django.utils.datastructures import MultiValueDict
 
 from apps.base.core.utils import create_column_choices
 from apps.tables.models import Table
+
+
+def __init__(self, options=None):
+    self.model = getattr(options, "model", None)
+    self.fields = getattr(options, "fields", None)
+    self.exclude = getattr(options, "exclude", None)
+    self.widgets = getattr(options, "widgets", None)
+    self.localized_fields = getattr(options, "localized_fields", None)
+    self.labels = getattr(options, "labels", None)
+    self.help_texts = getattr(options, "help_texts", None)
+    self.error_messages = getattr(options, "error_messages", None)
+    self.field_classes = getattr(options, "field_classes", None)
+    self.show = getattr(options, "show", None)
+
+
+ModelFormOptions.__init__ = __init__
 
 
 def get_formsets(self):
@@ -85,6 +102,10 @@ class BaseModelForm(forms.ModelForm):
                 self.save_m2m()
                 self.post_save(instance)
         return instance
+
+    @property
+    def show(self):
+        return self._meta.show
 
 
 class LiveModelForm(BaseModelForm):
