@@ -29,6 +29,7 @@
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
   <script src="{% static 'js/stimulus-bundle.js' %}"></script>
+  <script src="{% static 'js/base-bundle.js' %}"></script>
   <script src="{% static 'rest_framework/js/coreapi-0.1.1.js' %}"></script>
   <script src="{% url 'api_schemajs' %}"></script>
 
@@ -55,7 +56,7 @@
   {% endif %}
 </head>
 <body
-  data-controller="tf-modal on-submit-loading"
+  data-controller="tf-modal"
   hx-boost="true"
 >
   <header x-data="{running: false}" class="widgets__export-header" data-html2canvas-ignore>
