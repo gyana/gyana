@@ -36,7 +36,7 @@ input[type='email'] {
   @extend %input;
 }
 
-[data-controller*='password-input'] {
+.password-input {
   position: relative;
 
   @include u.fa-icon {
