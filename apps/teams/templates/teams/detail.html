@@ -15,16 +15,12 @@
       Your Projects {% link_article 'overview' 'collaborate' %}
     </h2>
 
-    <div
-      data-controller="popover"
-      data-placement="bottom-end"
-      data-theme="popover-menu"
-    >
+    <div x-data="popover({ placement: 'bottom-end', theme: 'popover-menu' })">
       <button class="button button--sm button--tertiary">
         Sort <i class="fas fa-fw fa-chevron-down"></i>
       </button>
 
-      <template data-popover-target="body">
+      <template x-ref="body">
         {% for column in table.columns.iterorderable %}
           <a
             class="list__item list__item--interactive w-full {{ column.attrs.th.class }}"

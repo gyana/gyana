@@ -142,21 +142,17 @@
               </button>
             </form>
 
-            <div
-              data-controller="popover" 
-              data-placement="right"
-              data-theme="popover-menu"
-            >
+            <div x-data="popover({ placement: 'right', theme: 'popover-menu' })">
               <button
                 class="list__item list__item--interactive w-full"
-                data-popover-target="trigger"
+                x-ref="trigger"
               >
                 Move page to
               </button>
 
-              <div data-popover-target="body">
+              <template x-ref="body">
                 {% include 'dashboards/forms/move_page.html' %}
-              </div>
+              </template>
             </div>
         </template>
       </div>

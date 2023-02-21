@@ -47,20 +47,22 @@
   {% endif %}
 
   {% if integration.ready %}
-  <div data-controller='popover'>
+  <div x-data="popover">
     <button class="button button--sm">
       Use in<i class="fas fa-fw fa-angle-down"></i>
     </button>
 
-    <ul data-popover-target="body" class="list list--bordered" style="margin-top:6px;">
-      <li class="list__item list__item--interactive">
-        {% include "workflows/create_from_integration.html" %}
-      </li>
+    <template x-ref="body">
+      <ul>
+        <li class="list__item list__item--interactive">
+          {% include "workflows/create_from_integration.html" %}
+        </li>
 
-      <li class="list__item list__item--interactive">
-        {% include "dashboards/create_from_integration.html" %}
-      </li>
-    </ul>
+        <li class="list__item list__item--interactive">
+          {% include "dashboards/create_from_integration.html" %}
+        </li>
+      </ul>
+    </template>
   </div>
   {% endif %}
 </div>

@@ -64,14 +64,12 @@
 
       <button
         class="sidebar__link sidebar__link--border" 
-        data-controller="popover"
-        data-placement="right-end"
-        data-theme="popover-menu"
+        x-data="popover({ placement: 'right-end', theme: 'popover-menu' })"
         x-tooltip.sidebar="Help"
       >
         <i class="fas fa-fw fa-question"></i></i>Help
 
-        <template data-popover-target="body">
+        <template x-ref="body">
           <a
             id="changelogWidgetID"
             data-action="click->tf-modal#open"
@@ -104,14 +102,12 @@
 
       <button
         class="sidebar__link sidebar__link--border" 
-        data-controller="popover"
-        data-placement="right-end"
-        data-theme="popover-menu"
+        x-data="popover({ placement: 'right-end', theme: 'popover-menu' })"
         x-tooltip.sidebar="Your account"
       >
         <img src="{{ user.avatar_url }}" />Your account
 
-        <template data-popover-target="body">
+        <template x-ref="body">
           <a
             data-action="click->tf-modal#open"
             data-modal-src="{% url "users:profile" %}"

@@ -83,12 +83,12 @@
         <i class="fas fa-fw fa-upload"></i>
       </a>
 
-      <div data-controller='popover'>
+      <div x-data="popover">
         <button class="button button--dropdown button--sm">
           New Integration <i class="fas fa-fw fa-angle-down"></i>
         </button>
 
-        <div data-popover-target="body" class="list list--bordered" style="margin-top:6px;">
+        <div x-ref="body" class="list list--bordered" style="margin-top:6px;">
           <a class="list__item list__item--interactive" href="{% url 'project_integrations_sheets:create' project.id %}">
             <i class="fas fa-fw fa-file-spreadsheet mr-4"></i> Add Sheet
           </a>

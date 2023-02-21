@@ -32,12 +32,11 @@
       <button
         type="button"
         class="bg-white rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-600 font-normal hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
-        data-controller="popover"
-        data-theme="popover-menu"
+        x-data="popover({ theme: 'popover-menu' })"
       >
         <span class="sr-only">Open menu</span>
         <i class="fal fa-bars h-6 w-6"></i>
-        <template data-popover-target="body">
+        <template x-ref="body">
           <div class="w-screen">
             <form class="p-4" action="{% url 'learn:search' %}" method="GET">
               <input type="search" name="query" class="input input--sm" value="{{ request.GET.query }}" placeholder="Search...">

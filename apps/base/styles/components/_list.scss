@@ -40,8 +40,8 @@
       cursor: default;
     }
 
-    &[data-controller*='popover']::after,
-    [data-controller*='popover'] > &::after {
+    &[x-data*='popover']::after,
+    [x-data*='popover'] > &::after {
       color: var(--c-black-50);
       content: '\f054';
       display: inline;

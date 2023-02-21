@@ -14,15 +14,19 @@ import tippy from 'tippy.js'
  *  </template>
  * </div>
  */
-export default ({ placement, theme, trigger }) => ({
+export default (args) => ({
   init() {
+    const { placement, theme, trigger } = args || {}
+
+    console.log(placement, theme, trigger)
+
     console.assert(this.$refs.body, 'Popover components need a body target')
 
     /** @link https://atomiks.github.io/tippyjs/v6/all-props/ */
     tippy(this.$el, {
       allowHTML: true,
       animation: false,
-      appendTo: this.$el,
+      appendTo: this.$refs.trigger ? this.$el : () => document.body,
       arrow: false,
       content: this.$refs.body.innerHTML,
       delay: 0,

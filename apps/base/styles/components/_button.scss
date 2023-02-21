@@ -38,7 +38,7 @@ $button-colors: (
   border: 1px solid transparent;
   color: var(--c-white);
 
-  [data-controller*='popover'] &,
+  [x-data*='popover'] &,
   &[type='submit'],
   &[href],
   &[data-action],
