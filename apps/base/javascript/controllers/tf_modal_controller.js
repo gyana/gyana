@@ -11,7 +11,7 @@ const debounceTime = 450
  * @example
  * <button
  *   data-action="click->tf-modal#open"
- *   data-controller="tooltip"
+ *   data-controller="tf-modal"
  *   data-modal-src="{% url "web:help" %}"
  *   data-modal-id="web:help"
  *   data-modal-classes="tf-modal--tall"
