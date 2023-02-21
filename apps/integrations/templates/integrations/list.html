@@ -88,13 +88,12 @@
               New Integration <i class="fas fa-fw fa-angle-down"></i>
             </button>
 
-            <div x-ref="body" class="list list--bordered" style="margin-top:6px;">
+            <template x-ref="body">
               <a class="list__item list__item--interactive" href="{% url 'project_integrations_sheets:create' project.id %}">
                 <i class="fas fa-fw fa-file-spreadsheet mr-4"></i> Add Sheet
               </a>
 
               {% if team.is_free %}
-
                 <button disabled class="list__item list__item--interactive disabled">
                   <i class="fas fa-fw fa-brackets-curly mr-4"></i> Custom API
                 </button>
@@ -104,7 +103,7 @@
                   <i class="fas fa-fw fa-brackets-curly mr-4"></i> Custom API
                 </a>
               {% endif %}
-            </div>
+            </template>
           </div>
         {% else %}
           <button disabled class="button button--sm disabled">

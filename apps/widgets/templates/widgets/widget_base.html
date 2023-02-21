@@ -64,7 +64,7 @@ preview mode.
                   <i class="fas fa-fw fa-ellipsis-v"></i>
                 </button>
 
-                <div x-ref="body">
+                <template x-ref="body">
                   <form
                     method="POST"
                     action="{% url 'dashboard_widgets:detail' project.id dashboard.id object.pk %}"
@@ -114,11 +114,11 @@ preview mode.
                       Move to page
                     </button>
 
-                    <div x-ref="body">
+                    <template x-ref="body">
                       {% include 'widgets/forms/move_page.html' %}
-                    </div>
+                    </template>
                   </div>
-                </div>
+                </template>
               </div>
 
               {% if object.kind != "text" %}
