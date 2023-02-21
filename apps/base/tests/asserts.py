@@ -26,7 +26,7 @@ def assertLink(response, url, text=None, title=None, tooltip=None, htmx=False, t
     elif title is not None:
         matches = [m for m in matches if title in m["title"]]
     elif tooltip is not None:
-        matches = [m for m in matches if tooltip in m["data-tooltip-content"]]
+        matches = [m for m in matches if tooltip in m["x-tooltip"]]
 
     assert len(matches) == total, f"Possible matches are {[match for match in matches]}"
 

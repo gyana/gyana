@@ -77,9 +77,9 @@
     {% if project.team.enabled %}
       <a
         class="button button--tertiary button--sm"
-        data-controller="tooltip"
-        data-tooltip-content="Upload CSV file"
         href="{% url 'project_integrations_uploads:create' project.id %}"
+        x-data
+        x-tooltip="Upload CSV file"
       >
         <i class="fas fa-fw fa-upload"></i>
       </a>

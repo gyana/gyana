@@ -17,8 +17,8 @@
     class="button button--circle button--tertiary"
     target="_blank"
     rel="noopener noreferer"
-    data-controller="tooltip"
-    data-tooltip-content="Go to Google Sheet"
+    x-data
+    x-tooltip="Go to Google Sheet"
   >
     <i class="fas fa-fw fa-external-link"></i>
   </a>
@@ -40,8 +40,8 @@
         button--success
         {% endif %}
       "
-      data-controller="tooltip"
-      data-tooltip-content="Fetch latest data"
+      x-data
+      x-tooltip="Fetch latest data"
     >
       <i class="fas fa-fw fa-sync"></i>
     </button>
@@ -70,19 +70,15 @@
 <nav id="tabbar" class="tabbar bg-white">
   <div class="tabbar__item">
     <i
-      data-controller="tooltip"
-      data-tooltip-content="{{ object.state_text }}"
+      x-data
+      x-tooltip="{{ object.state_text }}"
       class="fas fa-fw fa-center {{ object.state_icon }}">
     </i>
 
     {% if object.ready or object.state == 'done' %}
       <p class="ml-4">
-        <span data-controller="tooltip">
+        <span x-data x-tooltip="~{{ integration.row_percentage }}% of your quota">
           <strong>{{ integration.num_rows|intcomma }}</strong> row{{ integration.num_rows|pluralize }}
-
-          <span data-tooltip-target="body">
-            <i>~{{ integration.row_percentage }}</i>% of your quota
-          </span>
         </span>
       </p>
     {% endif %}
@@ -135,8 +131,8 @@
           class="h-8 w-8 rounded-full mr-2"
           src="{{ integration.created_by.avatar_url }}"
           alt="{{ integration.created_by.get_display_name }}"
-          data-controller="tooltip"
-          data-tooltip-content="Created by {{ integration.created_by.get_display_name }}"
+          x-data
+          x-tooltip="Created by {{ integration.created_by.get_display_name }}"
         />
         {% endif %}
       </p>

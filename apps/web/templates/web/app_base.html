@@ -64,12 +64,11 @@
 
       <button
         class="sidebar__link sidebar__link--border" 
-        data-controller="popover tooltip"
-        data-tooltip-placement="right"
-        data-tooltip-content="Help"
+        data-controller="popover"
         data-placement="right-end"
         data-theme="popover-menu"
-        data-show-on-collapse="true"
+        x-data
+        x-tooltip.sidebar="Help"
       >
         <i class="fas fa-fw fa-question"></i></i>Help
 
@@ -106,12 +105,11 @@
 
       <button
         class="sidebar__link sidebar__link--border" 
-        data-controller="popover tooltip"
-        data-tooltip-placement="right"
-        data-tooltip-content="Your account"
+        data-controller="popover"
         data-placement="right-end"
         data-theme="popover-menu"
-        data-show-on-collapse="true"
+        x-data
+        x-tooltip.sidebar="Your account"
       >
         <img src="{{ user.avatar_url }}" />Your account
 
@@ -141,13 +139,10 @@
         x-data
         @click="SiteJS.base.Api.getApiClient().action(window.schema, ['toggle-sidebar', 'create'])"
         {% endif %}
-        data-controller="tooltip"
-        data-tooltip-placement="right"
-        data-show-on-collapse="true"
+        x-data
+        x-tooltip.sidebar="Expand"
       >
         <i class="fas fa-fw"></i>Collapse
-
-        <span data-tooltip-target="body">Expand</span>
       </label>
     </nav>
   </div>

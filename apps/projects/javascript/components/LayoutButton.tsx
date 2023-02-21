@@ -1,6 +1,12 @@
 import { getLayoutedElements } from 'apps/base/javascript/layout'
 import React, { useEffect, useState } from 'react'
-import { Node, Edge, useStoreState, ControlButton, useZoomPanHelper } from 'react-flow-renderer'
+import {
+  Node,
+  Edge,
+  useStoreState,
+  ControlButton,
+  useZoomPanHelper,
+} from 'react-flow-renderer'
 
 interface Props {
   elements: (Edge | Node)[]
@@ -15,7 +21,11 @@ const LayoutButton: React.FC<Props> = ({ elements, setElements }) => {
 
   // https://github.com/wbkd/react-flow/issues/1353
   useEffect(() => {
-    if (shouldLayout && nodes.length > 0 && nodes.every((el) => el.__rf.width && el.__rf.height)) {
+    if (
+      shouldLayout &&
+      nodes.length > 0 &&
+      nodes.every((el) => el.__rf.width && el.__rf.height)
+    ) {
       const layoutedElements = getLayoutedElements(elements, nodes)
       setElements(layoutedElements)
       setHasLayout(true)
@@ -34,9 +44,8 @@ const LayoutButton: React.FC<Props> = ({ elements, setElements }) => {
   const onLayout = () => setShouldLayout(true)
 
   return (
-    <ControlButton data-controller='tooltip' onClick={onLayout}>
+    <ControlButton x-data='true' x-tooltip='Format' onClick={onLayout}>
       <i className='fas fa-fw fa-sort-size-down'></i>
-      <template data-tooltip-target='body'>Format</template>
     </ControlButton>
   )
 }

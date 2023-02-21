@@ -166,7 +166,7 @@
       </div>
 
 
-      <div data-controller="tooltip">
+      <div x-data x-tooltip="Customize dimensions, grid spacing and color palette">
           <button data-action="click->tf-modal#open"
                   data-modal-id="dashboard:settings"
                   data-modal-classes="tf-modal--auto tf-modal--wide tf-modal--tall"
@@ -175,11 +175,10 @@
                   class="button button--sm button--tertiary">
               <i class="fas fa-fw fa-paint-brush"></i> Theme and Layout
           </button>
-          <span data-tooltip-target="body">Customize dimensions, grid spacing and color palette</span>
       </div>
     {% endif %}
 
-    <div data-controller="tooltip">
+    <div x-data x-tooltip="Click to change view mode">
         {% if not request.GET.mode or request.GET.mode == "edit" %}
             <a href="?mode=view&dashboardPage={{ page.position }}"
                 class="button button--sm button--tertiary">
@@ -191,19 +190,18 @@
                 <i class="fas fa-fw fa-pen"></i> Edit
             </a>
         {% endif %}
-        <span data-tooltip-target="body">Click to change view mode</span>
     </div>
 
     <button
       id="dashboard-share-{{ object.id }}"
       class="button button--sm button--success"
-      data-controller="tooltip"
       data-action="click->tf-modal#open"
       data-modal-src="{% url "dashboards:share" object.id %}"
       data-modal-id="dashboard-share"
+      x-data
+      x-tooltip="Share a public or password-protected link"
     >
       <i class="fas fa-fw fa-share"></i> Share
-      <span data-tooltip-target="body">Share a public or password-protected link</span>
     </button>
   </div>
   

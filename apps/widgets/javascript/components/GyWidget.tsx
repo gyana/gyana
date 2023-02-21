@@ -32,24 +32,6 @@ const GyWidget_: React.FC<{
     () => parseInt(children.props['data-height']) || 200
   )
 
-  // console.log(ref.current)
-
-  // const mousedown = useCallback((event) => {
-  //   if (ref.current) {
-  //     if (ref.current.contains(event.target)) {
-  //       ref.current.dataset.focused = 'true'
-  //       ref.current.style.zIndex = '1'
-  //     } else {
-  //       ref.current.dataset.focused = 'false'
-  //       ref.current.style.zIndex = 'null'
-  //     }
-  //   }
-  // }, [])
-
-  // useEffect(() => {
-  //   document.addEventListener('mousedown', mousedown)
-  // }, [])
-
   return (
     <ReactRnd
       enableResizing={mode === 'edit'}

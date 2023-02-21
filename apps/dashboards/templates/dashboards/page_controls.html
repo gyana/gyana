@@ -24,9 +24,9 @@
     <form
       method="POST"
       action="{% url "project_dashboards:page-create" project.id object.id %}"
-      data-controller="tooltip"
-      data-tooltip-content="Add new page"
       class="form--no-layout"
+      x-data
+      x-tooltip="Add new page"
     >
       {% csrf_token %}
 

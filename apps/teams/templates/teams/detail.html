@@ -56,16 +56,15 @@
       <i class="fas fa-fw fa-plus"></i> New Project
     </a>
     {% else %}
-    <div data-controller='tooltip' id="new-project">
+    <div id="new-project"
+      x-data
+      x-tooltip="You have reached the maximum number of projects on your current plan.">
       <p
         class="button button--sm"
         disabled
       >
         <i class="fas fa-fw fa-plus"></i> New Project
       </p>
-      <span data-tooltip-target="body">
-        You have reached the maximum number of projects on your current plan.
-      </span>
     </div>
     {% endif %}
   </div>

@@ -36,10 +36,10 @@
     class="tabbar__link"
     href="{% article_url 'workflows' node.kind %}"
     target="_blank"
-    data-controller="tooltip"
+    x-data
+    x-tooltip="Open knowledge base article"
   >
     <i class="fas fa-fw fa-external-link"></i> Help
-    <span data-tooltip-target="body">Open knowledge base article</span>
   </a>
   
   <div class="absolute top-0 right-0">

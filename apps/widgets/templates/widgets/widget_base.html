@@ -132,7 +132,8 @@ preview mode.
           {% if object.kind != "text" %}
           <button
             class="widget-card__button"
-            data-controller="tooltip"
+            x-data
+            x-tooltip="Edit"
             data-action="click->tf-modal#open"
             id="widget-update-{{ object.id }}"
             data-modal-item="{{ object.id }}"
@@ -148,30 +149,29 @@ preview mode.
             {% endif %}
           >
             <i class="fas fa-fw fa-edit"></i>
-            <span data-tooltip-target="body">Edit</span>
           </button>
           {% endif %}
 
           {% if object.kind != "text" and object.kind != "iframe" and object.kind != "image" %}
           <button
             class="widget-card__button"
-            data-controller="tooltip"
             data-action="click->tf-modal#open"
             id="widget-update-{{ object.id }}"
             data-modal-item="{{ object.id }}"
             data-modal-src="{% url "dashboard_widgets:update" project.id dashboard.id object.pk %}?tab=style"
             data-modal-id="widget-modal"
             data-modal-classes="tf-modal--full"
+            x-data
+            x-tooltip="Change style"
           >
             <i class="fas fa-fw fa-paint-brush"></i>
-            <span data-tooltip-target="body">Change style</span>
           </button>
           {% endif %}
 
           <button
             class="widget-card__drag-handle widget-card__button cursor-move"
-            data-controller="tooltip"
-            data-tooltip-content="Drag"
+            x-data
+            x-tooltip="Drag"
           >
             <i class="fas fa-fw fa-arrows"></i>
           </button>

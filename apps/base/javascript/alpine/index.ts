@@ -1,8 +1,5 @@
-import Alpine from 'alpinejs'
-import clipboard from './clipboard'
+import tooltip from './tooltip'
 
-window.Alpine = Alpine
-
-Alpine.data('clipboard', clipboard)
-
-Alpine.start()
+document.addEventListener('alpine:init', () => {
+  Alpine.directive('tooltip', tooltip)
+})
