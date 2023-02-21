@@ -8,13 +8,13 @@ preview mode.
 <gy-widget
   id="{% block widget.id %}widget-{{ object.id }}{% endblock widget.id %}"
   x-data
-  @mousedown.window="if ($el.contains($event.target)) {
-    $el.dataset.focused = true
-    $el.style.zIndex = 1
+  @mousedown.window="{# fmt:off #}if ($el.contains($event.target)) {
+      $el.dataset.focused = true
+      $el.style.zIndex = 1
     } else {
-    $el.dataset.focused = false
-    $el.style.zIndex = null
-    }"
+      $el.dataset.focused = false
+      $el.style.zIndex = null
+    }{# fmt:on #}"
 >
   <template
     id="{% block widget.templateId %}widget-{{ object.id }}{% endblock widget.templateId %}-template"
