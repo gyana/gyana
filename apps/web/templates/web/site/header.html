@@ -16,12 +16,11 @@
         <button
           type="button"
           class="bg-white rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-600 font-normal hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
-          data-controller="popover"
-          data-theme="popover-menu"
+          x-data="popover({ theme: 'popover-menu' })"
         >
           <span class="sr-only">Open menu</span>
           {% heroicon 'menu' class="h-6 w-6" style="solid"%}
-          <template data-popover-target="body">
+          <template x-ref="body">
             {% include 'web/site/mobile_menu.html' %}
           </template>
         </button>
@@ -32,13 +31,12 @@
         <button
           type="button"
           class="group bg-white rounded-md text-gray-600 font-normal inline-flex items-center hover:text-gray-900 focus:outline-none focus:text-gray-900"
-          data-controller="popover"
-          data-theme="popover-menu"
+          x-data="popover({ theme: 'popover-menu' })"
         >
           <span>Resources</span>
           {% heroicon 'chevron-down' class="ml-1 h-5 w-5 text-gray-600 group-hover:text-gray-900 font-normal" style="solid" %}
 
-          <template data-popover-target="body">
+          <template x-ref="body">
             <div class="absolute z-10 -ml-4 mt-3 transform px-2 w-screen max-w-md sm:px-0 lg:ml-0 lg:left-1/2 lg:-translate-x-1/2">
               <div class="card card--none ring-1 ring-black ring-opacity-5 overflow-hidden">
                 <div class="relative grid gap-6 bg-white px-5 py-6 sm:gap-8 sm:p-8">
@@ -81,13 +79,12 @@
         <button
         type="button"
         class="group bg-white rounded-md text-gray-600 font-normal inline-flex items-center hover:text-gray-900 focus:outline-none focus:text-gray-900"
-        data-controller="popover"
-        data-theme="popover-menu"
+        x-data="popover({ theme: 'popover-menu' })"
       >
         <span>Community</span>
         {% heroicon 'chevron-down' class="ml-1 h-5 w-5 text-gray-600 group-hover:text-gray-900 font-normal" style="solid" %}
 
-        <template data-popover-target="body">
+        <template x-ref="body">
           <div class="absolute z-10 -ml-4 mt-3 transform px-2 w-screen max-w-md sm:px-0 lg:ml-0 lg:left-1/2 lg:-translate-x-1/2">
             <div class="card card--none ring-1 ring-black ring-opacity-5 overflow-hidden">
               <div class="relative grid gap-6 bg-white px-5 py-6 sm:gap-8 sm:p-8">

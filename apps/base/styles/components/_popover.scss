@@ -1,8 +1,3 @@
-// Hiding the <template> tag used for populating the popover.
-[data-popover-target*='body'] {
-  display: none;
-}
-
 .tippy-box[data-theme~='popover'],
 .tippy-box[data-theme~='popover-menu'],
 .tippy-box[data-theme~='popover-add-widget'],

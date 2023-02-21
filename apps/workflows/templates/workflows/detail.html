@@ -9,16 +9,12 @@
 
   {% include "workflows/last_run.html" %}
 
-  <div
-    data-controller="popover"
-    data-placement="bottom-start"
-    data-theme="popover-menu"
-  >
+  <div x-data="popover({ placement: 'bottom-start', theme: 'popover-menu' })">
     <button class="button button--sm button--tertiary">
       More <i class="fas fa-fw fa-angle-down"></i>
     </button>
 
-    <template data-popover-target="body">
+    <template x-ref="body">
       <form 
         method="POST"
         action="{% url "workflows:duplicate" object.id %}"

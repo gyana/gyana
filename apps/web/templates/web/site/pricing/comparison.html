@@ -34,9 +34,9 @@
                       <th class="py-5 px-4 text-sm font-normal text-gray-500 text-left flex items-center" scope="row">
                         {{ feature }}
                         {% if feature_item.description %}
-                          <div class='flex items-center' data-controller="popover">
+                          <div class='flex items-center' x-data"popover">
                             <button>{% heroicon 'information-circle' class="text-gray-400 w-4 h-4 ml-1" %}</button>
-                            <template data-popover-target="body">
+                            <template x-ref="body">
                               <div class="text-gray-600 max-w-md">
                                 {{ feature_item.description }}
                               </div>
@@ -117,9 +117,9 @@
                   <th class="py-5 px-6 text-sm font-normal text-gray-500 text-left flex items-center space-x-1" scope="row">
                     <span>{{ feature }}</span>
                     {% if feature_item.description %}
-                      <div class='flex items-center' data-controller="popover">
+                      <div class='flex items-center' x-data="popover">
                         <button>{% heroicon 'information-circle' class="text-gray-400 w-4 h-4 ml-1" %}</button>
-                        <template data-popover-target="body">
+                        <template x-ref="body">
                           <div class="text-gray-600 max-w-md">
                             {{ feature_item.description|safe }}
                           </div>
