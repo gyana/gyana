@@ -171,7 +171,7 @@ def test_columns_dont_match_error(client, setup, node_factory):
     assertSelectorText(
         r,
         ".node__visual",
-        "exist in\n  Input 1 but not in Input 2",
+        "exist in Input 1 but not in Input 2",
     )
 
 
@@ -187,7 +187,7 @@ def test_relation_error(client, setup, node_factory):
     assertSelectorText(
         r,
         "p",
-        "The incoming tables need to have the same \n  column types in order to merge successfully.",
+        "The incoming tables need to have the same column types in order to merge successfully.",
     )
 
 
