@@ -4,7 +4,7 @@ black
 cookiecutter
 deepdiff
 django-coverage-plugin
-djlint
+djhtml
 factory-boy
 ipython
 isort
