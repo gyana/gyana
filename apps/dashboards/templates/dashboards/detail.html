@@ -41,19 +41,15 @@
     </div>
 
     {% if not request.GET.mode or request.GET.mode == "edit" %}
-      <div
-        data-controller="popover"
-        data-placement="bottom-start"
-        data-theme="popover-menu"
-      >
+      <div x-data="popover({ placement: 'bottom-start', theme: 'popover-menu' })">
         <button
-          data-popover-target="trigger"
+          x-ref="trigger"
           class="button button--sm button--tertiary"
         >
           More <i class="fas fa-angle-down"></i>
         </button>
 
-        <template data-popover-target="body">
+        <template x-ref="body">
           <p
             class="list__item list__item--br w-full"
           >
