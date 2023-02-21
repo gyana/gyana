@@ -2,7 +2,12 @@ from unittest import mock
 
 import pytest
 
-from apps.base.tests.asserts import assertFormRenders, assertOK, assertSelectorText
+from apps.base.tests.asserts import (
+    assertFormRenders,
+    assertOK,
+    assertSelectorLength,
+    assertSelectorText,
+)
 from apps.nodes.models import Node
 from apps.nodes.tests.mocks import mock_bq_client_data, mock_gcp_analyze_sentiment
 from apps.teams.models import CreditTransaction
@@ -116,11 +121,7 @@ def test_credit_exception(client, setup, node_factory):
     )
     r = client.get(f"/nodes/{sentiment_node.id}/grid")
     assertOK(r)
-    assertSelectorText(
-        r,
-        "p",
-        "You will only spend credits on unique values that haven't been analysed before.",
-    )
+    assertSelectorLength(r, "#credit-exception", 1)
     assertFormRenders(r, ["always_use_credits"])
 
 

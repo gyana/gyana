@@ -162,11 +162,8 @@ def test_free_tier_project_limit(client, logged_in_user, project_factory):
     project_factory.create_batch(3, team=team)
 
     r = client.get(f"/teams/{team.id}")
-    assertSelectorText(
-        r,
-        "#new-project",
-        "You have reached the maximum number of projects on your current plan.",
-    )
+    assertSelectorLength(r, "#new-project-disabled", 1)
+
     r = client.post(
         f"/teams/{team.id}/projects/new",
         data={"name": "Metrics", "access": "everyone"},

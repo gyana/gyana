@@ -240,8 +240,7 @@ def get_table(schema, query, footer=None, settings=None, **kwargs):
             attrs={
                 "th": {
                     "class": get_type_class(type_),
-                    "data-controller": "tooltip",
-                    "data-tooltip-content": get_type_name(type_),
+                    "x-tooltip": get_type_name(type_),
                 },
                 **(
                     {
