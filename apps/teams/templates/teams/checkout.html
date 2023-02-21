@@ -11,37 +11,37 @@
   <div
     class="flex flex-col justify-center items-center h-full"
     x-data="{ total: null, recurringTotal: null, completed: false }"
-    x-init="{% if DJPADDLE_SANDBOX %}Paddle.Environment.set('sandbox'){% endif %}
+    x-init="{# fmt:off #}{% if DJPADDLE_SANDBOX %}Paddle.Environment.set('sandbox'){% endif %}
 
       Paddle.Setup({
-      vendor: {{ DJPADDLE_VENDOR_ID }},
-      debug: {{ debug|yesno:'true,false' }},
-      eventCallback: (data) => {
+        vendor: {{ DJPADDLE_VENDOR_ID }},
+        debug: {{ debug|yesno:'true,false' }},
+        eventCallback: (data) => {
 
-      total = data.eventData.checkout.prices.customer.total
-      recurringTotal = data.eventData.checkout.recurring_prices.customer.total
+          total = data.eventData.checkout.prices.customer.total
+          recurringTotal = data.eventData.checkout.recurring_prices.customer.total
 
-      if (data.event === 'Checkout.Complete') {
-      // bug fix: by default, dj-paddle will redirect to 'null'
-      data.eventData.checkout.redirect_url = ''
-      window.checkoutComplete(data.eventData)
+          if (data.event === 'Checkout.Complete') {
+          // bug fix: by default, dj-paddle will redirect to 'null'
+          data.eventData.checkout.redirect_url = ''
+          window.checkoutComplete(data.eventData)
 
-      completed = true
-      }
-      },
+          completed = true
+          }
+        },
       })
 
       Paddle.Checkout.open({
-      method: 'inline',
-      product: '{{ plan.id }}',
-      email: '{{ request.user.email }}',
-      marketingConsent: {% if request.user.marketing_allowed %}1{% else %}0{% endif %},
-      passthrough: {'user_id': {{ request.user.id }}, 'team_id': {{ object.id }}},
-      disableLogout: true,
-      frameTarget: 'checkout-container',
-      frameInitialHeight: 416,
-      frameStyle: 'width:100%; min-width:286px; background-color: transparent; border: none;',
-      })"
+        method: 'inline',
+        product: '{{ plan.id }}',
+        email: '{{ request.user.email }}',
+        marketingConsent: {% if request.user.marketing_allowed %}1{% else %}0{% endif %},
+        passthrough: {'user_id': {{ request.user.id }}, 'team_id': {{ object.id }}},
+        disableLogout: true,
+        frameTarget: 'checkout-container',
+        frameInitialHeight: 416,
+        frameStyle: 'width:100%; min-width:286px; background-color: transparent; border: none;',
+      }){# fmt:on #}"
   >
     <div class="flex flex-row items-center">
       <div x-show="!completed" class="pad w-1/2">

@@ -8,26 +8,26 @@
       <div class="flex flex-1 justify-center items-center">
         <div class='integration__file-validate'
           x-data="{ status: 'load', message: '' }"
-          x-init="{% if done %}$data.status = 'done'
+          x-init="{# fmt:off #}{% if done %}$data.status = 'done'
             htmx.ajax('GET', '{% url 'project_integrations:done' project.id object.id %}', 'body')
           {% else %}
             $data.initialUrl = window.location.href
 
             CeleryProgressBar.initProgressBar('{% url 'celery_progress:task_status' integration.latest_run.task_id %}', {
-            onSuccess: () => {
-            // If the user has navigated away from the page the task started on
-            // we don't want to forcibly navigate them away.
-            if ($data.initialUrl != window.location.href) return
-            $data.status = 'done'
-            setTimeout(() => {
-            htmx.ajax('GET', '{% url 'project_integrations:done' project.id object.id %}', 'body')
-            }, 750)
-            },
-            onError: (progressBarElement, progressBarMessageElement, excMessage, data) => {
-            $data.status = 'error'
-            $data.message = excMessage
-            },
-            }){% endif %}"
+              onSuccess: () => {
+                // If the user has navigated away from the page the task started on
+                // we don't want to forcibly navigate them away.
+                if ($data.initialUrl != window.location.href) return
+                $data.status = 'done'
+                setTimeout(() => {
+                  htmx.ajax('GET', '{% url 'project_integrations:done' project.id object.id %}', 'body')
+                }, 750)
+              },
+              onError: (progressBarElement, progressBarMessageElement, excMessage, data) => {
+                $data.status = 'error'
+                $data.message = excMessage
+              },
+            }){% endif %}{# fmt:on #}"
         >
           <i x-show="status === 'load'" class="fad fa-fw fa-spinner-third fa-spin fa-3x text-blue"></i>
 
