@@ -3,6 +3,6 @@
 
 {% firstof team.timezone project.team.timezone "GMT" as team_timezone %}
 
-<span x-data x-tooltip="{% timezone team_timezone %}{{ datetime }}{% endtimezone %}">
+<span x-tooltip="{% timezone team_timezone %}{{ datetime }}{% endtimezone %}">
   {{ datetime|naturalday }}
 </span>

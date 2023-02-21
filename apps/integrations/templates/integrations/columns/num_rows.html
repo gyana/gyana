@@ -5,7 +5,7 @@
 {% elif record.ready %}
   {{ record.row_percentage }}%
 {% else %}
-  <p x-data x-tooltip="Does not count towards your quota">
+  <p x-tooltip="Does not count towards your quota">
     <i>{{ record.num_rows|intcomma }}*</i>
   </p>
 {% endif %}

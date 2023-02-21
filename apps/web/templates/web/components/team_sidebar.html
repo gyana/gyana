@@ -11,7 +11,6 @@
   <a
     class="sidebar__link sidebar__team {% if user_team.id == team.id %}sidebar__link--active{% endif %}"
     href="{% url 'teams:detail' user_team.id %}"
-    x-data
     x-tooltip.right="{{ user_team.name }}"
   >
     {% if user_team.icon %}
@@ -28,7 +27,6 @@
     id="sidebar-newteam"
     class="sidebar__link {% if request.resolver_match.app_name == 'teams' and request.resolver_match.url_name == 'create' %}sidebar__link--active{% endif %}"
     href="{% url 'teams:create' %}"
-    x-data
     x-tooltip.right="New team"
   >
     <i class="fas fa-fw fa-plus mr-6"></i>

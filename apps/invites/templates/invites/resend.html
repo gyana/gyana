@@ -7,7 +7,6 @@
     <button
       class="button button--sm button--circle button--tertiary"
       type="submit"
-      x-data
       x-tooltip="Send invite again"
     >
       <i class="fas fa-fw fa-redo-alt"></i>
@@ -17,7 +16,6 @@
   <a
     href="{% url 'team_invites:delete' record.team.id record.id %}"
     class="button button--sm button--circle button--tertiary"
-    x-data
     x-tooltip="Delete invite"
   >
     <i class="fas fa-fw fa-trash"></i>

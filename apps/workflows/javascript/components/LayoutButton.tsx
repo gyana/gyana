@@ -26,11 +26,7 @@ const LayoutButton: React.FC = () => {
   }, [elements, nodes])
 
   return (
-    <ControlButton
-      x-data='true'
-      x-tooltip='Arrange automatically'
-      onClick={onLayout}
-    >
+    <ControlButton x-tooltip='Arrange automatically' onClick={onLayout}>
       <i className='fas fa-fw fa-sort-size-down'></i>
     </ControlButton>
   )

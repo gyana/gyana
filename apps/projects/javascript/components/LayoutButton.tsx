@@ -44,7 +44,7 @@ const LayoutButton: React.FC<Props> = ({ elements, setElements }) => {
   const onLayout = () => setShouldLayout(true)
 
   return (
-    <ControlButton x-data='true' x-tooltip='Format' onClick={onLayout}>
+    <ControlButton x-tooltip='Format' onClick={onLayout}>
       <i className='fas fa-fw fa-sort-size-down'></i>
     </ControlButton>
   )

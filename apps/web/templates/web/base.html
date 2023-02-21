@@ -67,6 +67,8 @@
     class="isHijacked"
   {% endif %}
   {% block body.attrs %}{% endblock body.attrs %}
+  {% comment %} entire body is a single Alpine app, e.g. for tooltips {% endcomment %}
+  x-data
 >
   {% block body %}
     {% block body.banner %}{% endblock %}

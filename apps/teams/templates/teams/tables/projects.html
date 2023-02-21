@@ -13,7 +13,6 @@
 
           {% if project.record.access == "everyone" %}
             <i class="fas fa-fw small fa-lock-open ml-auto"
-              x-data
               x-tooltip="All team members have access">
             </i>
           {% else %}
@@ -27,7 +26,6 @@
               {% endfor %}
 
               <i class="fas fa-fw fa-lock ml-4"
-                x-data
                 x-tooltip="Only permitted members have access">
               </i>
             </div>

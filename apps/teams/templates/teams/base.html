@@ -8,7 +8,6 @@
     id="heading"
     href=""
     class="sidebar__link sidebar__link--border"
-    x-data
     x-tooltip.sidebar="{{ team.name }}"
   >
     {% if team.icon %}
@@ -27,7 +26,6 @@
   <a
     class="sidebar__link {% if request.resolver_match.url_name == 'detail' %}sidebar__link--active{% endif %}"
     href="{% url 'teams:detail' team.id %}"
-    x-data
     x-tooltip.sidebar="Projects"
   >
     <i class="far fa-fw fa-folders"></i>Projects
@@ -37,7 +35,6 @@
   <a
     class="sidebar__link {% if request.resolver_match.url_name == 'list' %}sidebar__link--active{% endif %}"
     href="{% url 'team_members:list' team.id %}"
-    x-data
     x-tooltip.sidebar="Members"
   >
     <i class="far fa-fw fa-users"></i>Members
@@ -46,7 +43,6 @@
   <a
     class="sidebar__link {% if request.resolver_match.url_name in 'account,subscription,plan,payments,pricing' %}sidebar__link--active{% endif %}"
     href="{% url 'teams:account' team.id %}"
-    x-data
     x-tooltip.sidebar="Billing"
   >
     <i class="far fa-fw fa-wallet"></i>Billing
@@ -55,7 +51,6 @@
   <a
     class="sidebar__link {% if request.resolver_match.url_name == 'update' %}sidebar__link--active{% endif %}"
     href="{% url 'teams:update' team.id %}"
-    x-data
     x-tooltip.sidebar="Settings"
   >
     <i class="far fa-fw fa-cog"></i>Settings

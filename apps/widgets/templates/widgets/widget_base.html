@@ -132,7 +132,6 @@ preview mode.
           {% if object.kind != "text" %}
           <button
             class="widget-card__button"
-            x-data
             x-tooltip="Edit"
             data-action="click->tf-modal#open"
             id="widget-update-{{ object.id }}"
@@ -161,7 +160,6 @@ preview mode.
             data-modal-src="{% url "dashboard_widgets:update" project.id dashboard.id object.pk %}?tab=style"
             data-modal-id="widget-modal"
             data-modal-classes="tf-modal--full"
-            x-data
             x-tooltip="Change style"
           >
             <i class="fas fa-fw fa-paint-brush"></i>
@@ -170,7 +168,6 @@ preview mode.
 
           <button
             class="widget-card__drag-handle widget-card__button cursor-move"
-            x-data
             x-tooltip="Drag"
           >
             <i class="fas fa-fw fa-arrows"></i>

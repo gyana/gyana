@@ -67,7 +67,6 @@
         data-controller="popover"
         data-placement="right-end"
         data-theme="popover-menu"
-        x-data
         x-tooltip.sidebar="Help"
       >
         <i class="fas fa-fw fa-question"></i></i>Help
@@ -108,7 +107,6 @@
         data-controller="popover"
         data-placement="right-end"
         data-theme="popover-menu"
-        x-data
         x-tooltip.sidebar="Your account"
       >
         <img src="{{ user.avatar_url }}" />Your account
@@ -136,10 +134,8 @@
         class="sidebar__link"
         for="sidebar-toggle"
         {% if request.resolver_match.view_name not in 'project_workflows:detail,project_dashboards:detail,projects:automate' %}
-        x-data
         @click="SiteJS.base.Api.getApiClient().action(window.schema, ['toggle-sidebar', 'create'])"
         {% endif %}
-        x-data
         x-tooltip.sidebar="Expand"
       >
         <i class="fas fa-fw"></i>Collapse
