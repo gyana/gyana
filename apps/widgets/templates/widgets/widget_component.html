@@ -5,7 +5,7 @@
 
   {% include 'widgets/_widget_title.html' %}
 
-  <div 
+  <div
     hx-get="{% url 'dashboard_widgets:output' project.id dashboard.id object.id %}?mode={{ request.GET.mode|default:"edit" }}"
     {% comment %}todo: original logic to refresh widget = "not (object.has_control) and object.date_column and object.is_valid"{% endcomment %}
     hx-trigger="load,gy-control from:window"

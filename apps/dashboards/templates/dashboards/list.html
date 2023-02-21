@@ -3,75 +3,75 @@
 {% load help_utils %}
 
 {% block app %}
-{% if dashboard_count == 0 %}
-<div class="table__empty">
-  <i class="fas fa-fw fa-4x fa-chart-pie text-black-50 mb-7"></i>
-  <h3 class="mb-3">Display data metrics and share them as reports</h3>
-  <p>
-    Watch the video below to get a good idea of how to use dashboards, if you
-    prefer to learn by doing just create one. You can always watch them later
-    in our help center!
-  </p>
-</div>
-
-<div class="mx-auto" style="width: 48rem;">
-  {% embed_loom 'dashboards' %}
-
-  <form 
-    class="form--no-layout"
-    method="post"
-    action="{% url 'project_dashboards:create' project.id %}?mode=edit"
-  >
-    {% csrf_token %}
-    <input type="hidden" name="project" value="{{ project.id }}" />
-
-    <div class="flex gap-8 mt-7">
-      <button data-cy='dashboard-create' class="button button--primary flex-1" type="submit">
-        Create a new dashboard
-      </a>
-    </div>
-  </form>
-</div>
-{% else %}
-<div class="page-header">
-  <div class="mr-auto">
-    <h1 class="flex items-center gap-3">
-      Dashboards
-      {% link_article 'overview' 'dashboards' %}
-      {% link_video 'dashboards' %}
-    </h1>
-    <p>
-      A visual display of data metrics that can be shared as a report.
-    </p>
-  </div>
-
-  {% include 'dashboards/create.html' %}
-</div>
-
-<div class="flex flex-col pad overflow-hidden">
-  <div class="card card--none overflow-auto mb-8">
-    {% render_table table %}
-
-    {% if dashboard_count == 0 %}
+  {% if dashboard_count == 0 %}
     <div class="table__empty">
-      <i class="fas fa-fw fa-4x fa-sparkles mb-7"></i>
-      <h3>You have no dashboards yet</h3>
-      <form class="inline"
-            method="post"
-            action="{% url 'project_dashboards:create' project.id %}?mode=edit">
+      <i class="fas fa-fw fa-4x fa-chart-pie text-black-50 mb-7"></i>
+      <h3 class="mb-3">Display data metrics and share them as reports</h3>
+      <p>
+        Watch the video below to get a good idea of how to use dashboards, if you
+        prefer to learn by doing just create one. You can always watch them later
+        in our help center!
+      </p>
+    </div>
+
+    <div class="mx-auto" style="width: 48rem;">
+      {% embed_loom 'dashboards' %}
+
+      <form
+        class="form--no-layout"
+        method="post"
+        action="{% url 'project_dashboards:create' project.id %}?mode=edit"
+      >
         {% csrf_token %}
         <input type="hidden" name="project" value="{{ project.id }}" />
-        <p>
-          You can
-          <button type="submit" class="link">
-            create one
-          </button>
-          now
-        </p>
+
+        <div class="flex gap-8 mt-7">
+          <button data-cy='dashboard-create' class="button button--primary flex-1" type="submit">
+            Create a new dashboard
+          </a>
+        </div>
       </form>
     </div>
-    {% endif %}
-  </div>
-</div>
-{% endif %}
+  {% else %}
+    <div class="page-header">
+      <div class="mr-auto">
+        <h1 class="flex items-center gap-3">
+          Dashboards
+          {% link_article 'overview' 'dashboards' %}
+          {% link_video 'dashboards' %}
+        </h1>
+        <p>
+          A visual display of data metrics that can be shared as a report.
+        </p>
+      </div>
+
+      {% include 'dashboards/create.html' %}
+    </div>
+
+    <div class="flex flex-col pad overflow-hidden">
+      <div class="card card--none overflow-auto mb-8">
+        {% render_table table %}
+
+        {% if dashboard_count == 0 %}
+          <div class="table__empty">
+            <i class="fas fa-fw fa-4x fa-sparkles mb-7"></i>
+            <h3>You have no dashboards yet</h3>
+            <form class="inline"
+              method="post"
+              action="{% url 'project_dashboards:create' project.id %}?mode=edit">
+              {% csrf_token %}
+              <input type="hidden" name="project" value="{{ project.id }}" />
+              <p>
+                You can
+                <button type="submit" class="link">
+                  create one
+                </button>
+                now
+              </p>
+            </form>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  {% endif %}
 {% endblock %}

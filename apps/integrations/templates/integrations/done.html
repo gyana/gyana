@@ -2,13 +2,13 @@
 {% load humanize %}
 
 {% block tab %}
-<div class="pad flex flex-1 justify-center items-center">
-  <div class='flex flex-col flex-1 max-w-3xl'>
+  <div class="pad flex flex-1 justify-center items-center">
+    <div class='flex flex-col flex-1 max-w-3xl'>
 
     </h1>
 
     <div class="flex flex-col flex-1 justify-center gap-3">
-    
+
       {% if exceeds_per_integration_row_limit %}
         <h1 class="flex items-center justify-center gap-3 mb-7">
           Insufficient rows
@@ -28,11 +28,11 @@
         </h1>
         <p>
           <strong>Your data is ready.</strong> You can still edit your
-          <a class="link" href="{% url 'project_integrations:configure' project.id object.id %}">configuration</a> 
+          <a class="link" href="{% url 'project_integrations:configure' project.id object.id %}">configuration</a>
           if you want to make more changes or trigger an import.
         </p>
       {% endif %}
     </div>
   </div>
-</div>
+  </div>
 {% endblock %}

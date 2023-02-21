@@ -4,58 +4,58 @@
 {% load help_utils %}
 
 {% block table-wrapper %}
-<div class="table table-container">
-  <div class="card card--none">
-    {% for project in table.paginated_rows %}
-      <div class="project-card">
-        <header>
-          <a href="{% url 'projects:detail' project.record.id %}">{{ project.record.name }}</a>
+  <div class="table table-container">
+    <div class="card card--none">
+      {% for project in table.paginated_rows %}
+        <div class="project-card">
+          <header>
+            <a href="{% url 'projects:detail' project.record.id %}">{{ project.record.name }}</a>
 
-          {% if project.record.access == "everyone" %}
-            <i class="fas fa-fw small fa-lock-open ml-auto"
-              x-tooltip="All team members have access">
-            </i>
-          {% else %}
-            <div class="flex items-center ml-auto">
-              {% for member in project.record.members.all %}
-                <img
-                  class="h-7 w-7 rounded-full ml-2"
-                  src="{{ member.avatar_url }}"
-                  alt="{{ member.get_display_name }}"
-                />
-              {% endfor %}
-
-              <i class="fas fa-fw fa-lock ml-4"
-                x-tooltip="Only permitted members have access">
+            {% if project.record.access == "everyone" %}
+              <i class="fas fa-fw small fa-lock-open ml-auto"
+                x-tooltip="All team members have access">
               </i>
-            </div>
+            {% else %}
+              <div class="flex items-center ml-auto">
+                {% for member in project.record.members.all %}
+                  <img
+                    class="h-7 w-7 rounded-full ml-2"
+                    src="{{ member.avatar_url }}"
+                    alt="{{ member.get_display_name }}"
+                  />
+                {% endfor %}
+
+                <i class="fas fa-fw fa-lock ml-4"
+                  x-tooltip="Only permitted members have access">
+                </i>
+              </div>
+            {% endif %}
+          </header>
+
+          {% if project.record.description %}
+            <p>{{ project.record.description }}</p>
+          {% else %}
+            <p class="invisible">No project description</p>
           {% endif %}
-        </header>
 
-        {% if project.record.description %}
-        <p>{{ project.record.description }}</p>
-        {% else %}
-        <p class="invisible">No project description</p>
-        {% endif %}
+          <footer>
 
-        <footer>
+            <a href="{% url 'project_integrations:list' project.record.id %}">
+              <i class="far fa-fw fa-database"></i>{{ project.record.integration_count }}
+            </a>
+            <a href="{% url 'project_workflows:list' project.record.id %}">
+              <i class="far fa-fw fa-sitemap"></i>{{ project.record.workflow_count }}
+            </a>
+            <a href="{% url 'project_dashboards:list' project.record.id %}">
+              <i class="far fa-fw fa-chart-pie"></i>{{ project.record.dashboard_count }}
+            </a>
 
-          <a href="{% url 'project_integrations:list' project.record.id %}">
-            <i class="far fa-fw fa-database"></i>{{ project.record.integration_count }}
-          </a>
-          <a href="{% url 'project_workflows:list' project.record.id %}">
-            <i class="far fa-fw fa-sitemap"></i>{{ project.record.workflow_count }}
-          </a>
-          <a href="{% url 'project_dashboards:list' project.record.id %}">
-            <i class="far fa-fw fa-chart-pie"></i>{{ project.record.dashboard_count }}
-          </a>
-
-          <p class="ml-auto">
-            Last updated: {% include 'columns/natural_datetime.html' with datetime=project.record.updated team_timezone=project.record.team.timezone %}
-          </p>
-        </footer>
-      </div>
-    {% endfor %}
+            <p class="ml-auto">
+              Last updated: {% include 'columns/natural_datetime.html' with datetime=project.record.updated team_timezone=project.record.team.timezone %}
+            </p>
+          </footer>
+        </div>
+      {% endfor %}
+    </div>
   </div>
-</div>
 {% endblock table-wrapper %}

@@ -7,73 +7,73 @@
 {% endblock app-class %}
 
 {% block app %}
-{% if workflow_count == 0 %}
-<div class="table__empty">
-  <i class="fas fa-fw fa-4x fa-sitemap text-black-50 mb-7"></i>
-  <h3 class="mb-3">Clean, transform, and analyse your data using a visual editor</h3>
-  <p>
-    Watch the video below to get a good idea of how to use workflows, if you
-    prefer to learn by doing just create one. You can always watch them later
-    in our help center!
-  </p>
-</div>
-
-<div class="mx-auto" style="width: 48rem;">
-  {% embed_loom 'workflows' %}
-
-  <form 
-    class="form--no-layout"
-    method="post"
-    action="{% url 'project_workflows:create' project.id %}"
-  >
-    {% csrf_token %}
-    <input type="hidden" name="project" value="{{ project.id }}" />
-
-    <div class="flex gap-8 mt-7">
-      <button class="button button--primary flex-1" type="submit">
-        Create a new workflow
-      </button>
-    </div>
-  </form>
-</div>
-{% else %}
-<div class="page-header">
-  <div class="mr-auto">
-    <h1 class="flex items-center gap-3">
-      Workflows
-      {% link_article 'overview' 'workflows' %}
-      {% link_video 'workflows' %}
-    </h1>
-
-    <p>A visual editor to clean, transform, and analyse your data.</p>
-  </div>
-
-  {% include 'workflows/create.html' %}
-</div>
-
-<div class="flex flex-col pad overflow-hidden">
-  <div class="card card--none overflow-auto mb-8">
-    {% render_table table %}
-
-    {% if workflow_count == 0 %}
+  {% if workflow_count == 0 %}
     <div class="table__empty">
-      <i class="fas fa-fw fa-4x fa-sparkles mb-7"></i>
-      <h3>You have no workflows</h3>
-      <form class="inline"
-            method="post"
-            action="{% url 'project_workflows:create' project.id %}">
+      <i class="fas fa-fw fa-4x fa-sitemap text-black-50 mb-7"></i>
+      <h3 class="mb-3">Clean, transform, and analyse your data using a visual editor</h3>
+      <p>
+        Watch the video below to get a good idea of how to use workflows, if you
+        prefer to learn by doing just create one. You can always watch them later
+        in our help center!
+      </p>
+    </div>
+
+    <div class="mx-auto" style="width: 48rem;">
+      {% embed_loom 'workflows' %}
+
+      <form
+        class="form--no-layout"
+        method="post"
+        action="{% url 'project_workflows:create' project.id %}"
+      >
         {% csrf_token %}
         <input type="hidden" name="project" value="{{ project.id }}" />
-        <p>
-          Why not
-          <button type="submit" class="link">
-            create one
-          </button>?
-        </p>
+
+        <div class="flex gap-8 mt-7">
+          <button class="button button--primary flex-1" type="submit">
+            Create a new workflow
+          </button>
+        </div>
       </form>
     </div>
-    {% endif %}
-  </div>
-</div>
-{% endif %}
+  {% else %}
+    <div class="page-header">
+      <div class="mr-auto">
+        <h1 class="flex items-center gap-3">
+          Workflows
+          {% link_article 'overview' 'workflows' %}
+          {% link_video 'workflows' %}
+        </h1>
+
+        <p>A visual editor to clean, transform, and analyse your data.</p>
+      </div>
+
+      {% include 'workflows/create.html' %}
+    </div>
+
+    <div class="flex flex-col pad overflow-hidden">
+      <div class="card card--none overflow-auto mb-8">
+        {% render_table table %}
+
+        {% if workflow_count == 0 %}
+          <div class="table__empty">
+            <i class="fas fa-fw fa-4x fa-sparkles mb-7"></i>
+            <h3>You have no workflows</h3>
+            <form class="inline"
+              method="post"
+              action="{% url 'project_workflows:create' project.id %}">
+              {% csrf_token %}
+              <input type="hidden" name="project" value="{{ project.id }}" />
+              <p>
+                Why not
+                <button type="submit" class="link">
+                  create one
+                </button>?
+              </p>
+            </form>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  {% endif %}
 {% endblock %}

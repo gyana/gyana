@@ -4,9 +4,9 @@
 
 {% if object.used_in|length == 0 %}
 
-<p class="text-black-50 text-center pt-4">
-  This node isn't used anywhere right now.
-</p>
+  <p class="text-black-50 text-center pt-4">
+    This node isn't used anywhere right now.
+  </p>
 {% else %}
   {% render_table table %}
 {% endif %}

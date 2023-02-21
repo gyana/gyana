@@ -1,17 +1,17 @@
 {% extends "widgets/base.html" %}
 
 {% block widget %}
-<div class="flex items-center gap-4 mb-4">
-  {% if object.name %}
-  <h1>{{ object.name }}</h1>
-  {% endif %}
-  <a href="{% url 'project_dashboards:detail' project.id dashboard.id %}"
-     class="button button--sm button--success">Back</a>
-</div>
-
-<div class="w-full mb-4">
-  <div hx-get="{% url 'dashboard_widgets:output' project.id dashboard.id object.id %}" hx-trigger="load">
-    Loading...
+  <div class="flex items-center gap-4 mb-4">
+    {% if object.name %}
+      <h1>{{ object.name }}</h1>
+    {% endif %}
+    <a href="{% url 'project_dashboards:detail' project.id dashboard.id %}"
+      class="button button--sm button--success">Back</a>
   </div>
-</div>
+
+  <div class="w-full mb-4">
+    <div hx-get="{% url 'dashboard_widgets:output' project.id dashboard.id object.id %}" hx-trigger="load">
+      Loading...
+    </div>
+  </div>
 {% endblock %}

@@ -12,8 +12,8 @@
     name="name"
     placeholder="Untitled Page"
     {% if page.name %}
-    value="{{ page.name }}"
-    size="{{ page.name|length }}"
+      value="{{ page.name }}"
+      size="{{ page.name|length }}"
     {% endif %}
     oninput="this.size = this.value.length + 1"
   />

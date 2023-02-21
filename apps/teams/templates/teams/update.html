@@ -2,36 +2,36 @@
 {% load help_utils %}
 
 {% block app %}
-<div class="flex flex-col flex-1 overflow-auto">
-  <div class="pad mb-auto">
-    <div class="max-w-3xl">
-      <h2 class="mb-7">Settings</h2>
-      <form class="mb-8" method="post" enctype="multipart/form-data">
-        {% csrf_token %}
+  <div class="flex flex-col flex-1 overflow-auto">
+    <div class="pad mb-auto">
+      <div class="max-w-3xl">
+        <h2 class="mb-7">Settings</h2>
+        <form class="mb-8" method="post" enctype="multipart/form-data">
+          {% csrf_token %}
 
-        {{ form }}
+          {{ form }}
 
-        <button type="submit" class="button button--success w-full">Save</button>
-      </form>
-    </div>
-    <div class="max-w-3xl">
-      <div class="flex items-center mb-7">
-        <h2 class="mr-2">Custom domains</h2>
-        {% link_article 'overview' 'cnames' %}
+          <button type="submit" class="button button--success w-full">Save</button>
+        </form>
       </div>
-      <div hx-get="{% url 'team_cnames:list' object.id %}" hx-trigger="load" hx-swap="outerHTML"></div>
+      <div class="max-w-3xl">
+        <div class="flex items-center mb-7">
+          <h2 class="mr-2">Custom domains</h2>
+          {% link_article 'overview' 'cnames' %}
+        </div>
+        <div hx-get="{% url 'team_cnames:list' object.id %}" hx-trigger="load" hx-swap="outerHTML"></div>
+      </div>
     </div>
-  </div>
-  <div class="pad border-t border-gray">
-    <div class="max-w-xl">
-      <h2 class="mb-3">Delete team</h2>
-      <p class="mb-3">If you'd like to <strong>delete</strong> this team, press the button below.</p>
+    <div class="pad border-t border-gray">
+      <div class="max-w-xl">
+        <h2 class="mb-3">Delete team</h2>
+        <p class="mb-3">If you'd like to <strong>delete</strong> this team, press the button below.</p>
 
-      <a class="button button--danger"
-        href="{% url 'teams:delete' object.id %}">
-        Delete
-      </a>
+        <a class="button button--danger"
+          href="{% url 'teams:delete' object.id %}">
+          Delete
+        </a>
+      </div>
     </div>
   </div>
-</div>
 {% endblock %}

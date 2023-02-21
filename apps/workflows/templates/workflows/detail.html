@@ -4,116 +4,116 @@
 {% block app-class %}workflow-detail{% endblock %}
 
 {% block app %}
-<div class="workflow-detail__header">
-  {% include "workflows/name.html" %}
+  <div class="workflow-detail__header">
+    {% include "workflows/name.html" %}
 
-  {% include "workflows/last_run.html" %}
+    {% include "workflows/last_run.html" %}
 
-  <div x-data="popover({ placement: 'bottom-start', theme: 'popover-menu' })">
-    <button class="button button--sm button--tertiary">
-      More <i class="fas fa-fw fa-angle-down"></i>
+    <div x-data="popover({ placement: 'bottom-start', theme: 'popover-menu' })">
+      <button class="button button--sm button--tertiary">
+        More <i class="fas fa-fw fa-angle-down"></i>
+      </button>
+
+      <template x-ref="body">
+        <form
+          method="POST"
+          action="{% url "workflows:duplicate" object.id %}"
+          class="form--no-layout"
+        >
+          {% csrf_token %}
+
+          <button
+            type="submit"
+            class="list__item list__item--interactive w-full"
+            id="workflows-duplicate-{{ object.id }}"
+            data-loading-false
+          >
+            Duplicate
+          </button>
+        </form>
+
+        <a
+          class="list__item list__item--interactive w-full"
+          href="{% url "project_workflows:delete" project.id object.id %}"
+        >
+          Delete
+        </a>
+      </template>
+    </div>
+
+    <button
+      class="button button--sm button--tertiary"
+      x-tooltip="View historical runs and enable scheduling"
+      data-action="click->tf-modal#open"
+      data-modal-id="workflows:settings"
+      data-modal-src="{% url "project_workflows:settings" project.id object.id %}"
+    >
+      <i class="fas fa-fw fa-cog"></i> Settings & History
     </button>
 
-    <template x-ref="body">
-      <form 
-        method="POST"
-        action="{% url "workflows:duplicate" object.id %}"
-        class="form--no-layout"
-      >
-        {% csrf_token %}
-
-        <button
-          type="submit"
-          class="list__item list__item--interactive w-full"
-          id="workflows-duplicate-{{ object.id }}"
-          data-loading-false
-        >
-          Duplicate
-        </button>
-      </form>
-
-      <a
-        class="list__item list__item--interactive w-full"
-        href="{% url "project_workflows:delete" project.id object.id %}"
-      >
-        Delete
-      </a>
-    </template>
+    <div id="run-button-portal"></div>
   </div>
 
-  <button
-    class="button button--sm button--tertiary"
-    x-tooltip="View historical runs and enable scheduling"
-    data-action="click->tf-modal#open"
-    data-modal-id="workflows:settings"
-    data-modal-src="{% url "project_workflows:settings" project.id object.id %}"
-  >
-    <i class="fas fa-fw fa-cog"></i> Settings & History
-  </button>
+  <div class="flex flex-1 overflow-hidden">
+    <div class="w-full dndflow">
+      <dnd-flow class="w-full" workflowId="{{ object.id }}"></dnd-flow>
 
-  <div id="run-button-portal"></div>
-</div>
-
-<div class="flex flex-1 overflow-hidden">
-  <div class="w-full dndflow">
-    <dnd-flow class="w-full" workflowId="{{ object.id }}"></dnd-flow>
-
-    <aside class="dnd-sidebar">
-      <div class="dnd-sidebar__header">
-        {% for kind, node in nodes.items %}
-          {% if node.section == "Input/Output" %}
-            <div
-              id="dnd-node-{{ kind }}"
-              class="dnd-sidebar__node"
-              draggable="true"
-              ondragstart='event.dataTransfer.setData("application/reactflow", "{{ kind }}"); event.dataTransfer.effectAllowed = "move";'
-            >
-              <i class="dnd-sidebar__icon fas fa-fw fa-lg {{ node.icon }}"></i>
-              <h4 class="dnd-sidebar__name">{{ node.displayName }}</h4>
-            </div>
-          {% endif %}
-        {% endfor %}
-      </div>
-
-      {% for section in sections %}
-      <div class="pad collapsable-component" x-data="{ open: true }" :class="{ 'active': open }">
-        <h3 class="cursor-pointer" @click="open = !open">
-          {{ section }}
-        </h3>
-        <div
-          class="collapsable flex flex-col max-h-0 overflow-hidden"
-          :style="{ maxHeight: open ? $el.scrollHeight + 'px' : null }"
-        >
-        {% for kind, node in nodes.items %}
-          {% if node.section == section %}
-            <div
-              id="dnd-node-{{ kind }}"
-              class="dnd-sidebar__node mt-5"
-              ondragstart='event.dataTransfer.setData("application/reactflow", "{{ kind }}"); event.dataTransfer.effectAllowed = "move";'
-              draggable="true"
-            >
-              <i class="dnd-sidebar__icon fas fa-fw fa-lg {{ node.icon }}"></i>
-              <div class="flex flex-col">
-                <div class="flex items-center">
-                  <h4 class="dnd-sidebar__name">{{ node.displayName }}</h4>
-                </div>
-                <p class="dnd-sidebar__description">{{ node.description }}</p>
+      <aside class="dnd-sidebar">
+        <div class="dnd-sidebar__header">
+          {% for kind, node in nodes.items %}
+            {% if node.section == "Input/Output" %}
+              <div
+                id="dnd-node-{{ kind }}"
+                class="dnd-sidebar__node"
+                draggable="true"
+                ondragstart='event.dataTransfer.setData("application/reactflow", "{{ kind }}"); event.dataTransfer.effectAllowed = "move";'
+              >
+                <i class="dnd-sidebar__icon fas fa-fw fa-lg {{ node.icon }}"></i>
+                <h4 class="dnd-sidebar__name">{{ node.displayName }}</h4>
               </div>
-            </div>
-          {% endif %}
-        {% endfor %}
+            {% endif %}
+          {% endfor %}
         </div>
-      </div>
 
-      <hr>
-      {% endfor %}
-    </aside>
+        {% for section in sections %}
+          <div class="pad collapsable-component" x-data="{ open: true }" :class="{ 'active': open }">
+            <h3 class="cursor-pointer" @click="open = !open">
+              {{ section }}
+            </h3>
+            <div
+              class="collapsable flex flex-col max-h-0 overflow-hidden"
+              :style="{ maxHeight: open ? $el.scrollHeight + 'px' : null }"
+            >
+              {% for kind, node in nodes.items %}
+                {% if node.section == section %}
+                  <div
+                    id="dnd-node-{{ kind }}"
+                    class="dnd-sidebar__node mt-5"
+                    ondragstart='event.dataTransfer.setData("application/reactflow", "{{ kind }}"); event.dataTransfer.effectAllowed = "move";'
+                    draggable="true"
+                  >
+                    <i class="dnd-sidebar__icon fas fa-fw fa-lg {{ node.icon }}"></i>
+                    <div class="flex flex-col">
+                      <div class="flex items-center">
+                        <h4 class="dnd-sidebar__name">{{ node.displayName }}</h4>
+                      </div>
+                      <p class="dnd-sidebar__description">{{ node.description }}</p>
+                    </div>
+                  </div>
+                {% endif %}
+              {% endfor %}
+            </div>
+          </div>
+
+          <hr>
+        {% endfor %}
+      </aside>
+    </div>
   </div>
-</div>
-{{ nodes|json_script:"nodes" }}
+  {{ nodes|json_script:"nodes" }}
 
-<script src="{% static 'celery_progress/celery_progress.js' %}"></script>
-<script src="{% static "js/columns-bundle.js" %}"></script>
-<script src="{% static "js/workflows-bundle.js" %}"></script>
-<link rel="stylesheet" href="{% static "css/workflow.css" %}" />
+  <script src="{% static 'celery_progress/celery_progress.js' %}"></script>
+  <script src="{% static "js/columns-bundle.js" %}"></script>
+  <script src="{% static "js/workflows-bundle.js" %}"></script>
+  <link rel="stylesheet" href="{% static "css/workflow.css" %}" />
 {% endblock %}

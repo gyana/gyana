@@ -1,17 +1,17 @@
 {% extends "widgets/base.html" %}
 
 {% block widget %}
-<div class="flex items-center gap-4 mb-4">
-  <h1>Add a new widget</h1>
-  <a href="{% url 'project_dashboards:detail' project.id dashboard.id %}"
-     class="button button--sm button--success">Back</a>
-</div>
+  <div class="flex items-center gap-4 mb-4">
+    <h1>Add a new widget</h1>
+    <a href="{% url 'project_dashboards:detail' project.id dashboard.id %}"
+      class="button button--sm button--success">Back</a>
+  </div>
 
-<form method="post" action="{% url 'dashboard_widgets:create' project.id dashboard.id %}" class="form">
-  {% csrf_token %}
+  <form method="post" action="{% url 'dashboard_widgets:create' project.id dashboard.id %}" class="form">
+    {% csrf_token %}
 
-  {{ form }}
+    {{ form }}
 
-  <button type="submit" class="button button--filled button--success">Create</button>
-</form>
+    <button type="submit" class="button button--filled button--success">Create</button>
+  </form>
 {% endblock %}

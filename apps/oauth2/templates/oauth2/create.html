@@ -2,23 +2,23 @@
 {% load help_utils %}
 
 {% block app %}
-<div class="flex flex-1 justify-center items-center w-full h-full">
-  <div class="flex flex-col max-w-3xl">
-    <div class="flex flex-col text-center mb-7">
-      <h1 class="mr-2">Setup OAuth2</h1>
-      <p>Connect a external service with OAuth2 to authorize your custom APIs.<p>
-    </div>
+  <div class="flex flex-1 justify-center items-center w-full h-full">
+    <div class="flex flex-col max-w-3xl">
+      <div class="flex flex-col text-center mb-7">
+        <h1 class="mr-2">Setup OAuth2</h1>
+        <p>Connect a external service with OAuth2 to authorize your custom APIs.<p>
+        </div>
 
-    <form method="post" class="mt-7">
-      {% csrf_token %}
+          <form method="post" class="mt-7">
+            {% csrf_token %}
 
-      {{ form }}
+            {{ form }}
 
-      <p class="alert">You can rename this OAuth2 service at any time.</p>
+            <p class="alert">You can rename this OAuth2 service at any time.</p>
 
-      <button type="submit" class="button button--filled button--success w-full">Setup</button>
-    </form>
-  </div>
-</div>
+            <button type="submit" class="button button--filled button--success w-full">Setup</button>
+          </form>
+        </div>
+      </div>
 {% endblock %}
 

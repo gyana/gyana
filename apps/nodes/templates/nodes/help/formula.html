@@ -37,7 +37,7 @@
       and <strong>last_name</strong> columns. We also clean the names from unnecessary
       whitespace.
       <div>
-        <textarea 
+        <textarea
           x-data
           x-init="const columns = ['last_name', 'first_name']
             SiteJS.columns.Formula.init($el, columns)"
@@ -47,26 +47,26 @@
         >join("", trim(first_name), " ", trim(last_name))</textarea>
       </div>
     </p>
-    
+
     <h2>Functions <a class="ml-auto" href="{% link_function '' %}">
       <i class="fa fa-external-link fa-xs text-black-50"></i>
     </a></h2>
 
-    <form role='search' method="get" 
+    <form role='search' method="get"
       action="{% url 'nodes:formula' node.id %}?show_docs=true"
     >
-      <input type='search' name='q' 
-        id='id_search' 
+      <input type='search' name='q'
+        id='id_search'
         placeholder="Search functions"
         value="{{ request.GET.q }}"
-      ></input>   
-      
+      ></input>
+
       <div class='category'>
         {% for category in categories %}
-        
-          <button type='submit' name='category' value="{{category}}" 
-          class="category__pill {% if category == selected_category  %} category__selected {% endif %}">{{category}}</button>
-        
+
+          <button type='submit' name='category' value="{{category}}"
+            class="category__pill {% if category == selected_category  %} category__selected {% endif %}">{{category}}</button>
+
         {% endfor %}
       </div>
     </form>
@@ -75,20 +75,20 @@
 
       {% for function in functions %}
 
-      <div class='function-pill'
-        @click="closed = false
-        const url = new URL(location.origin + `{% url 'nodes:function-info' node.id %}`)
-        url.searchParams.set('function', '{{ function.id }}')
-        $refs.htmx.setAttribute('hx-get', `${url.pathname}?${url.searchParams.toString()}`)
-        htmx.process($refs.htmx)
-        $dispatch('hx-formula-draw-load')
-        ">
-        <h4>
-          <i class="fa {{ function.icon }} text-blue"></i> {{function.name}}(
+        <div class='function-pill'
+          @click="closed = false
+            const url = new URL(location.origin + `{% url 'nodes:function-info' node.id %}`)
+            url.searchParams.set('function', '{{ function.id }}')
+            $refs.htmx.setAttribute('hx-get', `${url.pathname}?${url.searchParams.toString()}`)
+            htmx.process($refs.htmx)
+            $dispatch('hx-formula-draw-load')
+          ">
+          <h4>
+            <i class="fa {{ function.icon }} text-blue"></i> {{function.name}}(
             <em>{% include 'nodes/help/_arguments.html' with arguments=function.arguments %}</em>
-          )
-        </h4>
-      </div>
+            )
+          </h4>
+        </div>
 
       {% endfor %}
 
@@ -97,11 +97,11 @@
   <div class="formula__drawer"
     :class="{'closed': closed}">
     <button
-        class="absolute top-4 right-4"
-        @click="closed = true"
-        data-loading-false
-      >
-        <i class="fal fa-times fa-sm"></i>
+      class="absolute top-4 right-4"
+      @click="closed = true"
+      data-loading-false
+    >
+      <i class="fal fa-times fa-sm"></i>
     </button>
     <div id="nodes:function-info"
       hx-trigger="hx-formula-draw-load from:window"

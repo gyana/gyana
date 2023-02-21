@@ -14,7 +14,7 @@
   "
 >
   {% if widget.name %}
-  <h4 class="metric__title">{{ widget.name }}</h4>
+    <h4 class="metric__title">{{ widget.name }}</h4>
   {% endif %}
 
   <h2 class="metric__value">
@@ -31,31 +31,31 @@
 
   <p class="metric__comparison">
     {% if zero_division %}
-    No value in previous period
+      No value in previous period
     {% elif change != None %}
-    
-    <span class="
-      {% if change < 0 and not widget.positive_decrease %}
-        text-red
-      {% elif change > 0 and widget.positive_decrease %}
-        text-red
-      {% elif change == 0%}
-        text-black-50
-      {% else %}
-        text-green
-      {% endif %}">
-      <i class="fa 
-        {% if change > 0 %}
-          fa-arrow-up
-        {% elif change == 0 %}
-          fa-minus
+
+      <span class="
+        {% if change < 0 and not widget.positive_decrease %}
+          text-red
+        {% elif change > 0 and widget.positive_decrease %}
+          text-red
+        {% elif change == 0%}
+          text-black-50
         {% else %}
-          fa-arrow-down
-        {% endif %}"
-      ></i>
-      {{ change|floatformat:2 }}%
-    </span>
-    <span>from {{ period }}</span>
+          text-green
+        {% endif %}">
+        <i class="fa
+          {% if change > 0 %}
+            fa-arrow-up
+          {% elif change == 0 %}
+            fa-minus
+          {% else %}
+            fa-arrow-down
+          {% endif %}"
+        ></i>
+        {{ change|floatformat:2 }}%
+      </span>
+      <span>from {{ period }}</span>
     {% endif %}
   </p>
 </div>

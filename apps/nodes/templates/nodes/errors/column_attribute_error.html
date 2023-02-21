@@ -1,6 +1,6 @@
 {% extends 'nodes/errors/default.html' %}
 {% block header %}Formula error{% endblock %}
 {% block error_message %}
-  You cannot use <strong class='text-blue'>{{ function.name }}</strong> on {% if column %}column{% else %}value{% endif %} <strong class='text-pink'>{% if column %}{{column}}{% else %}{{value}}{% endif %}</strong> 
+  You cannot use <strong class='text-blue'>{{ function.name }}</strong> on {% if column %}column{% else %}value{% endif %} <strong class='text-pink'>{% if column %}{{column}}{% else %}{{value}}{% endif %}</strong>
   because it is a <strong class='text-black-50'>{{column_type}}</strong> {% if column %}column{% else %}value{% endif %}.
 {% endblock %}

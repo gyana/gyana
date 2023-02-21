@@ -1,28 +1,28 @@
 {% extends "dashboards/public.html" %}
 
 {% block head %}
-<title>Password protected page</title>
+  <title>Password protected page</title>
 {% endblock %}
 
 {% block body %}
-<div class="flex flex-col m-auto justify-center items-center">
-  <h2 class="mb-7">Password protected page</h2>
+  <div class="flex flex-col m-auto justify-center items-center">
+    <h2 class="mb-7">Password protected page</h2>
 
-  <form
-    class="w-full form--no-layout"
-    method="post"
-  >
-    {% csrf_token %}
-
-    {{ form }}
-
-    <button
-      class="button button-primary w-full mt-4"
-      type="submit"
-      hx-boost="false"
+    <form
+      class="w-full form--no-layout"
+      method="post"
     >
-      Submit
-    </button>
-  </form>
-</div>
+      {% csrf_token %}
+
+      {{ form }}
+
+      <button
+        class="button button-primary w-full mt-4"
+        type="submit"
+        hx-boost="false"
+      >
+        Submit
+      </button>
+    </form>
+  </div>
 {% endblock body %}

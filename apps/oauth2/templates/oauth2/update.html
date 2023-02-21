@@ -2,38 +2,38 @@
 {% load help_utils %}
 
 {% block app %}
-<div class="flex flex-1 justify-center items-center w-full h-full">
-  <div class="flex flex-col max-w-3xl">
-    <div class="flex text-center mb-7 items-center">
-      <h1 class="mr-2">Authorize a external service with OAuth2</h1>
-    </div>
+  <div class="flex flex-1 justify-center items-center w-full h-full">
+    <div class="flex flex-col max-w-3xl">
+      <div class="flex text-center mb-7 items-center">
+        <h1 class="mr-2">Authorize a external service with OAuth2</h1>
+      </div>
 
-    <p class="alert mb-4">
-      To start with, register a new application with your OAuth2 provider.
-      You'll get a unique client ID and client secret.
-    </p>
-
-    <p class="mb-2">
-      You'll need to enter this callback URL:
-    </p>
-    <div x-data class='clipboard-copy mb-4'>
-      <p x-ref="content">
-        {{ object.callback_url }}
+      <p class="alert mb-4">
+        To start with, register a new application with your OAuth2 provider.
+        You'll get a unique client ID and client secret.
       </p>
-      <button type="button"
-        @click="navigator.clipboard.writeText($refs.content.innerText)">
-        <i class='fa fa-clipboard'></i>
-      </button>
+
+      <p class="mb-2">
+        You'll need to enter this callback URL:
+      </p>
+      <div x-data class='clipboard-copy mb-4'>
+        <p x-ref="content">
+          {{ object.callback_url }}
+        </p>
+        <button type="button"
+          @click="navigator.clipboard.writeText($refs.content.innerText)">
+          <i class='fa fa-clipboard'></i>
+        </button>
+      </div>
+
+      <form method="post" class="mt-7" hx-boost="false">
+        {% csrf_token %}
+
+        {{ form }}
+
+        <button type="submit" class="button button--filled button--success w-full">Authorize</button>
+      </form>
     </div>
-
-    <form method="post" class="mt-7" hx-boost="false">
-      {% csrf_token %}
-
-      {{ form }}
-
-      <button type="submit" class="button button--filled button--success w-full">Authorize</button>
-    </form>
   </div>
-</div>
 {% endblock %}
 

@@ -1,11 +1,11 @@
 {% extends "emails/base.html" %}
 
 {% block title %}
-[Gyana] Your export is ready to download!
+  [Gyana] Your export is ready to download!
 {% endblock %}
 
 {% block content %}
-<p>Your export is ready to download!</p>
-<a href="{{ download_link }}" download>Download your CSV export now</a>
-<p>Note: The link is valid for 7 days.</p>
+  <p>Your export is ready to download!</p>
+  <a href="{{ download_link }}" download>Download your CSV export now</a>
+  <p>Note: The link is valid for 7 days.</p>
 {% endblock %}

@@ -6,131 +6,131 @@
 {% block app-class %}overflow-auto{% endblock app-class %}
 
 {% block app %}
-{% if show_zero_state %}
-<div class="table__empty">
-  <i class="fas fa-fw fa-4x fa-database text-black-50 mb-7"></i>
-  <h3 class="mb-3">Import a source of data, like a CSV file or Google Sheet</h3>
-  <p>
-    Watch the video below to see how you can get started with integrations, if
-    you prefer to just get started upload a CSV below. You can always watch the
-    videos later, right in our help center!
-  </p>
-</div>
+  {% if show_zero_state %}
+    <div class="table__empty">
+      <i class="fas fa-fw fa-4x fa-database text-black-50 mb-7"></i>
+      <h3 class="mb-3">Import a source of data, like a CSV file or Google Sheet</h3>
+      <p>
+        Watch the video below to see how you can get started with integrations, if
+        you prefer to just get started upload a CSV below. You can always watch the
+        videos later, right in our help center!
+      </p>
+    </div>
 
-<div class="mx-auto" style="width: 48rem;">
-  {% embed_loom 'integrations' %}
+    <div class="mx-auto" style="width: 48rem;">
+      {% embed_loom 'integrations' %}
 
-  <p class="my-7 text-black-50">
-    Get started fast with our Google Sheet and CSV integrations. It takes less than a minute, and you don't need to connect your account.
-  </p>
- 
-  <div class="flex gap-8 my-7 items-center">
-    <a
-      href="{% url 'project_integrations_uploads:create' project.id %}"
-      class="button button--primary flex-1"
-    >
-      Upload CSV
-    </a>
+      <p class="my-7 text-black-50">
+        Get started fast with our Google Sheet and CSV integrations. It takes less than a minute, and you don't need to connect your account.
+      </p>
 
-    <p class="text-black-50">or</p>
+      <div class="flex gap-8 my-7 items-center">
+        <a
+          href="{% url 'project_integrations_uploads:create' project.id %}"
+          class="button button--primary flex-1"
+        >
+          Upload CSV
+        </a>
 
-    <a
-      href="{% url 'project_integrations_sheets:create' project.id %}"
-      class="button button--primary flex-1"
-    >
-      Add a Google Sheet
-    </a>
-  </div>
+        <p class="text-black-50">or</p>
 
-  <p class="my-7 text-black-50">
-    Build reliable, automated reporting with our connectors and custom APIs.
-    {% if team.is_free %}Available on a paid plan, <a class="link" href="{% url 'teams:pricing' team.id %}">learn more</a>.{% endif %}
-  </p>
+        <a
+          href="{% url 'project_integrations_sheets:create' project.id %}"
+          class="button button--primary flex-1"
+        >
+          Add a Google Sheet
+        </a>
+      </div>
 
-  <div class="flex gap-8 mt-7">
-    {% if team.is_free %}
-      <button class="button button--tertiary flex-1 disabled">
-        Use a Custom API
-      </button>
-    {% else %}
-      <a
-        href="{% url 'project_integrations_customapis:create' project.id %}"
-        class="button button--tertiary flex-1"
-      >
-        Use a Custom API
-      </a>
-    {% endif %}
-  </div>
-</div>
-{% else %}
-<div class="page-header">
-  <div class="mr-auto">
-    <h1 class="flex items-center gap-3">
-      Integrations
-      {% link_article 'overview' 'integrations' %}
-      {% link_video 'integrations' %}
-    </h1>
-    <p>A source of data, like a CSV file, Google Sheet, ads account, database, or web app.</p>
-  </div>
+      <p class="my-7 text-black-50">
+        Build reliable, automated reporting with our connectors and custom APIs.
+        {% if team.is_free %}Available on a paid plan, <a class="link" href="{% url 'teams:pricing' team.id %}">learn more</a>.{% endif %}
+      </p>
 
-  <div class="flex gap-3 ml-4">
-    {% if project.team.enabled %}
-      <a
-        class="button button--tertiary button--sm"
-        href="{% url 'project_integrations_uploads:create' project.id %}"
-        x-tooltip="Upload CSV file"
-      >
-        <i class="fas fa-fw fa-upload"></i>
-      </a>
+      <div class="flex gap-8 mt-7">
+        {% if team.is_free %}
+          <button class="button button--tertiary flex-1 disabled">
+            Use a Custom API
+          </button>
+        {% else %}
+          <a
+            href="{% url 'project_integrations_customapis:create' project.id %}"
+            class="button button--tertiary flex-1"
+          >
+            Use a Custom API
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  {% else %}
+    <div class="page-header">
+      <div class="mr-auto">
+        <h1 class="flex items-center gap-3">
+          Integrations
+          {% link_article 'overview' 'integrations' %}
+          {% link_video 'integrations' %}
+        </h1>
+        <p>A source of data, like a CSV file, Google Sheet, ads account, database, or web app.</p>
+      </div>
 
-      <div x-data="popover">
-        <button class="button button--dropdown button--sm">
-          New Integration <i class="fas fa-fw fa-angle-down"></i>
-        </button>
-
-        <div x-ref="body" class="list list--bordered" style="margin-top:6px;">
-          <a class="list__item list__item--interactive" href="{% url 'project_integrations_sheets:create' project.id %}">
-            <i class="fas fa-fw fa-file-spreadsheet mr-4"></i> Add Sheet
+      <div class="flex gap-3 ml-4">
+        {% if project.team.enabled %}
+          <a
+            class="button button--tertiary button--sm"
+            href="{% url 'project_integrations_uploads:create' project.id %}"
+            x-tooltip="Upload CSV file"
+          >
+            <i class="fas fa-fw fa-upload"></i>
           </a>
 
-          {% if team.is_free %}
-
-            <button disabled class="list__item list__item--interactive disabled">
-              <i class="fas fa-fw fa-brackets-curly mr-4"></i> Custom API
+          <div x-data="popover">
+            <button class="button button--dropdown button--sm">
+              New Integration <i class="fas fa-fw fa-angle-down"></i>
             </button>
-          {% else %}
 
-            <a class="list__item list__item--interactive" href="{% url 'project_integrations_customapis:create' project.id %}">
-              <i class="fas fa-fw fa-brackets-curly mr-4"></i> Custom API
-            </a>
-          {% endif %}
-        </div>
+            <div x-ref="body" class="list list--bordered" style="margin-top:6px;">
+              <a class="list__item list__item--interactive" href="{% url 'project_integrations_sheets:create' project.id %}">
+                <i class="fas fa-fw fa-file-spreadsheet mr-4"></i> Add Sheet
+              </a>
+
+              {% if team.is_free %}
+
+                <button disabled class="list__item list__item--interactive disabled">
+                  <i class="fas fa-fw fa-brackets-curly mr-4"></i> Custom API
+                </button>
+              {% else %}
+
+                <a class="list__item list__item--interactive" href="{% url 'project_integrations_customapis:create' project.id %}">
+                  <i class="fas fa-fw fa-brackets-curly mr-4"></i> Custom API
+                </a>
+              {% endif %}
+            </div>
+          </div>
+        {% else %}
+          <button disabled class="button button--sm disabled">
+            New Integration <i class="fas fa-fw fa-angle-down"></i>
+          </button>
+        {% endif %}
       </div>
-    {% else %}
-      <button disabled class="button button--sm disabled">
-        New Integration <i class="fas fa-fw fa-angle-down"></i>
-      </button>
-    {% endif %}
-  </div>
-</div>
-
-<div class="flex flex-col pad overflow-hidden">
-  <form method="get" onchange="this.requestSubmit()">
-    <div class='flex flex-row space-x-4 w-1/2 mb-4'>
-      {{ filter.form.name }}
-      {{ filter.form.kind }}
     </div>
-  </form>
 
-  {% if project.integrations_for_review > 0 %}
-  <p class="alert mb-4">
-    You have {{ project.integrations_for_review }} synced integration{{ project.integrations_for_review|pluralize }} to review.
-  </p>
+    <div class="flex flex-col pad overflow-hidden">
+      <form method="get" onchange="this.requestSubmit()">
+        <div class='flex flex-row space-x-4 w-1/2 mb-4'>
+          {{ filter.form.name }}
+          {{ filter.form.kind }}
+        </div>
+      </form>
+
+      {% if project.integrations_for_review > 0 %}
+        <p class="alert mb-4">
+          You have {{ project.integrations_for_review }} synced integration{{ project.integrations_for_review|pluralize }} to review.
+        </p>
+      {% endif %}
+
+      <div class="card card--none overflow-auto mb-8">
+        {% render_table table %}
+      </div>
+    </div>
   {% endif %}
-
-  <div class="card card--none overflow-auto mb-8">
-    {% render_table table %}
-  </div>
-</div> 
-{% endif %}
 {% endblock %}

@@ -5,143 +5,143 @@
 {% block app-class %}overflow-hidden{% endblock app-class %}
 
 {% block app %}
-<div class="workflow-detail__header">
-  <h3 class="mr-auto flex justify-center items-center">
-    <img class="h-12 w-12 mr-4" src="{% static object.icon %}" title="{{ object.name }}" />
-    {% include "integrations/name.html" %}
-  </h3>
+  <div class="workflow-detail__header">
+    <h3 class="mr-auto flex justify-center items-center">
+      <img class="h-12 w-12 mr-4" src="{% static object.icon %}" title="{{ object.name }}" />
+      {% include "integrations/name.html" %}
+    </h3>
 
-  {% if object.kind == "sheet" %}
-  <a
-    href="{{ object.sheet.url }}"
-    class="button button--circle button--tertiary"
-    target="_blank"
-    rel="noopener noreferer"
-    x-tooltip="Go to Google Sheet"
-  >
-    <i class="fas fa-fw fa-external-link"></i>
-  </a>
+    {% if object.kind == "sheet" %}
+      <a
+        href="{{ object.sheet.url }}"
+        class="button button--circle button--tertiary"
+        target="_blank"
+        rel="noopener noreferer"
+        x-tooltip="Go to Google Sheet"
+      >
+        <i class="fas fa-fw fa-external-link"></i>
+      </a>
 
-  <form
-    method="POST"
-    action="{% url 'project_integrations:load' object.project.id object.id %}"
-    class="form--no-layout"
-  >
-    {% csrf_token %}
+      <form
+        method="POST"
+        action="{% url 'project_integrations:load' object.project.id object.id %}"
+        class="form--no-layout"
+      >
+        {% csrf_token %}
 
-    <button
-      type="submit"
-      class="
-        button button--circle
-        {% if object.sheet.up_to_date_with_drive %}
-        button--tertiary
-        {% else %}
-        button--success
-        {% endif %}
-      "
-      x-tooltip="Fetch latest data"
-    >
-      <i class="fas fa-fw fa-sync"></i>
-    </button>
-  </form>
-  {% endif %}
+        <button
+          type="submit"
+          class="
+            button button--circle
+            {% if object.sheet.up_to_date_with_drive %}
+              button--tertiary
+            {% else %}
+              button--success
+            {% endif %}
+          "
+          x-tooltip="Fetch latest data"
+        >
+          <i class="fas fa-fw fa-sync"></i>
+        </button>
+      </form>
+    {% endif %}
 
-  {% if integration.ready %}
-  <div x-data="popover">
-    <button class="button button--sm">
-      Use in<i class="fas fa-fw fa-angle-down"></i>
-    </button>
+    {% if integration.ready %}
+      <div x-data="popover">
+        <button class="button button--sm">
+          Use in<i class="fas fa-fw fa-angle-down"></i>
+        </button>
 
-    <template x-ref="body">
-      <ul>
-        <li class="list__item list__item--interactive">
-          {% include "workflows/create_from_integration.html" %}
-        </li>
+        <template x-ref="body">
+          <ul>
+            <li class="list__item list__item--interactive">
+              {% include "workflows/create_from_integration.html" %}
+            </li>
 
-        <li class="list__item list__item--interactive">
-          {% include "dashboards/create_from_integration.html" %}
-        </li>
-      </ul>
-    </template>
-  </div>
-  {% endif %}
-</div>
-
-<nav id="tabbar" class="tabbar bg-white">
-  <div class="tabbar__item">
-    <i x-tooltip="{{ object.state_text }}"
-      class="fas fa-fw fa-center {{ object.state_icon }}">
-    </i>
-
-    {% if object.ready or object.state == 'done' %}
-      <p class="ml-4">
-        <span x-tooltip="~{{ integration.row_percentage }}% of your quota">
-          <strong>{{ integration.num_rows|intcomma }}</strong> row{{ integration.num_rows|pluralize }}
-        </span>
-      </p>
+            <li class="list__item list__item--interactive">
+              {% include "dashboards/create_from_integration.html" %}
+            </li>
+          </ul>
+        </template>
+      </div>
     {% endif %}
   </div>
 
-  {% comment %} Uploads cannot be setup again after approval {% endcomment %}
-  {% if not object.ready or object.kind != object.Kind.UPLOAD %}
-    <a class="tabbar__link {% if request.resolver_match.url_name in 'configure,load,done,setup' %} tabbar__link--active {% endif %}"
-      href="{% url 'project_integrations:done' project.id object.id %}">
-      Sync
-    </a>
-  {% endif %}
-  {% if object.ready or object.state == 'done' %}
-    <a class="tabbar__link {% if request.resolver_match.url_name == 'detail' %} tabbar__link--active {% endif %}"
-      href="{% url 'project_integrations:detail' project.id object.id %}">
-      Overview
-    </a>
-  {% endif %}
-  {% if object.ready %}
-    {% if object.kind in 'sheet|customapi' %}
-      <a class="tabbar__link {% if request.resolver_match.url_name == 'runs' %} tabbar__link--active {% endif %}"
-        href="{% url 'project_integrations:runs' project.id object.id %}">
-        History
+  <nav id="tabbar" class="tabbar bg-white">
+    <div class="tabbar__item">
+      <i x-tooltip="{{ object.state_text }}"
+        class="fas fa-fw fa-center {{ object.state_icon }}">
+      </i>
+
+      {% if object.ready or object.state == 'done' %}
+        <p class="ml-4">
+          <span x-tooltip="~{{ integration.row_percentage }}% of your quota">
+            <strong>{{ integration.num_rows|intcomma }}</strong> row{{ integration.num_rows|pluralize }}
+          </span>
+        </p>
+      {% endif %}
+    </div>
+
+    {% comment %} Uploads cannot be setup again after approval {% endcomment %}
+    {% if not object.ready or object.kind != object.Kind.UPLOAD %}
+      <a class="tabbar__link {% if request.resolver_match.url_name in 'configure,load,done,setup' %} tabbar__link--active {% endif %}"
+        href="{% url 'project_integrations:done' project.id object.id %}">
+        Sync
       </a>
     {% endif %}
-    <a class="tabbar__link {% if request.resolver_match.url_name == 'references' %} tabbar__link--active {% endif %}"
-      href="{% url 'project_integrations:references' project.id object.id %}">
-      References
+    {% if object.ready or object.state == 'done' %}
+      <a class="tabbar__link {% if request.resolver_match.url_name == 'detail' %} tabbar__link--active {% endif %}"
+        href="{% url 'project_integrations:detail' project.id object.id %}">
+        Overview
+      </a>
+    {% endif %}
+    {% if object.ready %}
+      {% if object.kind in 'sheet|customapi' %}
+        <a class="tabbar__link {% if request.resolver_match.url_name == 'runs' %} tabbar__link--active {% endif %}"
+          href="{% url 'project_integrations:runs' project.id object.id %}">
+          History
+        </a>
+      {% endif %}
+      <a class="tabbar__link {% if request.resolver_match.url_name == 'references' %} tabbar__link--active {% endif %}"
+        href="{% url 'project_integrations:references' project.id object.id %}">
+        References
+      </a>
+    {% endif %}
+    <a class="tabbar__link {% if request.resolver_match.url_name == 'settings' %} tabbar__link--active {% endif %}"
+      href="{% url 'project_integrations:settings' project.id object.id %}">
+      Settings
     </a>
-  {% endif %}
-  <a class="tabbar__link {% if request.resolver_match.url_name == 'settings' %} tabbar__link--active {% endif %}"
-    href="{% url 'project_integrations:settings' project.id object.id %}">
-    Settings
-  </a>
 
-</nav>
+  </nav>
 
-{% block extra_tab %}{% endblock %}
+  {% block extra_tab %}{% endblock %}
 
-<div id='main' class="flex flex-col flex-1 overflow-auto">
-  {% block tab %}{% endblock %}
-</div>
-
-{% if integration.ready %}
-  <div class="workflow-detail__footer">
-    <div class="flex items-center w-full gap-2">
-      <p class="flex items-center">
-        {% if integration.created_by %}
-        <img
-          class="h-8 w-8 rounded-full mr-2"
-          src="{{ integration.created_by.avatar_url }}"
-          alt="{{ integration.created_by.get_display_name }}"
-          x-tooltip="Created by {{ integration.created_by.get_display_name }}"
-        />
-        {% endif %}
-      </p>
-
-      <p class="m-0">
-        {% if object.kind == 'sheet' %}
-          • <span hx-get="{% url 'sheets:status' object.sheet.id %}" hx-trigger="load">
-            {% include "sheets/status.html" with object=object.sheet %}
-          </span>
-        {% endif %}
-      </p>
-    </div>
+  <div id='main' class="flex flex-col flex-1 overflow-auto">
+    {% block tab %}{% endblock %}
   </div>
-{% endif %}
+
+  {% if integration.ready %}
+    <div class="workflow-detail__footer">
+      <div class="flex items-center w-full gap-2">
+        <p class="flex items-center">
+          {% if integration.created_by %}
+            <img
+              class="h-8 w-8 rounded-full mr-2"
+              src="{{ integration.created_by.avatar_url }}"
+              alt="{{ integration.created_by.get_display_name }}"
+              x-tooltip="Created by {{ integration.created_by.get_display_name }}"
+            />
+          {% endif %}
+        </p>
+
+        <p class="m-0">
+          {% if object.kind == 'sheet' %}
+            • <span hx-get="{% url 'sheets:status' object.sheet.id %}" hx-trigger="load">
+              {% include "sheets/status.html" with object=object.sheet %}
+            </span>
+          {% endif %}
+        </p>
+      </div>
+    </div>
+  {% endif %}
 {% endblock %}

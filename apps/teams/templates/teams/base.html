@@ -11,11 +11,11 @@
     x-tooltip.sidebar="{{ team.name }}"
   >
     {% if team.icon %}
-    <img src="{{ team.icon.url }}" />
+      <img src="{{ team.icon.url }}" />
     {% else %}
-    <span class="team_logo" style="background: {{ team.color }}">
-      {{ team.name|slice:1|capfirst }}
-    </span>
+      <span class="team_logo" style="background: {{ team.color }}">
+        {{ team.name|slice:1|capfirst }}
+      </span>
     {% endif %}
 
     <strong class="h3">
@@ -32,29 +32,29 @@
   </a>
 
   {% if request.user|is_admin_of:team %}
-  <a
-    class="sidebar__link {% if request.resolver_match.url_name == 'list' %}sidebar__link--active{% endif %}"
-    href="{% url 'team_members:list' team.id %}"
-    x-tooltip.sidebar="Members"
-  >
-    <i class="far fa-fw fa-users"></i>Members
-  </a>
+    <a
+      class="sidebar__link {% if request.resolver_match.url_name == 'list' %}sidebar__link--active{% endif %}"
+      href="{% url 'team_members:list' team.id %}"
+      x-tooltip.sidebar="Members"
+    >
+      <i class="far fa-fw fa-users"></i>Members
+    </a>
 
-  <a
-    class="sidebar__link {% if request.resolver_match.url_name in 'account,subscription,plan,payments,pricing' %}sidebar__link--active{% endif %}"
-    href="{% url 'teams:account' team.id %}"
-    x-tooltip.sidebar="Billing"
-  >
-    <i class="far fa-fw fa-wallet"></i>Billing
-  </a>
+    <a
+      class="sidebar__link {% if request.resolver_match.url_name in 'account,subscription,plan,payments,pricing' %}sidebar__link--active{% endif %}"
+      href="{% url 'teams:account' team.id %}"
+      x-tooltip.sidebar="Billing"
+    >
+      <i class="far fa-fw fa-wallet"></i>Billing
+    </a>
 
-  <a
-    class="sidebar__link {% if request.resolver_match.url_name == 'update' %}sidebar__link--active{% endif %}"
-    href="{% url 'teams:update' team.id %}"
-    x-tooltip.sidebar="Settings"
-  >
-    <i class="far fa-fw fa-cog"></i>Settings
-  </a>
+    <a
+      class="sidebar__link {% if request.resolver_match.url_name == 'update' %}sidebar__link--active{% endif %}"
+      href="{% url 'teams:update' team.id %}"
+      x-tooltip.sidebar="Settings"
+    >
+      <i class="far fa-fw fa-cog"></i>Settings
+    </a>
   {% endif %}
 {% endblock %}
 

@@ -16,16 +16,16 @@
   </div>
 
   <div class="flex flex-col pad flex-1">
-    <form 
+    <form
       id="widget-update-form"
       class="widget-update-sidebar__form"
-      action="{% url 'dashboard_widgets:update' project.id dashboard.id object.id %}" 
+      action="{% url 'dashboard_widgets:update' project.id dashboard.id object.id %}"
       method="post"
       data-tf-modal-target="form"
       {% if object.kind == "image" %}
-      enctype='multipart/form-data'
+        enctype='multipart/form-data'
       {% endif %}
-    >  
+    >
       {% csrf_token %}
 
       {% comment %}
@@ -48,8 +48,8 @@
       </span>
 
       {% with optional=False %}
-          {{ form }}
-        {% endwith %}
+        {{ form }}
+      {% endwith %}
 
       <button
         type="submit"
@@ -59,7 +59,7 @@
         data-action="click->tf-modal#forceClose"
       >
         Save
-      </button>  
+      </button>
     </form>
   </div>
 </section>

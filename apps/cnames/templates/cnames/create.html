@@ -3,39 +3,39 @@
 {% load help_utils %}
 
 {% block app %}
-<div class="flex flex-1 justify-center items-center w-full h-full">
-  <div class="flex flex-col max-w-3xl">
-    <div class="flex text-center mb-7 items-center">
-      <h1 class="mr-2">Connect a custom domain</h1>
-      {% link_article 'overview' 'cnames' %}
+  <div class="flex flex-1 justify-center items-center w-full h-full">
+    <div class="flex flex-col max-w-3xl">
+      <div class="flex text-center mb-7 items-center">
+        <h1 class="mr-2">Connect a custom domain</h1>
+        {% link_article 'overview' 'cnames' %}
+      </div>
+
+      <p class="mb-2">
+        In your DNS provider, add a CNAME record pointing to:
+      </p>
+
+      <div x-data class='clipboard-copy'>
+        <pre class="text-xl p-2" x-ref="content">{{ cname_domain }}</pre>
+        <button type="button"
+          @click="navigator.clipboard.writeText($refs.content.innerText)">
+          <i class='fa fa-clipboard'></i>
+        </button>
+      </div>
+
+      <p class="alert mt-6">
+        You might need to wait a few minutes for the SSL certificate and DNS propagation
+        to complete. Keep an eye on the settings page for status information, and reach out
+        to support if you have any issues.
+      </p>
+
+      <form method="post" class="mt-7">
+        {% csrf_token %}
+
+        {{ form }}
+
+        <button type="submit" class="button button--filled button--success w-full">Connect</button>
+      </form>
     </div>
-
-    <p class="mb-2">
-      In your DNS provider, add a CNAME record pointing to:
-    </p>
-
-    <div x-data class='clipboard-copy'>
-      <pre class="text-xl p-2" x-ref="content">{{ cname_domain }}</pre>
-      <button type="button"
-        @click="navigator.clipboard.writeText($refs.content.innerText)">
-        <i class='fa fa-clipboard'></i>
-      </button>
-    </div>
-
-    <p class="alert mt-6">
-      You might need to wait a few minutes for the SSL certificate and DNS propagation
-      to complete. Keep an eye on the settings page for status information, and reach out
-      to support if you have any issues.
-    </p>
-    
-    <form method="post" class="mt-7">
-      {% csrf_token %}
-
-      {{ form }}
-
-      <button type="submit" class="button button--filled button--success w-full">Connect</button>
-    </form>
   </div>
-</div>
 {% endblock %}
 

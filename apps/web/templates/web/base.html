@@ -2,119 +2,119 @@
 
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  {% block meta %}
-    {% include "web/components/meta.html" %}
-  {% endblock %}
-  {% include "web/components/favicon.html" %}
+    {% block meta %}
+      {% include "web/components/meta.html" %}
+    {% endblock %}
+    {% include "web/components/favicon.html" %}
 
-  {% comment %} Only load Poppins to use for our Logo {% endcomment %}
-  <link rel="preconnect" href="//fonts.gstatic.com" />
-  <link
-    href="//fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap&text=Gyana"
-    rel="stylesheet"
-  />
-
-  <link rel="stylesheet" href="{% static "css/fontawesome.css" %}" />
-  <link rel="stylesheet" href="{% static "css/tailwind.css" %}" />
-  <link rel="stylesheet" href="{% static "css/style.css" %}" />
-
-  {% comment %} Enables iframe embedding with top navigation {% endcomment %}
-  {% if request.GET.iframe %}
-    <base target="_parent">
-  {% endif %}
-  <script src="{% static "js/stimulus-bundle.js" %}"></script>
-  <script src="{% static "js/base-bundle.js" %}"></script>
-
-  <script src="{% static 'js/htmx@1.8.5.min.js' %}" defer></script>
-  {% django_htmx_script %}
-
-  <script src="{% static 'celery_progress/celery_progress.js' %}"></script>
-  <script src="//unpkg.com/alpinejs" defer></script>
-
-  {% block head %}
+    {% comment %} Only load Poppins to use for our Logo {% endcomment %}
+    <link rel="preconnect" href="//fonts.gstatic.com" />
     <link
-      href="//fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap"
+      href="//fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap&text=Gyana"
       rel="stylesheet"
     />
-    
-    <script src="{% static "rest_framework/js/coreapi-0.1.1.js" %}"></script>
-    <script src="{% url "api_schemajs" %}"></script>
+
+    <link rel="stylesheet" href="{% static "css/fontawesome.css" %}" />
+    <link rel="stylesheet" href="{% static "css/tailwind.css" %}" />
+    <link rel="stylesheet" href="{% static "css/style.css" %}" />
+
+    {% comment %} Enables iframe embedding with top navigation {% endcomment %}
+    {% if request.GET.iframe %}
+      <base target="_parent">
+    {% endif %}
+    <script src="{% static "js/stimulus-bundle.js" %}"></script>
+    <script src="{% static "js/base-bundle.js" %}"></script>
+
+    <script src="{% static 'js/htmx@1.8.5.min.js' %}" defer></script>
+    {% django_htmx_script %}
+
+    <script src="{% static 'celery_progress/celery_progress.js' %}"></script>
+    <script src="//unpkg.com/alpinejs" defer></script>
+
+    {% block head %}
+      <link
+        href="//fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap"
+        rel="stylesheet"
+      />
+
+      <script src="{% static "rest_framework/js/coreapi-0.1.1.js" %}"></script>
+      <script src="{% url "api_schemajs" %}"></script>
+
+      {% if not request.user.is_hijacked %}
+        {% if SEGMENT_ANALYTICS_JS_WRITE_KEY %}
+          {% include "web/components/analytics.html" %}
+        {% endif %}
+      {% endif %}
+    {% endblock head %}
+
+    {% block head.extra %}{% endblock head.extra %}
 
     {% if not request.user.is_hijacked %}
-      {% if SEGMENT_ANALYTICS_JS_WRITE_KEY %}
-        {% include "web/components/analytics.html" %}
+      {% if WEBSITE_GTM_ID %}
+        {% include "web/components/gtm_head.html" %}
       {% endif %}
     {% endif %}
-  {% endblock head %}
 
-  {% block head.extra %}{% endblock head.extra %}
+  </head>
 
-  {% if not request.user.is_hijacked %}
-    {% if WEBSITE_GTM_ID %}
-      {% include "web/components/gtm_head.html" %}
+  <body
+    {% if request.user.is_hijacked %}
+      class="isHijacked"
     {% endif %}
-  {% endif %}
+    {% block body.attrs %}{% endblock body.attrs %}
+    {% comment %} entire body is a single Alpine app, e.g. for tooltips {% endcomment %}
+    x-data
+  >
+    {% block body %}
+      {% block body.banner %}{% endblock %}
 
-</head>
+      {% block body.messages %}
+        {% include "web/components/messages.html" %}
+      {% endblock body.messages %}
 
-<body
-  {% if request.user.is_hijacked %}
-    class="isHijacked"
-  {% endif %}
-  {% block body.attrs %}{% endblock body.attrs %}
-  {% comment %} entire body is a single Alpine app, e.g. for tooltips {% endcomment %}
-  x-data
->
-  {% block body %}
-    {% block body.banner %}{% endblock %}
+      <main>
+        {% block body.content %}{% endblock body.content %}
+      </main>
 
-    {% block body.messages %}
-      {% include "web/components/messages.html" %}
-    {% endblock body.messages %}
-  
-    <main>
-      {% block body.content %}{% endblock body.content %}
-    </main>
-
-    {% comment %}
+      {% comment %}
     For use with the `tf_modal_controller.js` controller.
     {% endcomment %}
-    {% block body.modal %}
-      <div
-        data-tf-modal-target="modal"
-        class="tf-modal"
-        hidden
-      >
-        <div class="card card--none card--modal">
-          {% block modal.body %}
-            <div
-              id="hx-modal"
-              class="overflow-hidden flex-1"
-              data-tf-modal-target="htmx"
-              hx-trigger="hx-modal-load"
-              hx-target="this"
-            >
-              <div class="placeholder-scr placeholder-scr--fillscreen">
-                <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-2x"></i>
+      {% block body.modal %}
+        <div
+          data-tf-modal-target="modal"
+          class="tf-modal"
+          hidden
+        >
+          <div class="card card--none card--modal">
+            {% block modal.body %}
+              <div
+                id="hx-modal"
+                class="overflow-hidden flex-1"
+                data-tf-modal-target="htmx"
+                hx-trigger="hx-modal-load"
+                hx-target="this"
+              >
+                <div class="placeholder-scr placeholder-scr--fillscreen">
+                  <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-2x"></i>
+                </div>
               </div>
-            </div>
-          {% endblock modal.body %}
+            {% endblock modal.body %}
+          </div>
         </div>
-      </div>
 
-      {% include "components/modal_closing_warning.html" %}
-    {% endblock body.modal %}
+        {% include "components/modal_closing_warning.html" %}
+      {% endblock body.modal %}
 
-    {% block body.javascript %}{% endblock body.javascript %}
+      {% block body.javascript %}{% endblock body.javascript %}
 
-    {% if WEBSITE_GTM_ID %}
-      {% include "web/components/gtm_body.html" %}
-    {% endif %}
-  {% endblock body %}
-</body>
+      {% if WEBSITE_GTM_ID %}
+        {% include "web/components/gtm_body.html" %}
+      {% endif %}
+    {% endblock body %}
+  </body>
 </html>

@@ -3,138 +3,138 @@
 {% load help_utils %}
 
 {% block app %}
-<section class="account">
+  <section class="account">
 
-  {% if team.recently_completed_checkout and not team.has_subscription %}
-    <h2>Billing</h2>
-
-    <div class="card">
-      <p>
-        Information about your new subscription will be available here in a moment.
-        <a class="link" href="#" onClick='window.location.reload()'>
-          Reload this page
-        </a> to check.
-      </p>
-    </div>
-  {% else %}
-
-    <div class="account__billing">
-      <header class="account__title">
-        <div class="flex items-center mb-4">
-          <h2>Gyana - <span>{{ team.plan.name }}</span></h2>
-
-        </div>  
-      </header>
-
-      <div class="account__plan card card--none">
-        <div class="w-1/3">
-          <p>Projects</p>
-          <h4 class="h2">{{ team.total_projects }} / {% if team.plan.projects != -1 %}{{ team.plan.projects }}{% else %}<i class="far fa-fw fa-infinity"></i>{% endif %}</h4>
-        </div>
-
-        <div class="w-1/3">
-          <p>Users</p>
-          <h4 class="h2"><i class="far fa-fw fa-infinity"></i></h4>
-        </div>
-
-        <div class="w-1/3">
-          <p>Views</p>
-          <h4 class="h2"><i class="far fa-fw fa-infinity"></i></h4>
-        </div>
-
-        {% if team.plan.cnames %}
-        <div class="w-1/3">
-          <p>Custom domains</p>
-          <h4 class="h2">{{ team.total_cnames }} / {% if  team.plan.cnames != -1 %}{{ team.plan.cnames }}{% else %}<i class="far fa-fw fa-infinity"></i>{% endif %}</h4>
-        </div>
-        {% endif %}
-
-        {% if team.plan.sub_accounts %}
-        <div class="w-1/3">
-          <p>Sub accounts</p>
-          <h4 class="h2">{{ team.total_invite_only_projects }} / {% if  team.plan.sub_accounts != -1 %}{{ team.plan.sub_accounts }}{% else %}<i class="far fa-fw fa-infinity"></i>{% endif %}</h4>
-        </div>
-        {% endif %}
-
-        <footer>
-          <div>
-            <p>Chat support <i class="fa fa-check text-green"></i></p>
-          </div>
-          
-          {% if team.plan.custom_branding %}
-          <div>
-            <p>Custom branding <i class="fa fa-check text-green"></i></p>
-          </div>
-          {% endif %}
-
-          {% if team.plan.white_labeling %}
-          <div>
-            <p>White labeling <i class="fa fa-check text-green"></i></p>
-          </div>
-          {% endif %}
-        </footer>
-      </div>
-
-      {% if team.has_subscription %}
+    {% if team.recently_completed_checkout and not team.has_subscription %}
       <h2>Billing</h2>
 
-      {% if team.active_subscription.status == 'deleted' %}
-        <p class="alert">
-          You've cancelled your subscription, and you will lose access to your plan on <strong>{{ team.active_subscription.next_bill_date|date:'M d, Y'}}</strong>.
+      <div class="card">
+        <p>
+          Information about your new subscription will be available here in a moment.
+          <a class="link" href="#" onClick='window.location.reload()'>
+            Reload this page
+          </a> to check.
         </p>
-      {% endif %}
-
-      <div class="account__plan card card--none">
-        <table class="table">
-          <tbody>
-            {% if team.active_subscription.status == 'active' %}
-              <tr>
-                <td><h3>Next renewal on</h3></td>
-                <td>
-                  <p>{{ team.active_subscription.next_bill_date|date:'M d, Y' }}</p>
-                </td>
-              </tr>
-            {% endif %}
-            <tr>
-              <td><h3>Invoices sent to</h3></td>
-              <td>
-                <p>{{ team.active_subscription.email }}</p>
-              </td>
-            </tr>
-            {% if team.active_subscription.status == 'active' %}
-              <tr>
-                <td>
-                  <a href="{% url 'teams:subscription' team.id %}" class="link" hx-boost="false">
-                    Manage Subscription
-                  </a>
-                </td>
-                <td></td>
-              </tr>
-            {% endif %}
-            <tr>
-              <td>
-                <a href="{% url 'teams:payments' team.id %}" class="link" hx-boost="false">
-                  View Payments & Receipts
-                </a>
-              </td>
-              <td></td>
-            </tr>
-            {% if team.active_subscription.status == 'active' %}
-              <tr>
-                <td>
-                  <a href="{{ team.active_subscription.update_url }}" class="link" hx-boost="false">
-                    Update Payment Method
-                  </a>
-                </td>
-                <td></td>
-              </tr>
-            {% endif %}
-          </tbody>
-        </table>
       </div>
-      {% endif %}
+    {% else %}
+
+      <div class="account__billing">
+        <header class="account__title">
+          <div class="flex items-center mb-4">
+            <h2>Gyana - <span>{{ team.plan.name }}</span></h2>
+
+          </div>
+        </header>
+
+        <div class="account__plan card card--none">
+          <div class="w-1/3">
+            <p>Projects</p>
+            <h4 class="h2">{{ team.total_projects }} / {% if team.plan.projects != -1 %}{{ team.plan.projects }}{% else %}<i class="far fa-fw fa-infinity"></i>{% endif %}</h4>
+          </div>
+
+          <div class="w-1/3">
+            <p>Users</p>
+            <h4 class="h2"><i class="far fa-fw fa-infinity"></i></h4>
+          </div>
+
+          <div class="w-1/3">
+            <p>Views</p>
+            <h4 class="h2"><i class="far fa-fw fa-infinity"></i></h4>
+          </div>
+
+          {% if team.plan.cnames %}
+            <div class="w-1/3">
+              <p>Custom domains</p>
+              <h4 class="h2">{{ team.total_cnames }} / {% if  team.plan.cnames != -1 %}{{ team.plan.cnames }}{% else %}<i class="far fa-fw fa-infinity"></i>{% endif %}</h4>
+            </div>
+          {% endif %}
+
+          {% if team.plan.sub_accounts %}
+            <div class="w-1/3">
+              <p>Sub accounts</p>
+              <h4 class="h2">{{ team.total_invite_only_projects }} / {% if  team.plan.sub_accounts != -1 %}{{ team.plan.sub_accounts }}{% else %}<i class="far fa-fw fa-infinity"></i>{% endif %}</h4>
+            </div>
+          {% endif %}
+
+          <footer>
+            <div>
+              <p>Chat support <i class="fa fa-check text-green"></i></p>
+            </div>
+
+            {% if team.plan.custom_branding %}
+              <div>
+                <p>Custom branding <i class="fa fa-check text-green"></i></p>
+              </div>
+            {% endif %}
+
+            {% if team.plan.white_labeling %}
+              <div>
+                <p>White labeling <i class="fa fa-check text-green"></i></p>
+              </div>
+            {% endif %}
+          </footer>
+        </div>
+
+        {% if team.has_subscription %}
+          <h2>Billing</h2>
+
+          {% if team.active_subscription.status == 'deleted' %}
+            <p class="alert">
+              You've cancelled your subscription, and you will lose access to your plan on <strong>{{ team.active_subscription.next_bill_date|date:'M d, Y'}}</strong>.
+            </p>
+          {% endif %}
+
+          <div class="account__plan card card--none">
+            <table class="table">
+              <tbody>
+                {% if team.active_subscription.status == 'active' %}
+                  <tr>
+                    <td><h3>Next renewal on</h3></td>
+                    <td>
+                      <p>{{ team.active_subscription.next_bill_date|date:'M d, Y' }}</p>
+                    </td>
+                  </tr>
+                {% endif %}
+                <tr>
+                  <td><h3>Invoices sent to</h3></td>
+                  <td>
+                    <p>{{ team.active_subscription.email }}</p>
+                  </td>
+                </tr>
+                {% if team.active_subscription.status == 'active' %}
+                  <tr>
+                    <td>
+                      <a href="{% url 'teams:subscription' team.id %}" class="link" hx-boost="false">
+                        Manage Subscription
+                      </a>
+                    </td>
+                    <td></td>
+                  </tr>
+                {% endif %}
+                <tr>
+                  <td>
+                    <a href="{% url 'teams:payments' team.id %}" class="link" hx-boost="false">
+                      View Payments & Receipts
+                    </a>
+                  </td>
+                  <td></td>
+                </tr>
+                {% if team.active_subscription.status == 'active' %}
+                  <tr>
+                    <td>
+                      <a href="{{ team.active_subscription.update_url }}" class="link" hx-boost="false">
+                        Update Payment Method
+                      </a>
+                    </td>
+                    <td></td>
+                  </tr>
+                {% endif %}
+              </tbody>
+            </table>
+          </div>
+        {% endif %}
     {% endif %}
   </div>
 
-</section>
+  </section>
 {% endblock %}

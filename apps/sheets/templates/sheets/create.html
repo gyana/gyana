@@ -3,36 +3,36 @@
 {% load help_utils %}
 
 {% block app %}
-<div class="flex flex-1 justify-center items-center">
-  <div class="flex flex-col max-w-3xl">
-    <div class="flex items-center justify-center gap-3 mb-7">
-      <h1>Connect a Google Sheet</h1>
+  <div class="flex flex-1 justify-center items-center">
+    <div class="flex flex-col max-w-3xl">
+      <div class="flex items-center justify-center gap-3 mb-7">
+        <h1>Connect a Google Sheet</h1>
 
-      {% link_article 'integrations' 'sheet' %}
-      {% link_video 'sheet' %}
+        {% link_article 'integrations' 'sheet' %}
+        {% link_video 'sheet' %}
+      </div>
+
+      <p class="mb-2">
+        Share your Google Sheet with <strong>Viewer</strong> access to this account:
+      </p>
+
+      <div x-data class="clipboard-copy">
+        <pre class="text-xl p-2" x-ref="content">{{ service_account }}</pre>
+        <button
+          type="button"
+          @click="navigator.clipboard.writeText($refs.content.innerText)">
+          <i class='fa fa-clipboard'></i>
+        </button>
+      </div>
+
+      <form method="post" class="mt-7">
+        {% csrf_token %}
+
+        {{ form }}
+
+        <button type="submit" class="button button--filled button--success w-full">Create</button>
+      </form>
     </div>
-
-    <p class="mb-2">
-      Share your Google Sheet with <strong>Viewer</strong> access to this account:
-    </p>
-
-    <div x-data class="clipboard-copy">
-      <pre class="text-xl p-2" x-ref="content">{{ service_account }}</pre>
-      <button
-        type="button"
-        @click="navigator.clipboard.writeText($refs.content.innerText)">
-        <i class='fa fa-clipboard'></i>
-      </button>
-    </div>
-
-    <form method="post" class="mt-7">
-      {% csrf_token %}
-
-      {{ form }}
-
-      <button type="submit" class="button button--filled button--success w-full">Create</button>
-    </form>
   </div>
-</div>
 
 {% endblock %}

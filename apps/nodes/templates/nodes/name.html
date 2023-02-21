@@ -8,14 +8,14 @@
     hx-post="{% url 'nodes:name' object.id %}"
     hx-trigger="submit"
   >
-  {% csrf_token %}
-    <input 
-      class='input__inline' 
-      id="name" 
-      type="text" 
+    {% csrf_token %}
+    <input
+      class='input__inline'
+      id="name"
+      type="text"
       name="name"
       value="{% if object.name %}{{ object.name }}{% else %}{{ object.display_name|capfirst }}{% endif %}"
       x-ref="input"
-     />
+    />
   </form>
 </div>

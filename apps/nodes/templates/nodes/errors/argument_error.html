@@ -1,6 +1,6 @@
 {% extends 'nodes/errors/default.html' %}
 {% block header %}Formula error{% endblock %}
 {% block error_message %}
-  Function <strong>{{ function }}</strong> expected at least 
+  Function <strong>{{ function }}</strong> expected at least
   <strong>{{ expected }}</strong> argument{% if expected > 1 %}s{%endif%} but got <strong>{{ arg_length }}</strong>
 {% endblock %}

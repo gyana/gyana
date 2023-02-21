@@ -3,42 +3,42 @@
 
 {% block tab %}
 
-<div class="pad flex flex-1 justify-center items-center">
-  <div class='flex flex-col flex-1 max-w-3xl'>
-    <h1 class="flex items-center justify-center gap-3 mb-7">Configure import</h1>
-    <div class="flex flex-1 justify-center items-center">
+  <div class="pad flex flex-1 justify-center items-center">
+    <div class='flex flex-col flex-1 max-w-3xl'>
+      <h1 class="flex items-center justify-center gap-3 mb-7">Configure import</h1>
+      <div class="flex flex-1 justify-center items-center">
 
-      <form 
-        id="configure-update-form"
-        method="POST"
-        action="{{ request.get_full_path }}"
-        {% if object.kind == 'customapi' %}
-          data-controller="live-update"
-          enctype='multipart/form-data'
-          data-action="
-          formset:remove->live-update#updateForm 
-          formset:add->live-update#updateForm
-        "
-        {% endif %}
+        <form
+          id="configure-update-form"
+          method="POST"
+          action="{{ request.get_full_path }}"
+          {% if object.kind == 'customapi' %}
+            data-controller="live-update"
+            enctype='multipart/form-data'
+            data-action="
+              formset:remove->live-update#updateForm
+              formset:add->live-update#updateForm
+            "
+          {% endif %}
         >
-        <span data-live-update-target="loading" hidden>
-          <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-fw fa-2x"></i>
-        </span>
+          <span data-live-update-target="loading" hidden>
+            <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-fw fa-2x"></i>
+          </span>
 
-        <p class="alert">
-          If you're not sure about these options, you can start with the defaults and tweak them later.
-        </p>
+          <p class="alert">
+            If you're not sure about these options, you can start with the defaults and tweak them later.
+          </p>
 
-        {% csrf_token %}
+          {% csrf_token %}
 
-        {{ form }}
+          {{ form }}
 
-        <button type="submit" name="submit" value="submit" class="button button--success mt-4 w-full">
-          Import
-        </button>
-      </form>
+          <button type="submit" name="submit" value="submit" class="button button--success mt-4 w-full">
+            Import
+          </button>
+        </form>
+      </div>
     </div>
   </div>
-</div>
 
 {% endblock %}

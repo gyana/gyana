@@ -4,9 +4,9 @@
   <img
     {% comment %} Checking if it's an external link. {% endcomment %}
     {% if image|slice:":4" in "http" %}
-    src="{{ image }}"
+      src="{{ image }}"
     {% else %}
-    src="{% static image %}"
+      src="{% static image %}"
     {% endif %}
     height="20px"
     width="20px"

@@ -2,54 +2,54 @@
 
 {% with parents=object.parents_ordered.all %}
 
-<nav class="tabbar">
-  {% if object.kind == "formula" %}
-  <a href="#"
-    class="tabbar__link {% if show_docs %}tabbar__link--active{% endif %}"
-    hx-get="{% url 'nodes:formula' object.id %}?show_docs=true"
-  >
-    Doc
-  </a>
-  {% endif %}
-  {% for parent in parents %}
+  <nav class="tabbar">
+    {% if object.kind == "formula" %}
+      <a href="#"
+        class="tabbar__link {% if show_docs %}tabbar__link--active{% endif %}"
+        hx-get="{% url 'nodes:formula' object.id %}?show_docs=true"
+      >
+        Doc
+      </a>
+    {% endif %}
+    {% for parent in parents %}
+      <a href="#"
+        class="tabbar__link {% if preview_node.id == parent.id %} tabbar__link--active {% endif %}"
+        hx-get="{% url 'nodes:grid' object.id %}?preview_node_id={{ parent.id }}">
+        Input {% if parents|length > 1 %} {{ forloop.counter }} {% endif %}
+      </a>
+    {% endfor %}
     <a href="#"
-      class="tabbar__link {% if preview_node.id == parent.id %} tabbar__link--active {% endif %}"
-      hx-get="{% url 'nodes:grid' object.id %}?preview_node_id={{ parent.id }}">
-      Input {% if parents|length > 1 %} {{ forloop.counter }} {% endif %}
+      class="tabbar__link  {% if preview_node.id == object.id and not show_docs %} tabbar__link--active {% endif %}"
+      hx-get="{% url 'nodes:grid' object.id %}?preview_node_id={{ object.id }}">
+      Result
     </a>
-  {% endfor %}
-  <a href="#"
-    class="tabbar__link  {% if preview_node.id == object.id and not show_docs %} tabbar__link--active {% endif %}"
-    hx-get="{% url 'nodes:grid' object.id %}?preview_node_id={{ object.id }}">
-    Result
-  </a>
-  {% if node.kind == "output" %}
-  
-  <a href="#"
-    class="tabbar__link  {% if "references" in request.path %} tabbar__link--active {% endif %}"
-    hx-get="{% url 'nodes:references' object.id %}">
-    References
-  </a>
-  
-  {% endif %}
-  <a
-    class="tabbar__link"
-    href="{% article_url 'workflows' node.kind %}"
-    target="_blank"
-    x-tooltip="Open knowledge base article"
-  >
-    <i class="fas fa-fw fa-external-link"></i> Help
-  </a>
-  
-  <div class="absolute top-0 right-0">
-    <button
-      class="tf-modal__close tf-modal__close--inline ml-auto"
-      data-action="click->tf-modal#close"
-      data-loading-false
+    {% if node.kind == "output" %}
+
+      <a href="#"
+        class="tabbar__link  {% if "references" in request.path %} tabbar__link--active {% endif %}"
+        hx-get="{% url 'nodes:references' object.id %}">
+        References
+      </a>
+
+    {% endif %}
+    <a
+      class="tabbar__link"
+      href="{% article_url 'workflows' node.kind %}"
+      target="_blank"
+      x-tooltip="Open knowledge base article"
     >
-      <i class="fal fa-times fa-lg"></i>
-    </button>
-  </div>
-</nav>
+      <i class="fas fa-fw fa-external-link"></i> Help
+    </a>
+
+    <div class="absolute top-0 right-0">
+      <button
+        class="tf-modal__close tf-modal__close--inline ml-auto"
+        data-action="click->tf-modal#close"
+        data-loading-false
+      >
+        <i class="fal fa-times fa-lg"></i>
+      </button>
+    </div>
+  </nav>
 
 {% endwith %}

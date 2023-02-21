@@ -26,8 +26,8 @@
       {% csrf_token %}
 
       {% with optional=False %}
-          {{ form }}
-        {% endwith %}
+        {{ form }}
+      {% endwith %}
 
       <button type="submit" class="button button--success w-full">
         Save
@@ -39,6 +39,6 @@
       <div class="card card--none">
         {% render_table table %}
       </div>
-    </div> 
+    </div>
   </div>
 </section>

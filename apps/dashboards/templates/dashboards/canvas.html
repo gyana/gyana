@@ -20,16 +20,16 @@
       const kind = $event.dataTransfer.getData('application/gydashboard')
 
       if (kind === 'control') {
-        const form = $refs.control
-        form.elements['x'].value = offsetX - 150 // default width is 300
-        form.elements['y'].value = offsetY - 50 // default height is 100
-        form.requestSubmit()
+      const form = $refs.control
+      form.elements['x'].value = offsetX - 150 // default width is 300
+      form.elements['y'].value = offsetY - 50 // default height is 100
+      form.requestSubmit()
       } else {
-        const form = $refs.widget
-        form.elements['kind'].value = kind
-        form.elements['x'].value = offsetX - 248 // default width is 495
-        form.elements['y'].value = offsetY - 195 // default height is 390
-        form.requestSubmit()
+      const form = $refs.widget
+      form.elements['kind'].value = kind
+      form.elements['x'].value = offsetX - 248 // default width is 495
+      form.elements['y'].value = offsetY - 195 // default height is 390
+      form.requestSubmit()
       }"
   >
     {% comment %} Hidden form used by Alpine/HTMX {% endcomment %}

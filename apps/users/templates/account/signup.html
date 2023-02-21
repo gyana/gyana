@@ -3,34 +3,34 @@
 {% load socialaccount %}
 
 {% block content %}
-<section>
-  <a class="button button--primary button--outline button--google w-full" href="{% provider_login_url 'google' %}">
-    <img class="socialicon mr-2" src="{% static 'images/socialauth/google-g.svg' %}" alt="Google Logo">
-    Sign up with Google
-  </a>
-  <p class="text-center text-black-50 my-4">or</p>
-
-  <form method="post" class="mb-8" hx-boost="false">
-    {% csrf_token %}
-
-    {{ form }}
-
-    <button type="submit" class="button button--filled w-full">
-      Create Account
-    </button>
-
-  </form>
-
-  <p class="text-center">
-    Already have an account?
-    <a href="{% url 'account_login' %}" class="font-medium text-blue hover:text-blue-500">
-      Go to sign in.
+  <section>
+    <a class="button button--primary button--outline button--google w-full" href="{% provider_login_url 'google' %}">
+      <img class="socialicon mr-2" src="{% static 'images/socialauth/google-g.svg' %}" alt="Google Logo">
+      Sign up with Google
     </a>
-  </p>
-</section>
+    <p class="text-center text-black-50 my-4">or</p>
 
-{% comment %} Hubspot automatically captures conversion to signup {% endcomment %}
-{% if WEBSITE_GTM_ID %}
-  {% include "web/components/hubspot_identify.html" %}
-{% endif %}
+    <form method="post" class="mb-8" hx-boost="false">
+      {% csrf_token %}
+
+      {{ form }}
+
+      <button type="submit" class="button button--filled w-full">
+        Create Account
+      </button>
+
+    </form>
+
+    <p class="text-center">
+      Already have an account?
+      <a href="{% url 'account_login' %}" class="font-medium text-blue hover:text-blue-500">
+        Go to sign in.
+      </a>
+    </p>
+  </section>
+
+  {% comment %} Hubspot automatically captures conversion to signup {% endcomment %}
+  {% if WEBSITE_GTM_ID %}
+    {% include "web/components/hubspot_identify.html" %}
+  {% endif %}
 {% endblock %}

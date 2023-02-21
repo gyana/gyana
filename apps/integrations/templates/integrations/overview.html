@@ -2,101 +2,101 @@
 
 <div class="flex flex-col">
   <div class="flex items-baseline gap-3 pad">
-    <h3><i class="far fa-fw fa-database text-black-50 mr-3"></i>Integrations</h3>    
+    <h3><i class="far fa-fw fa-database text-black-50 mr-3"></i>Integrations</h3>
 
     {% if integrations.ready > 0 %}
-    <div class='flex flex-row items-center gap-3 flex-wrap'>
-      {% if integrations.sheet_count > 0 %}
-        <span>
-          <p class="text-black-50">
-            <a class="link" href="{% url 'project_integrations:list' project.id %}?kind=sheet">
-              {{ integrations.sheet_count|intcomma }} sheet{{ integrations.sheet_count|pluralize }}
-            </a>
-          </p>
-        </span>
-      {% endif %}
-      {% if integrations.upload_count > 0 %}
-        <span>
-          <p class="text-black-50">
-            <a class="link" href="{% url 'project_integrations:list' project.id %}?kind=upload">
-              {{ integrations.upload_count|intcomma }} upload{{ integrations.upload_count|pluralize }}
-            </a>
-          </p>
-        </span>
-      {% endif %}
-    </div>
+      <div class='flex flex-row items-center gap-3 flex-wrap'>
+        {% if integrations.sheet_count > 0 %}
+          <span>
+            <p class="text-black-50">
+              <a class="link" href="{% url 'project_integrations:list' project.id %}?kind=sheet">
+                {{ integrations.sheet_count|intcomma }} sheet{{ integrations.sheet_count|pluralize }}
+              </a>
+            </p>
+          </span>
+        {% endif %}
+        {% if integrations.upload_count > 0 %}
+          <span>
+            <p class="text-black-50">
+              <a class="link" href="{% url 'project_integrations:list' project.id %}?kind=upload">
+                {{ integrations.upload_count|intcomma }} upload{{ integrations.upload_count|pluralize }}
+              </a>
+            </p>
+          </span>
+        {% endif %}
+      </div>
     {% endif %}
 
     {% if integrations.ready > 0 %}
-    <p class="text-black-50 ml-auto">
-      <a class="link" href="{% url 'project_integrations:list' project.id %}">
-        {{ integrations.ready|intcomma }} integration{{ integrations.ready|pluralize }}
-      </a>
-    </p>
+      <p class="text-black-50 ml-auto">
+        <a class="link" href="{% url 'project_integrations:list' project.id %}">
+          {{ integrations.ready|intcomma }} integration{{ integrations.ready|pluralize }}
+        </a>
+      </p>
     {% endif %}
   </div>
 
   {% if integrations.total > 0 %}
-  <div class="flex gap-8 w-full overflow-auto" style="padding: 0.8rem 1.6rem;"> 
-    {% for integration in integrations.all|slice:":12"  %}
-    <a
-      class="card card--none card--flex gap-3 items-center flex-col"
-      style="flex: 0 0 13rem; padding: 1.8rem 0.2rem;"
-      href="{% url "project_integrations:detail" project.id integration.id %}"
-    >
-      <img
-        src="{% static integration.icon %}"
-        style="height: 1.6rem; width: 1.6rem;"
-        alt="{{ integration.kind }}"
-      >
-      <p class="truncate text-center w-full px-6 small">{{ integration.name }}</p>
-    </a>
-    {% endfor %}
-  </div>
+    <div class="flex gap-8 w-full overflow-auto" style="padding: 0.8rem 1.6rem;">
+      {% for integration in integrations.all|slice:":12"  %}
+        <a
+          class="card card--none card--flex gap-3 items-center flex-col"
+          style="flex: 0 0 13rem; padding: 1.8rem 0.2rem;"
+          href="{% url "project_integrations:detail" project.id integration.id %}"
+        >
+          <img
+            src="{% static integration.icon %}"
+            style="height: 1.6rem; width: 1.6rem;"
+            alt="{{ integration.kind }}"
+          >
+          <p class="truncate text-center w-full px-6 small">{{ integration.name }}</p>
+        </a>
+      {% endfor %}
+    </div>
   {% endif %}
 
   <div class="pad">
     {% if integrations.total == 0 %}
-    <div class="table__empty">
-      <a
-        href="{% url 'project_integrations:list' project.id %}"
-        class="h3 link" 
-      >
-        Create an integration to get started
-      </a>
-      <p class="text-black-50 mt-3">
-        Kickstart your project by uploading a CSV or linking a Google Sheet.
-      </p>
-    </div>
+      <div class="table__empty">
+        <a
+          href="{% url 'project_integrations:list' project.id %}"
+          class="h3 link"
+        >
+          Create an integration to get started
+        </a>
+        <p class="text-black-50 mt-3">
+          Kickstart your project by uploading a CSV or linking a Google Sheet.
+        </p>
+      </div>
     {% elif not integrations.operational %}
       {% if integrations.attention > 0 %}
-      <p class="text-black-50">
-        <i class="fa fa-info-circle"></i>
-        You have {{ integrations.attention|intcomma }} pending integration{{ integrations.attention|pluralize }} that need{{ integrations.attention|pluralize:"s," }}
+        <p class="text-black-50">
+          <i class="fa fa-info-circle"></i>
+          You have {{ integrations.attention|intcomma }} pending integration{{ integrations.attention|pluralize }} that need{{ integrations.attention|pluralize:"s," }}
           your <a class="link" href="{% url 'project_integrations:list' project.id %}" >attention</a>.
-      </p>
-      {% endif %} 
+        </p>
+      {% endif %}
 
       {% if integrations.loading > 0 %}
-      <p class="text-black-50">
-        <i class="fa fa-info-circle"></i>
-        You have {{ integrations.loading|intcomma }} pending integration{{ integrations.loading|pluralize }} doing
+        <p class="text-black-50">
+          <i class="fa fa-info-circle"></i>
+          You have {{ integrations.loading|intcomma }} pending integration{{ integrations.loading|pluralize }} doing
           the initial import.
-      </p>
+        </p>
       {% endif %}
 
       {% if integrations.broken > 0 %}
-      <p class="text-black-50">
-        <i class="fa fa-exclamation-circle text-red"></i>
-        You have {{ integrations.broken|intcomma }} broken integration{{ integrations.broken|pluralize }}.
-      </p>
+        <p class="text-black-50">
+          <i class="fa fa-exclamation-circle text-red"></i>
+          You have {{ integrations.broken|intcomma }} broken integration{{ integrations.broken|pluralize }}.
+        </p>
       {% endif %}
 
     {% else %}
-    <p class="text-black-50">
-      <i class="fa fa-check-circle text-green"></i>
-      All your integrations are ready.
-    </p>
+      <p class="text-black-50">
+        <i class="fa fa-check-circle text-green"></i>
+        All your integrations are ready.
+      </p>
     {% endif %}
   </div>
 </div>

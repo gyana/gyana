@@ -3,81 +3,81 @@
 {% block widget_form %}
 
 
-{% if form.dimension %}
-<fieldset>
-<div class='formset-wrapper'>
-  <label for="{{ form.dimension.id_for_label }}">
-    {{ form.dimension.label }}
-  </label>
-  {{ form.dimension }}
+  {% if form.dimension %}
+    <fieldset>
+      <div class='formset-wrapper'>
+        <label for="{{ form.dimension.id_for_label }}">
+          {{ form.dimension.label }}
+        </label>
+        {{ form.dimension }}
 
 
-  {% if form.part %}
-  <label for="{{ form.part.id_for_label }}">
-    {{ form.part.label }}
-  </label>
-  {{ form.part }}
-{% endif %}
-</div>
-</fieldset>
-{% endif %}
-
-
-{% if form.kind.value == 'heatmap' %}
-  <label for="{{ form.dimension.id_for_label }}">
-    {{ form.second_dimension.label }}
-  </label>
-  {{form.second_dimension}}
-{% endif %}
-
-<fieldset>
-  {% if formsets.Aggregations %}
-    {% with formset=formsets.Aggregations %}
-      <label>Metrics</label>
-      {% include "components/formset.html" with formset=formset %}
-    {% endwith %}
-  {% elif formsets.Charts %}
-    {% with formset=formsets.Charts %}
-      <label>Charts</label>
-      {% include "components/formset.html" with formset=formset %}
-    {% endwith %}
+        {% if form.part %}
+          <label for="{{ form.part.id_for_label }}">
+            {{ form.part.label }}
+          </label>
+          {{ form.part }}
+        {% endif %}
+      </div>
+    </fieldset>
   {% endif %}
-</fieldset>
-{% if form.kind.value ==  'stackedbar2d' or form.kind.value ==  'stackedcolumn2d' or form.kind.value ==  'msline-stacked' or form.kind.value == "timeseries-line_stacked" or form.kind.value == "timeseries-column-stacked" %}
-  <fieldset>
-    <label for="{{ form.second_dimension.id_for_label }}">
-      {{ form.second_dimension.label}}
+
+
+  {% if form.kind.value == 'heatmap' %}
+    <label for="{{ form.dimension.id_for_label }}">
+      {{ form.second_dimension.label }}
     </label>
-    <div class="formset-wrapper">
-    {{ form.second_dimension }}
-    {% if form.stack_100_percent %}
-      <label class='input__toggle' for="{{ form.stack_100_percent.id_for_label }}">
-        <p class="input__help-text">{{ form.stack_100_percent.label}}</p>
-        {{ form.stack_100_percent }}
-      </label>
-    {% endif %}
+    {{form.second_dimension}}
+  {% endif %}
 
-    </div>
-  </fieldset>
-{% endif %}
-
-
-{% if form.sort_column %}
   <fieldset>
-  <label>{{ form.sort_column.label}}</label>
-
-  <div class="formset-wrapper">
-    {{ form.sort_column }}
-
-    <div>
-      <label class="input__toggle" for="{{ form.sort_ascending.id_for_label }}">
-        <p class="input__help-text">{{ form.sort_ascending.label}}</p>
-
-        {{form.sort_ascending}}
-      </label>
-    </div>
-  </div>
+    {% if formsets.Aggregations %}
+      {% with formset=formsets.Aggregations %}
+        <label>Metrics</label>
+        {% include "components/formset.html" with formset=formset %}
+      {% endwith %}
+    {% elif formsets.Charts %}
+      {% with formset=formsets.Charts %}
+        <label>Charts</label>
+        {% include "components/formset.html" with formset=formset %}
+      {% endwith %}
+    {% endif %}
   </fieldset>
-{% endif %}
+  {% if form.kind.value ==  'stackedbar2d' or form.kind.value ==  'stackedcolumn2d' or form.kind.value ==  'msline-stacked' or form.kind.value == "timeseries-line_stacked" or form.kind.value == "timeseries-column-stacked" %}
+    <fieldset>
+      <label for="{{ form.second_dimension.id_for_label }}">
+        {{ form.second_dimension.label}}
+      </label>
+      <div class="formset-wrapper">
+        {{ form.second_dimension }}
+        {% if form.stack_100_percent %}
+          <label class='input__toggle' for="{{ form.stack_100_percent.id_for_label }}">
+            <p class="input__help-text">{{ form.stack_100_percent.label}}</p>
+            {{ form.stack_100_percent }}
+          </label>
+        {% endif %}
+
+      </div>
+    </fieldset>
+  {% endif %}
+
+
+  {% if form.sort_column %}
+    <fieldset>
+      <label>{{ form.sort_column.label}}</label>
+
+      <div class="formset-wrapper">
+        {{ form.sort_column }}
+
+        <div>
+          <label class="input__toggle" for="{{ form.sort_ascending.id_for_label }}">
+            <p class="input__help-text">{{ form.sort_ascending.label}}</p>
+
+            {{form.sort_ascending}}
+          </label>
+        </div>
+      </div>
+    </fieldset>
+  {% endif %}
 
 {% endblock %}

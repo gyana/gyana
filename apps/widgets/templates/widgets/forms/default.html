@@ -1,20 +1,20 @@
 {% load waffle_tags %}
 
-<form 
+<form
   id="widget-update-form"
   class="widget-update-sidebar__form"
   hx-post="{% url 'dashboard_widgets:update' project.id dashboard.id object.id %}"
-  data-controller="live-update" 
+  data-controller="live-update"
   data-action="
     change->tf-modal#change
-    formset:remove->live-update#updateForm 
-    formset:add->live-update#updateForm 
-    formset:remove->tf-modal#change 
+    formset:remove->live-update#updateForm
+    formset:add->live-update#updateForm
+    formset:remove->tf-modal#change
     formset:add->tf-modal#change
   "
   data-tf-modal-target="form"
   data-tf-modal-submit-on-close
->  
+>
   {% comment %}
   The pressed button is outside the form this is just to trigger the submit
   {% endcomment %}
@@ -52,83 +52,83 @@
     <hr>
 
     {% block widget_form %}
-    
-    {% with formsets|dict_key:"Group columns" as formset %}
-      {% if formset %}
-      <fieldset>
-        <div>
-          <label>Dimensions</label>
-          <p class="input__help-text">Table aggregates over dimensions if a metric is selected</p>
-        </div>
-        {% include "components/formset.html" with formset=formset %}
-      </fieldset>
-      {% endif %}
-    {% endwith %}
-    
 
-    {% if formsets.Aggregations %}
-      {% with formset=formsets.Aggregations %}
-        <fieldset>
-          <label>Metrics</label>
-          {% include "components/formset.html" with formset=formset %}
-        </fieldset>
-      {% endwith %}
-    {% endif %}
-
-    {% with array='name kind table date_column sort_column sort_ascending'%}
-    {% for bound_field in form.visible_fields %}
-    {% if bound_field.name not in array.split %}
-      <div class="input-group">
-        {% if bound_field.widget_type == "checkbox" %}
-        <label class="flex flex-row items-center gap-4 w-full">
-          {{ bound_field }}
-          <span>
-            {{ bound_field.label }}
-            <p class=" input__help-text">{{ bound_field.help_text }} {% if not bound_field.field.required %}<span>- optional</span>{% endif %}</p>
-            
-          </span>
-        </label>
-        {% elif bound_field.subwidgets|length == 1 %}
-        <label>
-          <span>
-            {{ bound_field.label }}
-            <p class=" input__help-text">{{ bound_field.help_text }}</p>
-            {% if not bound_field.field.required %}<span class="text-black-50">- optional</span>{% endif %}
-          </span>
-
-          {{ bound_field }}
-        </label>
-        {% else %}
-        <label for="{{ bound_field.id_for_label }}">
-          {{ bound_field.label }}
-          <p class=" input__help-text">{{ bound_field.help_text }}</p>
-        </label>
-        {{ bound_field }}
+      {% with formsets|dict_key:"Group columns" as formset %}
+        {% if formset %}
+          <fieldset>
+            <div>
+              <label>Dimensions</label>
+              <p class="input__help-text">Table aggregates over dimensions if a metric is selected</p>
+            </div>
+            {% include "components/formset.html" with formset=formset %}
+          </fieldset>
         {% endif %}
+      {% endwith %}
 
-        {{ bound_field.errors }}
-      </div>
-    {% endif %}
-    {% endfor %}
-    {% endwith %}
-      
-    {% if form.sort_column %}
-    <fieldset>
-      <label>{{ form.sort_column.label}}</label>
 
-      <div class="formset-wrapper">
-        {{ form.sort_column }}
+      {% if formsets.Aggregations %}
+        {% with formset=formsets.Aggregations %}
+          <fieldset>
+            <label>Metrics</label>
+            {% include "components/formset.html" with formset=formset %}
+          </fieldset>
+        {% endwith %}
+      {% endif %}
 
-        <div>
-          <label class="input__toggle" for="{{ form.sort_ascending.id_for_label }}">
-            <p class="input__help-text">{{ form.sort_ascending.label}}</p>
+      {% with array='name kind table date_column sort_column sort_ascending'%}
+        {% for bound_field in form.visible_fields %}
+          {% if bound_field.name not in array.split %}
+            <div class="input-group">
+              {% if bound_field.widget_type == "checkbox" %}
+                <label class="flex flex-row items-center gap-4 w-full">
+                  {{ bound_field }}
+                  <span>
+                    {{ bound_field.label }}
+                    <p class=" input__help-text">{{ bound_field.help_text }} {% if not bound_field.field.required %}<span>- optional</span>{% endif %}</p>
 
-            {{form.sort_ascending}}
-          </label>
-        </div>
-      </div>
-    </fieldset>
-    {% endif %}
+                  </span>
+                </label>
+              {% elif bound_field.subwidgets|length == 1 %}
+                <label>
+                  <span>
+                    {{ bound_field.label }}
+                    <p class=" input__help-text">{{ bound_field.help_text }}</p>
+                    {% if not bound_field.field.required %}<span class="text-black-50">- optional</span>{% endif %}
+                  </span>
+
+                  {{ bound_field }}
+                </label>
+              {% else %}
+                <label for="{{ bound_field.id_for_label }}">
+                  {{ bound_field.label }}
+                  <p class=" input__help-text">{{ bound_field.help_text }}</p>
+                </label>
+                {{ bound_field }}
+              {% endif %}
+
+              {{ bound_field.errors }}
+            </div>
+          {% endif %}
+        {% endfor %}
+      {% endwith %}
+
+      {% if form.sort_column %}
+        <fieldset>
+          <label>{{ form.sort_column.label}}</label>
+
+          <div class="formset-wrapper">
+            {{ form.sort_column }}
+
+            <div>
+              <label class="input__toggle" for="{{ form.sort_ascending.id_for_label }}">
+                <p class="input__help-text">{{ form.sort_ascending.label}}</p>
+
+                {{form.sort_ascending}}
+              </label>
+            </div>
+          </div>
+        </fieldset>
+      {% endif %}
 
     {% endblock %}
 
@@ -142,7 +142,7 @@
               <p class="input__help-text">{{ form.date_column.help_text }}</p>
               <div class='flex flex-row items-center gap-2'>
                 {{form.date_column}}
-                <button 
+                <button
                   type='button'
                   @click="open = false"
                   class='button button--sm button--tertiary button--circle'
@@ -152,9 +152,9 @@
             </div>
             {% comment %} todo: why does alpine not pick this up {% endcomment %}
             {% if not show_date_column %}
-              <button 
+              <button
                 class="button button--sm"
-                type='button' 
+                type='button'
                 @click="open = true"
                 x-show="!open"
                 hx-boost='false'
@@ -163,7 +163,7 @@
               </button>
             {% endif %}
           </div>
-        
+
           {% if formsets.control %}
             {% with formset=formsets.control %}
               <fieldset x-show="open">
@@ -174,44 +174,44 @@
           {% endif %}
 
 
-        {% if form.kind.value == 'metric' %}
-          <div class='flex flex-row' x-show="open">
-            <label class="input__toggle" for="{{ form.compare_previous_period.id_for_label }}">
-              <p class="input__help-text">{{ form.compare_previous_period.label}}</p>
+          {% if form.kind.value == 'metric' %}
+            <div class='flex flex-row' x-show="open">
+              <label class="input__toggle" for="{{ form.compare_previous_period.id_for_label }}">
+                <p class="input__help-text">{{ form.compare_previous_period.label}}</p>
 
-              {{form.compare_previous_period}}
-            </label>
+                {{form.compare_previous_period}}
+              </label>
 
-            <label class="ml-3 input__toggle" for="{{ form.positive_decrease.id_for_label }}">
-              <p class="input__help-text">{{ form.positive_decrease.label}}</p>
+              <label class="ml-3 input__toggle" for="{{ form.positive_decrease.id_for_label }}">
+                <p class="input__help-text">{{ form.positive_decrease.label}}</p>
 
-              {{form.positive_decrease}}
-            </label>
-          </div>
+                {{form.positive_decrease}}
+              </label>
+            </div>
 
-        {% endif %}
-      </div>
+          {% endif %}
+        </div>
       </fieldset>
-        
+
 
     {% endif %}
 
-    
+
 
     {% for label, formset in formsets.items %}
-    {% if label != "Aggregations" and label != "Charts" and label != "Group columns" and label != "control"%}
-      <fieldset>
-        <label>{{ label }}</label>
-        {% include "components/formset.html" with formset=formset %}
-      </fieldset>
-    {% endif %}
+      {% if label != "Aggregations" and label != "Charts" and label != "Group columns" and label != "control"%}
+        <fieldset>
+          <label>{{ label }}</label>
+          {% include "components/formset.html" with formset=formset %}
+        </fieldset>
+      {% endif %}
     {% endfor %}
-  
+
 
     {% for error in form.non_field_errors %}
-    <p class="text-red">
-      {{ error|escape }}
-    </p>
+      <p class="text-red">
+        {{ error|escape }}
+      </p>
     {% endfor %}
   </div>
 

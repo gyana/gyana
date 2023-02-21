@@ -1,15 +1,15 @@
 {% with id=widget.attrs.id %}
 
-{% for group, options, index in widget.optgroups %}
-  {% if group %}
-  <h3>{{ group }}</h3>
-  {% endif %}
-  
-  {% for option in options %}
-  <div class="label">
-    {% include option.template_name with widget=option %}
-  </div>
+  {% for group, options, index in widget.optgroups %}
+    {% if group %}
+      <h3>{{ group }}</h3>
+    {% endif %}
+
+    {% for option in options %}
+      <div class="label">
+        {% include option.template_name with widget=option %}
+      </div>
+    {% endfor %}
   {% endfor %}
-{% endfor %}
 
 {% endwith %}

@@ -3,45 +3,45 @@
 {% load wagtailimages_tags %}
 
 {% block body.content %}
-<div class="bg-gray-20 border-b border-gray">
-  <div class="max-w-7xl mx-auto lg:px-8">
-    <div class="text-lg max-w-prose mx-auto space-y-2 sm:space-y-4 lg:space-y-8">
-      {% image page.feed_image width-800 %}
+  <div class="bg-gray-20 border-b border-gray">
+    <div class="max-w-7xl mx-auto lg:px-8">
+      <div class="text-lg max-w-prose mx-auto space-y-2 sm:space-y-4 lg:space-y-8">
+        {% image page.feed_image width-800 %}
+      </div>
     </div>
   </div>
-</div>
 
-<div class="bg-white border-b border-gray">
-  <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:py-8 lg:px-8">
-    <div class="text-lg max-w-prose mx-auto">
-      <h1 class="text-3xl font-extrabold text-gray-900">
-        {{ page.title }}
-      </h1>
-      <div class="mt-6 flex items-center gap-4">
-        <div class="flex-shrink-0">
-          {% image page.author.avatar width-56 class="rounded-md" %}
-        </div>
-        <div class="flex-1 min-w-0">
-          <div class="focus:outline-none">
-            <p class="text font-normal text-gray-900">
-              {{ page.author.name }}
-            </p>
-            <p class="text-base text-gray-600 truncate">
-              {{ page.date }}
-              • {{ page.readtime }}
-            </p>
+  <div class="bg-white border-b border-gray">
+    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:py-8 lg:px-8">
+      <div class="text-lg max-w-prose mx-auto">
+        <h1 class="text-3xl font-extrabold text-gray-900">
+          {{ page.title }}
+        </h1>
+        <div class="mt-6 flex items-center gap-4">
+          <div class="flex-shrink-0">
+            {% image page.author.avatar width-56 class="rounded-md" %}
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="focus:outline-none">
+              <p class="text font-normal text-gray-900">
+                {{ page.author.name }}
+              </p>
+              <p class="text-base text-gray-600 truncate">
+                {{ page.date }}
+                • {{ page.readtime }}
+              </p>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-</div>
 
-<div class="bg-gray-20 border-b border-gray">
-  <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:py-8 lg:px-8">
-    <div class="prose prose-lg prose-blue text-gray-700 mx-auto">
-      {{ page.body|richtext }}
+  <div class="bg-gray-20 border-b border-gray">
+    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:py-8 lg:px-8">
+      <div class="prose prose-lg prose-blue text-gray-700 mx-auto">
+        {{ page.body|richtext }}
+      </div>
     </div>
   </div>
-</div>
 {% endblock %}

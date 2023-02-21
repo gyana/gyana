@@ -1,145 +1,145 @@
 {% load help_utils humanize %}
 
 <div class="workflow-modal">
-{% if parent_error_node is None %}
+  {% if parent_error_node is None %}
 
-  {% if node.kind == "input" or node.has_enough_parents %}
-  <div class="workflow-modal__section workflow-modal__{{ node.kind }}">
-    <div class="workflow-modal__header">
-      {% include 'nodes/name.html' %}
+    {% if node.kind == "input" or node.has_enough_parents %}
+      <div class="workflow-modal__section workflow-modal__{{ node.kind }}">
+        <div class="workflow-modal__header">
+          {% include 'nodes/name.html' %}
 
-      <div class="ml-auto flex flex-row gap-3 items-center">
-      
-        {% include 'exports/create.html' with parent_id=node.id target_url='exports:create_node'%}
+          <div class="ml-auto flex flex-row gap-3 items-center">
 
-        {% if node.kind != "input" and node.kind != "output" %}
-          {% link_article 'workflows' node.kind %}
-        {% endif %}
-      </div>
-    </div>
-    
-    <form
-      id="node-update-form"
-      class="form--no-layout overflow-hidden flex-1"
-      action="{% url 'nodes:update' node.id %}"
-      method="post"
-      data-tf-modal-target="form"
-      data-controller="live-update"
-      data-action="
-        change->tf-modal#change 
-        formset:remove->live-update#updateForm 
-        formset:add->live-update#updateForm 
-        formset:remove->tf-modal#change 
-        formset:add->tf-modal#change
-      "
-      x-data
-      @submit="$dispatch('gyana:update-workflow')
-        $dispatch('gyana:update-node-{{ object.id }}')"
-    >
+            {% include 'exports/create.html' with parent_id=node.id target_url='exports:create_node'%}
 
-      <div data-cy="update-sidebar" class="workflow-detail__sidebar">
-        <p class="pb-5">{{ node.explanation }}</p>
-
-        <span data-live-update-target="loading" hidden>
-          <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-fw fa-2x"></i>
-        </span>
-        {% csrf_token %}
-
-        {{ form }}
-
-        {% if node.kind == 'sentiment' %}
-          <div class="mt-6">
-            <p class="input__help-text">
-              You've used
-              <strong>
-                {% with team=object.workflow.project.team %}
-                  {{ team.current_credit_balance|intcomma }} / {{ team.credits|intcomma }}
-                {% endwith %}
-              </strong>
-              sentiment credits. Credits refresh monthly, per team.
-              <a class="link" href="{% article_url 'overview' 'credits' %}" target="_blank">
-                Learn more.
-              </a>
-            </p>
+            {% if node.kind != "input" and node.kind != "output" %}
+              {% link_article 'workflows' node.kind %}
+            {% endif %}
           </div>
-        {% endif %}
-      </div>
-
-      <div class='workflow-modal__footer'>
-        <div class="flex flex-1 gap-7 pad">
-          {% if node.kind == 'input' %}
-
-            <button 
-              type='submit'
-              class="button button--success flex-1" 
-              data-action="tf-modal#close"
-              {% comment %}Need name and value for node-input controller to work{% endcomment %}
-              name='submit'
-              value='Save & Preview'
-            >
-              Close
-            </button>
-
-          {% else %}
-
-            <button
-              type='submit'
-              class="button button--success flex-1"
-              data-action="click->tf-modal#submit"
-              name='submit'
-              value='Save & Close'
-            >
-              Save & Close
-            </button>
-            <button
-              type='submit'
-              class="button button--outline button--success flex-1"
-              name='submit'
-              data-action="click->tf-modal#save"
-              value='Save & Preview'
-            >
-              Save & Preview
-            </button>
-
-          {% endif %}
         </div>
-      </div>
-    </form>
-  </div>
 
-  <div class="workflow-modal__section">
-    <div class="workflow-modal__table">
-      <div id="nodes:grid" hx-target="this" hx-get="{% url 'nodes:grid' preview_node_id %}"
-        hx-trigger="load">
-        {% include 'nodes/modal_nav_bar.html' %}
-        <div class='placeholder-scr placeholder-scr--fillscreen'>
-          <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
-          <p class='placeholder-scr__title'>Loading preview...</p>
-        </div>
+        <form
+          id="node-update-form"
+          class="form--no-layout overflow-hidden flex-1"
+          action="{% url 'nodes:update' node.id %}"
+          method="post"
+          data-tf-modal-target="form"
+          data-controller="live-update"
+          data-action="
+            change->tf-modal#change
+            formset:remove->live-update#updateForm
+            formset:add->live-update#updateForm
+            formset:remove->tf-modal#change
+            formset:add->tf-modal#change
+          "
+          x-data
+          @submit="$dispatch('gyana:update-workflow')
+            $dispatch('gyana:update-node-{{ object.id }}')"
+        >
+
+          <div data-cy="update-sidebar" class="workflow-detail__sidebar">
+            <p class="pb-5">{{ node.explanation }}</p>
+
+            <span data-live-update-target="loading" hidden>
+              <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-fw fa-2x"></i>
+            </span>
+            {% csrf_token %}
+
+            {{ form }}
+
+            {% if node.kind == 'sentiment' %}
+              <div class="mt-6">
+                <p class="input__help-text">
+                  You've used
+                  <strong>
+                    {% with team=object.workflow.project.team %}
+                      {{ team.current_credit_balance|intcomma }} / {{ team.credits|intcomma }}
+                    {% endwith %}
+                  </strong>
+                  sentiment credits. Credits refresh monthly, per team.
+                  <a class="link" href="{% article_url 'overview' 'credits' %}" target="_blank">
+                    Learn more.
+                  </a>
+                </p>
+              </div>
+            {% endif %}
+          </div>
+
+          <div class='workflow-modal__footer'>
+            <div class="flex flex-1 gap-7 pad">
+              {% if node.kind == 'input' %}
+
+                <button
+                  type='submit'
+                  class="button button--success flex-1"
+                  data-action="tf-modal#close"
+                  {% comment %}Need name and value for node-input controller to work{% endcomment %}
+                  name='submit'
+                  value='Save & Preview'
+                >
+                  Close
+                </button>
+
+              {% else %}
+
+                <button
+                  type='submit'
+                  class="button button--success flex-1"
+                  data-action="click->tf-modal#submit"
+                  name='submit'
+                  value='Save & Close'
+                >
+                  Save & Close
+                </button>
+                <button
+                  type='submit'
+                  class="button button--outline button--success flex-1"
+                  name='submit'
+                  data-action="click->tf-modal#save"
+                  value='Save & Preview'
+                >
+                  Save & Preview
+                </button>
+
+              {% endif %}
+            </div>
+          </div>
+        </form>
       </div>
-    </div>
+
+      <div class="workflow-modal__section">
+        <div class="workflow-modal__table">
+          <div id="nodes:grid" hx-target="this" hx-get="{% url 'nodes:grid' preview_node_id %}"
+            hx-trigger="load">
+            {% include 'nodes/modal_nav_bar.html' %}
+            <div class='placeholder-scr placeholder-scr--fillscreen'>
+              <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+              <p class='placeholder-scr__title'>Loading preview...</p>
+            </div>
+          </div>
+        </div>
+
+    {% else %}
+      <div class='workflow-detail__warning'>
+        <div class="absolute top-0 right-0">
+          <button
+            class="tf-modal__close tf-modal__close--inline ml-auto"
+            data-action="click->tf-modal#forceClose"
+            data-loading-false
+          >
+            <i class="fal fa-times fa-lg"></i>
+          </button>
+        </div>
+        <span class='mb-12'><i class="far fa-comment-dots fa-10x"></i></span>
+        <p>This node needs to be connected to <strong>more than one node</strong> before you can configure it.</p>
+      </div>
+      </div>
+
+    {% endif %}
 
   {% else %}
-    <div class='workflow-detail__warning'>
-      <div class="absolute top-0 right-0">
-        <button
-          class="tf-modal__close tf-modal__close--inline ml-auto"
-          data-action="click->tf-modal#forceClose"
-          data-loading-false
-        >
-          <i class="fal fa-times fa-lg"></i>
-        </button>
-      </div>
-      <span class='mb-12'><i class="far fa-comment-dots fa-10x"></i></span>
-      <p>This node needs to be connected to <strong>more than one node</strong> before you can configure it.</p>
-    </div>
-  </div>
+
+    {% include 'nodes/_parent_error_node.html' with object=parent_error_node %}
 
   {% endif %}
-
-{% else %}
-
-  {% include 'nodes/_parent_error_node.html' with object=parent_error_node %}
-
-{% endif %}
 </div>

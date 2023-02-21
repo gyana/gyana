@@ -1,5 +1,5 @@
 {% load humanize %}
 
 <span x-tooltip="{{ value|intcomma }}">
-{{ clean_value|intcomma }}{% if is_percentage %}%{% endif %}
+  {{ clean_value|intcomma }}{% if is_percentage %}%{% endif %}
 </span>

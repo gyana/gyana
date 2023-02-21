@@ -1,6 +1,6 @@
 {% load help_utils %}
 
-<form 
+<form
   id="widget-name-update-form"
   class="flex flex-row items-center w-full"
   hx-post="{% url 'widgets:name' object.id %}"
@@ -8,14 +8,14 @@
 >
   {% csrf_token %}
 
-  <input 
-    class='input__inline' 
-    id="name" 
-    type="text" 
+  <input
+    class='input__inline'
+    id="name"
+    type="text"
     name="name"
-    placeholder="Untitled widget" 
+    placeholder="Untitled widget"
     value="{% if object.name %}{{ object.name }}{% endif %}"
-   /> 
+  />
 
   <div class="ml-auto">
     {% link_article 'dashboards' widget.kind %}

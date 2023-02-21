@@ -1,9 +1,9 @@
 <i class="fas fa-fw {% firstof widget.icon "fa-edit" %} text-black-50 fa-3x"></i>
 <p class="mt-4">
   This widget needs to be
-  <button 
+  <button
     data-cy="widget-configure"
-    data-action="click->tf-modal#open" 
+    data-action="click->tf-modal#open"
     class='link'
     data-modal-id="widget-modal"
     data-modal-src="{% url "dashboard_widgets:update" project.id dashboard.id widget.id %}"

@@ -1,7 +1,7 @@
 {% url object_name|add:"s:duplicate" object.id as duplicate_url %}
 
 {% if duplicate_url %}
-  <form 
+  <form
     method="POST"
     class="form--no-layout"
     action="{{ duplicate_url }}"

@@ -7,74 +7,74 @@
 {% block app-class %}overflow-auto{% endblock app-class %}
 
 {% block app %}
-<header class="page-header">
-  <div class="flex-1 w-full overflow-hidden">
-    <h1 class="page-header__title">{{ project.name }}</h1>
-    {% if project.description %}
-    <p>{{ project.description }}</p>
-    {% else %}
-    <p class="opacity-50">
-      No project description,
-      <a class="link" href="{% url 'projects:update' object.id %}">add one</a>
-    </p>
-    {% endif %}
+  <header class="page-header">
+    <div class="flex-1 w-full overflow-hidden">
+      <h1 class="page-header__title">{{ project.name }}</h1>
+      {% if project.description %}
+        <p>{{ project.description }}</p>
+      {% else %}
+        <p class="opacity-50">
+          No project description,
+          <a class="link" href="{% url 'projects:update' object.id %}">add one</a>
+        </p>
+      {% endif %}
+    </div>
+    {% flag 'beta' %}
+      {% include 'projects/duplicate.html' %}
+    {% endflag %}
+  </header>
+
+  <div class="flex flex-col flex-1">
+    <section class="flex flex-col" style="max-width: 77rem;">
+      <div hx-get="{% url 'project_integrations:overview' project.id %}" hx-trigger="load" hx-swap="outerHTML">
+        <div class="flex flex-col pad">
+          <div class="flex items-baseline gap-3">
+            <h3><i class="far fa-fw fa-database text-black-50 mr-3"></i>Integrations</h3>
+          </div>
+
+          <div>
+            <div class='placeholder-scr placeholder-scr--fillscreen'>
+              <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+              <p class='placeholder-scr__title'>Loading integrations overview...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <i class="fas fa-fw fa-chevron-down text-black-20 self-center"></i>
+
+      <div hx-get="{% url 'project_workflows:overview' project.id %}" hx-trigger="load" hx-swap="outerHTML">
+        <div class="flex flex-col pad">
+          <div class="flex items-baseline gap-3">
+            <h3><i class="far fa-fw fa-database text-black-50 mr-3"></i>Workflows</h3>
+          </div>
+
+          <div>
+            <div class='placeholder-scr placeholder-scr--fillscreen'>
+              <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+              <p class='placeholder-scr__title'>Loading workflows overview...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <i class="fas fa-fw fa-chevron-down text-black-20 self-center"></i>
+
+      <div hx-get="{% url 'project_dashboards:overview' project.id %}" hx-trigger="load" hx-swap="outerHTML">
+        <div class="flex flex-col pad">
+          <div class="flex items-baseline gap-3">
+            <h3><i class="far fa-fw fa-database text-black-50 mr-3"></i>Dashboards</h3>
+          </div>
+
+          <div>
+            <div class='placeholder-scr placeholder-scr--fillscreen'>
+              <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+              <p class='placeholder-scr__title'>Loading dashboards overview...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
   </div>
-  {% flag 'beta' %}
-    {% include 'projects/duplicate.html' %}
-  {% endflag %}
-</header>
-
-<div class="flex flex-col flex-1">
-  <section class="flex flex-col" style="max-width: 77rem;">
-    <div hx-get="{% url 'project_integrations:overview' project.id %}" hx-trigger="load" hx-swap="outerHTML">
-      <div class="flex flex-col pad">
-        <div class="flex items-baseline gap-3">
-          <h3><i class="far fa-fw fa-database text-black-50 mr-3"></i>Integrations</h3>
-        </div>
-
-        <div>
-          <div class='placeholder-scr placeholder-scr--fillscreen'>
-            <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
-            <p class='placeholder-scr__title'>Loading integrations overview...</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <i class="fas fa-fw fa-chevron-down text-black-20 self-center"></i>
-
-    <div hx-get="{% url 'project_workflows:overview' project.id %}" hx-trigger="load" hx-swap="outerHTML">
-      <div class="flex flex-col pad">
-        <div class="flex items-baseline gap-3">
-          <h3><i class="far fa-fw fa-database text-black-50 mr-3"></i>Workflows</h3>
-        </div>
-
-        <div>
-          <div class='placeholder-scr placeholder-scr--fillscreen'>
-            <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
-            <p class='placeholder-scr__title'>Loading workflows overview...</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <i class="fas fa-fw fa-chevron-down text-black-20 self-center"></i>
-
-    <div hx-get="{% url 'project_dashboards:overview' project.id %}" hx-trigger="load" hx-swap="outerHTML">
-      <div class="flex flex-col pad">
-        <div class="flex items-baseline gap-3">
-          <h3><i class="far fa-fw fa-database text-black-50 mr-3"></i>Dashboards</h3>
-        </div>
-
-        <div>
-          <div class='placeholder-scr placeholder-scr--fillscreen'>
-            <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
-            <p class='placeholder-scr__title'>Loading dashboards overview...</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-</div>
 
 {% endblock %}

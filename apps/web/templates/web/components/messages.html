@@ -1,14 +1,14 @@
 {% if messages %}
-<ul class="toast-container">
-  {% for message in messages %}
-  <li x-data
-      x-init="setTimeout(() => $el.remove(), 5550)"
-      class="toast {{ messages.tags|default:'' }} {{ message.extra_tags|default:'' }}">
-    <p>{{ message }}</p>
+  <ul class="toast-container">
+    {% for message in messages %}
+      <li x-data
+        x-init="setTimeout(() => $el.remove(), 5550)"
+        class="toast {{ messages.tags|default:'' }} {{ message.extra_tags|default:'' }}">
+        <p>{{ message }}</p>
 
-    <i class="fal fa-times fa-fw fa-lg toast__close"
-      @click="$root.remove()"></i>
-  </li>
-  {% endfor %}
-</ul>
+        <i class="fal fa-times fa-fw fa-lg toast__close"
+          @click="$root.remove()"></i>
+      </li>
+    {% endfor %}
+  </ul>
 {% endif %}

@@ -3,32 +3,32 @@
 {% load help_utils %}
 
 {% block app %}
-<div class="page-header">
-  <h1 class="flex items-center gap-3 mr-auto">
-    CSV Upload
+  <div class="page-header">
+    <h1 class="flex items-center gap-3 mr-auto">
+      CSV Upload
 
-    {% link_article 'integrations' 'upload' %}
-    {% link_video 'upload' %}
-  </h1>
-</div>
-
-<div class="upload-csv flex flex-1 justify-center items-center">
-  <div class='upload-csv__form flex flex-col items-center flex-1'>
-    <form
-      method="POST"
-      id="create-form"
-      action="{{ request.get_full_path }}"
-      class="form--no-layout w-full"
-    >
-      <div class="flex flex-1 items-center" id='create-container'>
-        {% csrf_token %}
-
-        {{ form.file_gcs_path }}
-      </div>
-    </form>
+      {% link_article 'integrations' 'upload' %}
+      {% link_video 'upload' %}
+    </h1>
   </div>
-</div>
 
-{{ form.media.js }}
+  <div class="upload-csv flex flex-1 justify-center items-center">
+    <div class='upload-csv__form flex flex-col items-center flex-1'>
+      <form
+        method="POST"
+        id="create-form"
+        action="{{ request.get_full_path }}"
+        class="form--no-layout w-full"
+      >
+        <div class="flex flex-1 items-center" id='create-container'>
+          {% csrf_token %}
+
+          {{ form.file_gcs_path }}
+        </div>
+      </form>
+    </div>
+  </div>
+
+  {{ form.media.js }}
 
 {% endblock %}

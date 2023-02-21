@@ -1,14 +1,14 @@
 {% extends "emails/base.html" %}
 
 {% block title %}
-[Gyana] {{ integration_name }} is ready!
+  [Gyana] {{ integration_name }} is ready!
 {% endblock %}
 
 {% block content %}
-<p>
-  Your integration ({{ integration_name }}) in your {{ project_name }} project is ready to be used!
-</p>
-<p>
-  <a href="{{ integration_link }}">Click here to see it now</a>
-</p>
+  <p>
+    Your integration ({{ integration_name }}) in your {{ project_name }} project is ready to be used!
+  </p>
+  <p>
+    <a href="{{ integration_link }}">Click here to see it now</a>
+  </p>
 {% endblock %}

@@ -1,7 +1,7 @@
 {% url "project_"|add:object_name|add:"s:delete" project.id object.id as delete_url %}
 
 {% if delete_url %}
-  <a 
+  <a
     href="{{ delete_url }}"
     class="table__action table__action--danger"
     id="{{ object_name }}-delete-{{ object_id }}"

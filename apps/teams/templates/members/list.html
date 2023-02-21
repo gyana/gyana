@@ -3,13 +3,13 @@
 {% load render_table from django_tables2 %}
 
 {% block app %}
-<div class="pad">
-  <h2 class="mb-3">Members</h2>
-  <div class="card card--none mb-7">
-    {% render_table table %}
-  </div>
+  <div class="pad">
+    <h2 class="mb-3">Members</h2>
+    <div class="card card--none mb-7">
+      {% render_table table %}
+    </div>
 
-  <h2 class="mt-7 mb-3">Invitations</h2>
-  <div hx-get="{% url 'team_invites:list' team.id %}" hx-trigger="load"></div>
-</div>
+    <h2 class="mt-7 mb-3">Invitations</h2>
+    <div hx-get="{% url 'team_invites:list' team.id %}" hx-trigger="load"></div>
+  </div>
 {% endblock %}

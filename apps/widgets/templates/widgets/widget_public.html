@@ -23,7 +23,7 @@
       {% include 'widgets/_date_range_indicator.html' %}
 
       {% include 'widgets/_widget_title.html' %}
-    
+
       <div
         hx-get="{% url 'dashboard_widgets:output' project.id dashboard.id object.id %}?mode={{ request.GET.mode|default:"edit" }}"
         hx-trigger="load"

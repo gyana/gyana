@@ -1,27 +1,27 @@
 {% extends "web/base.html" %}
 
 {% block body.content %}
-<div class="flex flex-1 justify-center items-center">
-  <div class="flex flex-col max-w-xl">
-    <div class="flex flex-col text-center mb-7">
-      <h1>Create a new team</h1>
-      <p>A team is a single workspace where you manage multiple projects and clients.</p>
-    </div>
-
-    <form method="post" class="form">
-      {% csrf_token %}
-
-      {{ form }}
-
-      <p class="alert">
-        <strong>Note:</strong> You can change your team name at any time.
-      </p>
-
-      <div class="flex gap-8 w-full">
-        <a href="/" class="button button--filled button--tertiary flex-1">Cancel</a>
-        <button type="submit" class="button button--filled button--success flex-1">Create Team</button>
+  <div class="flex flex-1 justify-center items-center">
+    <div class="flex flex-col max-w-xl">
+      <div class="flex flex-col text-center mb-7">
+        <h1>Create a new team</h1>
+        <p>A team is a single workspace where you manage multiple projects and clients.</p>
       </div>
-    </form>
+
+      <form method="post" class="form">
+        {% csrf_token %}
+
+        {{ form }}
+
+        <p class="alert">
+          <strong>Note:</strong> You can change your team name at any time.
+        </p>
+
+        <div class="flex gap-8 w-full">
+          <a href="/" class="button button--filled button--tertiary flex-1">Cancel</a>
+          <button type="submit" class="button button--filled button--success flex-1">Create Team</button>
+        </div>
+      </form>
+    </div>
   </div>
-</div>
 {% endblock body.content %}

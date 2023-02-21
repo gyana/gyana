@@ -1,36 +1,36 @@
 {% extends "integrations/base.html" %}
 
 {% block tab %}
-<div class="flex flex-col flex-1 overflow-auto">
-  <div class="max-w-lg mb-auto pad">
-    
-    <form
-      id="integration-schedule-form"
-      method="POST"
-      action="{% url 'project_integrations:settings' project.id object.id %}"
-    >
-      {% csrf_token %}
+  <div class="flex flex-col flex-1 overflow-auto">
+    <div class="max-w-lg mb-auto pad">
 
-      {{ form }}
+      <form
+        id="integration-schedule-form"
+        method="POST"
+        action="{% url 'project_integrations:settings' project.id object.id %}"
+      >
+        {% csrf_token %}
 
-      <button type="submit" class="button button--success">
-        Save changes
-      </button>
-    </form>
+        {{ form }}
 
-    {{ form.media.js }}
-      
-    
+        <button type="submit" class="button button--success">
+          Save changes
+        </button>
+      </form>
+
+      {{ form.media.js }}
+
+
+    </div>
+
+    <div class="pad border-t border-gray">
+      <h2 class="mb-3">Delete integration </h2>
+      <p class="mb-3">If you'd like to <strong>delete</strong> this integration, press the button below.</p>
+
+      <a class="button button--danger"
+        href="{% url 'project_integrations:delete' project.id object.pk %}">
+        Delete
+      </a>
+    </div>
   </div>
-
-  <div class="pad border-t border-gray">
-    <h2 class="mb-3">Delete integration </h2>
-    <p class="mb-3">If you'd like to <strong>delete</strong> this integration, press the button below.</p>
-
-    <a class="button button--danger"
-      href="{% url 'project_integrations:delete' project.id object.pk %}">
-      Delete
-    </a>
-  </div>
-</div>
 {% endblock %}

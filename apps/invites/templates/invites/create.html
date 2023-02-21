@@ -1,13 +1,13 @@
 {% extends "teams/base.html" %}
 
 {% block app %}
-<div class="max-w-xl">
-  <form method="post" action="{% url 'team_invites:create' team.id %}" class="form pad" hx-boost="false">
-    {% csrf_token %}
+  <div class="max-w-xl">
+    <form method="post" action="{% url 'team_invites:create' team.id %}" class="form pad" hx-boost="false">
+      {% csrf_token %}
 
-    {{ form }}
+      {{ form }}
 
-    <button type="submit" class="button button--success w-full">Invite</button>
-  </form>
-</div>
+      <button type="submit" class="button button--success w-full">Invite</button>
+    </form>
+  </div>
 {% endblock %}

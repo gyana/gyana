@@ -1,55 +1,55 @@
 {% extends "projects/base.html" %}
 {% load waffle_tags %}
 {% block app %}
-<div class="flex flex-col flex-1 overflow-auto">
-  <div class="mb-auto pad">
-    <h1 class="project-settings__title">Settings</h1>
+  <div class="flex flex-col flex-1 overflow-auto">
+    <div class="mb-auto pad">
+      <h1 class="project-settings__title">Settings</h1>
 
-    {% if project.daily_schedule_time != project.truncated_daily_schedule_time %}
-      <p class="alert mb-4">Due to platform limitations for timezones with 15/30/45 minute GMT offsets, your connectors will start at {{ project.truncated_daily_schedule_time }}.</p>
-    {% endif %}
+      {% if project.daily_schedule_time != project.truncated_daily_schedule_time %}
+        <p class="alert mb-4">Due to platform limitations for timezones with 15/30/45 minute GMT offsets, your connectors will start at {{ project.truncated_daily_schedule_time }}.</p>
+      {% endif %}
 
-    <form 
-      id='project-{{ object.id }}-update'
-      data-controller="live-update" 
-      method="post" 
-      action="{% url 'projects:update' object.id %}" 
-      class="form max-w-3xl mb-8"
-    >
-      {% csrf_token %}
-
-      {{ form }}
-
-      <button type="submit" name='submit' value='submit' class="button button--success w-full">
-        Save changes
-      </button>
-
-      <span
-        data-live-update-target="loading"
-        class="workflow-detail__sidebar__loading"
-        hidden
+      <form
+        id='project-{{ object.id }}-update'
+        data-controller="live-update"
+        method="post"
+        action="{% url 'projects:update' object.id %}"
+        class="form max-w-3xl mb-8"
       >
-        <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-fw fa-2x"></i>
-      </span>
-    </form>
+        {% csrf_token %}
 
-    <div class="max-w-3xl mb-8">
-      <div class="flex items-center mb-7">
-        <h2 class="mr-2">OAuth2</h2>
+        {{ form }}
+
+        <button type="submit" name='submit' value='submit' class="button button--success w-full">
+          Save changes
+        </button>
+
+        <span
+          data-live-update-target="loading"
+          class="workflow-detail__sidebar__loading"
+          hidden
+        >
+          <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-fw fa-2x"></i>
+        </span>
+      </form>
+
+      <div class="max-w-3xl mb-8">
+        <div class="flex items-center mb-7">
+          <h2 class="mr-2">OAuth2</h2>
+        </div>
+
+        <div hx-get="{% url 'project_oauth2:list' object.id %}" hx-trigger="load" hx-swap="outerHTML"></div>
       </div>
+    </div>
 
-      <div hx-get="{% url 'project_oauth2:list' object.id %}" hx-trigger="load" hx-swap="outerHTML"></div>
+    <div class="pad border-t border-gray">
+      <h2 class="mb-3">Delete project</h2>
+      <p class="mb-3">If you'd like to <strong>delete</strong> this project, press the button below.</p>
+
+      <a class="button button--danger w-lg"
+        href="{% url 'projects:delete' object.id %}">
+        Delete
+      </a>
     </div>
   </div>
-
-  <div class="pad border-t border-gray">
-    <h2 class="mb-3">Delete project</h2>
-    <p class="mb-3">If you'd like to <strong>delete</strong> this project, press the button below.</p>
-
-    <a class="button button--danger w-lg"
-      href="{% url 'projects:delete' object.id %}">
-      Delete
-    </a>
-  </div>
-</div>
 {% endblock %}

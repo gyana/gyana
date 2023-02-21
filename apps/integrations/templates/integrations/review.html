@@ -2,55 +2,55 @@
 {% load humanize %}
 
 {% block tab %}
-<div class="pad flex flex-1 justify-center">
-  <div class='flex flex-col flex-1 items-center justify-center max-w-6xl'>
-    <h1 class="flex items-center gap-3 mb-7">
-      Review import
-    </h1>
+  <div class="pad flex flex-1 justify-center">
+    <div class='flex flex-col flex-1 items-center justify-center max-w-6xl'>
+      <h1 class="flex items-center gap-3 mb-7">
+        Review import
+      </h1>
 
-    <div class="flex flex-col gap-3 w-full">
-      <p>
-        Here you can see a short preview of your data.
-      </p>
-      
-      <div class="card card--none">
-        <div
-          class="block w-full overflow-auto"
-          hx-get="{% url 'integrations:preview' object.id %}?table_id={{ request.GET.table_id }}"
-          hx-trigger="load"
-        >
-          <div class='placeholder-scr placeholder-scr--fillscreen'>
-            <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
-            <p class='placeholder-scr__title'>Loading preview...</p>
+      <div class="flex flex-col gap-3 w-full">
+        <p>
+          Here you can see a short preview of your data.
+        </p>
+
+        <div class="card card--none">
+          <div
+            class="block w-full overflow-auto"
+            hx-get="{% url 'integrations:preview' object.id %}?table_id={{ request.GET.table_id }}"
+            hx-trigger="load"
+          >
+            <div class='placeholder-scr placeholder-scr--fillscreen'>
+              <i class="placeholder-scr__icon fad fa-spinner-third fa-spin"></i>
+              <p class='placeholder-scr__title'>Loading preview...</p>
+            </div>
           </div>
         </div>
-      </div>
 
-      <p class="alert">
-        This data source will be available in your project after you confirm.
-      </p>
+        <p class="alert">
+          This data source will be available in your project after you confirm.
+        </p>
 
-      <div class="flex gap-3">
-        <a
-          href="{% url 'project_integrations:configure' project.id object.id %}"
-          class="button button--tertiary w-1/2"
-        >
-          Reconfigure
-        </a>
+        <div class="flex gap-3">
+          <a
+            href="{% url 'project_integrations:configure' project.id object.id %}"
+            class="button button--tertiary w-1/2"
+          >
+            Reconfigure
+          </a>
 
-        <form
-          method="POST"
-          action="{{ request.get_full_path }}"
-          class="form--no-layout w-1/2"
-        >
-          {% csrf_token %}
+          <form
+            method="POST"
+            action="{{ request.get_full_path }}"
+            class="form--no-layout w-1/2"
+          >
+            {% csrf_token %}
 
-          <button type="submit" class="button button--success w-full">
-            Confirm
-          </button>
-        </form>
+            <button type="submit" class="button button--success w-full">
+              Confirm
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   </div>
-</div>
 {% endblock %}

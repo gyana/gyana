@@ -1,35 +1,35 @@
 <div class="w-full max-h-72 overflow-y-auto">
-{% for user in users  %}
-  <input 
-    data-live-update-ignore
-    id="{{user.id}}" 
-    name="{{widget.name}}" 
-    type="checkbox"
-    value="{{user.id}}"
-    class="checkbox__hidden"
-    {% if user.is_current_user or user.is_project_member %}checked{% endif %}
-  />
+  {% for user in users  %}
+    <input
+      data-live-update-ignore
+      id="{{user.id}}"
+      name="{{widget.name}}"
+      type="checkbox"
+      value="{{user.id}}"
+      class="checkbox__hidden"
+      {% if user.is_current_user or user.is_project_member %}checked{% endif %}
+    />
 
-  <label class="checkbox 
-    {% if user.is_current_user %}
-      checkbox__active
-    {%else%}
-      checkbox__enabled 
-    {% endif %}" 
-    for="{{user.id}}"
-    {% comment %} Prevent unselect of current user {% endcomment %}
-    {% if user.is_current_user %}style="pointer-events:none;"{% endif %}
-  >
-    <img class="h-8 w-8 mr-4" src="{{ user.avatar_url }}">
-    <div class='flex flex-col'>
-      <span>
-        {% if user.first_name or user.last_name %}
-          {{user.first_name}} {{ user.last_name }} - 
-        {% endif %}
-        {{user.username}}
-      </span>
-      <small>{{ user.email }}</small>
-    </div>
-  </label>
-{% endfor %}
+    <label class="checkbox
+      {% if user.is_current_user %}
+        checkbox__active
+      {%else%}
+        checkbox__enabled
+      {% endif %}"
+      for="{{user.id}}"
+      {% comment %} Prevent unselect of current user {% endcomment %}
+      {% if user.is_current_user %}style="pointer-events:none;"{% endif %}
+    >
+      <img class="h-8 w-8 mr-4" src="{{ user.avatar_url }}">
+      <div class='flex flex-col'>
+        <span>
+          {% if user.first_name or user.last_name %}
+            {{user.first_name}} {{ user.last_name }} -
+          {% endif %}
+          {{user.username}}
+        </span>
+        <small>{{ user.email }}</small>
+      </div>
+    </label>
+  {% endfor %}
 </div>

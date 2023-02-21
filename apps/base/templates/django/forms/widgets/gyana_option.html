@@ -1,17 +1,17 @@
 {% with id=widget.attrs.id %}
-<div>
-  <input
-    name="{{ widget.name }}"
-    id="{{ id }}"
-    class="checkbox__hidden"
-    value="{{ widget.value }}"
-    type="checkbox"
-    data-live-update-ignore
-    {% include "django/forms/widgets/attrs.html" %}
-  />
+  <div>
+    <input
+      name="{{ widget.name }}"
+      id="{{ id }}"
+      class="checkbox__hidden"
+      value="{{ widget.value }}"
+      type="checkbox"
+      data-live-update-ignore
+      {% include "django/forms/widgets/attrs.html" %}
+    />
 
-  <label class="checkbox checkbox__enabled" for="{{ id }}">
-    {{ widget.label }}
-  </label>
-</div>
+    <label class="checkbox checkbox__enabled" for="{{ id }}">
+      {{ widget.label }}
+    </label>
+  </div>
 {% endwith %}

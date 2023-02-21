@@ -1,7 +1,7 @@
 {% url object_name|add:"s:sync" object.id as sync_url %}
 
 {% if sync_url %}
-  <form 
+  <form
     method="POST"
     class="form--no-layout"
     action="{{ sync_url }}"
@@ -12,7 +12,7 @@
       class="table__action"
       type="submit"
       id="{{ object_name }}-sync-{{object.id}}"
-            x-tooltip="Sync latest data"
+      x-tooltip="Sync latest data"
     >
       <i class="fas fa-fw fa-sync"></i>
     </button>

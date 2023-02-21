@@ -4,14 +4,14 @@
   </a> {% endcomment %}
   {% if widget.table %}
     <a href="#"
-      class="tabbar__link {% if active_item == 'input' %}tabbar__link--active{%endif%}" 
+      class="tabbar__link {% if active_item == 'input' %}tabbar__link--active{%endif%}"
       hx-get="{% url 'dashboard_widgets:input' project.id dashboard.id object.id %}?source=modal"
     >
       Input
     </a>
   {% endif %}
   <a href="#"
-    class="tabbar__link {% if active_item != 'input' %}tabbar__link--active{%endif%}" 
+    class="tabbar__link {% if active_item != 'input' %}tabbar__link--active{%endif%}"
     hx-get="{% url 'dashboard_widgets:output' project.id dashboard.id object.id %}?source=modal"
   >
     Preview

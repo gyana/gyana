@@ -15,35 +15,35 @@
     </span>
 
     {% if control.date_range == "custom" %}
-    <div class="flex gap-8">
-      <span class="flex flex-col">
-        {% if control.start %}Start <strong>{{ control.start }}</strong>{% endif %}
-      </span>
+      <div class="flex gap-8">
+        <span class="flex flex-col">
+          {% if control.start %}Start <strong>{{ control.start }}</strong>{% endif %}
+        </span>
 
-      <span class="flex flex-col">
-        {% if control.end %}End <strong>{{ control.end }}</strong>{% endif %}
-      </span>
+        <span class="flex flex-col">
+          {% if control.end %}End <strong>{{ control.end }}</strong>{% endif %}
+        </span>
       </div>
     {% endif %}
   </div>
 {% endblock widget %}
 
 {% block widget.commands %}
-  <button  
+  <button
     class="widget-card__button"
     x-tooltip="Edit"
     data-action="click->tf-modal#open"
     id="widget-update-{{ control.id }}"
     data-modal-item="{{ control.id }}"
     data-modal-src="
-    {% if is_public %}
-      {% url 'dashboard_controls:update-public' project.id dashboard.id control.id %}
-    {% else %}
-      {% url 'dashboard_controls:update-widget' project.id dashboard.id control.id %}?mode={{ request.GET.mode }}
-    {% endif %}"
+      {% if is_public %}
+        {% url 'dashboard_controls:update-public' project.id dashboard.id control.id %}
+      {% else %}
+        {% url 'dashboard_controls:update-widget' project.id dashboard.id control.id %}?mode={{ request.GET.mode }}
+      {% endif %}"
     data-modal-id="controls:update-widget"
     {% if request.GET.modal_item == control.id|stringformat:"i" %}
-    data-tf-modal-target="onParam"
+      data-tf-modal-target="onParam"
     {% endif %}
     data-modal-classes="tf-modal--auto"
   >

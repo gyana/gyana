@@ -3,34 +3,34 @@
 
 {% if project_meta %}
   {% if page_title %}
-  <title>{{ page_title }} | {{ project_meta.NAME }}</title>
+    <title>{{ page_title }} | {{ project_meta.NAME }}</title>
   {% elif object %}
-  <title>{{ object.name }} | {{ project_meta.NAME }}</title>
+    <title>{{ object.name }} | {{ project_meta.NAME }}</title>
   {% elif project %}
-  <title>{{ project.name }} | {{ project_meta.NAME }}</title>
+    <title>{{ project.name }} | {{ project_meta.NAME }}</title>
   {% else %}
-  <title>{{ project_meta.NAME }}</title>
+    <title>{{ project_meta.NAME }}</title>
   {% endif %}
 
   {% with project_meta|get_description:page_description as description %}
-  {% with project_meta|get_image_url:page_image as image %}
-  <meta name="description" content="{{ description }}" />
-  <meta name="keywords" content="{{ project_meta.KEYWORDS }}" />
+    {% with project_meta|get_image_url:page_image as image %}
+      <meta name="description" content="{{ description }}" />
+      <meta name="keywords" content="{{ project_meta.KEYWORDS }}" />
 
-  <!-- Twitter Card data -->
-  <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="{{ title }}" />
-  <meta name="twitter:description" content="{{ description }}" />
-  <meta name="twitter:image" content="{{ image }}" />
+      <!-- Twitter Card data -->
+      <meta name="twitter:card" content="summary" />
+      <meta name="twitter:title" content="{{ title }}" />
+      <meta name="twitter:description" content="{{ description }}" />
+      <meta name="twitter:image" content="{{ image }}" />
 
-  <!-- Open Graph data -->
-  <meta property="og:title" content="{{ title }}" />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="{{ page_url }}" />
-  <meta property="og:image" content="{{ image }}" />
-  <meta property="og:description" content="{{ description }}" />
-  <meta property="og:site_name" content="{{ project_meta.NAME }}" />
-  <link rel="canonical" href="{% if page_canonical_url %}{{ page_canonical_url }}{% else %}{{ page_url }}{% endif %}" />
-  {% endwith %}
+      <!-- Open Graph data -->
+      <meta property="og:title" content="{{ title }}" />
+      <meta property="og:type" content="website" />
+      <meta property="og:url" content="{{ page_url }}" />
+      <meta property="og:image" content="{{ image }}" />
+      <meta property="og:description" content="{{ description }}" />
+      <meta property="og:site_name" content="{{ project_meta.NAME }}" />
+      <link rel="canonical" href="{% if page_canonical_url %}{{ page_canonical_url }}{% else %}{{ page_url }}{% endif %}" />
+    {% endwith %}
   {% endwith %}
 {% endif %}

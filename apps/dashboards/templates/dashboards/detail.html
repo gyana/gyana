@@ -22,11 +22,11 @@
     {% endfor %}
 
     <style>
-    {% for id, font_family in font_families %}
-    option[value*="{{ font_family }}"] {
-      font-family: "{{ font_family }}";
-    }
-    {% endfor %}
+      {% for id, font_family in font_families %}
+        option[value*="{{ font_family }}"] {
+          font-family: "{{ font_family }}";
+        }
+      {% endfor %}
     </style>
   {% endif %}
 {% endblock head.extra %}
@@ -36,7 +36,7 @@
       {% include "dashboards/name.html" %}
 
       <span class="bold">-</span>
-      
+
       {% include "dashboards/forms/name_page.html" %}
     </div>
 
@@ -72,20 +72,20 @@
               Duplicate
             </button>
           </form>
-          
+
           <a
             class="list__item list__item--interactive w-full"
             href="{% url "project_dashboards:delete" project.id object.id %}"
           >
             Delete
           </a>
-        
+
           {% flag 'beta' %}
             <a
               class="list__item list__item--interactive w-full"
               href="{% url "dashboards:print" object.id %}"
             >
-            <span class='beta mr-4'>Export as PDF</span>
+              <span class='beta mr-4'>Export as PDF</span>
             </a>
           {% endflag %}
 
@@ -101,87 +101,87 @@
             </button>
           {% endflag %}
 
-            <p
-              class="list__item list__item--br w-full"
+          <p
+            class="list__item list__item--br w-full"
+          >
+            Page
+          </p>
+
+          <form
+            method="POST"
+            action="{% url "project_dashboards:page-create" project.id object.id %}"
+            class="form--no-layout"
+          >
+            {% csrf_token %}
+
+            <button
+              type="submit"
+              class="list__item list__item--interactive w-full"
+              id="dashboards-add-page-{{ object.id }}"
+              data-loading-false
             >
-              Page
-            </p>
+              Add new page
+            </button>
+          </form>
 
-            <form
-              method="POST"
-              action="{% url "project_dashboards:page-create" project.id object.id %}"
-              class="form--no-layout"
+          <form
+            method="POST"
+            action="{% url "project_dashboards:page-delete" project.id object.id page.id %}"
+            class="form--no-layout"
+          >
+            {% csrf_token %}
+
+            <button
+              type="submit"
+              {% if page_count == 1 or page.position == 1 %}disabled{% endif %}
+              class="list__item list__item--interactive w-full"
+              id="dashboards-delete-page-{{ object.id }}"
+              data-loading-false
             >
-              {% csrf_token %}
+              Delete current page
+            </button>
+          </form>
 
-              <button
-                type="submit"
-                class="list__item list__item--interactive w-full"
-                id="dashboards-add-page-{{ object.id }}"
-                data-loading-false
-              >
-                Add new page
-              </button>
-            </form>
-
-            <form
-              method="POST"
-              action="{% url "project_dashboards:page-delete" project.id object.id page.id %}"
-              class="form--no-layout"
+          <div x-data="popover({ placement: 'right', theme: 'popover-menu' })">
+            <button
+              class="list__item list__item--interactive w-full"
+              x-ref="trigger"
             >
-              {% csrf_token %}
+              Move page to
+            </button>
 
-              <button
-                type="submit"
-                {% if page_count == 1 or page.position == 1 %}disabled{% endif %}
-                class="list__item list__item--interactive w-full"
-                id="dashboards-delete-page-{{ object.id }}"
-                data-loading-false
-              >
-                Delete current page
-              </button>
-            </form>
-
-            <div x-data="popover({ placement: 'right', theme: 'popover-menu' })">
-              <button
-                class="list__item list__item--interactive w-full"
-                x-ref="trigger"
-              >
-                Move page to
-              </button>
-
-              <template x-ref="body">
-                {% include 'dashboards/forms/move_page.html' %}
-              </template>
-            </div>
+            <template x-ref="body">
+              {% include 'dashboards/forms/move_page.html' %}
+            </template>
+          </div>
         </template>
       </div>
 
 
       <div x-tooltip="Customize dimensions, grid spacing and color palette">
-          <button data-action="click->tf-modal#open"
-                  data-modal-id="dashboard:settings"
-                  data-modal-classes="tf-modal--auto tf-modal--wide tf-modal--tall"
-                  data-modal-src="{% url "project_dashboards:settings" project.id object.id %}?category=general"
-                  data-modal-target="_top"
-                  class="button button--sm button--tertiary">
-              <i class="fas fa-fw fa-paint-brush"></i> Theme and Layout
-          </button>
+        <button data-action="click->tf-modal#open"
+          data-modal-id="dashboard:settings"
+          data-modal-classes="tf-modal--auto tf-modal--wide tf-modal--tall"
+          data-modal-src="{% url "project_dashboards:settings" project.id object.id %}?category=general"
+          data-modal-target="_top"
+          class="button button--sm button--tertiary">
+          <i class="fas fa-fw fa-paint-brush"></i> Theme and Layout
+        </button>
       </div>
     {% endif %}
 
     <div x-tooltip="Click to change view mode">
-        {% if not request.GET.mode or request.GET.mode == "edit" %}
-            <a href="?mode=view&dashboardPage={{ page.position }}"
-                class="button button--sm button--tertiary">
-                <i class="fas fa-fw fa-eye"></i> Preview
-            </a>
-        {% else %}
-            <a href="?mode=edit&dashboardPage={{ page.position }}"
-                class="button button--sm">
-                <i class="fas fa-fw fa-pen"></i> Edit
-            </a>
-        {% endif %}
+      {% if not request.GET.mode or request.GET.mode == "edit" %}
+        <a href="?mode=view&dashboardPage={{ page.position }}"
+          class="button button--sm button--tertiary">
+          <i class="fas fa-fw fa-eye"></i> Preview
+        </a>
+      {% else %}
+        <a href="?mode=edit&dashboardPage={{ page.position }}"
+          class="button button--sm">
+          <i class="fas fa-fw fa-pen"></i> Edit
+        </a>
+      {% endif %}
     </div>
 
     <button
@@ -195,7 +195,7 @@
       <i class="fas fa-fw fa-share"></i> Share
     </button>
   </div>
-  
+
   <div class="w-full flex flex-row overflow-hidden">
     <div class="dashboard">
       {% include "dashboards/canvas.html" %}
@@ -205,33 +205,33 @@
     {% if request.GET.mode != "view" %}
       <aside class="dashboard-sidebar">
         {% for category_id, category in categories %}
-            <div class="pad collapsable-component" x-data="{ open: true }" :class="{ 'active': open }">
-                <h3 class="cursor-pointer" @click="open = !open">
-                  {{ category }}
-                </h3>
-                <div class="collapsable flex flex-col max-h-0 overflow-hidden"
-                    :style="{ maxHeight: open ? $el.scrollHeight + 'px' : null }">
-                    <div class="flex flex-col gap-3 pt-4">
-                        {% for id, txt, icon, choice_category, verbose_name in choices %}
-                            {% if choice_category|lower == category_id|lower %}
-                                <div id="widget-{{ id }}"
-                                      class="dashboard-sidebar__item w-full cursor-draggable"
-                                      x-data
-                                      @dragstart="$event.dataTransfer.setData('application/gydashboard', '{{ id }}')
-                                        $event.dataTransfer.effectAllowed = 'move';"
-                                      draggable="true">
-                                    <i class="dashboard-sidebar__icon fas fa-fw fa-lg {{ icon }}"></i>
-                                    <p class="dashboard-sidebar__name">
-                                        {{ verbose_name }}
-                                    </p>
-                                    <i class="fas fa-fw fa-grip-vertical fa-sm text-black-10"></i>
-                                </div>
-                            {% endif %}
-                        {% endfor %}
+          <div class="pad collapsable-component" x-data="{ open: true }" :class="{ 'active': open }">
+            <h3 class="cursor-pointer" @click="open = !open">
+              {{ category }}
+            </h3>
+            <div class="collapsable flex flex-col max-h-0 overflow-hidden"
+              :style="{ maxHeight: open ? $el.scrollHeight + 'px' : null }">
+              <div class="flex flex-col gap-3 pt-4">
+                {% for id, txt, icon, choice_category, verbose_name in choices %}
+                  {% if choice_category|lower == category_id|lower %}
+                    <div id="widget-{{ id }}"
+                      class="dashboard-sidebar__item w-full cursor-draggable"
+                      x-data
+                      @dragstart="$event.dataTransfer.setData('application/gydashboard', '{{ id }}')
+                        $event.dataTransfer.effectAllowed = 'move';"
+                      draggable="true">
+                      <i class="dashboard-sidebar__icon fas fa-fw fa-lg {{ icon }}"></i>
+                      <p class="dashboard-sidebar__name">
+                        {{ verbose_name }}
+                      </p>
+                      <i class="fas fa-fw fa-grip-vertical fa-sm text-black-10"></i>
                     </div>
-                </div>
+                  {% endif %}
+                {% endfor %}
+              </div>
             </div>
-            <hr>
+          </div>
+          <hr>
         {% endfor %}
 
         <div class="pad collapsable-component" x-data="{ open: true }" :class="{ 'active': open }">

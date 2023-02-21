@@ -2,12 +2,12 @@
 {% load static %}
 
 {% block body %}
-<section class="flex flex-col flex-1 justify-center items-center text-center pad">
-  <h1 class="mb-3">500 - Server Error</h1>
-  <p>
-    The server encountered an error, head <a class="link" href="{% url 'web:home' %}">back home</a>
-    and try again later. <br>
-    If this issue persists contact our support team.
-  </p>
-</section>
+  <section class="flex flex-col flex-1 justify-center items-center text-center pad">
+    <h1 class="mb-3">500 - Server Error</h1>
+    <p>
+      The server encountered an error, head <a class="link" href="{% url 'web:home' %}">back home</a>
+      and try again later. <br>
+      If this issue persists contact our support team.
+    </p>
+  </section>
 {% endblock%}

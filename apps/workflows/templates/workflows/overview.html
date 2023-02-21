@@ -4,47 +4,47 @@
   <div class="flex items-baseline gap-3 pad">
     <h3><i class="far fa-fw fa-sitemap text-black-50 mr-3"></i>Workflows</h3>
     {% if workflows.total > 0 %}
-    <p class="text-black-50 ml-auto">
-      <a class="link" href="{% url 'project_workflows:list' project.id %}">
-        {{ workflows.total }} workflow{{ workflows.total|pluralize }}
-      </a>
-      - {{ workflows.nodes|intcomma }} node{{ workflows.nodes|pluralize }}
-      - {{ workflows.results|intcomma }} result{{ workflows.results|pluralize }} saved
-    </p>
+      <p class="text-black-50 ml-auto">
+        <a class="link" href="{% url 'project_workflows:list' project.id %}">
+          {{ workflows.total }} workflow{{ workflows.total|pluralize }}
+        </a>
+        - {{ workflows.nodes|intcomma }} node{{ workflows.nodes|pluralize }}
+        - {{ workflows.results|intcomma }} result{{ workflows.results|pluralize }} saved
+      </p>
     {% endif %}
   </div>
 
-  <div class="flex gap-8 w-full overflow-auto" style="padding: 0.8rem 1.6rem;"> 
+  <div class="flex gap-8 w-full overflow-auto" style="padding: 0.8rem 1.6rem;">
     {% for workflow in workflows.all|slice:":12" %}
-    <a
-      class="card card--none card--flex gap-3 items-center flex-col"
-      style="flex: 0 0 13rem; padding: 1.8rem 0.2rem;"
-      href="{% url "project_workflows:detail" project.id workflow.id %}"
-    >
-      <i class="fas fa-fw fa-sitemap text-black-50" style="font-size: 1.6rem"></i>
-      <p class="truncate w-full px-6 text-center small">{{ workflow.name }}</p>
-    </a>
+      <a
+        class="card card--none card--flex gap-3 items-center flex-col"
+        style="flex: 0 0 13rem; padding: 1.8rem 0.2rem;"
+        href="{% url "project_workflows:detail" project.id workflow.id %}"
+      >
+        <i class="fas fa-fw fa-sitemap text-black-50" style="font-size: 1.6rem"></i>
+        <p class="truncate w-full px-6 text-center small">{{ workflow.name }}</p>
+      </a>
     {% endfor %}
   </div>
 
   <div class="pad">
     {% if integrations.ready == 0 and workflows.total == 0 %}
-    <p class="text-black-50">
-      A visual editor to clean, transform, and analyse your data, needs at
-      least <strong>one integration</strong>.
-    </p>
-    {% elif workflows.total == 0 %}
-    <div class="table__empty table__empty--slim">
-      <a
-        href="{% url 'project_workflows:list' project.id %}"
-        class="h3 link" 
-      >
-        Start transforming your data now
-      </a>
-      <p class="text-black-50 mt-3">
-        Clean and analyze your data using a simple drag and drop interface.
+      <p class="text-black-50">
+        A visual editor to clean, transform, and analyse your data, needs at
+        least <strong>one integration</strong>.
       </p>
-    </div>
+    {% elif workflows.total == 0 %}
+      <div class="table__empty table__empty--slim">
+        <a
+          href="{% url 'project_workflows:list' project.id %}"
+          class="h3 link"
+        >
+          Start transforming your data now
+        </a>
+        <p class="text-black-50 mt-3">
+          Clean and analyze your data using a simple drag and drop interface.
+        </p>
+      </div>
     {% elif not workflows.operational %}
       {% if workflows.incomplete > 0 %}
         <p class="text-black-50">

@@ -3,80 +3,80 @@
 {% load static menu_tags wagtailcore_tags %}
 
 {% block head.extra %}
-<link rel="stylesheet" href="{% static "css/university.css" %}" />
+  <link rel="stylesheet" href="{% static "css/university.css" %}" />
 {% endblock head.extra %}
 
 {% block body.content %}
-<div class="flex flex-1 flex-col">
-  <nav class="header">
-    <img class="h-10 w-10" src="{% static 'images/logo.png' %}">
-    <a class="h2" href="/learn">
-      <span class="text-blue text-poppins">
-        Gyana
-      </span>
-      <span class="font-normal">
-        University
-      </span>
-    </a>
+  <div class="flex flex-1 flex-col">
+    <nav class="header">
+      <img class="h-10 w-10" src="{% static 'images/logo.png' %}">
+      <a class="h2" href="/learn">
+        <span class="text-blue text-poppins">
+          Gyana
+        </span>
+        <span class="font-normal">
+          University
+        </span>
+      </a>
 
-    <form class="desktop" action="{% url 'learn:search' %}" method="GET">
-      <input type="search" name="query" class="input input--sm" value="{{ request.GET.query }}" placeholder="Search...">
-    </form>
+      <form class="desktop" action="{% url 'learn:search' %}" method="GET">
+        <input type="search" name="query" class="input input--sm" value="{{ request.GET.query }}" placeholder="Search...">
+      </form>
 
-    <a class="desktop text-right p-2" href="{% url 'web:home' %}">
-      {% if request.user.is_authenticated %}Go to app{% else %}Website{% endif %}
-      <i class="fa fa-sm fa-external-link ml-2"></i>
-    </a>
+      <a class="desktop text-right p-2" href="{% url 'web:home' %}">
+        {% if request.user.is_authenticated %}Go to app{% else %}Website{% endif %}
+        <i class="fa fa-sm fa-external-link ml-2"></i>
+      </a>
 
-    <div class="mobile ml-auto">
-      <button
-        type="button"
-        class="bg-white rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-600 font-normal hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
-        x-data="popover({ theme: 'popover-menu' })"
-      >
-        <span class="sr-only">Open menu</span>
-        <i class="fal fa-bars h-6 w-6"></i>
-        <template x-ref="body">
-          <div class="w-screen">
-            <form class="p-4" action="{% url 'learn:search' %}" method="GET">
-              <input type="search" name="query" class="input input--sm" value="{{ request.GET.query }}" placeholder="Search...">
-            </form>
-            <nav class="sidebar-learn">
-              {% children_menu parent_page=learn_menu_page max_levels=3 template="learn/menus/menu.html" sub_menu_template="learn/menus/menu.html" apply_active_classes=True %}
-            </nav>
-          </div>
-        </template>
-      </button>
-    </div>
-  </nav>
-  
-  <div class="bg-white flex flex-1 overflow-auto">
-    <nav class="sidebar-learn desktop">
-      {% children_menu parent_page=learn_menu_page max_levels=3 template="learn/menus/menu.html" sub_menu_template="learn/menus/menu.html" apply_active_classes=True %}
+      <div class="mobile ml-auto">
+        <button
+          type="button"
+          class="bg-white rounded-md p-2 inline-flex items-center justify-center text-gray-400 hover:text-gray-600 font-normal hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
+          x-data="popover({ theme: 'popover-menu' })"
+        >
+          <span class="sr-only">Open menu</span>
+          <i class="fal fa-bars h-6 w-6"></i>
+          <template x-ref="body">
+            <div class="w-screen">
+              <form class="p-4" action="{% url 'learn:search' %}" method="GET">
+                <input type="search" name="query" class="input input--sm" value="{{ request.GET.query }}" placeholder="Search...">
+              </form>
+              <nav class="sidebar-learn">
+                {% children_menu parent_page=learn_menu_page max_levels=3 template="learn/menus/menu.html" sub_menu_template="learn/menus/menu.html" apply_active_classes=True %}
+              </nav>
+            </div>
+          </template>
+        </button>
+      </div>
     </nav>
 
-    <div class="flex flex-col flex-1 overflow-auto">
-      <nav class="flex gap-2 px-10 py-5">
-        <a href="/learn" >Home</a>
+    <div class="bg-white flex flex-1 overflow-auto">
+      <nav class="sidebar-learn desktop">
+        {% children_menu parent_page=learn_menu_page max_levels=3 template="learn/menus/menu.html" sub_menu_template="learn/menus/menu.html" apply_active_classes=True %}
+      </nav>
+
+      <div class="flex flex-col flex-1 overflow-auto">
+        <nav class="flex gap-2 px-10 py-5">
+          <a href="/learn" >Home</a>
           {% for ancestor in page.get_ancestors|slice:"3:" %}
             <i class="far fa-fw fa-angle-right fa-sm text-black-50"></i>
             <a href="{% pageurl ancestor %}">{{ ancestor.title }}</a>
           {% endfor %}
-        <i class="far fa-fw fa-angle-right fa-sm text-black-50"></i>
-        <span class="text-black-50">
-          {% if page.slug == 'learn' %}
-            Welcome to Gyana University
-          {% elif request.resolver_match.view_name == 'learn:search' %}
-            Search
-          {% else %}
-            {{ page.title }}
-          {% endif %}
-        </span>
-      </nav>
+          <i class="far fa-fw fa-angle-right fa-sm text-black-50"></i>
+          <span class="text-black-50">
+            {% if page.slug == 'learn' %}
+              Welcome to Gyana University
+            {% elif request.resolver_match.view_name == 'learn:search' %}
+              Search
+            {% else %}
+              {{ page.title }}
+            {% endif %}
+          </span>
+        </nav>
 
-      {% block content %}
-      {% endblock content %}
+        {% block content %}
+        {% endblock content %}
+      </div>
     </div>
   </div>
-</div>
 {% endblock body.content%}

@@ -23,20 +23,20 @@
               class="sidebar__link {% if request.GET.category == category_id %}sidebar__link--active{% endif %}"
               hx-get="{% url "project_dashboards:settings" project.id object.id %}?category={{ category_id }}"
 
-            > 
+            >
               <span {% if category == "Advanced" %}class="beta"{% endif %}>
-                {{ category }} 
+                {{ category }}
               </span>
             </a>
           {% endflag %}
         {% else %}
           <a
-          href="#"
+            href="#"
             class="sidebar__link {% if request.GET.category == category_id %}sidebar__link--active{% endif %}"
             hx-get="{% url "project_dashboards:settings" project.id object.id %}?category={{ category_id }}"
-          > 
+          >
             <span {% if category == "Advanced" %}class="beta"{% endif %}>
-              {{ category }} 
+              {{ category }}
             </span>
           </a>
         {% endif %}

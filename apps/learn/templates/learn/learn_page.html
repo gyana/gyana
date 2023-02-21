@@ -13,7 +13,7 @@
       </h1>
 
       {% for block in page.body %}
-      <section>{% include_block block %}</section>
+        <section>{% include_block block %}</section>
       {% endfor %}
     </article>
 
@@ -24,9 +24,9 @@
           <a href="#{{ page.title|slugify }}">{{ page.title }}</a>
         </li>
         {% for heading in page.headings %}
-        <li class="{% if heading.0 == '2' %}pl-6{% elif heading.0 == '3' %}pl-16{% else %}pl-24{% endif %}">
-          {{ heading.2|richtext }}
-        </li>
+          <li class="{% if heading.0 == '2' %}pl-6{% elif heading.0 == '3' %}pl-16{% else %}pl-24{% endif %}">
+            {{ heading.2|richtext }}
+          </li>
         {% endfor %}
       </ul>
     </nav>
@@ -35,14 +35,14 @@
   <nav class="page-navigation">
     {% with page.get_prev_siblings.live.first as previous_page %}
       {% if previous_page %}
-      <a href="{% pageurl previous_page %}" class="page-navigation__button">
-        <i class="fas fa-fw fa-chevron-left fa-lg"></i>
-        
-        <div>
-          <span class="small">Previous</span>
-          <span class="bold">{{ previous_page.title }}</span>
-        </div>
-      </a>
+        <a href="{% pageurl previous_page %}" class="page-navigation__button">
+          <i class="fas fa-fw fa-chevron-left fa-lg"></i>
+
+          <div>
+            <span class="small">Previous</span>
+            <span class="bold">{{ previous_page.title }}</span>
+          </div>
+        </a>
       {% endif %}
     {% endwith %}
     {% with page.get_next_siblings.live.first as next_page %}

@@ -1,16 +1,16 @@
 {% load render_table from django_tables2 %}
 
 {% block tab %}
-<div class="card card--none">
-  {% render_table table %}
+  <div class="card card--none">
+    {% render_table table %}
 
-  <div class="pad pad--sm">
-    <a
-      class="link small"
-      href="{% url 'team_invites:create' team.id %}"
-    >
-      <i class="fa fa-fw fa-plus mr-2"></i>New Invite</a>
-    <a/>
+    <div class="pad pad--sm">
+      <a
+        class="link small"
+        href="{% url 'team_invites:create' team.id %}"
+      >
+        <i class="fa fa-fw fa-plus mr-2"></i>New Invite</a>
+      <a/>
+    </div>
   </div>
-</div>
 {% endblock %}

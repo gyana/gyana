@@ -4,9 +4,9 @@
   hx-swap="none"
   x-data="{text: '{{ object.text_content|default_if_none:"[]"|escapejs }}' }"
   {% if widget.page.dashboard.font_color %}
-  style="color: {{ widget.page.dashboard.font_color }};"
+    style="color: {{ widget.page.dashboard.font_color }};"
   {% endif %}
-  >
+>
   {% csrf_token %}
   <div class="hidden">
     {{ form }}
@@ -15,11 +15,11 @@
   <div
     class="w-full"
     x-init="const readOnly = {% if request.GET.mode != 'edit' %}true{% else %}false{% endif %}
-    const editor = SiteJS.widgets.Text.quill($el, readOnly)
-    editor.setContents(JSON.parse($data.text))
-    editor.on('text-change', () => {
+      const editor = SiteJS.widgets.Text.quill($el, readOnly)
+      editor.setContents(JSON.parse($data.text))
+      editor.on('text-change', () => {
       $data.text = JSON.stringify(editor.getContents()['ops'])
       $dispatch('text-change')
-    })"
+      })"
   />
 </form>

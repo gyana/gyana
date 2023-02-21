@@ -2,29 +2,29 @@
 {% load static %}
 
 {% block header %}
-<p>
-  We'd like to learn a little more about you so we can help you get the most out
-  of Gyana.
-</p>
+  <p>
+    We'd like to learn a little more about you so we can help you get the most out
+    of Gyana.
+  </p>
 {% endblock %}
 
 {% block content %}
-<form class="mb-auto" method="post">
-  {% csrf_token %}
+  <form class="mb-auto" method="post">
+    {% csrf_token %}
 
-  {{ form }}
+    {{ form }}
 
-  <div class="flex flex-col w-full gap-2">
-    <button type="submit" class="button button--primary button--filled w-full">
-      Next
-    </button>
-  </div>
-</form>
+    <div class="flex flex-col w-full gap-2">
+      <button type="submit" class="button button--primary button--filled w-full">
+        Next
+      </button>
+    </div>
+  </form>
 
-{% comment %} Track conversions for email/password signup and Google login {% endcomment %}
-{% if WEBSITE_GTM_ID %}
-  {% include "web/components/hubspot_identify.html" %}
-{% endif %}
+  {% comment %} Track conversions for email/password signup and Google login {% endcomment %}
+  {% if WEBSITE_GTM_ID %}
+    {% include "web/components/hubspot_identify.html" %}
+  {% endif %}
 {% endblock %}
 
 {% block footer %}{% endblock %}

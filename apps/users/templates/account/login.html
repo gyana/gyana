@@ -3,37 +3,37 @@
 {% load socialaccount %}
 
 {% block content %}
-<section>
-  <a class="button button--primary button--outline button--google w-full" href="{% provider_login_url 'google' %}">
-    <img class="mr-2" src="{% static 'images/socialauth/google-g.svg' %}" alt="Google Logo">
-    Sign in with Google
-  </a>
-
-  <p class="text-center text-black-50 my-4">or</p>
-
-  <form class="mb-4" method="post">
-    {% csrf_token %}
-
-    {{ form }}
-
-    <div class="flex flex-col w-full gap-2">
-      <button type="submit" class="button button--primary button--filled w-full">
-        Sign in
-      </button>
-    </div>
-  </form>
-
-  <p class="text-center">
-    <a class="link" href="{% url 'account_reset_password' %}">
-      Forgot your password?
+  <section>
+    <a class="button button--primary button--outline button--google w-full" href="{% provider_login_url 'google' %}">
+      <img class="mr-2" src="{% static 'images/socialauth/google-g.svg' %}" alt="Google Logo">
+      Sign in with Google
     </a>
-  </p>
 
-  <p class="text-center">
-    No account yet? No problem,
-    <a class="link" href="{% url 'account_signup' %}">
-      create one here!
-    </a>
-  </p>
-</section>
+    <p class="text-center text-black-50 my-4">or</p>
+
+    <form class="mb-4" method="post">
+      {% csrf_token %}
+
+      {{ form }}
+
+      <div class="flex flex-col w-full gap-2">
+        <button type="submit" class="button button--primary button--filled w-full">
+          Sign in
+        </button>
+      </div>
+    </form>
+
+    <p class="text-center">
+      <a class="link" href="{% url 'account_reset_password' %}">
+        Forgot your password?
+      </a>
+    </p>
+
+    <p class="text-center">
+      No account yet? No problem,
+      <a class="link" href="{% url 'account_signup' %}">
+        create one here!
+      </a>
+    </p>
+  </section>
 {% endblock %}

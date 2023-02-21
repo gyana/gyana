@@ -8,17 +8,17 @@
     {% for function in functions %}
       <h1 id="{{function.intercom_id}}">{{function.name}}(
         {% include 'nodes/help/_arguments.html' with arguments=function.arguments %}
-      )</h1>
+        )</h1>
 
       <span class='description'>{{ function.description }}</span>
-      
+
       <h2 class='my-2'>Arguments</h2>
       <ul>
-      {% for argument in function.arguments %}
+        {% for argument in function.arguments %}
 
-      <li><i>{{argument.name}}:</i> {{argument.description}}</li>
+          <li><i>{{argument.name}}:</i> {{argument.description}}</li>
 
-      {% endfor %}
+        {% endfor %}
       </ul>
     {% endfor %}
   </div>

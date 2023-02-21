@@ -2,38 +2,38 @@
 {% load static %}
 
 {% block body.content %}
-<div class="landing">
-  <div class="landing__content">
-    <header class="landing__header">
-      <h1><a href="{% url 'account_login' %}">Gyana</a></h1>
+  <div class="landing">
+    <div class="landing__content">
+      <header class="landing__header">
+        <h1><a href="{% url 'account_login' %}">Gyana</a></h1>
 
-      {% block header %}
-      <p>
-        Welcome, log in to start where you left off or create a new account.
-      </p>
+        {% block header %}
+          <p>
+            Welcome, log in to start where you left off or create a new account.
+          </p>
+        {% endblock %}
+      </header>
+
+
+      {% block content %}
+      {% endblock content %}
+
+      <footer class="landing__footer">
+        {% block footer %}
+          <p>
+            By using the app, you agree to our
+            <a href="{% url 'web:terms-of-use' %}" class="link">terms of service</a>
+            and
+            <a href="{% url 'web:privacy-policy' %}" class="link">privacy policy</a>.
+          </p>
+        {% endblock %}
+      </footer>
+    </div>
+
+    <div class="landing__image">
+      {% block image %}
+        <img src="{% static 'images/landing.png' %}" />
       {% endblock %}
-    </header>
-
-
-    {% block content %}
-    {% endblock content %}
-
-    <footer class="landing__footer">
-      {% block footer %}
-      <p>
-        By using the app, you agree to our
-        <a href="{% url 'web:terms-of-use' %}" class="link">terms of service</a>
-        and
-        <a href="{% url 'web:privacy-policy' %}" class="link">privacy policy</a>.
-      </p>
-      {% endblock %}
-    </footer>
+    </div>
   </div>
-
-  <div class="landing__image">
-    {% block image %}
-      <img src="{% static 'images/landing.png' %}" />
-    {% endblock %}
-  </div>
-</div>
 {% endblock body.content %}

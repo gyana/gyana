@@ -1,4 +1,4 @@
-<form 
+<form
   method="post"
   action="{% url 'dashboard_widgets:move_page' project.id dashboard.id object.id %}"
   target="_top"
@@ -8,12 +8,12 @@
 
   <select name='page' id="page" class="list__item list__item--interactive w-full">
     {% for page in object.page.dashboard.pages.all %}
-        <option 
-          value="{{ page.id }}"
-          {% if page.id == object.page.id %}selected{% endif %}
-        >
-          {{ page.position }}
-        </option>
+      <option
+        value="{{ page.id }}"
+        {% if page.id == object.page.id %}selected{% endif %}
+      >
+        {{ page.position }}
+      </option>
     {% endfor %}
   </select>
 </form>

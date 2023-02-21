@@ -8,19 +8,19 @@
   </div>
 
   {% for user_team in request.user.teams.all %}
-  <a
-    class="sidebar__link sidebar__team {% if user_team.id == team.id %}sidebar__link--active{% endif %}"
-    href="{% url 'teams:detail' user_team.id %}"
-    x-tooltip.right="{{ user_team.name }}"
-  >
-    {% if user_team.icon %}
-    <img src="{{ user_team.icon.url }}" />
-    {% else %}
-    <span class="team_logo" style="background: {{ user_team.color }}">
-      {{ user_team.name|slice:1|capfirst }}
-    </span>
-    {% endif %}
-  </a>
+    <a
+      class="sidebar__link sidebar__team {% if user_team.id == team.id %}sidebar__link--active{% endif %}"
+      href="{% url 'teams:detail' user_team.id %}"
+      x-tooltip.right="{{ user_team.name }}"
+    >
+      {% if user_team.icon %}
+        <img src="{{ user_team.icon.url }}" />
+      {% else %}
+        <span class="team_logo" style="background: {{ user_team.color }}">
+          {{ user_team.name|slice:1|capfirst }}
+        </span>
+      {% endif %}
+    </a>
   {% endfor %}
 
   <a

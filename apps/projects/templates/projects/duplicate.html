@@ -1,21 +1,21 @@
 <div hx-target="this" hx-swap="outerHTML">
   {% if show_alert %}
     <script type="text/javascript">
-    alert("Your project is being duplicated you should receive an e-mail once it's ready")
+      alert("Your project is being duplicated you should receive an e-mail once it's ready")
     </script>
   {% endif %}
   <form hx-post="{% url 'projects:duplicate' project.id %}">
-      {% csrf_token %}
-      <button {% if not team.can_create_project %}disabled{% endif %}
-              type='submit'
-              class="button button--m"
-              x-data
-              {% if team.can_create_project %}
-                x-tooltip="Duplicates all integrations, workflows and dashboards of a project."
-              {% else %}
-                x-tooltip="You cannot create more projects on your current plan."
-              {% endif %}>
-          <span class='beta beta__white'>Duplicate</span>
-      </button>
+    {% csrf_token %}
+    <button {% if not team.can_create_project %}disabled{% endif %}
+      type='submit'
+      class="button button--m"
+      x-data
+      {% if team.can_create_project %}
+        x-tooltip="Duplicates all integrations, workflows and dashboards of a project."
+      {% else %}
+        x-tooltip="You cannot create more projects on your current plan."
+      {% endif %}>
+      <span class='beta beta__white'>Duplicate</span>
+    </button>
   </form>
 </div>
