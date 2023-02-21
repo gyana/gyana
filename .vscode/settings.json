@@ -1,4 +1,10 @@
 {
+  "customLocalFormatters.formatters": [
+    {
+      "command": "djhtml -t 2 -",
+      "languages": ["django-html"]
+    }
+  ],
   "python.pythonPath": ".venv/bin/python",
   "editor.formatOnSave": true,
   "editor.tabSize": 2,
@@ -6,8 +12,9 @@
   "editor.rulers": [80, 120],
   "[django-html]": {
     "editor.detectIndentation": false,
-    "editor.formatOnSave": false,
-    "editor.tabSize": 2
+    "editor.formatOnSave": true,
+    "editor.tabSize": 2,
+    "editor.defaultFormatter": "jkillian.custom-local-formatters"
   },
   "[html]": {
     "editor.detectIndentation": false,

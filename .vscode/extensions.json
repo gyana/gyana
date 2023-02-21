@@ -9,7 +9,7 @@
     "dbaeumer.vscode-eslint",
     "batisteo.vscode-django",
     "bradlc.vscode-tailwindcss",
-    "monosans.djlint",
-    "pcbowers.alpine-intellisense"
+    "pcbowers.alpine-intellisense",
+    "jkillian.custom-local-formatters"
   ]
 }
