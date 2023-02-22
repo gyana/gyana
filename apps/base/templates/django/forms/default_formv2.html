@@ -1,0 +1,11 @@
+{% for hidden_field in form.hidden_fields %}
+  {{ hidden_field }}
+{% endfor %}
+
+{{ errors }}
+
+<div class="input-group">
+  {% include 'django/forms/fieldv2.html' with field=form.url %}
+  {% include 'django/forms/fieldv2.html' with field=form.json_path %}
+  {% include 'django/forms/fieldv2.html' with field=form.http_request_method %}
+</div>

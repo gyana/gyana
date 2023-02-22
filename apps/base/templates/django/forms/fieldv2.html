@@ -1,0 +1,20 @@
+<div class="label">
+  {% if field.use_fieldset %}
+    <fieldset>
+      {% if field.label %}{{ field.legend_tag }}{% endif %}
+  {% else %}
+    {% if field.label %}{{ field.label_tag }}{% endif %}
+  {% endif %}
+
+  {% if field.help_text %}
+    <p class="input__help-text">{{ field.help_text|safe }}</p>
+  {% endif %}
+
+  {{ field.errors }}
+
+  {{ field }}
+
+  {% if field.use_fieldset %}
+    </fieldset>
+  {% endif %}
+</div>

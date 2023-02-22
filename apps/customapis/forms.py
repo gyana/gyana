@@ -164,6 +164,8 @@ class CustomApiCreateForm(BaseModelForm):
 
 
 class CustomApiUpdateForm(LiveFormsetMixin, LiveModelForm):
+    template_name = "django/forms/default_formv2.html"
+
     class Meta:
         model = CustomApi
         fields = [

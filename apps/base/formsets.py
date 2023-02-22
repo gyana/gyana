@@ -7,6 +7,7 @@ class BaseInlineFormset(BaseInlineFormSet):
         super().add_fields(form, index)
         form.fields["DELETE"].widget = forms.HiddenInput()
 
+
 class RequiredInlineFormset(BaseInlineFormset):
     def __init__(self, *args, **kwargs):
         self.names = kwargs.pop("names", None)
@@ -43,4 +44,3 @@ class RequiredInlineFormset(BaseInlineFormset):
             if not commit:
                 self.saved_forms.append(form)
         return self.new_objects
-

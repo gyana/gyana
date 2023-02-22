@@ -5,10 +5,21 @@ from django.contrib.postgres.search import TrigramSimilarity
 from django.db import transaction
 from django.db.models import Case, Q, When
 from django.db.models.functions import Greatest
+from django.forms import BaseForm
 from django.utils.datastructures import MultiValueDict
 
 from apps.base.core.utils import create_column_choices
 from apps.tables.models import Table
+
+__BaseForm__init__ = BaseForm.__init__
+
+
+def BaseForm__init__(self, *args, **kwargs):
+    __BaseForm__init__(self, *args, **kwargs)
+    self.label_suffix = ""
+
+
+BaseForm.__init__ = BaseForm__init__
 
 
 def get_formsets(self):
