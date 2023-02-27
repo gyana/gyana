@@ -1,5 +1,7 @@
 import ibis.expr.datatypes as dt
 import ibis.expr.rules as rlz
+from ibis.backends.bigquery.compiler import BigQueryExprTranslator
+from ibis.backends.bigquery.registry import _timestamp_units
 from ibis.expr.operations import (
     Constant,
     DateDiff,
@@ -16,8 +18,6 @@ from ibis.expr.types import (
     TimestampValue,
     TimeValue,
 )
-from ibis_bigquery.compiler import BigQueryExprTranslator
-from ibis_bigquery.registry import _timestamp_units
 
 # Do not place compile functions and classes in a function as local variables
 # this will mess with cacheops and lead to cant pickle local object error

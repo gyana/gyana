@@ -227,7 +227,7 @@ python-dateutil==2.8.2
     #   faker
 python-slugify==6.1.2
     # via cookiecutter
-pytz==2022.6
+pytz==2022.7.1
     # via
     #   -c requirements.txt
     #   django-modelcluster

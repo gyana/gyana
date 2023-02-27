@@ -1,13 +1,15 @@
 from django.conf import settings
 from django.core.cache import cache
+from ibis.backends import bigquery
 from ibis.expr.types import TableExpr
-from ibis_bigquery.client import BigQueryTable
 
 from apps.base import clients
 from apps.base.clients import ibis_client
 from apps.base.core.utils import md5_kwargs
 
 from .models import Table
+
+BigQueryTable = bigquery.client.BigQueryTable
 
 
 def _get_cache_key_for_table(table):

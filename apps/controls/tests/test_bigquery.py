@@ -1,8 +1,8 @@
 import datetime as dt
 
-import ibis_bigquery
 import pytest
 from dateutil.relativedelta import relativedelta
+from ibis import bigquery
 
 from apps.base.tests.mock_data import TABLE
 from apps.controls.bigquery import get_quarter, slice_query
@@ -46,7 +46,7 @@ def test_slice_query_custom_range(date_range, start, end, expected_sql):
     control = Control(date_range=date_range, start=start, end=end)
     query = slice_query(TABLE, "birthday", control, False)
 
-    assert ibis_bigquery.compile(query) == expected_sql
+    assert bigquery.compile(query) == expected_sql
 
 
 TODAY = dt.date.today()
@@ -215,4 +215,4 @@ def test_previous_function(date_range, expected_sql):
     control = Control(date_range=date_range)
     query = slice_query(TABLE, "birthday", control, True)
 
-    assert ibis_bigquery.compile(query) == expected_sql
+    assert bigquery.compile(query) == expected_sql

@@ -1,5 +1,5 @@
-import ibis_bigquery
 import pytest
+from ibis import bigquery
 
 from apps.base.tests.mock_data import TABLE
 from apps.columns.bigquery import compile_formula
@@ -451,7 +451,7 @@ PARAMS = [
 
 @pytest.mark.parametrize("formula, expected_sql", PARAMS)
 def test_formula(formula, expected_sql):
-    sql = ibis_bigquery.compile(compile_formula(TABLE, formula))
+    sql = bigquery.compile(compile_formula(TABLE, formula))
     assert sql == expected_sql
 
 

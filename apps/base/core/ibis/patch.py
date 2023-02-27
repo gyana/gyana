@@ -1,8 +1,12 @@
 import ibis.expr.datatypes as dt
 from ibis.backends.base.sql.compiler import query_builder
 from ibis.backends.base.sql.compiler.base import SetOp
-from ibis_bigquery.client import _DTYPE_TO_IBIS_TYPE
-from ibis_bigquery.datatypes import TypeTranslationContext, ibis_type_to_bigquery_type
+from ibis.backends.bigquery.client import _DTYPE_TO_IBIS_TYPE
+
+# from ibis.backends.bigquery.datatypes import (
+#     TypeTranslationContext,
+#     ibis_type_to_bigquery_type,
+# )
 
 
 class Intersection(SetOp):
@@ -21,14 +25,14 @@ query_builder.Difference = Difference
 _DTYPE_TO_IBIS_TYPE["BIGNUMERIC"] = dt.Decimal(76, 38)
 
 
-@ibis_type_to_bigquery_type.register(dt.Decimal, TypeTranslationContext)
-def trans_numeric(t, context):
-    if (t.precision, t.scale) == (38, 9):
-        return "NUMERIC"
-    if (t.precision, t.scale) == (76, 38):
-        return "BIGNUMERIC"
-    raise TypeError(
-        """BigQuery only supports the NUMERIC decimal types 
-with a precision of 38 and scale of 9 and the BIGNUMERIC decimal type 
-with a precision of 76 and 38 """
-    )
+# @ibis_type_to_bigquery_type.register(dt.Decimal, TypeTranslationContext)
+# def trans_numeric(t, context):
+#     if (t.precision, t.scale) == (38, 9):
+#         return "NUMERIC"
+#     if (t.precision, t.scale) == (76, 38):
+#         return "BIGNUMERIC"
+#     raise TypeError(
+#         """BigQuery only supports the NUMERIC decimal types
+# with a precision of 38 and scale of 9 and the BIGNUMERIC decimal type
+# with a precision of 76 and 38 """
+#     )

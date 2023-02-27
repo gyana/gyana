@@ -1,5 +1,5 @@
+import ibis
 from ibis.backends.base.sql import BaseSQLBackend
-from ibis_bigquery import Backend
 
 # The Ibis BigQuery client makes 2 requests to BigQuery
 # - for the schema in conn.get_schema(...)
@@ -17,4 +17,4 @@ def table(self, name, database=None):
     return original_table(self, name, database)
 
 
-Backend.table = table
+ibis.bigquery.table = table

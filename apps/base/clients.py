@@ -2,7 +2,7 @@ from functools import lru_cache
 
 import google.auth
 import heroku3
-import ibis_bigquery
+import ibis
 from django.conf import settings
 from django.utils.text import slugify
 from djpaddle.models import paddle_client
@@ -60,7 +60,7 @@ def bigquery():
 
 @lru_cache
 def ibis_client():
-    return ibis_bigquery.connect(
+    return ibis.bigquery.connect(
         project_id=settings.GCP_PROJECT, auth_external_data=True
     )
 

@@ -40,7 +40,7 @@ gunicorn
 hashids
 honeybadger
 honeycomb-beeline
-ibis-bigquery
+ibis-framework[bigquery]
 inflection
 jsonpath-ng
 lark
@@ -53,3 +53,4 @@ python-Levenshtein
 readtime
 wagtail
 wagtailmenus
+sqlalchemy

@@ -85,10 +85,11 @@ def bigquery(mocker, settings):
     # set the project name to "project" in auto-generated SQL
     settings.GCP_PROJECT = "project"
     mocker.patch(
-        "ibis_bigquery.pydata_google_auth.default", return_value=(None, "project")
+        "ibis.backends.bigquery.pydata_google_auth.default",
+        return_value=(None, "project"),
     )
     mocker.patch("apps.base.clients.bigquery", return_value=client)
-    mocker.patch("ibis_bigquery.client.bq.Client", return_value=client)
+    mocker.patch("ibis.backends.bigquery.client.bq.Client", return_value=client)
     ibis_client = clients.ibis_client()
     ibis_client.client = client
 

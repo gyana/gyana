@@ -58,9 +58,15 @@ enc_env:
     just gcloud_kms encrypt .env
     just gcloud_kms encrypt {{service_account}}
 
+sync:
+    pip-sync requirements.txt requirements-dev.txt
 update:
     npm install
-    pip-sync requirements.txt requirements-dev.txt
+    sync
+
+compile:
+    pip-compile
+    pip-compile requirements-dev.in
 
 format:
     autoflake --in-place --recursive --remove-all-unused-imports --ignore-init-module-imports --exclude 'apps/*/migrations' gyana apps

@@ -73,8 +73,8 @@ cryptography==38.0.3
     #   pyjwt
 cssselect==1.2.0
     # via pyquery
-db-dtypes==1.0.4
-    # via ibis-bigquery
+db-dtypes==1.0.5
+    # via ibis-framework
 decorator==5.1.1
     # via jsonpath-ng
 defusedxml==0.7.1
@@ -190,7 +190,7 @@ future==0.18.2
     # via django-clone
 fuzzywuzzy==0.18.0
     # via -r requirements.in
-google-api-core[grpc]==2.10.2
+google-api-core[grpc]==2.11.0
     # via
     #   google-api-python-client
     #   google-cloud-bigquery
@@ -200,7 +200,7 @@ google-api-core[grpc]==2.10.2
     #   google-cloud-storage
 google-api-python-client==2.65.0
     # via -r requirements.in
-google-auth==2.14.0
+google-auth==2.16.1
     # via
     #   google-api-core
     #   google-api-python-client
@@ -211,14 +211,14 @@ google-auth==2.14.0
     #   pydata-google-auth
 google-auth-httplib2==0.1.0
     # via google-api-python-client
-google-auth-oauthlib==0.7.0
+google-auth-oauthlib==1.0.0
     # via pydata-google-auth
-google-cloud-bigquery==2.34.4
+google-cloud-bigquery==3.6.0
     # via
     #   -r requirements.in
-    #   ibis-bigquery
-google-cloud-bigquery-storage==2.16.2
-    # via ibis-bigquery
+    #   ibis-framework
+google-cloud-bigquery-storage==2.18.1
+    # via ibis-framework
 google-cloud-core==2.3.2
     # via
     #   google-cloud-bigquery
@@ -262,10 +262,8 @@ httplib2==0.21.0
     # via
     #   google-api-python-client
     #   google-auth-httplib2
-ibis-bigquery==2.2.0
+ibis-framework[bigquery]==4.1.0
     # via -r requirements.in
-ibis-framework==3.2.0
-    # via ibis-bigquery
 idna==3.4
     # via requests
 inflection==0.5.1
@@ -312,8 +310,6 @@ packaging==21.3
     # via
     #   db-dtypes
     #   google-cloud-bigquery
-    #   ibis-bigquery
-    #   ibis-framework
     #   pytest
     #   redis
 paddle-client==1.0.0
@@ -361,10 +357,8 @@ psycopg2-binary==2.9.5
     # via -r requirements.in
 py==1.11.0
     # via pytest
-pyarrow==9.0.0
-    # via
-    #   db-dtypes
-    #   ibis-bigquery
+pyarrow==11.0.0
+    # via db-dtypes
 pyasn1==0.4.8
     # via
     #   pyasn1-modules
@@ -377,10 +371,8 @@ pycparser==2.21
     # via cffi
 pycryptodome==3.15.0
     # via dj-paddle
-pydantic==1.10.2
+pydata-google-auth==1.7.0
     # via ibis-framework
-pydata-google-auth==1.4.0
-    # via ibis-bigquery
 pygments==2.13.0
     # via rich
 pyjwt[crypto]==2.6.0
@@ -403,19 +395,21 @@ python-dateutil==2.8.2
     #   django-silk
     #   google-cloud-bigquery
     #   heroku3
+    #   ibis-framework
     #   pandas
     #   python-crontab
 python-levenshtein==0.12.2
     # via -r requirements.in
 python3-openid==3.2.0
     # via django-allauth
-pytz==2022.6
+pytz==2022.7.1
     # via
     #   celery
     #   django-modelcluster
     #   django-silk
     #   django-timezone-field
     #   djangorestframework
+    #   ibis-framework
     #   l18n
     #   pandas
 pyyaml==6.0
@@ -427,8 +421,6 @@ redis==4.3.4
     #   celery
     #   django-cacheops
     #   django-redis
-regex==2022.10.31
-    # via ibis-framework
 requests==2.28.1
     # via
     #   analytics-python
@@ -469,8 +461,10 @@ six==1.16.0
     #   python-dateutil
 soupsieve==2.3.2.post1
     # via beautifulsoup4
-sqlalchemy==1.4.42
-    # via ibis-bigquery
+sqlalchemy==2.0.4
+    # via -r requirements.in
+sqlglot==10.6.4
+    # via ibis-framework
 sqlparse==0.4.3
     # via
     #   django
@@ -490,7 +484,9 @@ tomli==2.0.1
 toolz==0.12.0
     # via ibis-framework
 typing-extensions==4.4.0
-    # via pydantic
+    # via
+    #   ibis-framework
+    #   sqlalchemy
 tzdata==2022.6
     # via django-celery-beat
 uritemplate==4.1.1
