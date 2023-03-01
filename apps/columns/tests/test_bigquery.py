@@ -13,17 +13,17 @@ from apps.columns.models import EditColumn
 pytestmark = pytest.mark.django_db
 
 
-UNNAMED_QUERY = """SELECT {} AS `{}`
-FROM olympians"""
+UNNAMED_QUERY = """SELECT {} AS `tmp`
+FROM olympians t0"""
 
 QUERY = """SELECT {} AS `tmp`
-FROM olympians"""
+FROM olympians t0"""
 
 
 def create_extract_edit(column, extraction, type_):
     return pytest.param(
         EditColumn(column=column, **{f"{type_.lower()}_function": extraction}),
-        UNNAMED_QUERY.format(f"EXTRACT({extraction} from `{column}`)", extraction),
+        UNNAMED_QUERY.format(f"EXTRACT({extraction} from t0.`{column}`)"),
         id=f"{type_} {extraction}",
     )
 
@@ -34,102 +34,102 @@ def create_extract_edit(column, extraction, type_):
         # Numeric edit
         pytest.param(
             EditColumn(column="id", integer_function="isnull"),
-            QUERY.format("`id` IS NULL"),
+            QUERY.format("t0.`id` IS NULL"),
             id="Integer isnull",
         ),
         pytest.param(
             EditColumn(column="id", integer_function="notnull"),
-            QUERY.format("`id` IS NOT NULL"),
+            QUERY.format("t0.`id` IS NOT NULL"),
             id="Integer notnull",
         ),
         pytest.param(
             EditColumn(column="id", integer_function="cummax"),
             QUERY.format(
-                "max(`id`) OVER (RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)"
+                "max(t0.`id`) OVER (RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)"
             ),
             id="Integer cummax",
         ),
         pytest.param(
             EditColumn(column="id", integer_function="cummin"),
             QUERY.format(
-                "min(`id`) OVER (RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)"
+                "min(t0.`id`) OVER (RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)"
             ),
             id="Integer cummin",
         ),
         pytest.param(
             EditColumn(column="id", integer_function="abs"),
-            QUERY.format("abs(`id`)"),
+            QUERY.format("abs(t0.`id`)"),
             id="Integer abs",
         ),
         pytest.param(
             EditColumn(column="id", integer_function="sqrt"),
-            QUERY.format("sqrt(`id`)"),
+            QUERY.format("sqrt(t0.`id`)"),
             id="Integer sqrt",
         ),
         pytest.param(
             EditColumn(column="id", integer_function="ceil"),
-            QUERY.format("ceil(`id`)"),
+            QUERY.format("ceil(t0.`id`)"),
             id="Integer ceil",
         ),
         pytest.param(
             EditColumn(column="id", integer_function="floor"),
-            QUERY.format("CAST(FLOOR(`id`) AS INT64)"),
+            QUERY.format("CAST(FLOOR(t0.`id`) AS INT64)"),
             id="Integer floor",
         ),
         pytest.param(
             EditColumn(column="id", integer_function="ln"),
-            QUERY.format("ln(`id`)"),
+            QUERY.format("ln(t0.`id`)"),
             id="Integer ln",
         ),
         pytest.param(
             EditColumn(column="id", integer_function="log2"),
-            QUERY.format("log(`id`, 2)"),
+            QUERY.format("LOG(t0.`id`, 2)"),
             id="Integer log2",
         ),
         pytest.param(
             EditColumn(column="id", integer_function="log10"),
-            QUERY.format("log10(`id`)"),
+            QUERY.format("log10(t0.`id`)"),
             id="Integer log10",
         ),
         pytest.param(
             EditColumn(column="id", integer_function="log", float_value=42.0),
-            QUERY.format("log(`id`, 42.0)"),
+            QUERY.format("log(t0.`id`, 42.0)"),
             id="Integer log",
         ),
         pytest.param(
             EditColumn(column="id", integer_function="exp"),
-            QUERY.format("exp(`id`)"),
+            QUERY.format("exp(t0.`id`)"),
             id="Integer exp",
         ),
         pytest.param(
             EditColumn(column="id", integer_function="add", float_value=42.0),
-            QUERY.format("`id` + 42.0"),
+            QUERY.format("t0.`id` + 42.0"),
             id="Integer add",
         ),
         pytest.param(
             EditColumn(column="id", integer_function="sub", float_value=42.0),
-            QUERY.format("`id` - 42.0"),
+            QUERY.format("t0.`id` - 42.0"),
             id="Integer subtract",
         ),
         pytest.param(
             EditColumn(column="id", integer_function="mul", float_value=42.0),
-            QUERY.format("`id` * 42.0"),
+            QUERY.format("t0.`id` * 42.0"),
             id="Integer mul",
         ),
         pytest.param(
             EditColumn(column="id", integer_function="div", float_value=42.0),
-            QUERY.format("IEEE_DIVIDE(`id`, 42.0)"),
+            QUERY.format("IEEE_DIVIDE(t0.`id`, 42.0)"),
             id="Integer div",
         ),
         # String edit
         pytest.param(
             EditColumn(column="athlete", string_function="isnull"),
-            QUERY.format("`athlete` IS NULL"),
+            QUERY.format("t0.`athlete` IS NULL"),
             id="String is null",
         ),
         pytest.param(
             EditColumn(column="athlete", string_function="notnull"),
-            QUERY.format("`athlete` IS NOT NULL"),
+            QUERY.format("t0.`athlete` IS NOT NULL"),
             id="String not null",
         ),
         pytest.param(
@@ -138,60 +138,60 @@ def create_extract_edit(column, extraction, type_):
                 string_function="fillna",
                 string_value="Sascha Hofmann",
             ),
-            QUERY.format("IFNULL(`athlete`, 'Sascha Hofmann')"),
+            QUERY.format("IFNULL(t0.`athlete`, 'Sascha Hofmann')"),
             id="String fillna",
         ),
         pytest.param(
             EditColumn(column="athlete", string_function="lower"),
-            QUERY.format("lower(`athlete`)"),
+            QUERY.format("lower(t0.`athlete`)"),
             id="String lower",
         ),
         pytest.param(
             EditColumn(column="athlete", string_function="upper"),
-            QUERY.format("upper(`athlete`)"),
+            QUERY.format("upper(t0.`athlete`)"),
             id="String upper",
         ),
         pytest.param(
             EditColumn(column="athlete", string_function="length"),
-            QUERY.format("length(`athlete`)"),
+            QUERY.format("length(t0.`athlete`)"),
             id="String length",
         ),
         pytest.param(
             EditColumn(column="athlete", string_function="reverse"),
-            QUERY.format("reverse(`athlete`)"),
+            QUERY.format("reverse(t0.`athlete`)"),
             id="String reverse",
         ),
         pytest.param(
             EditColumn(column="athlete", string_function="strip"),
-            QUERY.format("trim(`athlete`)"),
+            QUERY.format("trim(t0.`athlete`)"),
             id="String strip",
         ),
         pytest.param(
             EditColumn(column="athlete", string_function="lstrip"),
-            QUERY.format("ltrim(`athlete`)"),
+            QUERY.format("ltrim(t0.`athlete`)"),
             id="String lstrip",
         ),
         pytest.param(
             EditColumn(column="athlete", string_function="rstrip"),
-            QUERY.format("rtrim(`athlete`)"),
+            QUERY.format("rtrim(t0.`athlete`)"),
             id="String rstrip",
         ),
         pytest.param(
             EditColumn(
                 column="athlete", string_function="like", string_value="David %"
             ),
-            QUERY.format("`athlete` LIKE 'David %'"),
+            QUERY.format("t0.`athlete` LIKE 'David %'"),
             id="String like",
         ),
         # Time edit
         pytest.param(
             EditColumn(column="lunch", time_function="isnull"),
-            QUERY.format("`lunch` IS NULL"),
+            QUERY.format("t0.`lunch` IS NULL"),
             id="Time is null",
         ),
         pytest.param(
             EditColumn(column="lunch", time_function="notnull"),
-            QUERY.format("`lunch` IS NOT NULL"),
+            QUERY.format("t0.`lunch` IS NOT NULL"),
             id="Time not null",
         ),
         create_extract_edit("lunch", "hour", "Time"),
@@ -201,12 +201,12 @@ def create_extract_edit(column, extraction, type_):
         # Date edit
         pytest.param(
             EditColumn(column="birthday", date_function="isnull"),
-            QUERY.format("`birthday` IS NULL"),
+            QUERY.format("t0.`birthday` IS NULL"),
             id="Date is null",
         ),
         pytest.param(
             EditColumn(column="birthday", date_function="notnull"),
-            QUERY.format("`birthday` IS NOT NULL"),
+            QUERY.format("t0.`birthday` IS NOT NULL"),
             id="Date not null",
         ),
         create_extract_edit("birthday", "year", "Date"),
@@ -215,12 +215,12 @@ def create_extract_edit(column, extraction, type_):
         #  Datetime edit
         pytest.param(
             EditColumn(column="when", date_function="isnull"),
-            QUERY.format("`when` IS NULL"),
+            QUERY.format("t0.`when` IS NULL"),
             id="Datetime is null",
         ),
         pytest.param(
             EditColumn(column="when", date_function="notnull"),
-            QUERY.format("`when` IS NOT NULL"),
+            QUERY.format("t0.`when` IS NOT NULL"),
             id="Datetime not null",
         ),
         create_extract_edit("when", "year", "Datetime"),
@@ -232,17 +232,17 @@ def create_extract_edit(column, extraction, type_):
         create_extract_edit("when", "millisecond", "Datetime"),
         pytest.param(
             EditColumn(column="when", datetime_function="time"),
-            QUERY.format("TIME(`when`)"),
+            QUERY.format("TIME(t0.`when`)"),
             id="Datetime time",
         ),
         pytest.param(
             EditColumn(column="when", datetime_function="date"),
-            QUERY.format("DATE(`when`)"),
+            QUERY.format("DATE(t0.`when`)"),
             id="Datetime date",
         ),
         pytest.param(
             EditColumn(column="when", datetime_function="epoch_seconds"),
-            QUERY.format("UNIX_SECONDS(`when`)"),
+            QUERY.format("UNIX_SECONDS(t0.`when`)"),
             id="Datetime epoch seconds",
         ),
     ],
@@ -252,43 +252,45 @@ def test_compile_function(edit, expected_sql):
     assert sql == expected_sql
 
 
-GROUP_QUERY = "SELECT {}, count(*) AS `count`\nFROM olympians\nGROUP BY 1"
+GROUP_QUERY = "SELECT {}, count(1) AS `count`\nFROM olympians t0\nGROUP BY 1"
 
 PARAMS = [
     pytest.param(
         "birthday",
         DatePeriod.MONTH,
-        GROUP_QUERY.format("DATE_TRUNC(`birthday`, MONTH) AS `birthday`"),
+        GROUP_QUERY.format("DATE_TRUNC(t0.`birthday`, MONTH) AS `birthday`"),
         id="month",
     ),
     pytest.param(
         "birthday",
         DatePeriod.WEEK,
-        GROUP_QUERY.format("DATE_TRUNC(`birthday`, WEEK) AS `birthday`"),
+        GROUP_QUERY.format(
+            "DATE_TRUNC(t0.`birthday`, WEEK(MONDAY)) AS `birthday`"
+        ).replace(" count(1)", "\n       count(1)"),
         id="week",
     ),
     pytest.param(
         "birthday",
         DatePeriod.MONTH_ONLY,
-        GROUP_QUERY.format("EXTRACT(month from `birthday`) AS `birthday`"),
+        GROUP_QUERY.format("EXTRACT(month from t0.`birthday`) AS `birthday`"),
         id="month only",
     ),
     pytest.param(
         "when",
         DatePeriod.DATE,
-        GROUP_QUERY.format("DATE(`when`) AS `when`"),
+        GROUP_QUERY.format("DATE(t0.`when`) AS `when`"),
         id="date",
     ),
     pytest.param(
         "birthday",
         DatePeriod.YEAR,
-        GROUP_QUERY.format("EXTRACT(year from `birthday`) AS `birthday`"),
+        GROUP_QUERY.format("EXTRACT(year from t0.`birthday`) AS `birthday`"),
         id="year",
     ),
     pytest.param(
         "birthday",
         DatePeriod.QUARTER,
-        GROUP_QUERY.format("DATE_TRUNC(`birthday`, QUARTER) AS `birthday`"),
+        GROUP_QUERY.format("DATE_TRUNC(t0.`birthday`, QUARTER) AS `birthday`"),
         id="quarter",
     ),
 ]
