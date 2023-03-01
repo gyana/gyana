@@ -538,7 +538,7 @@ def test_unpivot_node(setup):
     )
 
 
-SENTIMENT_QUERY = "SELECT \\t0.*\nFROM `project.cypress_team_.*_tables\\..*`"
+SENTIMENT_QUERY = "SELECT t0\\.\\*\nFROM `project\\.cypress_team_.*_tables\\..*` t0"
 
 
 def _create_sentiment_node(input_node, workflow):
