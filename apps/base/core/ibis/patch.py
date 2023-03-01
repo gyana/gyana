@@ -9,20 +9,20 @@ from ibis.backends.bigquery.client import _DTYPE_TO_IBIS_TYPE
 # )
 
 
-class Intersection(SetOp):
-    def _get_keyword_list(self):
-        return ["INTERSECT DISTINCT"] * (len(self.tables) - 1)
+# class Intersection(SetOp):
+#     def _get_keyword_list(self):
+#         return ["INTERSECT DISTINCT"] * (len(self.tables) - 1)
 
 
-class Difference(SetOp):
-    def _get_keyword_list(self):
-        return ["EXCEPT DISTINCT"] * (len(self.tables) - 1)
+# class Difference(SetOp):
+#     def _get_keyword_list(self):
+#         return ["EXCEPT DISTINCT"] * (len(self.tables) - 1)
 
 
-query_builder.Intersection = Intersection
-query_builder.Difference = Difference
+# query_builder.Intersection = Intersection
+# query_builder.Difference = Difference
 
-_DTYPE_TO_IBIS_TYPE["BIGNUMERIC"] = dt.Decimal(76, 38)
+# _DTYPE_TO_IBIS_TYPE["BIGNUMERIC"] = dt.Decimal(76, 38)
 
 
 # @ibis_type_to_bigquery_type.register(dt.Decimal, TypeTranslationContext)

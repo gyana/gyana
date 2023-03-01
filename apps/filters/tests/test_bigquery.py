@@ -276,12 +276,12 @@ PARAMS = [
     ),
     pytest.param(
         create_string_filter(Filter.StringPredicate.STARTSWITH),
-        QUERY.format("STARTS_WITH(t0.`athlete`, 'Adam Ondra')"),
+        QUERY.format("t0.`athlete` like concat('Adam Ondra', '%')"),
         id="String starts with",
     ),
     pytest.param(
         create_string_filter(Filter.StringPredicate.ENDSWITH),
-        QUERY.format("ENDS_WITH(t0.`athlete`, 'Adam Ondra')"),
+        QUERY.format("t0.`athlete` like concat('%', 'Adam Ondra')"),
         id="String ends with",
     ),
     pytest.param(
