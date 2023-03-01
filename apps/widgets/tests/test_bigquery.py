@@ -17,40 +17,41 @@ def setup(bigquery):
 
 
 SINGLE_DIMENSION_QUERY = """\
-SELECT *
+SELECT t0.*
 FROM (
-  SELECT `is_nice`, count(*) AS `count`
-  FROM `project.dataset.table`
+  SELECT t1.`is_nice`, count(1) AS `count`
+  FROM `project.dataset.table` t1
   GROUP BY 1
 ) t0
-ORDER BY `is_nice`\
+ORDER BY t0.`is_nice` ASC\
 """
 
 SINGLE_DIMENSION_SINGLE_AGGREGATION_QUERY = SINGLE_DIMENSION_QUERY.replace(
-    "count(*) AS `count`", "sum(`stars`) AS `stars`"
+    "count(1) AS `count`", "sum(t1.`stars`) AS `stars`"
 )
 SINGLE_DIMENSION_TWO_AGGREGATIONS_QUERY = SINGLE_DIMENSION_QUERY.replace(
-    "count(*) AS `count`", "sum(`stars`) AS `stars`, count(`athlete`) AS `athlete`"
+    "count(1) AS `count`",
+    "sum(t1.`stars`) AS `stars`,\n         count(t1.`athlete`) AS `athlete`",
 )
 
 TWO_DIMENSION_QUERY = """\
-SELECT *
+SELECT t0.*
 FROM (
-  SELECT `is_nice`, `medals`, count(*) AS `count`
-  FROM `project.dataset.table`
+  SELECT t1.`is_nice`, t1.`medals`, count(1) AS `count`
+  FROM `project.dataset.table` t1
   GROUP BY 1, 2
 ) t0
-ORDER BY `is_nice`\
+ORDER BY t0.`is_nice` ASC\
 """
 
 TWO_DIMENSION_SINGLE_AGGREGATION_QUERY = TWO_DIMENSION_QUERY.replace(
-    "count(*) AS `count`", "sum(`stars`) AS `stars`"
+    "count(1) AS `count`", "sum(t1.`stars`) AS `stars`"
 )
 
 NO_DIMENSION_THREE_AGGREGATIONS_QUERY = """\
-SELECT sum(`stars`) AS `stars`, count(`athlete`) AS `athlete`,
-       avg(`id`) AS `id`
-FROM `project.dataset.table`\
+SELECT sum(t0.`stars`) AS `stars`, count(t0.`athlete`) AS `athlete`,
+       avg(t0.`id`) AS `id`
+FROM `project.dataset.table` t0\
 """
 
 simple_params = pytest.mark.parametrize(
