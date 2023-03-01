@@ -43,7 +43,7 @@ def mock_gcp_analyze_sentiment(text, _):
     return mocked
 
 
-INPUT_QUERY = f"SELECT *\nFROM `{TABLE_NAME}`"
+INPUT_QUERY = f"SELECT t0.*\nFROM `{TABLE_NAME}` t0"
 DEFAULT_X_Y = {"x": 0, "y": 0}
 
 

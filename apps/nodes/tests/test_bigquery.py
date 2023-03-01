@@ -90,11 +90,11 @@ def test_select_node(setup):
     )
 
     query = get_query_from_node(select_node)
-    assert query.compile() == INPUT_QUERY.replace("*", "`athlete`, `birthday`")
+    assert query.compile() == INPUT_QUERY.replace("t0.*", "t0.`athlete`, t0.`birthday`")
 
     select_node.select_mode = "exclude"
     query = get_query_from_node(select_node)
-    assert query.compile() == INPUT_QUERY.replace("*", "`id`")
+    assert query.compile() == INPUT_QUERY.replace("t0.*", "t0.`id`")
 
 
 def test_join_node(setup):
@@ -113,27 +113,14 @@ def test_join_node(setup):
     # Mocking the table conditionally requires a little bit more work
     # So we simply join the table with itself which leads to duplicate columns that
     # Are aliased
-    join_query = "SELECT `id_1` AS `id`, `athlete_1`, `birthday_1`, `athlete_2`, `birthday_2`\nFROM (\n  SELECT `id_1`, `athlete_1`, `birthday_1`, `athlete_2`, `birthday_2`\n  FROM (\n    SELECT `id` AS `id_1`, `athlete` AS `athlete_1`, `birthday` AS `birthday_1`\n    FROM `project.dataset.table`\n  ) t1\n    INNER JOIN (\n      SELECT `id` AS `id_2`, `athlete` AS `athlete_2`, `birthday` AS `birthday_2`\n      FROM `project.dataset.table`\n    ) t2\n      ON t1.`id_1` = t2.`id_2`\n) t0"
+    join_query = "SELECT t0.`id_1` AS `id`, t0.`athlete_1`, t0.`birthday_1`, t0.`athlete_2`,\n       t0.`birthday_2`\nFROM (\n  SELECT `id_1`, `athlete_1`, `birthday_1`, `athlete_2`, `birthday_2`\n  FROM (\n    SELECT t3.`id` AS `id_1`, t3.`athlete` AS `athlete_1`,\n           t3.`birthday` AS `birthday_1`\n    FROM `project.dataset.table` t3\n  ) t1\n    INNER JOIN (\n      SELECT t3.`id` AS `id_2`, t3.`athlete` AS `athlete_2`,\n             t3.`birthday` AS `birthday_2`\n      FROM `project.dataset.table` t3\n    ) t2\n      ON t1.`id_1` = t2.`id_2`\n) t0"
     assert query.compile() == join_query
 
     join_node.join_how = "outer"
     query = get_query_from_node(join_node)
     assert (
         query.compile()
-        == """\
-SELECT `id_1` AS `id`, `athlete_1`, `birthday_1`, `athlete_2`, `birthday_2`
-FROM (
-  SELECT `id_1`, `athlete_1`, `birthday_1`, `athlete_2`, `birthday_2`
-  FROM (
-    SELECT `id` AS `id_1`, `athlete` AS `athlete_1`, `birthday` AS `birthday_1`
-    FROM `project.dataset.table`
-  ) t1
-    INNER JOIN (
-      SELECT `id` AS `id_2`, `athlete` AS `athlete_2`, `birthday` AS `birthday_2`
-      FROM `project.dataset.table`
-    ) t2
-      ON t1.`id_1` = t2.`id_2`
-) t0"""
+        == "SELECT t0.`id_1` AS `id`, t0.`athlete_1`, t0.`birthday_1`, t0.`athlete_2`,\n       t0.`birthday_2`\nFROM (\n  SELECT `id_1`, `athlete_1`, `birthday_1`, `athlete_2`, `birthday_2`\n  FROM (\n    SELECT t3.`id` AS `id_1`, t3.`athlete` AS `athlete_1`,\n           t3.`birthday` AS `birthday_1`\n    FROM `project.dataset.table` t3\n  ) t1\n    INNER JOIN (\n      SELECT t3.`id` AS `id_2`, t3.`athlete` AS `athlete_2`,\n             t3.`birthday` AS `birthday_2`\n      FROM `project.dataset.table` t3\n    ) t2\n      ON t1.`id_1` = t2.`id_2`\n) t0"
     )
 
 
@@ -147,39 +134,42 @@ def test_aggregation_node(setup):
     aggregation_node.parents.add(input_node)
 
     assert get_query_from_node(aggregation_node).compile() == INPUT_QUERY.replace(
-        "*", "count(*) AS `count`"
+        "t0.*", "count(1) AS `count`"
     )
 
     aggregation_node.aggregations.create(column="id", function="sum")
     assert get_query_from_node(aggregation_node).compile() == INPUT_QUERY.replace(
-        "*", "sum(`id`) AS `id`"
+        "t0.*", "sum(t0.`id`) AS `id`"
     )
 
     aggregation_node.columns.create(column="birthday")
     assert (
         get_query_from_node(aggregation_node).compile()
-        == INPUT_QUERY.replace("*", "`birthday`, sum(`id`) AS `id`") + "\nGROUP BY 1"
+        == INPUT_QUERY.replace("t0.*", "t0.`birthday`, sum(t0.`id`) AS `id`")
+        + "\nGROUP BY 1"
     )
 
     aggregation_node.columns.create(column="athlete")
     assert (
         get_query_from_node(aggregation_node).compile()
-        == INPUT_QUERY.replace("*", "`birthday`, `athlete`, sum(`id`) AS `id`")
+        == INPUT_QUERY.replace(
+            "t0.*", "t0.`birthday`, t0.`athlete`, sum(t0.`id`) AS `id`"
+        )
         + "\nGROUP BY 1, 2"
     )
 
 
 UNION_QUERY = (
-    f"SELECT *"
-    f"\nFROM (\n{textwrap.indent(INPUT_QUERY, '  ')}\n  UNION ALL"
-    f"\n{textwrap.indent(INPUT_QUERY.replace('*', '`id`, `athlete`, `birthday`'), '  ')}\n) t0"
+    f"SELECT t0.*"
+    f"\nFROM (\n{textwrap.indent(INPUT_QUERY.replace('t0', 't1'), '  ')}\n  UNION ALL"
+    f"\n{textwrap.indent(INPUT_QUERY.replace('t0.*', 't1.`id`, t1.`athlete`, t1.`birthday`').replace('t0', 't1'), '  ')}\n) t0"
 )
 
 
 EXCEPT_QUERY = (
-    f"SELECT *"
-    f"\nFROM (\n{textwrap.indent(INPUT_QUERY, '  ')}\n  EXCEPT DISTINCT"
-    f"\n{textwrap.indent(INPUT_QUERY, '  ')}\n) t0"
+    f"SELECT t0.*"
+    f"\nFROM (\n{textwrap.indent(INPUT_QUERY.replace('t0', 't1'), '  ')}\n  EXCEPT DISTINCT"
+    f"\n{textwrap.indent(INPUT_QUERY.replace('t0', 't1'), '  ')}\n) t0"
 )
 
 
@@ -222,7 +212,7 @@ def test_union_node_casts_int_to_float(setup):
 
     assert (
         get_query_from_node(union_node).compile()
-        == "WITH t0 AS (\n  SELECT CAST(`id` AS FLOAT64) AS `id`, `athlete`, `birthday`\n  FROM `project.dataset.table`\n)\nSELECT t1.*\nFROM (\n  WITH t0 AS (\n    SELECT CAST(`id` AS FLOAT64) AS `id`, `athlete`, `birthday`\n    FROM `project.dataset.table`\n  )\n  SELECT *\n  FROM t0\n  UNION ALL\n  SELECT `id`, `athlete`, `birthday`\n  FROM t0\n) t1"
+        == "WITH t0 AS (\n  SELECT CAST(t2.`id` AS FLOAT64) AS `id`, t2.`athlete`, t2.`birthday`\n  FROM `project.dataset.table` t2\n)\nSELECT t1.*\nFROM (\n  WITH t0 AS (\n    SELECT CAST(t2.`id` AS FLOAT64) AS `id`, t2.`athlete`, t2.`birthday`\n    FROM `project.dataset.table` t2\n  )\n  SELECT *\n  FROM t0\n  UNION ALL\n  SELECT t0.`id`, t0.`athlete`, t0.`birthday`\n  FROM t0\n) t1"
     )
 
 
@@ -269,11 +259,13 @@ def test_sort_node(setup):
     sort_node.parents.add(input_node)
 
     sort_node.sort_columns.create(column="id")
-    sort_query = f"{INPUT_QUERY}\nORDER BY `id`"
+    sort_query = f"{INPUT_QUERY}\nORDER BY t0.`id` ASC"
     assert get_query_from_node(sort_node).compile() == sort_query
 
     sort_node.sort_columns.create(column="birthday", ascending=False)
-    assert get_query_from_node(sort_node).compile() == sort_query + ", `birthday` DESC"
+    assert (
+        get_query_from_node(sort_node).compile() == sort_query + ", t0.`birthday` DESC"
+    )
 
 
 def test_limit_node(setup):
@@ -287,8 +279,8 @@ def test_limit_node(setup):
     limit_node.parents.add(input_node)
 
     limit_query = (
-        f"SELECT *"
-        f"\nFROM (\n{textwrap.indent(INPUT_QUERY, '  ')}"
+        f"SELECT t0.*"
+        f"\nFROM (\n{textwrap.indent(INPUT_QUERY.replace('t0', 't1'), '  ')}"
         f"\n  LIMIT 100\n) t0"
     )
     assert get_query_from_node(limit_node).compile() == limit_query
@@ -318,7 +310,7 @@ def test_filter_node(setup):
 
     assert (
         get_query_from_node(filter_node).compile()
-        == f"{INPUT_QUERY}\nWHERE `athlete` IS NOT NULL"
+        == f"{INPUT_QUERY}\nWHERE t0.`athlete` IS NOT NULL"
     )
 
     filter_node.filters.create(
@@ -327,8 +319,8 @@ def test_filter_node(setup):
         type=Filter.Type.DATE,
     )
     assert get_query_from_node(filter_node).compile() == (
-        f"{INPUT_QUERY}\nWHERE (`athlete` IS NOT NULL) AND\n      "
-        f"(`birthday` = DATE '{datetime.now().strftime('%Y-%m-%d')}')"
+        f"{INPUT_QUERY}\nWHERE (t0.`athlete` IS NOT NULL) AND\n      "
+        f"(t0.`birthday` = DATE '{datetime.now().strftime('%Y-%m-%d')}')"
     )
 
 
@@ -344,12 +336,13 @@ def test_edit_node(setup):
 
     edit_node.edit_columns.create(column="id", integer_function="isnull")
     assert get_query_from_node(edit_node).compile() == INPUT_QUERY.replace(
-        "*", "`id` IS NULL AS `id`, `athlete`, `birthday`"
+        "t0.*", "t0.`id` IS NULL AS `id`, t0.`athlete`, t0.`birthday`"
     )
 
     edit_node.edit_columns.create(column="athlete", string_function="upper")
     assert get_query_from_node(edit_node).compile() == INPUT_QUERY.replace(
-        "*", "`id` IS NULL AS `id`, upper(`athlete`) AS `athlete`, `birthday`"
+        "t0.*",
+        "t0.`id` IS NULL AS `id`, upper(t0.`athlete`) AS `athlete`,\n       t0.`birthday`",
     )
 
 
@@ -365,14 +358,15 @@ def test_add_node(setup):
 
     add_node.add_columns.create(column="id", integer_function="isnull", label="booly")
     assert get_query_from_node(add_node).compile() == INPUT_QUERY.replace(
-        "*", "*, `id` IS NULL AS `booly`"
+        "t0.*", "t0.*, t0.`id` IS NULL AS `booly`"
     )
 
     add_node.add_columns.create(
         column="athlete", string_function="upper", label="grand_athlete"
     )
     assert get_query_from_node(add_node).compile() == INPUT_QUERY.replace(
-        "*", "*, `id` IS NULL AS `booly`, upper(`athlete`) AS `grand_athlete`"
+        "t0.*",
+        "t0.*, t0.`id` IS NULL AS `booly`,\n       upper(t0.`athlete`) AS `grand_athlete`",
     )
 
 
@@ -388,12 +382,12 @@ def test_rename_node(setup):
 
     rename_node.rename_columns.create(column="birthday", new_name="bd")
     assert get_query_from_node(rename_node).compile() == INPUT_QUERY.replace(
-        "*", "`id`, `athlete`, `birthday` AS `bd`"
+        "t0.*", "t0.`id`, t0.`athlete`, t0.`birthday` AS `bd`"
     )
 
     rename_node.rename_columns.create(column="id", new_name="identity")
     assert get_query_from_node(rename_node).compile() == INPUT_QUERY.replace(
-        "*", "`id` AS `identity`, `athlete`, `birthday` AS `bd`"
+        "t0.*", "t0.`id` AS `identity`, t0.`athlete`, t0.`birthday` AS `bd`"
     )
 
 
@@ -409,13 +403,13 @@ def test_formula_node(setup):
 
     formula_node.formula_columns.create(formula="upper(athlete)", label="grand_athlete")
     assert get_query_from_node(formula_node).compile() == INPUT_QUERY.replace(
-        "*", "*, upper(`athlete`) AS `grand_athlete`"
+        "t0.*", "t0.*, upper(t0.`athlete`) AS `grand_athlete`"
     )
 
     formula_node.formula_columns.create(formula="lower(athlete)", label="low_athlete")
     assert get_query_from_node(formula_node).compile() == INPUT_QUERY.replace(
-        "*",
-        "*, upper(`athlete`) AS `grand_athlete`,\n       lower(`athlete`) AS `low_athlete`",
+        "t0.*",
+        "t0.*, upper(t0.`athlete`) AS `grand_athlete`,\n       lower(t0.`athlete`) AS `low_athlete`",
     )
 
 
@@ -432,8 +426,8 @@ def test_distinct_node(setup):
 
     assert get_query_from_node(distinct_node).compile() == (
         INPUT_QUERY.replace(
-            "*",
-            "`athlete`, ANY_VALUE(`id`) AS `id`,\n       ANY_VALUE(`birthday`) AS `birthday`",
+            "t0.*",
+            "t0.`athlete`, ANY_VALUE(t0.`id`) AS `id`,\n       ANY_VALUE(t0.`birthday`) AS `birthday`",
         )
         + "\nGROUP BY 1"
     )
@@ -441,8 +435,8 @@ def test_distinct_node(setup):
     distinct_node.columns.create(column="birthday")
     assert get_query_from_node(distinct_node).compile() == (
         INPUT_QUERY.replace(
-            "*",
-            "`athlete`, `birthday`, ANY_VALUE(`id`) AS `id`",
+            "t0.*",
+            "t0.`athlete`, t0.`birthday`, ANY_VALUE(t0.`id`) AS `id`",
         )
         + "\nGROUP BY 1, 2"
     )
@@ -462,31 +456,32 @@ def test_window_node(setup):
     )
 
     assert get_query_from_node(window_node).compile() == INPUT_QUERY.replace(
-        "*", "*, count(`athlete`) OVER () AS `window`"
+        "t0.*", "t0.*, count(t0.`athlete`) OVER () AS `window`"
     )
 
     window.group_by = "birthday"
     window.save()
     assert get_query_from_node(window_node).compile() == INPUT_QUERY.replace(
-        "*", "*, count(`athlete`) OVER (PARTITION BY `birthday`) AS `window`"
+        "t0.*",
+        "t0.*,\n       count(t0.`athlete`) OVER (PARTITION BY t0.`birthday`) AS `window`",
     )
 
     window.order_by = "id"
     window.ascending = False
     window.save()
     assert get_query_from_node(window_node).compile() == INPUT_QUERY.replace(
-        "*",
-        "*,\n       count(`athlete`) OVER (PARTITION BY `birthday` ORDER BY `id` DESC) AS `window`",
+        "t0.*",
+        "t0.*,\n       count(t0.`athlete`) OVER (PARTITION BY t0.`birthday` ORDER BY t0.`id` DESC) AS `window`",
     )
 
     window_node.window_columns.create(
         column="id", function="count", group_by="athlete", label="door"
     )
     assert get_query_from_node(window_node).compile() == INPUT_QUERY.replace(
-        "*",
-        """*,
-       count(`athlete`) OVER (PARTITION BY `birthday` ORDER BY `id` DESC) AS `window`,
-       count(`id`) OVER (PARTITION BY `athlete`) AS `door`""",
+        "t0.*",
+        """t0.*,
+       count(t0.`athlete`) OVER (PARTITION BY t0.`birthday` ORDER BY t0.`id` DESC) AS `window`,
+       count(t0.`id`) OVER (PARTITION BY t0.`athlete`) AS `door`""",
     )
 
 
@@ -543,7 +538,7 @@ def test_unpivot_node(setup):
     )
 
 
-SENTIMENT_QUERY = "SELECT \\*\nFROM `project.cypress_team_.*_tables\\..*`"
+SENTIMENT_QUERY = "SELECT \\t0.*\nFROM `project.cypress_team_.*_tables\\..*`"
 
 
 def _create_sentiment_node(input_node, workflow):
@@ -626,11 +621,11 @@ def test_convert_node(setup):
         convert_node.convert_columns.create(column=column, target_type=target_type)
 
     assert get_query_from_node(convert_node).compile() == INPUT_QUERY.replace(
-        "*",
+        "t0.*",
         """\
-CAST(`id` AS STRING) AS `id`, \
-CAST(`athlete` AS INT64) AS `athlete`,
-       CAST(`birthday` AS TIMESTAMP) AS `birthday`""",
+CAST(t0.`id` AS STRING) AS `id`,
+       CAST(t0.`athlete` AS INT64) AS `athlete`,
+       CAST(t0.`birthday` AS TIMESTAMP) AS `birthday`""",
     )
 
 
