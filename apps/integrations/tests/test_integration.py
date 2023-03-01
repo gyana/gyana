@@ -116,7 +116,7 @@ def test_integration_schema_and_preview(
 
     assert bigquery.get_query_results.call_count == 1
     assert bigquery.get_query_results.call_args.args == (
-        "SELECT *\nFROM `project.dataset.table`",
+        "SELECT t0.*\nFROM `project.dataset.table` t0",
     )
 
     # preview page 2
@@ -132,7 +132,7 @@ def test_integration_schema_and_preview(
 
     assert bigquery.get_query_results.call_count == 2
     assert bigquery.get_query_results.call_args.args == (
-        "SELECT *\nFROM `project.dataset.table`\nLIMIT 5 OFFSET 15",
+        "SELECT t0.*\nFROM `project.dataset.table` t0\nLIMIT 5 OFFSET 15",
     )
 
     # preview page 2 with sort
@@ -149,7 +149,7 @@ def test_integration_schema_and_preview(
 
     assert bigquery.get_query_results.call_count == 3
     assert bigquery.get_query_results.call_args.args == (
-        "SELECT *\nFROM `project.dataset.table`\nORDER BY `name` DESC\nLIMIT 5 OFFSET 15",
+        "SELECT t0.*\nFROM `project.dataset.table` t0\nORDER BY t0.`name` DESC\nLIMIT 5 OFFSET 15",
     )
 
 

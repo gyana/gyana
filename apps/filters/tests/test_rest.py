@@ -16,7 +16,7 @@ AUTOCOMPLETE_URL = (
 
 SOURCE_DATA = list(range(5))
 
-FILTER_SQL = "SELECT DISTINCT `athlete`\nFROM (\n  SELECT *\n  FROM `project.dataset.table`\n  WHERE STARTS_WITH(lower(`athlete`), {})\n) t0\nLIMIT 20"
+FILTER_SQL = "SELECT DISTINCT t0.`athlete`\nFROM (\n  SELECT t1.*\n  FROM `project.dataset.table` t1\n  WHERE STARTS_WITH(lower(t1.`athlete`), {})\n) t0\nLIMIT 20"
 
 
 def test_filter_autocomplete(
