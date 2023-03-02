@@ -13,7 +13,6 @@ from googleapiclient import discovery
 from .core.bigquery import *  # noqa
 from .core.ibis.client import *  # noqa
 from .core.ibis.compiler import *  # noqa
-from .core.ibis.patch import *  # noqa
 
 SLUG = (
     slugify(settings.CLOUD_NAMESPACE) if settings.CLOUD_NAMESPACE is not None else None

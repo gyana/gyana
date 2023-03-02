@@ -8,7 +8,6 @@ from google.cloud.bigquery.query import _QueryResults
 
 from .ibis.client import *  # noqa
 from .ibis.compiler import *  # noqa
-from .ibis.patch import *  # noqa
 from .utils import md5
 
 BIGQUERY_TYPE_TO_HUMAN = {
