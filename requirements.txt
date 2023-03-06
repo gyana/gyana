@@ -96,6 +96,7 @@ django==4.0.8
     #   django-cacheops
     #   django-celery-beat
     #   django-clone
+    #   django-crispy-forms
     #   django-cryptography
     #   django-dirtyfields
     #   django-filter
@@ -132,6 +133,8 @@ django-clone==3.0.6
     # via -r requirements.in
 django-cogwheels==0.3
     # via wagtailmenus
+django-crispy-forms==2.0
+    # via -r requirements.in
 django-cryptography==1.1
     # via -r requirements.in
 django-dirtyfields==1.8.2

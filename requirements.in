@@ -13,6 +13,7 @@ django-cacheops
 django-celery-beat
 django-celery-results
 django-clone
+django-crispy-forms
 django-cryptography
 django-dirtyfields
 django-filter
