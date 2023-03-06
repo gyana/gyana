@@ -226,6 +226,13 @@ class CustomApiUpdateForm(LiveFormsetMixin, LiveModelForm):
                     "password",
                     "oauth2",
                 ),
+                Tab(
+                    "Params",
+                ),
+                Tab(
+                    "Headers",
+                ),
+                Tab("Body", "body", "body_raw", "body_binary"),
             )
         )
 
