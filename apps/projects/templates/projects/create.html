@@ -1,5 +1,7 @@
 {% extends "teams/base.html" %}
 
+{% load crispy_forms_tags %}
+
 {% block app %}
   <div class="flex flex-1 flex-col justify-center items-center">
     <div class="max-w-xl">
@@ -13,11 +15,11 @@
         data-controller="live-update"
         method="post"
         action="{% url 'team_projects:create' team.id %}"
-        class="relative"
+        class="relative input-group"
       >
         {% csrf_token %}
 
-        {{ form }}
+        {{ form|crispy }}
 
         <button
           type="submit"
