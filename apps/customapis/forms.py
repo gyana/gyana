@@ -1,10 +1,14 @@
 from functools import cache
 
+from crispy_forms.bootstrap import TabHolder
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout
 from django import forms
 from django.urls import reverse
 from django.utils.html import mark_safe
 
 from apps.base.account import is_scheduled_paid_only
+from apps.base.crispy import Tab
 from apps.base.forms import BaseModelForm, LiveFormsetMixin, LiveModelForm
 from apps.base.formsets import RequiredInlineFormset
 from apps.base.widgets import DatalistInput
@@ -206,6 +210,13 @@ class CustomApiUpdateForm(LiveFormsetMixin, LiveModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.layout = Layout(
+            TabHolder(
+                Tab("General", "url", "json_path", "http_request_method"),
+                Tab("Auth", "authorization", "api_key_key", "api_key_value"),
+            )
+        )
 
         self.fields["url"].required = True
 

@@ -1,0 +1,11 @@
+<div x-data="{ tab: null }">
+  {% if form.form_html %}
+    {% if include_media %}{{ form.media }}{% endif %}
+    {% if form_show_errors %}
+      {% include "crispy/errors.html" %}
+    {% endif %}
+    {{ form.form_html }}
+  {% else %}
+    {% include "crispy/uni_form.html" %}
+  {% endif %}
+</div>
