@@ -4,8 +4,69 @@
 
 {{ errors }}
 
-<div class="input-group">
-  {% include 'django/forms/fieldv2.html' with field=form.url %}
-  {% include 'django/forms/fieldv2.html' with field=form.json_path %}
-  {% include 'django/forms/fieldv2.html' with field=form.http_request_method %}
+<div x-data="{ tab: 'general' }" class="card card--none w-full">
+  <div class="tabbar">
+    <button class="tabbar__link"
+      :class="{ 'tabbar__link--active': tab === 'general' }"
+      @click="tab = 'general'">
+      General
+    </button>
+    <button class="tabbar__link"
+      :class="{ 'tabbar__link--active': tab === 'auth' }"
+      @click="tab = 'auth'">
+      Auth
+    </button>
+    <button class="tabbar__link"
+      :class="{ 'tabbar__link--active': tab === 'queryparams' }"
+      @click="tab = 'queryparams'">
+      Query Params
+    </button>
+    <button class="tabbar__link"
+      :class="{ 'tabbar__link--active': tab === 'headers' }"
+      @click="tab = 'headers'">
+      Headers
+    </button>
+    <button class="tabbar__link"
+      :class="{ 'tabbar__link--active': tab === 'body' }"
+      @click="tab = 'body'">
+      Body
+    </button>
+  </div>
+  <div x-show="tab == 'general'">
+    <div class="input-group p-8">
+      {% include 'django/forms/fieldv2.html' with field=form.url %}
+      {% include 'django/forms/fieldv2.html' with field=form.json_path %}
+      {% include 'django/forms/fieldv2.html' with field=form.http_request_method %}
+    </div>
+  </div>
+  <div x-show="tab == 'auth'">
+    <div class="input-group p-8">
+      {% include 'django/forms/fieldv2.html' with field=form.authorization %}
+      {% include 'django/forms/fieldv2.html' with field=form.api_key_key %}
+      {% include 'django/forms/fieldv2.html' with field=form.api_key_value %}
+      {% include 'django/forms/fieldv2.html' with field=form.api_key_add_to %}
+      {% include 'django/forms/fieldv2.html' with field=form.bearer_token %}
+      {% include 'django/forms/fieldv2.html' with field=form.username %}
+      {% include 'django/forms/fieldv2.html' with field=form.password %}
+      {% include 'django/forms/fieldv2.html' with field=form.oauth2 %}
+    </div>
+  </div>
+  <div x-show="tab == 'queryparams'">
+    <div class="input-group p-8">
+      TODO formsets
+    </div>
+  </div>
+  <div x-show="tab == 'headers'">
+    <div class="input-group p-8">
+      TODO formsets
+    </div>
+  </div>
+  <div x-show="tab == 'body'">
+    <div class="input-group p-8">
+      {% include 'django/forms/fieldv2.html' with field=form.body %}
+      {% include 'django/forms/fieldv2.html' with field=form.body_raw %}
+      {% include 'django/forms/fieldv2.html' with field=form.body_binary %}
+      TODO formsets
+    </div>
+  </div>
 </div>
