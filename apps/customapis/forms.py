@@ -2,7 +2,7 @@ from functools import cache
 
 from crispy_forms.bootstrap import TabHolder
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout
+from crispy_forms.layout import Layout, Submit
 from django import forms
 from django.urls import reverse
 from django.utils.html import mark_safe
@@ -214,7 +214,17 @@ class CustomApiUpdateForm(LiveFormsetMixin, LiveModelForm):
         self.helper.layout = Layout(
             TabHolder(
                 Tab("General", "url", "json_path", "http_request_method"),
-                Tab("Auth", "authorization", "api_key_key", "api_key_value"),
+                Tab(
+                    "Auth",
+                    "authorization",
+                    "api_key_key",
+                    "api_key_value",
+                    "api_key_add_to",
+                    "bearer_token",
+                    "username",
+                    "password",
+                    "oauth2",
+                ),
             )
         )
 
