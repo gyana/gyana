@@ -99,7 +99,6 @@ THIRD_PARTY_APPS = [
     "wagtailmenus",
     "django_htmx",
     "crispy_forms",
-    "crispy_tailwind",
 ]
 
 # Put your project-specific apps here
