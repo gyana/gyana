@@ -110,16 +110,9 @@ class ProjectRunForm(BaseModelForm):
         super().__init__(*args, **kwargs)
 
         daily_schedule_time = self.fields["daily_schedule_time"]
-
-        if self.instance.team.is_free:
-            daily_schedule_time.disabled = True
-            daily_schedule_time.help_text = mark_safe(
-                f'Scheduling is only available on a paid plan <a class="link" href="{reverse("teams:pricing", args=(self.instance.team.id, ))}" hx-boost="false">learn more</a>'
-            )
-        else:
-            daily_schedule_time.help_text = (
-                f"Select an hour in {self.instance.team.timezone_with_gtm_offset}"
-            )
+        daily_schedule_time.help_text = (
+            f"Select an hour in {self.instance.team.timezone_with_gtm_offset}"
+        )
 
     def pre_save(self, instance):
         self._daily_schedule_time_is_dirty = (

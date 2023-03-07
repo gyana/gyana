@@ -7,36 +7,6 @@
   hx-boost="true"
 {% endblock body.attrs %}
 
-{% block body.banner %}
-  {% if team and team.warning %}
-    <div class="banner banner--warning">
-      <p>
-        You've exceeded your row count limit. To continue to use Gyana, upgrade to a custom row volume.
-        <a
-          href="{% url 'teams:pricing' team.id %}"
-          class="text-white font-bold underline"
-        >
-          Learn more <i class="fas fa-fw fa-arrow-right fa-sm"></i>
-        </a>
-      </p>
-    </div>
-  {% endif %}
-
-  {% if team and not team.enabled %}
-    <div class="banner banner--warning">
-      <p>
-        You've exceeded your row count limit by over 20%. To continue to use Gyana, upgrade to a custom row volume.
-        <a
-          href="{% url 'teams:pricing' team.id %}"
-          class="text-white font-bold underline"
-        >
-          Learn more <i class="fas fa-fw fa-arrow-right fa-sm"></i>
-        </a>
-      </p>
-    </div>
-  {% endif %}
-{% endblock body.banner %}
-
 {% block body.content %}
 
   {% include "web/components/team_sidebar.html" %}

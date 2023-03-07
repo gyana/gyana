@@ -18,7 +18,6 @@ from .flag import Flag  # noqa
 from .utils import getRandomColor
 
 PRO_ROW_LIMIT = 100_000_000  # soft internal limit
-WARNING_BUFFER = 0.2
 
 
 class Team(DirtyFieldsMixin, BaseModel, SafeDeleteModel):
@@ -79,14 +78,6 @@ class Team(DirtyFieldsMixin, BaseModel, SafeDeleteModel):
         return with_gmt_offset([self.timezone])[0][1]
 
     @property
-    def warning(self):
-        return self.row_limit < self.row_count <= self.row_limit * (1 + WARNING_BUFFER)
-
-    @property
-    def enabled(self):
-        return self.row_count <= self.row_limit * (1 + WARNING_BUFFER)
-
-    @property
     def tables_dataset_id(self):
         from apps.base.clients import SLUG
 
@@ -106,14 +97,6 @@ class Team(DirtyFieldsMixin, BaseModel, SafeDeleteModel):
         from .account import calculate_credit_balance
 
         return calculate_credit_balance(self)
-
-    @property
-    def is_free(self):
-        return (
-            not self.has_subscription
-            and not self.recently_completed_checkout
-            and not self.has_free_trial
-        )
 
     @property
     def plan(self):
