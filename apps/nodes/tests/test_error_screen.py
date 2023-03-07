@@ -1,16 +1,7 @@
-from unittest import mock
-
 import pytest
 
-from apps.base.tests.asserts import (
-    assertFormRenders,
-    assertOK,
-    assertSelectorLength,
-    assertSelectorText,
-)
+from apps.base.tests.asserts import assertOK, assertSelectorText
 from apps.nodes.models import Node
-from apps.nodes.tests.mocks import mock_bq_client_data, mock_gcp_analyze_sentiment
-from apps.teams.models import CreditTransaction
 
 pytestmark = pytest.mark.django_db
 
