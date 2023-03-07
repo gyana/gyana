@@ -74,6 +74,7 @@ THIRD_PARTY_APPS = [
     "hijack.contrib.admin",
     "waffle",
     "safedelete",
+    "djpaddle",  # todo: delete after migrations fixed
     "timezone_field",
     "django_celery_beat",
     "django_celery_results",
@@ -452,3 +453,20 @@ SOCIALACCOUNT_LOGIN_ON_GET = True
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "crispy"
 CRISPY_TEMPLATE_PACK = "crispy"
+
+
+# todo: fix migrations and delete
+
+DJPADDLE_VENDOR_ID = "0000"
+DJPADDLE_API_KEY = "0000"
+DJPADDLE_PUBLIC_KEY = os.getenv(
+    "DJPADDLE_PUBLIC_KEY",
+    """-----BEGIN PUBLIC KEY-----
+MIGeMA0GCSqGSIb3DQEBAQUAA4GMADCBiAKBgGmojhfiUOJztHJyWdRehmQuBVQa
+ZP10acfRWBQsLFxK+HRzycYKQlzZxGKz+89qmZOvylS0HdS5m20ghEdfUeNW7HRU
+ZT/srO/tz4Jlr7+QtKIiO+GD8KTIqWJNB+gca0ZaocTUtfMEEb/ESTIHdFfns706
+KYXRy8564UME3qd3AgMBAAE=
+-----END PUBLIC KEY-----""",
+)
+DJPADDLE_SUBSCRIBER_MODEL = "teams.Team"
+MIGRATION_MODULES = {"djpaddle": "apps.teams.migrate.djpaddle"}
