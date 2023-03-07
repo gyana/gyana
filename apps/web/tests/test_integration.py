@@ -1,6 +1,5 @@
 import pytest
 import wagtail_factories
-from djpaddle.models import Plan
 from wagtail.core.models import Locale, Site
 
 from apps.base.tests.asserts import assertLink, assertOK
@@ -9,15 +8,8 @@ from apps.users.models import CustomUser
 pytestmark = pytest.mark.django_db
 
 
-def test_site_pages(client, settings):
-
-    pro_plan = Plan.objects.create(name="Pro", billing_type="month", billing_period=1)
-    settings.DJPADDLE_PRO_PLAN_ID = pro_plan.id
-
+def test_site_pages(client):
     r = client.get("/")
-    assertOK(r)
-
-    r = client.get("/pricing")
     assertOK(r)
 
     r = client.get("/about")
@@ -41,14 +33,10 @@ def test_site_pages(client, settings):
 
 def test_site_links(client, settings):
 
-    pro_plan = Plan.objects.create(name="Pro", billing_type="month", billing_period=1)
-    settings.DJPADDLE_PRO_PLAN_ID = pro_plan.id
-
     r = client.get("/")
 
     # header links
     # 3x = header, mobile menu, footer
-    assertLink(r, "/pricing", "Pricing", total=3)
     assertLink(r, "/blog", "Blog", total=3)
     assertLink(r, "https://support.gyana.com", "Documentation", total=3)
     assertLink(r, "https://feedback.gyana.com", "Feedback", total=3)
@@ -64,14 +52,7 @@ def test_site_links(client, settings):
     assertLink(r, "/terms-of-use", "Terms")
 
     # app links
-    assertLink(r, "/signup/", "Sign up", total=3)
-    assertLink(r, "/login/", "Sign in", total=2)
-
-    user = CustomUser.objects.create_user("test", email="test@gyana.com")
-    client.force_login(user)
-
-    r = client.get("/pricing")
-    assertLink(r, "/", "Go to app", total=2)
+    assertLink(r, "https://www.github.com/gyana/gyana", "Get started", total=4)
 
 
 def test_sitemap(client):

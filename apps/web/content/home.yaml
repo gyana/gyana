@@ -17,7 +17,7 @@ support:
     icon: terminal
     note: Start with our pre-built containers
     cta:
-      message: Get started on Github
+      message: Go to Github
       external_url: github
   - heading: Read the documentation
     description: Learn the fundamentals
