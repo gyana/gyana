@@ -12,10 +12,13 @@ quotes:
   - the best tool for analyzing data without code
   - you've got an amazing product
 support:
-  - heading: Sign up
-    description: Get started for free
-    icon: login
-    note: It only takes a minute
+  - heading: Get started
+    description: Run Gyana on your infrastructure
+    icon: terminal
+    note: Start with our pre-built containers
+    cta:
+      message: Get started on Github
+      external_url: github
   - heading: Read the documentation
     description: Learn the fundamentals
     icon: academic-cap

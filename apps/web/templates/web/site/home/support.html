@@ -59,8 +59,8 @@
                   </div>
                   <div class="absolute w-full h-full">
                     {% if step == 0 %}
-                      {% comment %} Signup page: link clicks and form submit will happen at parent level {% endcomment %}
-                      <iframe width="100%" height="100%" loading="lazy" sandbox="allow-same-origin allow-top-navigation allow-forms" src="{% url 'account_signup' %}?iframe=true"></iframe>
+                      {% comment %} Github {% endcomment %}
+                      <img class="h-full object-cover object-left" src="{% static 'images/site/home/github.png' %}"/>
                     {% elif step == 1 %}
                       {% comment %} Documentation {% endcomment %}
                     {% elif step == 2 %}

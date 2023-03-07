@@ -54,38 +54,13 @@
       </a>
     </div>
     <div class="flex flex-col gap-4">
-      {% if request.user.is_authenticated %}
-        <a
-          href="{% url 'web:home' %}"
-          class="button"
-        >
-          Go to app
-        </a>
-      {% else %}
-        <a
-          href="{% url 'account_signup' %}"
-          id="CTA_header"
-          class="button button--secondary"
-        >
-          Sign up
-        </a>
-        <a
-          href="{% external_url 'github' %}"
-          id="CTA_header"
-          class="button"
-        >
-          Self host
-        </a>
-        <p class="text-center text-base font-normal text-gray-600">
-          Existing customer?
-          <a
-            href="{% url 'account_login' %}"
-            class="text-indigo-600 hover:text-indigo-500"
-          >
-            Sign in
-          </a>
-        </p>
-      {% endif %}
+      <a
+        href="{% external_url 'github' %}"
+        id="CTA_header"
+        class="button"
+      >
+        Get started
+      </a>
     </div>
   </div>
 </div>
