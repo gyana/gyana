@@ -168,16 +168,6 @@ class Node(DirtyFieldsMixin, BaseModel):
         help_text="Select the text column to get the sentiment of.",
     )
 
-    # Credits
-    always_use_credits = models.BooleanField(default=False)
-    uses_credits = models.IntegerField(default=0)
-    credit_use_confirmed = models.DateTimeField(null=True, editable=False)
-    # To know who spent credits without having a global user session item or
-    # pass down the user through multiple functions we persist it in the database
-    credit_confirmed_user = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True
-    )
-
     has_been_saved = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
@@ -186,10 +176,6 @@ class Node(DirtyFieldsMixin, BaseModel):
             "x",
             "y",
             "error",
-            "always_use_credits",
-            "uses_credits",
-            "credit_use_confirmed",
-            "credit_confirmed_user",
         }
         if dirty_fields:
             self.workflow.data_updated = timezone.now()

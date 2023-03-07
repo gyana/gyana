@@ -23,9 +23,8 @@ from apps.filters.bigquery import get_query_from_filters
 from apps.nodes.exceptions import ColumnNamesDontMatch, JoinTypeError, NodeResultNone
 from apps.nodes.models import Node
 from apps.tables.bigquery import get_query_from_table
-from apps.teams.models import OutOfCreditsException
 
-from ._sentiment_utils import CreditException, get_gcp_sentiment
+from ._sentiment_utils import get_gcp_sentiment
 from ._utils import create_or_replace_intermediate_table, get_parent_updated
 
 
@@ -420,8 +419,6 @@ def get_query_from_node(current_node):
                 node.save(update_fields=["error"])
         except Exception as err:
             node.error = error_name_to_snake(err)
-            if isinstance(err, (CreditException, OutOfCreditsException)):
-                node.uses_credits = err.uses_credits
             node.save()
             if current_node != node:
                 raise NodeResultNone(node=node) from err

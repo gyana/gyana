@@ -136,27 +136,6 @@ class NodeGrid(SingleTableMixin, DetailView):
         ).configure(table)
 
 
-class NodeCreditConfirmation(UpdateView):
-    model = Node
-    fields = ("always_use_credits",)
-    template_name = "nodes/errors/credit_exception.html"
-
-    def get_success_url(self) -> str:
-        return reverse(
-            "nodes:grid",
-            args=(self.object.id,),
-        )
-
-    def form_valid(self, form):
-        r = super().form_valid(form)
-
-        self.object.credit_use_confirmed = timezone.now()
-        self.object.credit_confirmed_user = self.request.user
-        self.object.save()
-
-        return r
-
-
 with open("apps/columns/functions.json") as f:
     FUNCTIONS = json.loads(f.read())
 

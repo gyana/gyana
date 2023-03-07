@@ -21,10 +21,3 @@ class CNameForm(BaseModelForm):
 
     def post_save(self, instance):
         create_heroku_domain(instance)
-
-    def clean(self):
-        if not self._team.can_create_cname:
-            raise ValidationError(
-                "You cannot create more custom domains on your current plan."
-            )
-        return super().clean()

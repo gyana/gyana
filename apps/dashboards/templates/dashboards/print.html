@@ -8,14 +8,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     {% block head %}
-      <title>{{ dashboard.name }}{% if not project.team.plan.custom_branding %} | Gyana {% endif %}</title>
+      <title>{{ dashboard.name }}</title>
     {% endblock %}
 
-    {% if not project.team.plan.custom_branding %}
-      {% include 'web/components/meta.html' %}
-    {% endif %}
+    {% comment %} todo: add a toggle {% endcomment %}
+    {% include 'web/components/meta.html' %}
 
-    {% if project.team.plan.white_labeling and project.team.icon %}
+    {% if project.team.icon %}
       <link rel="icon" type="image/png" sizes="16x16" href="{{ project.team.icon.url }}">
     {% else %}
       {% include 'web/components/favicon.html' %}
@@ -86,7 +85,7 @@
         {% for page in dashboard.page_set %}
           <header>
             <div class="flex justify-center items-center">
-              {% if project.team.plan.white_labeling and project.team.icon %}
+              {% if project.team.icon %}
                 <img src="{{ project.team.icon.url }}" class="h-24 w-24 mr-5" alt="">
               {% endif %}
 
@@ -111,9 +110,8 @@
               </div>
             </div>
 
-            {% if not project.team.plan.custom_branding %}
-              <p class="self-end">Powered by <a href="/" class="link">Gyana</a></p>
-            {% endif %}
+            {% comment %} todo: add a toggle {% endcomment %}
+            <p class="self-end">Powered by <a href="/" class="link">Gyana</a></p>
           </header>
 
           <div

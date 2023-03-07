@@ -18,9 +18,7 @@ class MemberSelectMixin:
             members_field.queryset = self._team.members.all()
             members_field.widget.current_user = current_user
 
-        if not self._team.can_create_invite_only_project and (
-            access_field := self.fields.get("access")
-        ):
+        if access_field := self.fields.get("access"):
             access_field.required = False
             access_field.widget = forms.Select(
                 choices=access_field.choices, attrs={"disabled": "disabled"}
@@ -43,25 +41,6 @@ class ProjectCreateForm(MemberSelectMixin, LiveModelForm):
             fields += ["members"]
 
         return fields
-
-    def clean(self):
-        cleaned_data = super().clean()
-
-        if not self._team.can_create_project:
-            raise forms.ValidationError(
-                "You've reached the maximum number of projects on this plan"
-            )
-
-        if (
-            cleaned_data.get("access", False)
-            and cleaned_data["access"] == Project.Access.INVITE_ONLY
-            and not self._team.can_create_invite_only_project
-        ):
-            raise forms.ValidationError(
-                "You've reached the maximum number of invite only projects on your plan"
-            )
-
-        return cleaned_data
 
     def pre_save(self, instance):
         instance.team = self._team

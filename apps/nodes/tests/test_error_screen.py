@@ -74,57 +74,6 @@ def test_formula_error(formula, message, client, setup, node_factory):
     assertSelectorText(r, "p", message)
 
 
-def test_out_of_credits(mocker, client, setup, node_factory, logged_in_user, bigquery):
-    table, workflow = setup
-    mock_bq_client_data(bigquery)
-    mocker.patch(
-        target="apps.nodes._sentiment_utils._gcp_analyze_sentiment",
-        side_effect=mock_gcp_analyze_sentiment,
-    )
-    mocker.patch(
-        "apps.nodes._sentiment_utils.LanguageServiceClient",
-        side_effect=mock.MagicMock,
-    )
-
-    sentiment_node = create_node(
-        table,
-        workflow,
-        Node.Kind.SENTIMENT,
-        node_factory,
-        sentiment_column="athlete",
-        always_use_credits=True,
-    )
-    team = logged_in_user.teams.first()
-
-    # Add credits so that operation would consume too many credits
-    team.credittransaction_set.create(
-        transaction_type=CreditTransaction.TransactionType.INCREASE,
-        amount=99,
-        user=logged_in_user,
-    )
-
-    r = client.get(f"/nodes/{sentiment_node.id}/grid")
-    assertOK(r)
-    assertSelectorText(r, "body", "99")
-    assertSelectorText(r, "h2", "You are about to exceed your credit limit")
-
-
-def test_credit_exception(client, setup, node_factory):
-    table, workflow = setup
-
-    sentiment_node = create_node(
-        table,
-        workflow,
-        Node.Kind.SENTIMENT,
-        node_factory,
-        sentiment_column="athlete",
-    )
-    r = client.get(f"/nodes/{sentiment_node.id}/grid")
-    assertOK(r)
-    assertSelectorLength(r, "#credit-exception", 1)
-    assertFormRenders(r, ["always_use_credits"])
-
-
 def test_integrity_error(client, setup, node_factory):
     table, workflow = setup
     rename_node = create_node(table, workflow, Node.Kind.RENAME, node_factory)

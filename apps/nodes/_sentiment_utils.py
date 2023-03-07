@@ -15,12 +15,10 @@ from google.cloud.language import (
 )
 
 from apps.base import clients
-from apps.nodes.exceptions import CreditException
 from apps.nodes.models import Node
 from apps.tables.models import Table
-from apps.teams.models import CreditTransaction, OutOfCreditsException
 
-from ._utils import create_or_replace_intermediate_table, get_parent_updated
+from ._utils import create_or_replace_intermediate_table
 
 # ISO-639-1 Code for English
 # all GCP supported languages https://cloud.google.com/natural-language/docs/languages
@@ -29,12 +27,12 @@ ENGLISH_ISO_639 = "en"
 
 # over 1000 chars we are charged multiple units of GCP quota
 # https://cloud.google.com/natural-language/pricing
-CHARS_PER_CREDIT = 1_000
+CHARS_PER_CALL = 1_000
 # however there's a limit of 600 requests per minute
 # https://cloud.google.com/natural-language/quotas
 # so we trade latency (larger batches) to reduce no. of requests
 # 10'000 ASCII chars is 10 KB and we found it keeps latency within a few secs
-CHARS_LIMIT = CHARS_PER_CREDIT * 10
+CHARS_LIMIT = CHARS_PER_CALL * 10
 
 # every sentence in a batch gets joined into a document from which we recover the scores
 # we use a combination of characters that always causes GCP to split text into sentences
@@ -168,7 +166,7 @@ def _compute_values(client, query):
 
     # clip each row of text so that GPC doesn't charge us more than 1 credit
     # (there are still plenty of characters to infer sentiment for that row)
-    clipped_values = [v[:CHARS_PER_CREDIT].strip() for v in cleaned_values]
+    clipped_values = [v[:CHARS_PER_CALL].strip() for v in cleaned_values]
     return values, clipped_values
 
 
@@ -217,7 +215,7 @@ def _get_not_cached(node, current_values, ibis_client):
     )
 
 
-def _update_cache_table(node, values, scores, bq_client, uses_credits):
+def _update_cache_table(node, values, scores, bq_client):
     """Upload the newly analysed rows to the cache_table of a node and charge the user"""
     df = pd.DataFrame({TEXT_COLUMN_NAME: values, SENTIMENT_COLUMN_NAME: scores})
 
@@ -248,13 +246,6 @@ def _update_cache_table(node, values, scores, bq_client, uses_credits):
 
         cache_table.data_updated = timezone.now()
 
-        # Charge the user
-        node.workflow.project.team.credittransaction_set.create(
-            transaction_type=CreditTransaction.TransactionType.INCREASE,
-            amount=uses_credits,
-            user=node.credit_confirmed_user,
-        )
-
         node.save()
         cache_table.save()
 
@@ -276,21 +267,11 @@ def get_gcp_sentiment(node_id):
     values, clipped_values = _compute_values(bq_client, not_cached.compile())
 
     # If no values to analyse just refetch from cache_table
-    uses_credits = len(values)
-    if hasattr(node, "cache_table") and uses_credits == 0:
+    uses_rows = len(values)
 
+    if hasattr(node, "cache_table") and uses_rows == 0:
         table = _update_intermediate_table(ibis_client, node, current_values)
         return table.bq_table, table.bq_dataset
-
-    team = node.workflow.project.team
-    if team.current_credit_balance + uses_credits > team.credits:
-        raise OutOfCreditsException(uses_credits)
-
-    if not node.always_use_credits and (
-        node.credit_use_confirmed is None
-        or node.credit_use_confirmed < max(tuple(get_parent_updated(node)))
-    ):
-        raise CreditException(node_id, uses_credits)
 
     batches_idxs = _get_batches_idxs(clipped_values)
     with ThreadPoolExecutor(max_workers=len(batches_idxs)) as executor:
@@ -303,6 +284,6 @@ def get_gcp_sentiment(node_id):
 
     scores = [score for batch_scores in batches_scores for score in batch_scores]
 
-    _update_cache_table(node, values, scores, bq_client, uses_credits)
+    _update_cache_table(node, values, scores, bq_client)
     table = _update_intermediate_table(ibis_client, node, current_values)
     return table.bq_table, table.bq_dataset

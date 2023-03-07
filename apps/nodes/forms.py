@@ -217,8 +217,7 @@ class SentimentNodeForm(NodeForm):
 
     class Meta:
         model = Node
-        fields = ("sentiment_column", "always_use_credits", "credit_confirmed_user")
-        widgets = {"credit_confirmed_user": HiddenInput()}
+        fields = ("sentiment_column",)
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop("user")
@@ -226,11 +225,6 @@ class SentimentNodeForm(NodeForm):
         self.fields["sentiment_column"].choices = create_column_choices(
             [name for name, type_ in self.columns.items() if type_.name == "String"]
         )
-
-    def get_initial_for_field(self, field, field_name):
-        if field_name == "credit_confirmed_user":
-            return self.user
-        return super().get_initial_for_field(field, field_name)
 
 
 class ExceptNodeForm(DefaultNodeForm):

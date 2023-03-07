@@ -7,7 +7,7 @@ from rest_framework.request import Request
 
 from apps.base import clients
 from apps.integrations.periodic import delete_outdated_pending_integrations
-from apps.teams.periodic import update_team_row_limits
+from apps.teams.periodic import update_team_row_counts
 
 from .mail import Outbox
 
@@ -44,6 +44,6 @@ def periodic(request: Request):
     # force all periodic tasks to run synchronously
 
     delete_outdated_pending_integrations()
-    update_team_row_limits()
+    update_team_row_counts()
 
     return JsonResponse({"message": "ok"})

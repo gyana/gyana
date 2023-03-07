@@ -26,7 +26,6 @@ from apps.nodes.tests.mocks import (
     mock_bq_client_schema,
     mock_gcp_analyze_sentiment,
 )
-from apps.teams.models import CreditTransaction, OutOfCreditsException
 
 pytestmark = pytest.mark.django_db
 
@@ -627,20 +626,3 @@ CAST(t0.`id` AS STRING) AS `id`,
        CAST(t0.`athlete` AS INT64) AS `athlete`,
        CAST(t0.`birthday` AS TIMESTAMP) AS `birthday`""",
     )
-
-
-def test_sentiment_query_out_of_credits(logged_in_user, setup):
-    input_node, workflow = setup
-    sentiment_node = _create_sentiment_node(input_node, workflow)
-    team = logged_in_user.teams.first()
-
-    # Add credits so that operation would consume too many credits
-    team.credittransaction_set.create(
-        transaction_type=CreditTransaction.TransactionType.INCREASE,
-        amount=99,
-        user=logged_in_user,
-    )
-    with pytest.raises(OutOfCreditsException) as err:
-        get_query_from_node(sentiment_node)
-
-    assert sentiment_node.error == "out_of_credits_exception"

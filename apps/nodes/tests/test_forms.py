@@ -146,11 +146,7 @@ def test_sentiment_form(setup, node_factory, logged_in_user):
     node = create_and_connect(Node.Kind.SENTIMENT, node_factory, table, workflow)
     form = KIND_TO_FORM[node.kind](instance=node, user=logged_in_user)
 
-    assert set(form.fields.keys()) == {
-        "sentiment_column",
-        "always_use_credits",
-        "credit_confirmed_user",
-    }
+    assert set(form.fields.keys()) == {"sentiment_column"}
     assert get_choice_len(form, "sentiment_column") == 2
     assert (
         form.get_initial_for_field(

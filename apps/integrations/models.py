@@ -135,10 +135,6 @@ class Integration(BaseModel):
         return getattr(self, self.kind)
 
     @cached_property
-    def row_percentage(self):
-        return round((self.num_rows / self.project.team.row_limit) * 100, 3)
-
-    @cached_property
     def num_rows(self):
         return (
             self.table_set.all().aggregate(models.Sum("num_rows"))["num_rows__sum"] or 0

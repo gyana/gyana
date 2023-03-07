@@ -18,9 +18,6 @@ from apps.teams.models import Team
 pytestmark = pytest.mark.django_db
 
 
-can_create_cname = mock.patch.object(Team, "can_create_cname", True)
-
-
 def test_cname_crudl(client, logged_in_user, heroku):
     team = logged_in_user.teams.first()
 
@@ -106,7 +103,6 @@ def test_cname_crudl(client, logged_in_user, heroku):
     assert heroku.get_domain().remove.call_count == 1
 
 
-@can_create_cname
 def test_cname_validation(client, logged_in_user, c_name_factory):
     team = logged_in_user.teams.first()
     c_name_factory(team=team)
@@ -121,7 +117,6 @@ def test_cname_validation(client, logged_in_user, c_name_factory):
     assertFormError(r, "form", "domain", ERROR)
 
 
-@can_create_cname
 def test_cname_middleware_for_public_dashboard(
     client,
     logged_in_user,
@@ -192,7 +187,6 @@ def test_cname_middleware_for_public_dashboard(
     assert r.status_code == 403
 
 
-@can_create_cname
 def test_cname_middleware_for_password_protected_dashboard(
     client, logged_in_user, c_name_factory, dashboard_factory, widget_factory
 ):

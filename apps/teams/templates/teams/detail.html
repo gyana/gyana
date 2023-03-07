@@ -44,24 +44,12 @@
           </template>
         </div>
 
-        {% if team.can_create_project %}
           <a
             class="button button--sm"
             href="{% url 'team_projects:create' team.id %}"
           >
             <i class="fas fa-fw fa-plus"></i> New Project
           </a>
-        {% else %}
-          <div id="new-project-disabled"
-            x-tooltip="You have reached the maximum number of projects on your current plan.">
-            <p
-              class="button button--sm"
-              disabled
-            >
-              <i class="fas fa-fw fa-plus"></i> New Project
-            </p>
-          </div>
-        {% endif %}
       </div>
 
       <p class="alert my-7">
