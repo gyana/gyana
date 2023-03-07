@@ -126,13 +126,6 @@ def heroku(mocker):
     yield client
 
 
-@pytest.fixture(autouse=True)
-def paddle(mocker):
-    client = MagicMock()
-    mocker.patch("apps.base.clients.paddle", return_value=client)
-    yield client
-
-
 @pytest.fixture
 def user():
     team = Team.objects.create(name="Vayu")

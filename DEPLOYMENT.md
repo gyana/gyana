@@ -102,10 +102,6 @@ Heroku config variables, with production examples:
 ```bash
 CNAME_DOMAIN = cname.gyana.com
 DJANGO_SETTINGS_MODULE = gyana.settings.heroku
-DJPADDLE_VENDOR_ID = {{ vendor_id }}
-DJPADDLE_API_KEY = {{ api_key }}
-DJPADDLE_PUBLIC_KEY = {{ public_key }}
-DJPADDLE_PRO_PLAN_ID = {{ pro_plan_id }}
 ENVIRONMENT = production
 EXTERNAL_URL = https://app.gyana.com
 GCP_BQ_SVC_ACCOUNT = gyana-app@gyana-app-314217.iam.gserviceaccount.com

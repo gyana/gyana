@@ -5,7 +5,6 @@ import heroku3
 import ibis
 from django.conf import settings
 from django.utils.text import slugify
-from djpaddle.models import paddle_client
 from google.cloud import bigquery as bigquery_client
 from google.cloud import storage
 from googleapiclient import discovery
@@ -74,8 +73,3 @@ def get_bucket():
 def heroku():
     heroku_conn = heroku3.from_key(settings.HEROKU_API_KEY)
     return heroku_conn.app(settings.HEROKU_APP)
-
-
-@lru_cache
-def paddle():
-    return paddle_client

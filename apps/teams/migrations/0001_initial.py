@@ -14,9 +14,7 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-        ('djpaddle', '0001_initial'),
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
