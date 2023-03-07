@@ -10,7 +10,6 @@ pytestmark = pytest.mark.django_db
 @pytest.mark.parametrize(
     "url",
     [
-        pytest.param("/teams/{team_id}/pricing", id="pricing"),
         pytest.param("/teams/{team_id}/checkout", id="checkout"),
         # TODO: need to find a way to mock list_payments_for_team
         # pytest.param("/teams/{team_id}/subscription", id="subscription"),

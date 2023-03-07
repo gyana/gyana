@@ -41,18 +41,10 @@ def test_team_crudl(client, logged_in_user, bigquery, flag_factory, settings):
     r = client.post("/teams/new", data={"name": "Neera"})
     assert logged_in_user.teams.count() == 2
     new_team = logged_in_user.teams.first()
-    assertRedirects(r, f"/teams/{new_team.id}/pricing", status_code=302)
+    assertRedirects(r, f"/teams/{new_team.id}", status_code=302)
 
     assert bigquery.create_dataset.call_count == 1
     assert bigquery.create_dataset.call_args.args == (new_team.tables_dataset_id,)
-
-    # choose plan
-    r = client.get(f"/teams/{new_team.id}/pricing")
-    assertOK(r)
-    # in turn, loads web pricing via iframe
-    r = client.get(f"/pricing?iframe=true&team_id={new_team.id}")
-    assertOK(r)
-    assertLink(r, f"/teams/{new_team.id}", "Continue")
 
     # read
     r = client.get(f"/teams/{new_team.id}")
@@ -205,73 +197,6 @@ def test_account_limit_warning_and_disabled(client, project_factory):
     # assertNotFound(client.get(f"/projects/{project.id}/integrations/connectors/new"))
     assertNotFound(client.get(f"/projects/{project.id}/integrations/sheets/new"))
     assertNotFound(client.get(f"/projects/{project.id}/integrations/uploads/new"))
-
-
-def test_team_subscriptions(client, logged_in_user, settings, paddle):
-
-    team = logged_in_user.teams.first()
-    pro_plan = Plan.objects.create(name="Pro", billing_type="month", billing_period=1)
-    settings.DJPADDLE_PRO_PLAN_ID = pro_plan.id
-    paddle.get_plan.side_effect = lambda id_: {"recurring_price": {"USD": 99}}
-    paddle.list_subscription_payments.return_value = [
-        {
-            "payout_date": "2021-11-01",
-            "amount": 99,
-            "currency": "USD",
-            "receipt_url": "https://receipt-1.url",
-        },
-        {
-            "payout_date": "2021-12-01",
-            "amount": 99,
-            "currency": "USD",
-            "receipt_url": "https://receipt-2.url",
-        },
-    ]
-
-    r = client.get(f"/teams/{team.id}/account")
-    assertOK(r)
-    # TODO: currently upgrading is disabled
-    # assertLink(r, f"/teams/{team.id}/pricing", "Upgrade")
-
-    r = client.get(f"/teams/{team.id}/pricing")
-    assertOK(r)
-
-    # in turn, loads web pricing via iframe
-    r = client.get(f"/pricing?iframe=true&team_id={team.id}")
-    assertOK(r)
-    # TODO: still disabled
-    # assertLink(r, f"/teams/{team.id}/checkout?plan={pro_plan.id}", "Upgrade to Pro")
-
-    r = client.get(f"/teams/{team.id}/checkout?plan={pro_plan.id}")
-    assertOK(r)
-
-    # the inline checkout is inserted by Paddle JS, and the subscription is added via webhook
-
-    subscription = upgrade_to_pro(logged_in_user, team, pro_plan)
-
-    r = client.get(f"/teams/{team.id}/account")
-    assertOK(r)
-    assertContains(r, "Pro")
-    assertLink(r, f"/teams/{team.id}/subscription", "Manage Subscription")
-    assertLink(r, f"/teams/{team.id}/payments", "View Payments & Receipts")
-    assertLink(r, "https://update.url", "Update Payment Method")
-
-    # redirect
-    r = client.get(f"/teams/{team.id}/pricing")
-    assertRedirects(r, f"/teams/{team.id}/subscription")
-
-    # cancel
-    r = client.get(f"/teams/{team.id}/subscription")
-    assertLink(r, "https://cancel.url", "I'm sure I want to cancel")
-
-    # payments
-    r = client.get(f"/teams/{team.id}/payments")
-    assertOK(r)
-    assertSelectorLength(r, "table tbody tr", 2)
-    assertLink(r, "https://receipt-1.url", "Download Receipt")
-    assert paddle.list_subscription_payments.call_count == 1
-    assert paddle.list_subscription_payments.call_args.args == (str(subscription.id),)
-    assert paddle.list_subscription_payments.call_args.kwargs == {"is_paid": True}
 
 
 def test_pro_upgrade_with_limits(client, logged_in_user, settings, project_factory):

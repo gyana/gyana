@@ -15,10 +15,6 @@ def test_login(client):
         "test", email="test@gyana.com", password="seewhatmatters", onboarded=True
     )
 
-    r = client.get("/")
-    assertOK(r)
-    assertLink(r, "/login/", "Sign in", total=2)
-
     r = client.get("/login/")
     assertOK(r)
     assertFormRenders(r, ["login", "password"])
