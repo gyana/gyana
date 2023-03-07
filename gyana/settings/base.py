@@ -74,7 +74,6 @@ THIRD_PARTY_APPS = [
     "hijack.contrib.admin",
     "waffle",
     "safedelete",
-    "djpaddle",
     "timezone_field",
     "django_celery_beat",
     "django_celery_results",
@@ -434,37 +433,6 @@ HEROKU_API_KEY = os.environ.get("HEROKU_API_KEY")
 HEROKU_APP = os.environ.get("HEROKU_APP")
 
 CNAME_DOMAIN = os.environ.get("CNAME_DOMAIN")
-
-# can be found at https://vendors.paddle.com/authentication
-# needs a default value
-DJPADDLE_VENDOR_ID = os.getenv("DJPADDLE_VENDOR_ID", "0000")
-
-# create one at https://vendors.paddle.com/authentication
-# needs a default value
-DJPADDLE_API_KEY = os.getenv("DJPADDLE_API_KEY", "0000")
-
-# can be found at https://vendors.paddle.com/public-key
-# needs a valid RSA key, but this is meaningless
-DJPADDLE_PUBLIC_KEY = os.getenv(
-    "DJPADDLE_PUBLIC_KEY",
-    """-----BEGIN PUBLIC KEY-----
-MIGeMA0GCSqGSIb3DQEBAQUAA4GMADCBiAKBgGmojhfiUOJztHJyWdRehmQuBVQa
-ZP10acfRWBQsLFxK+HRzycYKQlzZxGKz+89qmZOvylS0HdS5m20ghEdfUeNW7HRU
-ZT/srO/tz4Jlr7+QtKIiO+GD8KTIqWJNB+gca0ZaocTUtfMEEb/ESTIHdFfns706
-KYXRy8564UME3qd3AgMBAAE=
------END PUBLIC KEY-----""",
-)
-
-DJPADDLE_SANDBOX = os.getenv("DJPADDLE_SANDBOX", default="True") == "True"
-DJPADDLE_SUBSCRIBER_MODEL = "teams.Team"
-DJPADDLE_SUBSCRIBER_BY_PAYLOAD = "apps.teams.paddle.get_subscriber_by_payload"
-DJPADDLE_LINK_STALE_SUBSCRIPTIONS = False
-
-DJPADDLE_PRO_PLAN_ID = int(os.getenv("DJPADDLE_PRO_PLAN_ID", default="0"))
-
-# https://stackoverflow.com/questions/47153776/how-to-store-third-party-apps-migrations-in-django
-MIGRATION_MODULES = {"djpaddle": "apps.teams.migrate.djpaddle"}
-
 
 WAFFLE_FLAG_MODEL = "teams.Flag"
 

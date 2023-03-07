@@ -1,8 +1,7 @@
 from django.db import models
 from django.template import loader
 from django.template.loader import get_template
-from django_tables2 import Column, LinkColumn, Table, TemplateColumn
-from django_tables2.columns.urlcolumn import URLColumn
+from django_tables2 import Column, LinkColumn, Table
 from django_tables2.utils import A
 
 from apps.base.tables import NaturalDatetimeColumn
@@ -88,18 +87,3 @@ class TeamProjectsTable(Table):
             dashboard_count_=models.Count("dashboard")
         ).order_by(("-" if is_descending else "") + "dashboard_count_")
         return (queryset, True)
-
-
-class TeamPaymentsTable(Table):
-    class Meta:
-        attrs = {"class": "table"}
-
-    payout_date = Column(verbose_name="Date")
-    amount = Column()
-    currency = Column()
-    receipt_url = URLColumn(
-        text=lambda record: "Download Receipt"
-        if record.get("receipt_url") is not None
-        else "",
-        verbose_name="",
-    )
