@@ -1,9 +1,7 @@
-from django.conf import settings
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.views.generic import TemplateView
-from djpaddle.models import Plan
 from rest_framework.decorators import api_view
 
 from apps.columns.transformer import FUNCTIONS
@@ -50,21 +48,6 @@ class Home(TemplateView):
             "function_count": len(FUNCTIONS),
         }
         context["widget_count"] = len(WIDGET_KIND_TO_WEB.keys())
-        return context
-
-
-class Pricing(TemplateView):
-    template_name = "web/pricing.html"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["content"] = get_content("pricing.yaml")
-        context["nodes"] = [
-            v for k, v in NODE_CONFIG.items() if k not in ["input", "output", "text"]
-        ]
-        context["widgets"] = [
-            {"name": v[2], "icon": v[0]} for v in WIDGET_KIND_TO_WEB.values()
-        ]
         return context
 
 
