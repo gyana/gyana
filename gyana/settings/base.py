@@ -375,6 +375,7 @@ WEBSITE_GTM_ID = os.environ.get("WEBSITE_GTM_ID")
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
+DATABASE_URL = os.environ.get("DATABASE_URL")
 GCP_PROJECT = os.environ.get("GCP_PROJECT")
 GCP_BQ_SVC_ACCOUNT = os.environ.get("GCP_BQ_SVC_ACCOUNT")
 

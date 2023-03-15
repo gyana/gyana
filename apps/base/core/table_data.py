@@ -47,24 +47,22 @@ class BigQueryTableData(TableData):
         data = self.data
         if start > 0:
             data = data.limit(stop - start, offset=start)
-        return clients.bigquery().get_query_results(
-            data.compile(), max_results=self.rows_per_page
-        )
+        return [
+            {md5(k): v for k, v in row.items()}
+            for row in data.execute(limit=self.rows_per_page).to_dict(orient="records")
+        ]
 
     def __getitem__(self, page: slice):
         """Fetches the data for the current page"""
-        return (
-            self._get_query_results(page.start, page.stop).rows_dict_by_md5
-            if self._page_selected
-            else self._get_query_results().rows_dict_by_md5[: page.stop - page.start]
-        )
+        data = self._get_query_results(page.start, page.stop)
+        return data if self._page_selected else data[: page.stop - page.start]
 
     def __len__(self):
         """Fetches the total size from BigQuery"""
         total_rows = cache.get(self._len_key)
 
         if not self._page_selected or total_rows is None:
-            total_rows = self._get_query_results().total_rows
+            total_rows = self.data.count().execute()
             cache.set(self._len_key, total_rows, 24 * 3600)
 
         return total_rows

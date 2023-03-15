@@ -9,6 +9,7 @@ from djpaddle.models import paddle_client
 from google.cloud import bigquery as bigquery_client
 from google.cloud import storage
 from googleapiclient import discovery
+from sqlalchemy import create_engine
 
 from .core.bigquery import *  # noqa
 from .core.ibis.client import *  # noqa
@@ -56,9 +57,19 @@ def bigquery():
         credentials=credentials, project=project, location=settings.BIGQUERY_LOCATION
     )
 
+@lru_cache
+def postgres():
+    return create_engine(settings.DATABASE_URL)
+
+def get_backend_name():
+    if settings.DATABASE_URL and settings.DATABASE_URL.startswith("postgresql://"):
+        return "postgres"
+    return "bigquery"
 
 @lru_cache
 def ibis_client():
+    if settings.DATABASE_URL and settings.DATABASE_URL.startswith("postgresql://"):
+        return ibis.postgres.connect(url=settings.DATABASE_URL)
     return ibis.bigquery.connect(
         project_id=settings.GCP_PROJECT, auth_external_data=True
     )
