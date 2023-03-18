@@ -148,12 +148,6 @@ def test_sentiment_form(setup, node_factory, logged_in_user):
 
     assert set(form.fields.keys()) == {"sentiment_column"}
     assert get_choice_len(form, "sentiment_column") == 2
-    assert (
-        form.get_initial_for_field(
-            form.fields["credit_confirmed_user"], "credit_confirmed_user"
-        )
-        == logged_in_user
-    )
 
 
 # Test all nodes that only have a default node

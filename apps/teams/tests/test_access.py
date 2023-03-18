@@ -11,7 +11,6 @@ pytestmark = pytest.mark.django_db
     [
         pytest.param("/teams/{team_id}/update", id="update"),
         pytest.param("/teams/{team_id}/delete", id="delete"),
-        pytest.param("/teams/{team_id}/account", id="account"),
     ],
 )
 def test_admin_required(client, user, url, team_factory, settings):

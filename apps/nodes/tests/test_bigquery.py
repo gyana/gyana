@@ -554,21 +554,7 @@ def _create_sentiment_node(input_node, workflow):
 def test_sentiment_query(mocker, logged_in_user, setup):
     input_node, workflow = setup
     sentiment_node = _create_sentiment_node(input_node, workflow)
-    team = logged_in_user.teams.first()
-
-    with pytest.raises(CreditException) as err:
-        get_query_from_node(sentiment_node)
-
-    # Should error and not charge any credits
-    assert sentiment_node.error == "credit_exception"
-    assert sentiment_node.uses_credits == len(INPUT_DATA)
-    assert team.current_credit_balance == 0
-
-    # Confirm credit usage
-    sentiment_node.credit_use_confirmed = timezone.now()
-    sentiment_node.credit_confirmed_user = logged_in_user
-    sentiment_node.save()
-
+    
     mocker.patch(
         target="apps.nodes._sentiment_utils._gcp_analyze_sentiment",
         side_effect=mock_gcp_analyze_sentiment,
@@ -582,7 +568,6 @@ def test_sentiment_query(mocker, logged_in_user, setup):
 
     # Should have charged credits and uploaded the right dataframe
     uploaded_df = clients.bigquery().load_table_from_dataframe.call_args.args[0]
-    assert team.current_credit_balance == 2
     pd._testing.assert_frame_equal(
         uploaded_df,
         pd.DataFrame(
@@ -599,7 +584,6 @@ def test_sentiment_query(mocker, logged_in_user, setup):
 
     query = get_query_from_node(sentiment_node)
     assert re.match(re.compile(SENTIMENT_QUERY), query.compile())
-    assert team.current_credit_balance == 2
 
 
 def test_convert_node(setup):
