@@ -22,7 +22,6 @@ from apps.dashboards.models import Dashboard, Page
 from apps.filters.models import Filter
 from apps.integrations.models import Integration
 from apps.invites.models import Invite
-from apps.learn.models import LearnPage
 from apps.nodes.models import Node
 from apps.oauth2.models import OAuth2
 from apps.projects.models import Project
@@ -285,14 +284,3 @@ class ColumnFactory(factory.django.DjangoModelFactory):
 class FlagFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Flag
-
-
-@register
-class LearnPageFactory(wagtail_factories.PageFactory):
-    title = "Gyana University"
-    body = []
-    slug = "learn"
-    show_in_menus = True
-
-    class Meta:
-        model = LearnPage

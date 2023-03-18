@@ -11,7 +11,6 @@ EXTERNAL_URLS = {
     "hubspot_meeting": "https://meetings-eu1.hubspot.com/david-kell",
     "facebook_group": "https://www.facebook.com/groups/891928461364849/",
     "slack_community": "https://join.slack.com/t/gyanacommunity/shared_invite/zt-vly76dna-dxv12CkXdanlwqMam5zDPQ",
-    "university": "/learn",
     "careers": "https://gyanalimited.recruitee.com/",
     "appsumo": "https://appsumo.com/products/gyana/",
     "demo_dashboard": "https://www.gyana.com/dashboards/a7b7458f-8162-4ec9-b92b-5b6911e02d49?embed=true",

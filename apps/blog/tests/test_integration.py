@@ -8,12 +8,8 @@ from apps.base.tests.asserts import assertLink, assertOK
 pytestmark = pytest.mark.django_db
 
 
-def test_blog(client, blog_index_page_factory, blog_page_factory):
-    locale = Locale.objects.create(language_code="en")
-    root_page = wagtail_factories.PageFactory(parent=None, title="Root")
-    site = Site.objects.create(is_default_site=True, root_page=root_page)
-    blog_index_page = blog_index_page_factory(parent=root_page)
-    blog_page = blog_page_factory(parent=blog_index_page)
+def test_blog(client, post_factory):
+    post = post_factory()
 
     r = client.get("/blog/")
     assertOK(r)

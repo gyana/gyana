@@ -17,7 +17,6 @@ module.exports = {
     stimulus: './apps/base/javascript/stimulus.ts',
     style: './apps/base/styles/style.scss',
     website: './apps/web/styles/website.scss',
-    university: './apps/learn/styles/style__university.scss',
     tailwind: './apps/base/styles/vendors/tailwind.pcss',
     'web-integration-demo': './apps/web/javascript/integration-demo.tsx',
     'web-workflow-demo': './apps/web/javascript/workflow-demo.tsx',
