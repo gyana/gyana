@@ -116,13 +116,6 @@ def drive_v2(mocker):
     yield client
 
 
-@pytest.fixture(autouse=True)
-def heroku(mocker):
-    client = MagicMock()
-    mocker.patch("apps.base.clients.heroku", return_value=client)
-    yield client
-
-
 @pytest.fixture
 def user():
     team = Team.objects.create(name="Vayu")

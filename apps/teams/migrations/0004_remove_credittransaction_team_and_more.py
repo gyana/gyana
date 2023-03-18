@@ -6,7 +6,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('teams', '0004_remove_team_last_checkout'),
+        ('teams', '0003_wagtail_waffle_fix'),
     ]
 
     operations = [
