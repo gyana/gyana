@@ -68,8 +68,6 @@ class NodeUpdate(UpdateView):
 
     def get_form_kwargs(self):
         form_kwargs = super().get_form_kwargs()
-        if self.object.kind == Node.Kind.SENTIMENT:
-            form_kwargs["user"] = self.request.user
         if parent := self.object.parents.first():
             form_kwargs["schema"] = parent.schema
         return form_kwargs
