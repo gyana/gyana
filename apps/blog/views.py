@@ -1,13 +1,13 @@
 from django.views.generic import DetailView, ListView
 
-from .models import BlogIndexPage, BlogPage
+from .models import Post
 
 
-class BlogList(ListView):
+class PostList(ListView):
     template_name = 'blog/list.html'
-    model = BlogPage
+    model = Post
     ordering = ["-date"]
 
-class BlogDetail(ListView):
+class PostDetail(DetailView):
     template_name = 'blog/detail.html'
-    model = BlogPage
+    model = Post

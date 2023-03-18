@@ -18,11 +18,11 @@
       <div class="grid gap-5 lg:grid-cols-3">
         {% for post in object_list %}
           <a
-            href="{% url post %}"
+            href="{% url 'blog:detail' post.slug %}"
             class="card card--none flex flex-col shadow-md hover:shadow-lg overflow-hidden"
           >
             <div class="flex-shrink-0">
-              {% image post.feed_image width-400 %}
+              <img src="{{ post.feed_image }}" style="width: 400px;"/>
             </div>
             <div class="flex-1 bg-white p-6 flex flex-col justify-between">
               <div class="flex-1">
@@ -32,7 +32,7 @@
               </div>
               <div class="mt-6 flex items-center">
                 <div class="flex-shrink-0">
-                  {% image post.author.avatar width-40 class="rounded-md" %}
+                  <img src="{{ post.author.avatar }}" class="rounded-md w-10"/>
                 </div>
                 <div class="ml-3">
                   <p class="text-sm font-normal text-gray-900">
