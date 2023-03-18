@@ -8,7 +8,6 @@ from django.utils.functional import cached_property
 from django_celery_beat.models import PeriodicTask
 
 from apps.base.models import BaseModel
-from apps.cnames.models import CName
 from apps.teams.models import Team
 
 
@@ -35,7 +34,6 @@ class Project(DirtyFieldsMixin, BaseModel):
         related_name="invite_only_projects",
         through="ProjectMembership",
     )
-    cname = models.ForeignKey(CName, on_delete=models.SET_NULL, null=True, blank=True)
     # default midnight
     daily_schedule_time = models.TimeField(default=time())
     periodic_task = models.OneToOneField(

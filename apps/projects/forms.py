@@ -53,21 +53,12 @@ class ProjectUpdateForm(MemberSelectMixin, LiveModelForm):
             "name",
             "description",
             "access",
-            "members",
-            "cname",
+            "members"
         ]
         widgets = {"members": MemberSelect()}
-        labels = {"cname": "Custom domain"}
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        if cname_field := self.fields.get("cname"):
-            cname_field.empty_label = "Default domain (gyana.com)"
-            cname_field.queryset = self._team.cname_set.all()
 
     def get_live_fields(self):
-        fields = ["name", "description", "access", "cname"]
+        fields = ["name", "description", "access"]
 
         if self.get_live_field("access") == Project.Access.INVITE_ONLY:
             fields += ["members"]

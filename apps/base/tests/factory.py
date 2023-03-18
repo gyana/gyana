@@ -5,7 +5,6 @@ import wagtail_factories
 from django.utils import timezone
 from pytest_factoryboy import register
 
-from apps.cnames.models import CName
 from apps.columns.models import (
     AddColumn,
     AggregationColumn,
@@ -155,15 +154,6 @@ class WidgetFactory(factory.django.DjangoModelFactory):
 
     page = factory.SubFactory(PageFactory)
     table = factory.SubFactory(IntegrationTableFactory)
-
-
-@register
-class CNameFactory(factory.django.DjangoModelFactory):
-    class Meta:
-        model = CName
-
-    team = factory.SubFactory(TeamFactory)
-    domain = "test.domain.com"
 
 
 @register

@@ -33,7 +33,6 @@ register_converter(HashIdConverter if settings.USE_HASHIDS else IntConverter, "h
 
 from wagtail.api.v2.views import PagesAPIViewSet
 
-from apps.cnames import urls as cname_urls
 from apps.controls import urls as control_urls
 from apps.customapis import urls as api_urls
 from apps.dashboards import urls as dashboard_urls
@@ -86,7 +85,6 @@ teams_urlpatterns = [
     path("<hashid:team_id>/invites/", include(invite_urls.team_urlpatterns)),
     path("<hashid:team_id>/projects/", include(project_urls.team_urlpatterns)),
     path("<hashid:team_id>/members/", include(team_urls.membership_urlpatterns)),
-    path("<hashid:team_id>/cnames/", include(cname_urls.team_urlpatterns)),
 ]
 
 
@@ -108,7 +106,6 @@ urlpatterns = [
     path("nodes/", include("apps.nodes.urls")),
     path("uploads/", include("apps.uploads.urls")),
     path("sheets/", include("apps.sheets.urls")),
-    path("cnames/", include("apps.cnames.urls")),
     path("oauth2/", include("apps.oauth2.urls")),
     path("learn/", include("apps.learn.urls")),
     path("", include("apps.web.urls")),
