@@ -210,22 +210,6 @@ class UnpivotNodeForm(NodeForm):
         self.form_description = "Transform multiple columns into a single column."
 
 
-class SentimentNodeForm(NodeForm):
-    sentiment_column = forms.ChoiceField(
-        choices=(),
-    )
-
-    class Meta:
-        model = Node
-        fields = ("sentiment_column",)
-
-    def __init__(self, *args, **kwargs):
-        self.user = kwargs.pop("user")
-        super().__init__(*args, **kwargs)
-        self.fields["sentiment_column"].choices = create_column_choices(
-            [name for name, type_ in self.columns.items() if type_.name == "String"]
-        )
-
 
 class ExceptNodeForm(DefaultNodeForm):
     def __init__(self, *args, **kwargs):
@@ -265,7 +249,6 @@ KIND_TO_FORM = {
     "pivot": PivotNodeForm,
     "unpivot": UnpivotNodeForm,
     "intersect": DefaultNodeForm,
-    "sentiment": SentimentNodeForm,
     "window": DefaultNodeForm,
     "convert": DefaultNodeForm,
 }

@@ -42,7 +42,6 @@ class Node(DirtyFieldsMixin, BaseModel):
         UNPIVOT = "unpivot", "Unpivot"
         TEXT = "text", "Text"
         WINDOW = "window", "Window and Calculate"
-        SENTIMENT = "sentiment", "Sentiment"
 
     _clone_excluded_m2m_fields = ["parents", "node_set"]
     _clone_excluded_m2o_or_o2m_fields = [
@@ -161,12 +160,6 @@ class Node(DirtyFieldsMixin, BaseModel):
         blank=True,
         help_text="Name of the new category column",
     )
-    sentiment_column = models.CharField(
-        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
-        null=True,
-        blank=True,
-        help_text="Select the text column to get the sentiment of.",
-    )
 
     has_been_saved = models.BooleanField(default=False)
 
@@ -189,7 +182,6 @@ class Node(DirtyFieldsMixin, BaseModel):
     def is_valid(self):
         return self.has_been_saved or self.kind not in [
             self.Kind.INPUT,
-            self.Kind.SENTIMENT,
             self.Kind.JOIN,
             self.Kind.PIVOT,
             self.Kind.UNPIVOT,

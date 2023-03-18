@@ -15,15 +15,9 @@ from apps.nodes.bigquery import get_pivot_query, get_query_from_node, get_unpivo
 from apps.nodes.models import Node
 from apps.nodes.tests.mocks import (
     DEFAULT_X_Y,
-    INPUT_DATA,
     INPUT_QUERY,
-    NEGATIVE_SCORE,
-    POSITIVE_SCORE,
-    SAKURA,
-    USAIN,
     mock_bq_client_data,
     mock_bq_client_schema,
-    mock_gcp_analyze_sentiment,
 )
 
 pytestmark = pytest.mark.django_db
@@ -534,56 +528,6 @@ def test_unpivot_node(setup):
         f"SELECT id, category, value FROM ({INPUT_QUERY})"
         f" UNPIVOT(value FOR category IN (athlete, birthday))"
     )
-
-
-SENTIMENT_QUERY = "SELECT t0\\.\\*\nFROM `project\\.cypress_team_.*_tables\\..*` t0"
-
-
-def _create_sentiment_node(input_node, workflow):
-    node = Node.objects.create(
-        kind=Node.Kind.SENTIMENT,
-        workflow=workflow,
-        **DEFAULT_X_Y,
-        sentiment_column="athlete",
-        data_updated=timezone.now(),
-    )
-    node.parents.add(input_node)
-    return node
-
-
-def test_sentiment_query(mocker, logged_in_user, setup):
-    input_node, workflow = setup
-    sentiment_node = _create_sentiment_node(input_node, workflow)
-    
-    mocker.patch(
-        target="apps.nodes._sentiment_utils._gcp_analyze_sentiment",
-        side_effect=mock_gcp_analyze_sentiment,
-    )
-    mocker.patch(
-        "apps.nodes._sentiment_utils.LanguageServiceClient",
-        side_effect=mock.MagicMock,
-    )
-    query = get_query_from_node(sentiment_node)
-    assert re.match(re.compile(SENTIMENT_QUERY), query.compile())
-
-    # Should have charged credits and uploaded the right dataframe
-    uploaded_df = clients.bigquery().load_table_from_dataframe.call_args.args[0]
-    pd._testing.assert_frame_equal(
-        uploaded_df,
-        pd.DataFrame(
-            {"text": [USAIN, SAKURA], "sentiment": [NEGATIVE_SCORE, POSITIVE_SCORE]}
-        ),
-    )
-
-    # Fake update to input node
-    # It still shouldnt charge any credits
-    input_node.data_updated = timezone.now()
-    input_node.save()
-    # Need to refresh object because it has new props updated in the celery task
-    sentiment_node.refresh_from_db()
-
-    query = get_query_from_node(sentiment_node)
-    assert re.match(re.compile(SENTIMENT_QUERY), query.compile())
 
 
 def test_convert_node(setup):

@@ -141,15 +141,6 @@ def test_unpivot_form(setup, node_factory):
     assert set(form.fields.keys()) == {"unpivot_column", "unpivot_value"}
 
 
-def test_sentiment_form(setup, node_factory, logged_in_user):
-    table, workflow = setup
-    node = create_and_connect(Node.Kind.SENTIMENT, node_factory, table, workflow)
-    form = KIND_TO_FORM[node.kind](instance=node, user=logged_in_user)
-
-    assert set(form.fields.keys()) == {"sentiment_column"}
-    assert get_choice_len(form, "sentiment_column") == 2
-
-
 # Test all nodes that only have a default node
 def kind_param(kind):
     return pytest.param(kind, id=f"test {kind} form")

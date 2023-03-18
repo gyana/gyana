@@ -134,13 +134,6 @@ NODE_CONFIG = {
         "section": "Table manipulations",
         "explanation": "Use the intersect node to only include rows that appear in all the input nodes.",
     },
-    "sentiment": {
-        "displayName": "Sentiment Analysis",
-        "icon": "fa-smile-plus",
-        "description": "Estimate the sentiment of a text using AI",
-        "section": "Column manipulations",
-        "explanation": "Get a sentiment estimation between -1 (bad) to +1 (good) of your text column.",
-    },
     "window": {
         "displayName": "Window and Calculate",
         "icon": "fa-window-frame",

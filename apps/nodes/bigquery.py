@@ -24,7 +24,6 @@ from apps.nodes.exceptions import ColumnNamesDontMatch, JoinTypeError, NodeResul
 from apps.nodes.models import Node
 from apps.tables.bigquery import get_query_from_table
 
-from ._sentiment_utils import get_gcp_sentiment
 from ._utils import create_or_replace_intermediate_table, get_parent_updated
 
 
@@ -320,20 +319,6 @@ def get_window_query(node, query):
     return query
 
 
-def get_sentiment_query(node, parent):
-    table = getattr(node, "intermediate_table", None)
-    conn = clients.ibis_client()
-
-    # if the table doesn't need updating we can simply return the previous computed table
-    if table and table.data_updated > max(tuple(get_parent_updated(node))):
-        return conn.table(table.bq_table, database=table.bq_dataset)
-
-    task = get_gcp_sentiment.delay(node.id)
-    bq_table, bq_dataset = task.wait(timeout=None, interval=0.1)
-
-    return conn.table(bq_table, database=bq_dataset)
-
-
 def get_convert_query(node, query):
     converted_columns = {
         column.column: convert_column(query, column)
@@ -362,7 +347,6 @@ NODE_FROM_CONFIG = {
     "pivot": get_pivot_query,
     "unpivot": get_unpivot_query,
     "intersect": get_intersect_query,
-    "sentiment": get_sentiment_query,
     "window": get_window_query,
     "convert": get_convert_query,
 }

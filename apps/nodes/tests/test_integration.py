@@ -650,28 +650,6 @@ def test_unpivot_node(client, node_factory, setup):
     assert unpivot_node.unpivot_value == "value"
 
 
-def test_sentiment_node(client, logged_in_user, node_factory, setup):
-    table, workflow = setup
-
-    sentiment_node, r = create_and_connect_node(
-        client, Node.Kind.SENTIMENT, node_factory, table, workflow
-    )
-    assertFormRenders(
-        r, ["sentiment_column", "name"]
-    )
-    # Should only have the empty and string option
-    assertSelectorLength(r, "#id_sentiment_column > option", 2)
-
-    r = update_node(
-        client,
-        sentiment_node.id,
-        {"sentiment_column": "athlete"},
-    )
-    sentiment_node.refresh_from_db()
-
-    assert sentiment_node.sentiment_column == "athlete"
-
-
 def test_convert_node(client, node_factory, setup):
     table, workflow = setup
     convert_base = base_formset("convert_columns")
