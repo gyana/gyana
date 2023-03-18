@@ -424,9 +424,6 @@ HONEYBADGER = {
 
 HELLONEXT_SSO_TOKEN = os.environ.get("HELLONEXT_SSO_TOKEN")
 
-HEROKU_API_KEY = os.environ.get("HEROKU_API_KEY")
-HEROKU_APP = os.environ.get("HEROKU_APP")
-
 WAFFLE_FLAG_MODEL = "teams.Flag"
 
 WAGTAIL_SITE_NAME = "Gyana CMS"
