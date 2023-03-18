@@ -12,7 +12,6 @@ from apps.base import clients
 from apps.columns.models import Column
 from apps.filters.models import DateRange, Filter
 from apps.nodes.bigquery import get_pivot_query, get_query_from_node, get_unpivot_query
-from apps.nodes.exceptions import CreditException
 from apps.nodes.models import Node
 from apps.nodes.tests.mocks import (
     DEFAULT_X_Y,
