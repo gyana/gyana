@@ -398,9 +398,7 @@ def get_query_from_node(current_node):
             results[node] = func(node, *args)
             if node.error:
                 node.error = None
-                # Only update error field to avoid overwriting changes performed
-                # In celery (e.g. adding the intermediate table for sentiment)
-                node.save(update_fields=["error"])
+                node.save()
         except Exception as err:
             node.error = error_name_to_snake(err)
             node.save()
