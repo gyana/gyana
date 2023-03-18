@@ -1,5 +1,4 @@
 import pytest
-import wagtail_factories
 from pytest_django.asserts import assertContains
 from wagtail.core.models import Locale, Site
 

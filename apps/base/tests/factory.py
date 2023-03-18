@@ -1,7 +1,6 @@
 import uuid
 
 import factory
-import wagtail_factories
 from django.utils import timezone
 from pytest_factoryboy import register
 

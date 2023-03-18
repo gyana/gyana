@@ -1,6 +1,4 @@
 import pytest
-import wagtail_factories
-from wagtail.core.models import Locale, Site
 
 pytestmark = pytest.mark.django_db
 

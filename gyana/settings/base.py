@@ -77,22 +77,6 @@ THIRD_PARTY_APPS = [
     # TODO: Remove after website migration is complete
     "heroicons",
     "simple_history",
-    # wagtail
-    "wagtail.contrib.forms",
-    "wagtail.contrib.redirects",
-    "wagtail.embeds",
-    "wagtail.sites",
-    "wagtail.users",
-    "wagtail.snippets",
-    "wagtail.documents",
-    "wagtail.images",
-    "wagtail.search",
-    "wagtail.admin",
-    "wagtail.core",
-    "modelcluster",
-    "taggit",
-    "wagtail.contrib.modeladmin",
-    "wagtailmenus",
     "django_htmx",
     "crispy_forms",
 ]
@@ -141,7 +125,6 @@ MIDDLEWARE = [
     "simple_history.middleware.HistoryRequestMiddleware",
     "hijack.middleware.HijackUserMiddleware",
     "waffle.middleware.WaffleMiddleware",
-    "wagtail.contrib.redirects.middleware.RedirectMiddleware",
     "django_htmx.middleware.HtmxMiddleware",
 ]
 
@@ -187,7 +170,6 @@ TEMPLATES = [
                 "apps.web.context_processors.project_meta",
                 "apps.web.context_processors.google_analytics_id",
                 "gyana.context_processors.django_settings",
-                "wagtailmenus.context_processors.wagtailmenus",
             ],
             # equivalent of APP_DIRS=True, plus admin_tools template loader
             "loaders": [
@@ -424,14 +406,6 @@ HONEYBADGER = {
 HELLONEXT_SSO_TOKEN = os.environ.get("HELLONEXT_SSO_TOKEN")
 
 WAFFLE_FLAG_MODEL = "teams.Flag"
-
-WAGTAIL_SITE_NAME = "Gyana CMS"
-WAGTAILSEARCH_BACKENDS = {
-    "default": {
-        "BACKEND": "wagtail.search.backends.database",
-    }
-}
-
 
 CACHEOPS_REDIS = CELERY_BROKER_URL
 CACHEOPS = {"*.*": {"timeout": 60 * 60}}

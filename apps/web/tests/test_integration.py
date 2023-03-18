@@ -1,5 +1,4 @@
 import pytest
-import wagtail_factories
 from wagtail.core.models import Locale, Site
 
 from apps.base.tests.asserts import assertLink, assertOK

@@ -2,7 +2,6 @@ from datetime import date
 
 import factory
 import pytest
-import wagtail_factories
 from pytest_factoryboy import register
 
 from apps.blog.models import Author, Post
@@ -19,7 +18,7 @@ class AuthorFactory(factory.django.DjangoModelFactory):
 
 
 @register
-class PostFactory(wagtail_factories.PageFactory):
+class PostFactory(factory.django.DjangoModelFactory):
     title = "Gyana 2021, Wrapped"
     slug = "gyana-2021-wrapped"
     date = date(2022, 1, 1)

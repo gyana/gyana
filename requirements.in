@@ -51,6 +51,4 @@ psycopg2-binary
 pytest-mock
 python-Levenshtein
 readtime
-wagtail
-wagtailmenus
 sqlalchemy
