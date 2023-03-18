@@ -108,6 +108,7 @@ urlpatterns = [
     path("sheets/", include("apps.sheets.urls")),
     path("oauth2/", include("apps.oauth2.urls")),
     path("learn/", include("apps.learn.urls")),
+    path("blog/", include("apps.blog.urls")),
     path("", include("apps.web.urls")),
     path("celery-progress/", include("celery_progress.urls")),
     path("hijack/", include("hijack.urls", namespace="hijack")),
