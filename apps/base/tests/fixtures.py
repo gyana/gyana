@@ -56,9 +56,6 @@ def patches(mocker, settings):
 
     settings.GS_BUCKET_NAME = "gyana-test"
 
-    # the test client host header
-    settings.CNAME_ALLOWED_HOSTS = ["testserver"]
-
     # use filesystem instead of google cloud storage
     settings.DEFAULT_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
 

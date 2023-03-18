@@ -320,7 +320,6 @@
       "ready": true,
       "access": "everyone",
       "description": "",
-      "cname": null,
       "daily_schedule_time": "00:00:00",
       "periodic_task": 1
     }
@@ -336,7 +335,6 @@
       "ready": true,
       "access": "everyone",
       "description": "",
-      "cname": null,
       "daily_schedule_time": "00:00:00",
       "periodic_task": null
     }
@@ -352,7 +350,6 @@
       "ready": true,
       "access": "everyone",
       "description": "Two widgets for Google Analytics in a Cypress test.",
-      "cname": null,
       "daily_schedule_time": "00:00:00",
       "periodic_task": null
     }

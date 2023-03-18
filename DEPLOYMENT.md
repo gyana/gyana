@@ -100,7 +100,6 @@ We setup the app in the Heroku UI, key points to note:
 Heroku config variables, with production examples:
 
 ```bash
-CNAME_DOMAIN = cname.gyana.com
 DJANGO_SETTINGS_MODULE = gyana.settings.heroku
 ENVIRONMENT = production
 EXTERNAL_URL = https://app.gyana.com

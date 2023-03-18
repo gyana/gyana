@@ -32,9 +32,6 @@ DEBUG = True
 TEST = False
 
 ALLOWED_HOSTS = ["*"]
-# custom allowed hosts middleware for cnames
-CNAME_ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -118,7 +115,6 @@ PROJECT_APPS = [
     "apps.columns",
     "apps.uploads",
     "apps.sheets",
-    "apps.cnames.apps.CNamesConfig",
     "apps.exports",
     "apps.controls",
     "apps.runs.apps.RunsConfig",
@@ -133,7 +129,6 @@ INSTALLED_APPS = (
 )
 
 MIDDLEWARE = [
-    "apps.cnames.middleware.HostMiddleware",
     "honeybadger.contrib.DjangoHoneybadgerMiddleware",
     "beeline.middleware.django.HoneyMiddleware",
     "django.middleware.security.SecurityMiddleware",
@@ -431,8 +426,6 @@ HELLONEXT_SSO_TOKEN = os.environ.get("HELLONEXT_SSO_TOKEN")
 
 HEROKU_API_KEY = os.environ.get("HEROKU_API_KEY")
 HEROKU_APP = os.environ.get("HEROKU_APP")
-
-CNAME_DOMAIN = os.environ.get("CNAME_DOMAIN")
 
 WAFFLE_FLAG_MODEL = "teams.Flag"
 
