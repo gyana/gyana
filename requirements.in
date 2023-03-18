@@ -43,12 +43,12 @@ ibis-framework[bigquery]
 inflection
 jsonpath-ng
 lark
+markdown
 pandas
 pathvalidate
 plotly
 psycopg2-binary
 pytest-mock
-python-frontmatter
 python-Levenshtein
 readtime
 wagtail
