@@ -468,5 +468,4 @@ ZT/srO/tz4Jlr7+QtKIiO+GD8KTIqWJNB+gca0ZaocTUtfMEEb/ESTIHdFfns706
 KYXRy8564UME3qd3AgMBAAE=
 -----END PUBLIC KEY-----""",
 )
-DJPADDLE_SUBSCRIBER_MODEL = "teams.Team"
 MIGRATION_MODULES = {"djpaddle": "apps.teams.migrate.djpaddle"}

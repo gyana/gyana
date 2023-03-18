@@ -24,20 +24,16 @@ def test_cname_crudl(client, logged_in_user, heroku):
     heroku.get_domain().acm_status = "waiting"
     heroku.reset_mock()
 
-    # User on free plan can't create custom domain
     r = client.get_htmx_partial(f"/teams/{team.id}/update", f"/teams/{team.id}/cnames/")
     assertOK(r)
     assertSelectorText(
-        r, "p", "You cannot create more custom domains on your current plan."
+        r, "p", "Why not create one?"
     )
 
     r = client.get(f"/teams/{team.id}/cnames/new")
     assertOK(r)
     assertFormRenders(r, ["domain"])
-
-    r = client.post(f"/teams/{team.id}/cnames/new", data={"domain": "test.domain.com"})
-    assert r.status_code == 422
-
+    
     r = client.get_htmx_partial(f"/teams/{team.id}/update", f"/teams/{team.id}/cnames/")
     assertOK(r)
     assertLink(r, f"/teams/{team.id}/cnames/new", "create one")
