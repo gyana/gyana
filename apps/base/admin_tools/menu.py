@@ -44,7 +44,6 @@ class CustomMenu(Menu):
                     "django.contrib.*",
                     "taggit.*",
                     "waffle.*",
-                    "wagtail.*",
                 ),
             ),
             items.ModelList(

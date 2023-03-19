@@ -21,18 +21,12 @@ from django.contrib.sitemaps.views import sitemap
 from django.urls import include, path, register_converter
 from django.urls.converters import IntConverter
 from rest_framework.documentation import get_schemajs_view, include_docs_urls
-from wagtail.admin import urls as wagtailadmin_urls
-from wagtail.contrib.sitemaps import Sitemap as WagtailSitemap
-from wagtail.core import urls as wagtail_urls
-from wagtail.documents import urls as wagtaildocs_urls
 
 from apps.base.converters import HashIdConverter
 
 register_converter(HashIdConverter if settings.USE_HASHIDS else IntConverter, "hashid")
 
-
-from wagtail.api.v2.views import PagesAPIViewSet
-
+from apps.blog.sitemaps import BlogSitemap
 from apps.controls import urls as control_urls
 from apps.customapis import urls as api_urls
 from apps.dashboards import urls as dashboard_urls
@@ -49,7 +43,6 @@ from apps.web.sitemaps import WebSitemap
 from apps.widgets import urls as widget_urls
 from apps.workflows import urls as workflow_urls
 
-PagesAPIViewSet.schema = None
 schemajs_view = get_schemajs_view(title="API")
 
 
@@ -116,12 +109,10 @@ urlpatterns = [
     path("docs/", include_docs_urls(title="API Docs")),
     path("schemajs/", schemajs_view, name="api_schemajs"),
     path("", include(users_urls.accounts_urlpatterns)),
-    path("cms/", include(wagtailadmin_urls)),
-    path("documents/", include(wagtaildocs_urls)),
     path(
         "sitemap.xml",
         sitemap,
-        {"sitemaps": {"web": WebSitemap, "wagtail": WagtailSitemap}},
+        {"sitemaps": {"web": WebSitemap, "blog": BlogSitemap}},
         name="django.contrib.sitemaps.views.sitemap",
     ),
 ]
@@ -134,6 +125,4 @@ if settings.CYPRESS_URLS:
 if settings.DEBUG:
     urlpatterns += [path("silk/", include("silk.urls", namespace="silk"))]
 
-urlpatterns += [
-    path("", include(wagtail_urls)),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

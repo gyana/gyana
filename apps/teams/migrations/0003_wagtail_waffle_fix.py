@@ -12,7 +12,6 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ("teams", "0002_initial"),
-        ("wagtailsearch", "0003_remove_editors_pick"),
         ("waffle", "__latest__"),
     ]
 
@@ -23,9 +22,5 @@ class Migration(migrations.Migration):
         ),
         migrations.RunSQL(
             "DROP TABLE IF EXISTS waffle_flag_users", reverse_sql=migrations.RunSQL.noop
-        ),
-        migrations.RunSQL(
-            "DROP TABLE IF EXISTS wagtailsearch_editorspick CASCADE;",
-            reverse_sql=migrations.RunSQL.noop,
         ),
     ]

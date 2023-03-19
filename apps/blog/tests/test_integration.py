@@ -1,6 +1,5 @@
 import pytest
 from pytest_django.asserts import assertContains
-from wagtail.core.models import Locale, Site
 
 from apps.base.tests.asserts import assertLink, assertOK
 
