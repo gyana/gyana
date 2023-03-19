@@ -30,37 +30,5 @@ class Migration(migrations.Migration):
                 ('feed_image', models.URLField()),
                 ('author', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='blog.author')),
             ],
-        ),
-        migrations.RemoveField(
-            model_name='blogindexpage',
-            name='page_ptr',
-        ),
-        migrations.RemoveField(
-            model_name='blogpage',
-            name='author',
-        ),
-        migrations.RemoveField(
-            model_name='blogpage',
-            name='category',
-        ),
-        migrations.RemoveField(
-            model_name='blogpage',
-            name='feed_image',
-        ),
-        migrations.RemoveField(
-            model_name='blogpage',
-            name='page_ptr',
-        ),
-        migrations.DeleteModel(
-            name='BlogAuthor',
-        ),
-        migrations.DeleteModel(
-            name='BlogCategory',
-        ),
-        migrations.DeleteModel(
-            name='BlogIndexPage',
-        ),
-        migrations.DeleteModel(
-            name='BlogPage',
-        ),
+        )
     ]
