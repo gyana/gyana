@@ -7,7 +7,6 @@ class Migration(migrations.Migration):
     """
     Migration for issue: cannot truncate a table referenced in a foreign key constraint: Table "waffle_flag_groups" references "auth_group".
     See more: https://github.com/django-waffle/django-waffle/issues/317
-    Extended for Wagtail: https://github.com/wagtail/wagtail/issues/1824
     """
 
     dependencies = [
