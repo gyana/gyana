@@ -13,12 +13,11 @@ def test_blog(client, post_factory):
     assertOK(r)
 
     assertContains(r, "Blog")
-    assertContains(r, "Learn about tips, product updates and company culture.")
-    assertContains(r, "News")  # category
+    assertContains(r, "Learn about tips, product updates and our journey.")
 
-    assertLink(r, "/blog/gyana-2021-wrapped/", "Gyana 2021, Wrapped")
+    assertLink(r, "/blog/gyana-2021-wrapped", "Gyana 2021, Wrapped")
 
-    r = client.get("/blog/gyana-2021-wrapped/")
+    r = client.get("/blog/gyana-2021-wrapped")
     assertOK(r)
 
     assertContains(r, "Han Solo")
