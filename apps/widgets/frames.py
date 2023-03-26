@@ -23,7 +23,7 @@ from apps.base.views import UpdateView
 from apps.columns.currency_symbols import CURRENCY_SYMBOLS_MAP
 from apps.controls.bigquery import DATETIME_FILTERS
 from apps.dashboards.mixins import DashboardMixin
-from apps.tables.bigquery import get_query_from_table
+from apps.tables.data import get_query_from_table
 from apps.tables.models import Table
 from apps.widgets.visuals import chart_to_output, metric_to_output, table_to_output
 

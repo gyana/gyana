@@ -9,7 +9,7 @@ from apps.base.views import UpdateView
 from apps.integrations.forms import IntegrationNameForm
 from apps.integrations.tables import StructureTable
 from apps.projects.mixins import ProjectMixin
-from apps.tables.bigquery import get_bq_table_schema_from_table, get_query_from_table
+from apps.tables.data import get_bq_table_schema_from_table, get_query_from_table
 
 from .mixins import TableInstanceMixin
 from .models import Integration

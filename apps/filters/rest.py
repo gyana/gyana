@@ -8,7 +8,7 @@ from apps.base import clients
 from apps.nodes.bigquery import get_query_from_node
 from apps.nodes.models import Node
 from apps.projects.access import user_can_access_project
-from apps.tables.bigquery import get_query_from_table
+from apps.tables.data import get_query_from_table
 from apps.tables.models import Table
 from apps.widgets.models import Widget
 

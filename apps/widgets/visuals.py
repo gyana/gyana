@@ -6,7 +6,7 @@ from apps.columns.bigquery import aggregate_columns, get_groups, resolve_colname
 from apps.columns.currency_symbols import CURRENCY_SYMBOLS_MAP
 from apps.controls.bigquery import slice_query
 from apps.filters.bigquery import get_query_from_filters
-from apps.tables.bigquery import get_query_from_table
+from apps.tables.data import get_query_from_table
 
 from .bigquery import get_query_from_widget
 from .models import Widget

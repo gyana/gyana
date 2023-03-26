@@ -81,7 +81,7 @@ class Table(BaseModel):
 
     @cached_property
     def schema(self):
-        from apps.tables.bigquery import get_query_from_table
+        from apps.tables.data import get_query_from_table
 
         return get_query_from_table(self).schema()
 

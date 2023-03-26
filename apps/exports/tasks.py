@@ -6,7 +6,7 @@ from django.utils import timezone
 from apps.base.analytics import EXPORT_CREATED
 from apps.exports.emails import send_export_email
 from apps.nodes.bigquery import get_query_from_node
-from apps.tables.bigquery import get_query_from_table
+from apps.tables.data import get_query_from_table
 from apps.users.models import CustomUser
 
 from .bigquery import query_to_gcs

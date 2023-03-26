@@ -12,12 +12,11 @@ from django_tables2 import Column, Table
 from django_tables2.config import RequestConfig as BaseRequestConfig
 from django_tables2.data import TableData
 
-from apps.base import clients
 from apps.base.core.utils import md5
 from apps.columns.currency_symbols import CURRENCY_SYMBOLS_MAP
 
 
-class BigQueryTableData(TableData):
+class GyanaTableData(TableData):
     """Django table data class that queries data from BigQuery
 
     See https://github.com/jieter/django-tables2/blob/master/django_tables2/data.py
@@ -34,9 +33,11 @@ class BigQueryTableData(TableData):
         self,
         data,
     ):
+        self.full_data = data
         self.data = data
         # calculate before the order_by is applied, as len is not effected
-        self._len_key = f"cache-table-length-{hash(self.data)}"
+        # TODO: Confirm this is what we want, without str it returns different hashes
+        self._len_key = f"cache-table-length-{hash(str(data))}"
 
     @property
     def _page_selected(self):
@@ -62,7 +63,7 @@ class BigQueryTableData(TableData):
         total_rows = cache.get(self._len_key)
 
         if not self._page_selected or total_rows is None:
-            total_rows = self.data.count().execute()
+            total_rows = self.full_data.count().execute()
             cache.set(self._len_key, total_rows, 24 * 3600)
 
         return total_rows
@@ -135,7 +136,7 @@ def get_type_class(type_):
 validateURL = URLValidator()
 
 
-class BigQueryColumn(Column):
+class GyanaColumn(Column):
     def __init__(self, **kwargs):
         settings = kwargs.pop("settings") or {}
         self.summary = kwargs.pop("footer") or None
@@ -231,7 +232,7 @@ def get_table(schema, query, footer=None, settings=None, **kwargs):
 
     # Inspired by https://stackoverflow.com/questions/16696066/django-tables2-dynamically-adding-columns-to-table-not-adding-attrs-to-table
     for name, type_ in schema.items():
-        attrs[md5(name)] = BigQueryColumn(
+        attrs[md5(name)] = GyanaColumn(
             empty_values=(),
             settings=settings.get(name),
             verbose_name=name,
@@ -263,5 +264,5 @@ def get_table(schema, query, footer=None, settings=None, **kwargs):
     )
     table_class = type("DynamicTable", (Table,), attrs)
 
-    table_data = BigQueryTableData(query)
+    table_data = GyanaTableData(query)
     return table_class(data=table_data, **kwargs)

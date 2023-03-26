@@ -51,3 +51,4 @@ _dist/
 
 # redis output
 dump.rdb
+gyana-local.json
