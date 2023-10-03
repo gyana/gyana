@@ -13,7 +13,7 @@ def project_of_team(user, project_id, *args, **kwargs):
 
 def project_of_enabled_team(user, project_id, *args, **kwargs):
     project = get_object_or_404(Project, pk=project_id)
-    return user_can_access_project(user, project) and project.team.enabled
+    return user_can_access_project(user, project)
 
 
 def user_can_access_project(user, project):

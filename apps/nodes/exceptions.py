@@ -11,16 +11,6 @@ from apps.columns.transformer import FUNCTIONS, ColumnNotFound, FunctionNotFound
 from apps.nodes.models import Node
 
 
-class CreditException(Exception):
-    def __init__(self, node_id, uses_credits) -> None:
-        self.node_id = node_id
-        self.uses_credits = uses_credits
-
-    @property
-    def node(self):
-        return Node.objects.get(pk=self.node_id)
-
-
 class JoinTypeError(Exception):
     def __init__(
         self,

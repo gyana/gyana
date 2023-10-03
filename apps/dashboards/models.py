@@ -147,11 +147,7 @@ class Dashboard(DashboardSettings, HistoryModel):
 
     @property
     def public_url(self):
-        domain = (
-            f"https://{self.project.cname.domain}"
-            if self.project.cname is not None
-            else settings.EXTERNAL_URL
-        )
+        domain = settings.EXTERNAL_URL
         return f"{domain}/dashboards/{self.shared_id}"
 
     @property

@@ -2,7 +2,6 @@ from celery.app import shared_task
 
 from apps.base.tasks import honeybadger_check_in
 
-from .account import calculate_credit_statement
 from .models import Team
 
 
@@ -14,16 +13,9 @@ def _calculate_row_count_for_team(team: Team):
 
 
 @shared_task
-def update_team_row_limits():
+def update_team_row_counts():
 
     for team in Team.objects.all():
         _calculate_row_count_for_team(team)
 
     honeybadger_check_in("wqIPo7")
-
-
-@shared_task
-def calculate_monthly_credit_statement():
-    calculate_credit_statement()
-
-    honeybadger_check_in("ArIlWd")

@@ -19,11 +19,6 @@ urlpatterns = [
         "<int:pk>/name", login_and_node_required(frames.NodeName.as_view()), name="name"
     ),
     path(
-        "<int:pk>/credit_confirmation",
-        login_and_node_required(frames.NodeCreditConfirmation.as_view()),
-        name="credit-confirmation",
-    ),
-    path(
         "<int:pk>/formula",
         login_and_node_required(frames.FormulaHelp.as_view()),
         name="formula",

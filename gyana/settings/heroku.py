@@ -21,13 +21,6 @@ CELERY_BROKER_URL = os.environ.get("REDIS_URL")
 # fix ssl mixed content issues
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
-CNAME_ALLOWED_HOSTS = [
-    ".gyana.com",
-    "gyana-dev.herokuapp.com",
-    "gyana-release.herokuapp.com",
-    "gyana-beta.herokuapp.com",
-]
-
 EXTERNAL_URL = os.environ.get("EXTERNAL_URL")
 
 FF_ALPHA = False

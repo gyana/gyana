@@ -14,7 +14,7 @@ from apps.runs.models import GraphRun
 pytestmark = pytest.mark.django_db
 
 
-def test_sheet_schedule(client, logged_in_user, sheet_factory, mocker, is_paid):
+def test_sheet_schedule(client, logged_in_user, sheet_factory, mocker):
 
     team = logged_in_user.teams.first()
     sheet = sheet_factory(integration__project__team=team)
@@ -70,7 +70,7 @@ def test_sheet_schedule(client, logged_in_user, sheet_factory, mocker, is_paid):
     assert CrontabSchedule.objects.count() == 0
 
 
-def test_run_schedule_for_periodic(project_factory, sheet_factory, mocker, is_paid):
+def test_run_schedule_for_periodic(project_factory, sheet_factory, mocker):
 
     mocker.patch("apps.projects.tasks.run_project_task")
 

@@ -46,23 +46,6 @@
             {% csrf_token %}
 
             {{ form }}
-
-            {% if node.kind == 'sentiment' %}
-              <div class="mt-6">
-                <p class="input__help-text">
-                  You've used
-                  <strong>
-                    {% with team=object.workflow.project.team %}
-                      {{ team.current_credit_balance|intcomma }} / {{ team.credits|intcomma }}
-                    {% endwith %}
-                  </strong>
-                  sentiment credits. Credits refresh monthly, per team.
-                  <a class="link" href="{% article_url 'overview' 'credits' %}" target="_blank">
-                    Learn more.
-                  </a>
-                </p>
-              </div>
-            {% endif %}
           </div>
 
           <div class='workflow-modal__footer'>

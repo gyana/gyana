@@ -14,13 +14,6 @@
           <button type="submit" class="button button--success w-full">Save</button>
         </form>
       </div>
-      <div class="max-w-3xl">
-        <div class="flex items-center mb-7">
-          <h2 class="mr-2">Custom domains</h2>
-          {% link_article 'overview' 'cnames' %}
-        </div>
-        <div hx-get="{% url 'team_cnames:list' object.id %}" hx-trigger="load" hx-swap="outerHTML"></div>
-      </div>
     </div>
     <div class="pad border-t border-gray">
       <div class="max-w-xl">

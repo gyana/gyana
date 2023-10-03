@@ -56,9 +56,6 @@ def patches(mocker, settings):
 
     settings.GS_BUCKET_NAME = "gyana-test"
 
-    # the test client host header
-    settings.CNAME_ALLOWED_HOSTS = ["testserver"]
-
     # use filesystem instead of google cloud storage
     settings.DEFAULT_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
 
@@ -119,20 +116,6 @@ def drive_v2(mocker):
     yield client
 
 
-@pytest.fixture(autouse=True)
-def heroku(mocker):
-    client = MagicMock()
-    mocker.patch("apps.base.clients.heroku", return_value=client)
-    yield client
-
-
-@pytest.fixture(autouse=True)
-def paddle(mocker):
-    client = MagicMock()
-    mocker.patch("apps.base.clients.paddle", return_value=client)
-    yield client
-
-
 @pytest.fixture
 def user():
     team = Team.objects.create(name="Vayu")
@@ -157,8 +140,3 @@ def logged_in_user(client):
 @pytest.fixture
 def project(project_factory, logged_in_user):
     return project_factory(team=logged_in_user.teams.first())
-
-
-@pytest.fixture
-def is_paid(mocker):
-    mocker.patch.object(Team, "is_free", False)

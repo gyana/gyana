@@ -14,9 +14,7 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-        ('djpaddle', '0001_initial'),
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
@@ -99,7 +97,6 @@ class Migration(migrations.Migration):
                 ('row_count_calculated', models.DateTimeField(null=True)),
                 ('timezone', timezone_field.fields.TimeZoneField(choices_display='WITH_GMT_OFFSET', default='GMT')),
                 ('has_free_trial', models.BooleanField(default=False)),
-                ('last_checkout', models.OneToOneField(null=True, on_delete=django.db.models.deletion.SET_NULL, to='djpaddle.checkout')),
             ],
             options={
                 'ordering': ('-created',),

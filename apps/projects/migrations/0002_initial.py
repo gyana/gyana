@@ -10,7 +10,6 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('cnames', '0002_initial'),
         ('users', '0001_initial'),
         ('projects', '0001_initial'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
@@ -23,11 +22,6 @@ class Migration(migrations.Migration):
             model_name='projectmembership',
             name='user',
             field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL),
-        ),
-        migrations.AddField(
-            model_name='project',
-            name='cname',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='cnames.cname'),
         ),
         migrations.AddField(
             model_name='project',

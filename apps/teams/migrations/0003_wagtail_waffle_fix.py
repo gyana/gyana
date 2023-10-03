@@ -7,12 +7,10 @@ class Migration(migrations.Migration):
     """
     Migration for issue: cannot truncate a table referenced in a foreign key constraint: Table "waffle_flag_groups" references "auth_group".
     See more: https://github.com/django-waffle/django-waffle/issues/317
-    Extended for Wagtail: https://github.com/wagtail/wagtail/issues/1824
     """
 
     dependencies = [
         ("teams", "0002_initial"),
-        ("wagtailsearch", "0003_remove_editors_pick"),
         ("waffle", "__latest__"),
     ]
 
@@ -23,9 +21,5 @@ class Migration(migrations.Migration):
         ),
         migrations.RunSQL(
             "DROP TABLE IF EXISTS waffle_flag_users", reverse_sql=migrations.RunSQL.noop
-        ),
-        migrations.RunSQL(
-            "DROP TABLE IF EXISTS wagtailsearch_editorspick CASCADE;",
-            reverse_sql=migrations.RunSQL.noop,
         ),
     ]

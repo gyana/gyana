@@ -271,12 +271,7 @@ class WidgetOutput(DashboardMixin, SingleTableMixin, UpdateView):
     template_name = "widgets/output.html"
     model = Widget
     paginate_by = 15
-
-    def get_form_class(self):
-        if self.object.kind == Widget.Kind.TEXT:
-            return TextWidgetForm
-
-        return forms.Form
+    form_class = TextWidgetForm
 
     def get_context_data(self, **kwargs):
         context = None

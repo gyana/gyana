@@ -1,6 +1,6 @@
 from django.forms.widgets import HiddenInput
 
-from apps.base.account import is_scheduled_paid_only
+from apps.base.account import is_scheduled_help_text
 from apps.base.forms import BaseModelForm
 
 from .models import Workflow
@@ -27,7 +27,7 @@ class WorkflowSettingsForm(BaseModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        is_scheduled_paid_only(self.fields["is_scheduled"], self.instance.project)
+        is_scheduled_help_text(self.fields["is_scheduled"], self.instance.project)
 
     def post_save(self, instance):
         instance.project.update_schedule()

@@ -221,24 +221,3 @@ def test_integration_create_pending_load_and_approve(
     # view list of runs
     r = client.get(f"{DETAIL}/runs")
     assertOK(r)
-
-
-def test_integration_exceeds_integration_row_limit(
-    client, logged_in_user, sheet_factory, integration_table_factory
-):
-    team = logged_in_user.teams.first()
-    sheet = sheet_factory(integration__ready=False, integration__project__team=team)
-    integration = sheet.integration
-    project = integration.project
-    integration_table_factory(project=project, integration=integration)
-
-    DETAIL = f"/projects/{project.id}/integrations/{integration.id}"
-    team.override_rows_per_integration_limit = 5
-    integration.ready = True
-    integration.save()
-    team.save()
-
-    # done
-    r = client.get(f"{DETAIL}/done")
-    assertOK(r)
-    assertContains(r, "Insufficient rows")

@@ -4,7 +4,7 @@ from django import forms
 from django.urls import reverse
 from django.utils.html import mark_safe
 
-from apps.base.account import is_scheduled_paid_only
+from apps.base.account import is_scheduled_help_text
 from apps.base.forms import BaseModelForm, LiveFormsetMixin, LiveModelForm
 from apps.base.formsets import RequiredInlineFormset
 from apps.base.widgets import DatalistInput
@@ -149,7 +149,7 @@ class CustomApiCreateForm(BaseModelForm):
         self._created_by = kwargs.pop("created_by")
         super().__init__(*args, **kwargs)
 
-        is_scheduled_paid_only(self.fields["is_scheduled"], self._project)
+        is_scheduled_help_text(self.fields["is_scheduled"], self._project)
 
     def pre_save(self, instance):
         instance.create_integration(

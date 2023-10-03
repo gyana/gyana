@@ -6,15 +6,12 @@
   {% endif %}
   <form hx-post="{% url 'projects:duplicate' project.id %}">
     {% csrf_token %}
-    <button {% if not team.can_create_project %}disabled{% endif %}
+    <button
       type='submit'
       class="button button--m"
       x-data
-      {% if team.can_create_project %}
-        x-tooltip="Duplicates all integrations, workflows and dashboards of a project."
-      {% else %}
-        x-tooltip="You cannot create more projects on your current plan."
-      {% endif %}>
+      x-tooltip="Duplicates all integrations, workflows and dashboards of a project."
+    >
       <span class='beta beta__white'>Duplicate</span>
     </button>
   </form>

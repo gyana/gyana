@@ -1,23 +1,16 @@
-import analytics
-from django.conf import settings
 from django.db.models import Q
 from django.http import HttpResponse
 from django.http.response import Http404
-from django.shortcuts import redirect
 from django.urls import reverse
 from django.views.generic import CreateView, DeleteView, DetailView
 from django_tables2.views import SingleTableMixin, SingleTableView
-from djpaddle.models import Plan
-from djpaddle.views import PaddlePostCheckoutApiView as BasePaddlePostCheckoutApiView
 
-from apps.base.analytics import CHECKOUT_COMPLETED_EVENT, CHECKOUT_OPENED_EVENT
 from apps.base.views import UpdateView
 
 from .forms import MembershipUpdateForm, TeamCreateForm, TeamUpdateForm
 from .mixins import TeamMixin
 from .models import Membership, Team
-from .paddle import get_plan_price_for_currency, list_payments_for_team
-from .tables import TeamMembershipTable, TeamPaymentsTable, TeamProjectsTable
+from .tables import TeamMembershipTable, TeamProjectsTable
 
 
 class TeamCreate(CreateView):
@@ -32,81 +25,6 @@ class TeamCreate(CreateView):
 
     def get_success_url(self) -> str:
         return reverse("teams:detail", args=(self.object.id,))
-
-
-class TeamPricing(DetailView):
-    model = Team
-    template_name = "teams/pricing.html"
-    pk_url_kwarg = "team_id"
-
-    def get(self, request, *args, **kwargs):
-        team = self.get_object()
-
-        if team.has_subscription:
-            return redirect("teams:subscription", team.id)
-
-        return super().get(request, *args, **kwargs)
-
-
-class TeamCheckout(DetailView):
-    model = Team
-    template_name = "teams/checkout.html"
-    pk_url_kwarg = "team_id"
-
-    @property
-    def plan(self):
-        plan_id = self.request.GET.get("plan") or settings.DJPADDLE_PRO_PLAN_ID
-        return Plan.objects.get(pk=plan_id)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["plan"] = self.plan
-        context["paddle_pro_plan"] = Plan.objects.get(pk=settings.DJPADDLE_PRO_PLAN_ID)
-        context["DJPADDLE_VENDOR_ID"] = settings.DJPADDLE_VENDOR_ID
-        context["DJPADDLE_SANDBOX"] = settings.DJPADDLE_SANDBOX
-        return context
-
-    def get(self, request, *args, **kwargs) -> HttpResponse:
-        analytics.track(request.user.id, CHECKOUT_OPENED_EVENT, {"plan": self.plan.id})
-        return super().get(request, *args, **kwargs)
-
-
-class PaddlePostCheckoutApiView(BasePaddlePostCheckoutApiView):
-    def post(self, request, *args, **kwargs):
-        analytics.track(request.user.id, CHECKOUT_COMPLETED_EVENT)
-        return super().post(request, *args, **kwargs)
-
-
-class TeamSubscription(DetailView):
-    model = Team
-    template_name = "teams/subscription.html"
-    pk_url_kwarg = "team_id"
-
-    @property
-    def plan(self):
-        return Plan.objects.get(pk=self.object.active_subscription.plan.id)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["new_price"] = get_plan_price_for_currency(
-            self.plan, self.object.active_subscription.currency
-        )
-        context["DJPADDLE_VENDOR_ID"] = settings.DJPADDLE_VENDOR_ID
-        context["DJPADDLE_SANDBOX"] = settings.DJPADDLE_SANDBOX
-        return context
-
-
-class TeamPayments(SingleTableMixin, DetailView):
-    model = Team
-    table_class = TeamPaymentsTable
-    template_name = "teams/payments.html"
-    pk_url_kwarg = "team_id"
-
-    def get_table_data(self):
-        return list_payments_for_team(self.object)
-
-    def get_table_kwargs(self):
-        return {"order_by": "-payout_date"}
 
 
 class TeamUpdate(UpdateView):
@@ -152,20 +70,6 @@ class TeamDetail(SingleTableMixin, DetailView):
 
     def get_table_data(self):
         return self.projects
-
-
-class TeamAccount(UpdateView):
-    template_name = "teams/account.html"
-    model = Team
-    pk_url_kwarg = "team_id"
-    fields = []
-
-    def form_valid(self, form) -> HttpResponse:
-        self.object.update_row_count()
-        return super().form_valid(form)
-
-    def get_success_url(self) -> str:
-        return reverse("teams:account", args=(self.object.id,))
 
 
 class MembershipList(TeamMixin, SingleTableView):

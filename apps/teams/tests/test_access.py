@@ -1,5 +1,4 @@
 import pytest
-from djpaddle.models import Plan
 
 from apps.base.tests.asserts import assertLoginRedirect, assertOK
 from apps.teams import roles
@@ -10,20 +9,12 @@ pytestmark = pytest.mark.django_db
 @pytest.mark.parametrize(
     "url",
     [
-        pytest.param("/teams/{team_id}/checkout", id="checkout"),
-        # TODO: need to find a way to mock list_payments_for_team
-        # pytest.param("/teams/{team_id}/subscription", id="subscription"),
-        # pytest.param("/teams/{team_id}/payments", id="payments"),
-        # TODO: add paddle_urls
         pytest.param("/teams/{team_id}/update", id="update"),
         pytest.param("/teams/{team_id}/delete", id="delete"),
-        pytest.param("/teams/{team_id}/account", id="account"),
     ],
 )
 def test_admin_required(client, user, url, team_factory, settings):
     team = team_factory()
-    pro_plan = Plan.objects.create(name="Pro", billing_type="month", billing_period=1)
-    settings.DJPADDLE_PRO_PLAN_ID = pro_plan.id
 
     url = url.format(team_id=team.id)
     assertLoginRedirect(client, url)
