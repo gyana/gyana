@@ -30,9 +30,7 @@ django-tables2
 django-timezone-field
 django-waffle
 djangorestframework
-fsspec
 fuzzywuzzy
-gcsfs
 git+https://github.com/geoffbeier/django-heroicons#acbd344230689ab2cde4c20d7f0f597ef8795ad0
 git+https://github.com/martyzz1/heroku3.py#81c996929e37450e1e65f28eb43fc28533a79048
 google-api-python-client
