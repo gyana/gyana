@@ -12,12 +12,6 @@ default:
 dev:
     python ./manage.py runserver
 
-celery:
-    watchexec -w apps -e py -r "celery -A gyana worker -Q celery,priority -l INFO"
-
-beat:
-    watchexec -w apps -e py -r "celery -A gyana beat -l INFO"
-
 migrate app='' migration='':
     ./manage.py migrate {{app}} {{migration}}
 
@@ -41,22 +35,9 @@ shell:
 collectstatic:
     ./manage.py collectstatic --noinput
 
-celery-ci:
-    celery -A gyana worker -l info
-
 # Encrypt or decrypt file via GCP KMS
 gcloud_kms OP FILE:
     gcloud kms {{OP}} --location global --keyring gyana-kms --key gyana-kms --ciphertext-file {{FILE}}.enc --plaintext-file {{FILE}}
-
-# Decrypt environment file and export it to local env
-env:
-    just gcloud_kms decrypt .env
-    just gcloud_kms decrypt {{service_account}}
-
-# Encrypt .env file using KMS
-enc_env:
-    just gcloud_kms encrypt .env
-    just gcloud_kms encrypt {{service_account}}
 
 compile:
     pip-compile
@@ -74,18 +55,9 @@ format:
     black .
     isort .
 
-alias bf := branchformat
-branchformat:
-    git diff --diff-filter=M --name-only main '***.scss' | xargs --no-run-if-empty npm run prettier:write
-    git diff --diff-filter=M --name-only main '***.py' | xargs --no-run-if-empty black
-    git diff --diff-filter=M --name-only main '***.py' | xargs --no-run-if-empty isort
-
 # Count total lines of code that need to be maintained
 cloc:
     cloc $(git ls-files) --exclude-dir=migrations,tests,vendors --exclude-ext=svg,csv,json,yaml,md,toml
-
-startapp:
-    pushd apps && cookiecutter cookiecutter-app && popd
 
 test TEST=".":
     python -m pytest --no-migrations --ignore=apps/cookiecutter-app --disable-pytest-warnings -k {{TEST}}
