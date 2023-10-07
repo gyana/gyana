@@ -2,8 +2,8 @@ from typing import Final
 
 import analytics
 
-from apps.nodes.models import Edge, Node
-from apps.users.models import CustomUser
+# from apps.nodes.models import Edge, Node
+# from apps.users.models import CustomUser
 
 # users
 SIGNED_UP_EVENT: Final = "Signed up"
@@ -63,8 +63,7 @@ SUBSCRIPTION_CANCELLED_EVENT: Final = "Subscription cancelled"
 EXPORT_CREATED: Final = "Export created"
 
 
-def identify_user(user: CustomUser, signup_source=None):
-
+def identify_user(user, signup_source=None):
     traits = {
         "username": user.username,
         "name": f"{user.first_name} {user.last_name}",
@@ -79,7 +78,7 @@ def identify_user(user: CustomUser, signup_source=None):
     analytics.identify(user.id, traits)
 
 
-def identify_user_group(user: CustomUser, team):
+def identify_user_group(user, team):
     analytics.group(
         user.id,
         team.id,
@@ -87,7 +86,7 @@ def identify_user_group(user: CustomUser, team):
     )
 
 
-def track_node(user: CustomUser, node: Node, track_id: str, **kwargs):
+def track_node(user, node, track_id: str, **kwargs):
     """Sends tracking event with default fields. Allows for kwargs to be added as additional properties"""
     analytics.track(
         user.id,
@@ -96,7 +95,7 @@ def track_node(user: CustomUser, node: Node, track_id: str, **kwargs):
     )
 
 
-def track_edge(user: CustomUser, edge: Edge, track_id: str, **kwargs):
+def track_edge(user, edge, track_id: str, **kwargs):
     """Sends tracking event with default fields. Allows for kwargs to be added as additional properties"""
     analytics.track(
         user.id,

@@ -2,9 +2,9 @@ import random
 
 from django.views.generic import TemplateView
 
-from apps.nodes.config import NODE_CONFIG
 from apps.web.content import get_content
-from apps.widgets.models import WIDGET_KIND_TO_WEB
+
+from .config import NODE_CONFIG, WIDGET_KIND_TO_WEB
 
 
 def get_services_obj():

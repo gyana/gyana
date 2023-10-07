@@ -3,7 +3,6 @@ import wagtail_factories
 from wagtail.core.models import Locale, Site
 
 from apps.base.tests.asserts import assertLink, assertOK
-from apps.users.models import CustomUser
 
 pytestmark = pytest.mark.django_db
 
@@ -32,7 +31,6 @@ def test_site_pages(client):
 
 
 def test_site_links(client, settings):
-
     r = client.get("/")
 
     # header links

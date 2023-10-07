@@ -1,8 +1,0 @@
-{% extends "account/email/base_message.txt" %}
-
-{% block content %}
-Your duplicated project {{project.name}}is ready !
-
-{% url 'projects:detail' project.id %}
-
-{% endblock %}
