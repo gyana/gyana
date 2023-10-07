@@ -98,12 +98,7 @@ THIRD_PARTY_APPS = [
 ]
 
 # Put your project-specific apps here
-PROJECT_APPS = [
-    "apps.web",
-    "apps.base.apps.BaseConfig",
-    "apps.blog",
-    "apps.learn",
-]
+PROJECT_APPS = ["apps.web", "apps.base.apps.BaseConfig", "apps.blog"]
 
 INSTALLED_APPS = (
     ADMIN_TOOLS_APPS + DJANGO_APPS + PROJECT_APPS + THIRD_PARTY_APPS + ["django.forms"]

@@ -42,7 +42,6 @@ schemajs_view = get_schemajs_view(title="API")
 urlpatterns = [
     path("admin_tools/", include("admin_tools.urls")),
     path("admin/", admin.site.urls),
-    path("learn/", include("apps.learn.urls")),
     path("", include("apps.web.urls")),
     path("celery-progress/", include("celery_progress.urls")),
     path("hijack/", include("hijack.urls", namespace="hijack")),
