@@ -35,13 +35,6 @@ ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
-ADMIN_TOOLS_APPS = [
-    "admin_tools",
-    "admin_tools.theming",
-    "admin_tools.menu",
-    "admin_tools.dashboard",
-]
-
 DJANGO_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -57,26 +50,11 @@ DJANGO_APPS = [
 
 # Put your third-party apps here
 THIRD_PARTY_APPS = [
-    "allauth",  # allauth account/registration management
-    "allauth.account",
-    "allauth.socialaccount",
-    "allauth.socialaccount.providers.google",
     "rest_framework",
-    "celery_progress",
-    "django_filters",
     "django_tables2",
     "cacheops",
-    "invitations",
-    "hijack",
-    "hijack.contrib.admin",
-    "waffle",
-    "safedelete",
-    "timezone_field",
-    "django_celery_beat",
-    "django_celery_results",
-    # TODO: Remove after website migration is complete
     "heroicons",
-    "simple_history",
+    "django_htmx",
     # wagtail
     "wagtail.contrib.forms",
     "wagtail.contrib.redirects",
@@ -93,16 +71,12 @@ THIRD_PARTY_APPS = [
     "taggit",
     "wagtail.contrib.modeladmin",
     "wagtailmenus",
-    "django_htmx",
-    "crispy_forms",
 ]
 
 # Put your project-specific apps here
 PROJECT_APPS = ["apps.web", "apps.base.apps.BaseConfig", "apps.blog"]
 
-INSTALLED_APPS = (
-    ADMIN_TOOLS_APPS + DJANGO_APPS + PROJECT_APPS + THIRD_PARTY_APPS + ["django.forms"]
-)
+INSTALLED_APPS = DJANGO_APPS + PROJECT_APPS + THIRD_PARTY_APPS + ["django.forms"]
 
 MIDDLEWARE = [
     "honeybadger.contrib.DjangoHoneybadgerMiddleware",
@@ -116,8 +90,6 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "simple_history.middleware.HistoryRequestMiddleware",
-    "hijack.middleware.HijackUserMiddleware",
-    "waffle.middleware.WaffleMiddleware",
     "wagtail.contrib.redirects.middleware.RedirectMiddleware",
     "django_htmx.middleware.HtmxMiddleware",
 ]
@@ -165,13 +137,9 @@ TEMPLATES = [
                 "apps.web.context_processors.google_analytics_id",
                 "gyana.context_processors.django_settings",
                 "wagtailmenus.context_processors.wagtailmenus",
-            ],
-            # equivalent of APP_DIRS=True, plus admin_tools template loader
-            "loaders": [
-                "django.template.loaders.app_directories.Loader",
-                "admin_tools.template_loaders.Loader",
-            ],
+            ]
         },
+        "APP_DIRS": True,
     },
 ]
 
@@ -194,78 +162,10 @@ DATABASES = {
 }
 
 
-# Auth / login stuff
-
-# Django recommends overriding the user model even if you don't think you need to because it makes
-# future changes much easier.
-# AUTH_USER_MODEL = "users.CustomUser"
-LOGIN_REDIRECT_URL = "/"
-
-# Password validation
-# https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
-
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
-    },
-    {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
-    },
-]
-
-# Allauth setup
-
-ACCOUNT_ADAPTER = "apps.users.adapter.UsersAccountAdapter"
-ACCOUNT_AUTHENTICATION_METHOD = "email"
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_CONFIRM_EMAIL_ON_GET = True
-ACCOUNT_UNIQUE_EMAIL = True
-ACCOUNT_USERNAME_REQUIRED = False
-ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = False
-ACCOUNT_SESSION_REMEMBER = True
-ACCOUNT_LOGOUT_ON_GET = True
-ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
-ACCOUNT_LOGOUT_REDIRECT_URL = "/login/"
-
-ACCOUNT_FORMS = {
-    "login": "apps.users.forms.UserLoginForm",
-    "signup": "apps.teams.forms.TeamSignupForm",
-}
-
-
-# User signup configuration: change to "mandatory" to require users to confirm email before signing in.
-# or "optional" to send confirmation emails but not require them
-ACCOUNT_EMAIL_VERIFICATION = "mandatory"
-LOGIN_URL = "account_login"
-
-
 AUTHENTICATION_BACKENDS = (
     # Needed to login by username in Django admin, regardless of `allauth`
     "django.contrib.auth.backends.ModelBackend",
-    # `allauth` specific authentication methods, such as login by e-mail
-    "allauth.account.auth_backends.AuthenticationBackend",
 )
-
-
-# enable social login
-SOCIALACCOUNT_PROVIDERS = {
-    "google": {
-        "SCOPE": [
-            "profile",
-            "email",
-        ],
-        "AUTH_PARAMS": {
-            "access_type": "online",
-        },
-    }
-}
-SOCIALACCOUNT_ADAPTER = "apps.users.adapter.SocialAccountAdapter"
 
 
 # Internationalization
@@ -296,11 +196,6 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 MEDIA_ROOT = BASE_DIR / "media"
 MEDIA_URL = "/media/"
 
-# Email setup
-
-# use in development
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-
 # Django sites
 
 SITE_ID = 1
@@ -313,16 +208,6 @@ REST_FRAMEWORK = {
     "PAGE_SIZE": 100,
     "DEFAULT_FILTER_BACKENDS": ["django_filters.rest_framework.DjangoFilterBackend"],
 }
-
-
-# Celery setup (using redis)
-CELERY_BROKER_URL = "redis://localhost:6379/0"
-CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
-CELERY_TASK_ROUTES = {
-    "apps.*.tasks.*": {"queue": "priority"},
-    "apps.*.periodic.*": {"queue": "celery"},
-}
-CELERY_RESULT_BACKEND = "django-db"
 
 # Pegasus config
 
@@ -339,7 +224,6 @@ PROJECT_METADATA = {
 GOOGLE_ANALYTICS_ID = os.environ.get("GOOGLE_ANALYTICS_ID")
 WEBSITE_GTM_ID = os.environ.get("WEBSITE_GTM_ID")
 
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
@@ -353,17 +237,6 @@ GS_BUCKET_NAME = os.environ.get("GS_BUCKET_NAME")
 GS_PUBLIC_BUCKET_NAME = os.environ.get("GS_PUBLIC_BUCKET_NAME")
 GS_PUBLIC_CACHE_CONTROL = "public, max-age=31536000"
 
-
-EXTERNAL_URL = "http://localhost:8000"
-
-
-BIGQUERY_COLUMN_NAME_LENGTH = 300
-BIGQUERY_TABLE_NAME_LENGTH = 1024
-BIGQUERY_LOCATION = "EU"
-
-# Namespace based on git email to avoid collisions in PKs on local dev
-CLOUD_NAMESPACE = os.environ.get("CLOUD_NAMESPACE")
-
 # Feature flag for Alpha features
 FF_ALPHA = True
 
@@ -372,23 +245,7 @@ SEGMENT_ANALYTICS_WRITE_KEY = os.environ.get("SEGMENT_ANALYTICS_WRITE_KEY", "")
 # web write key
 SEGMENT_ANALYTICS_JS_WRITE_KEY = os.environ.get("SEGMENT_ANALYTICS_JS_WRITE_KEY", "")
 
-# INVITATIONS_INVITATION_MODEL = "invites.Invite"
-INVITATIONS_INVITATION_EXPIRY = 7
-INVITATIONS_ADAPTER = ACCOUNT_ADAPTER
-INVITATIONS_ACCEPT_INVITE_AFTER_SIGNUP = True
-
-HASHIDS_SALT = os.environ.get("HASHIDS_SALT", "")
-
-
-CYPRESS_URLS = False
-
-ADMIN_TOOLS_MENU = "apps.base.admin_tools.menu.CustomMenu"
-ADMIN_TOOLS_INDEX_DASHBOARD = "apps.base.admin_tools.dashboard.CustomIndexDashboard"
-
-MOCK_REMOTE_OBJECT_DELETION = False
-
 ENVIRONMENT = os.environ.get("ENVIRONMENT")
-HONEYCOMB_API_KEY = os.environ.get("HONEYCOMB_API_KEY")
 
 HONEYBADGER = {
     "API_KEY": os.environ.get("HONEYBADGER_API_KEY"),
@@ -398,10 +255,6 @@ HONEYBADGER = {
     "EXCLUDED_EXCEPTIONS": ["Http404", "DoesNotExist"],
 }
 
-HELLONEXT_SSO_TOKEN = os.environ.get("HELLONEXT_SSO_TOKEN")
-
-# WAFFLE_FLAG_MODEL = "teams.Flag"
-
 WAGTAIL_SITE_NAME = "Gyana CMS"
 WAGTAILSEARCH_BACKENDS = {
     "default": {
@@ -409,12 +262,5 @@ WAGTAILSEARCH_BACKENDS = {
     }
 }
 
-
-CACHEOPS_REDIS = CELERY_BROKER_URL
+CACHEOPS_REDIS = "redis://localhost:6379/0"
 CACHEOPS = {"*.*": {"timeout": 60 * 60}}
-
-
-SOCIALACCOUNT_LOGIN_ON_GET = True
-
-CRISPY_ALLOWED_TEMPLATE_PACKS = "crispy"
-CRISPY_TEMPLATE_PACK = "crispy"

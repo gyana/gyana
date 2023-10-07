@@ -21,15 +21,7 @@ CELERY_BROKER_URL = os.environ.get("REDIS_URL")
 # fix ssl mixed content issues
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
-EXTERNAL_URL = os.environ.get("EXTERNAL_URL")
-
 FF_ALPHA = False
-
-EMAIL_BACKEND = "anymail.backends.sendgrid.EmailBackend"
-DEFAULT_FROM_EMAIL = "no-reply@gyana.com"
-ANYMAIL = {"SENDGRID_API_KEY": os.environ.get("SENDGRID_API_KEY")}
-
-USE_HASHIDS = True
 
 HONEYBADGER = {
     "API_KEY": os.environ.get("HONEYBADGER_API_KEY"),

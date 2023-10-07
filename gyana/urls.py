@@ -18,20 +18,13 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.sitemaps.views import sitemap
-from django.urls import include, path, register_converter
-from django.urls.converters import IntConverter
+from django.urls import include, path
 from rest_framework.documentation import get_schemajs_view, include_docs_urls
 from wagtail.admin import urls as wagtailadmin_urls
+from wagtail.api.v2.views import PagesAPIViewSet
 from wagtail.contrib.sitemaps import Sitemap as WagtailSitemap
 from wagtail.core import urls as wagtail_urls
 from wagtail.documents import urls as wagtaildocs_urls
-
-from apps.base.converters import HashIdConverter
-
-register_converter(HashIdConverter if settings.USE_HASHIDS else IntConverter, "hashid")
-
-
-from wagtail.api.v2.views import PagesAPIViewSet
 
 from apps.web.sitemaps import WebSitemap
 
@@ -40,11 +33,8 @@ schemajs_view = get_schemajs_view(title="API")
 
 
 urlpatterns = [
-    path("admin_tools/", include("admin_tools.urls")),
     path("admin/", admin.site.urls),
     path("", include("apps.web.urls")),
-    path("celery-progress/", include("celery_progress.urls")),
-    path("hijack/", include("hijack.urls", namespace="hijack")),
     # API docs
     # these are needed for schema.js
     path("docs/", include_docs_urls(title="API Docs")),
