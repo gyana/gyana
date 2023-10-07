@@ -231,11 +231,6 @@ GS_BUCKET_NAME = os.environ.get("GS_BUCKET_NAME")
 # Feature flag for Alpha features
 FF_ALPHA = True
 
-# django write key
-SEGMENT_ANALYTICS_WRITE_KEY = os.environ.get("SEGMENT_ANALYTICS_WRITE_KEY", "")
-# web write key
-SEGMENT_ANALYTICS_JS_WRITE_KEY = os.environ.get("SEGMENT_ANALYTICS_JS_WRITE_KEY", "")
-
 ENVIRONMENT = os.environ.get("ENVIRONMENT")
 
 HONEYBADGER = {

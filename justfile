@@ -39,6 +39,14 @@ collectstatic:
 gcloud_kms OP FILE:
     gcloud kms {{OP}} --location global --keyring gyana-kms --key gyana-kms --ciphertext-file {{FILE}}.enc --plaintext-file {{FILE}}
 
+# Decrypt environment file and export it to local env
+env:
+    just gcloud_kms decrypt {{service_account}}
+
+# Encrypt .env file using KMS
+enc_env:
+    just gcloud_kms encrypt {{service_account}}
+    
 compile:
     pip-compile
     pip-compile requirements-dev.in
