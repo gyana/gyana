@@ -23,14 +23,6 @@ def get_services_grouped(group_n):
     return services_grouped
 
 
-class HelpModal(TemplateView):
-    template_name = "web/help.html"
-
-
-class ChangelogModal(TemplateView):
-    template_name = "web/changelog.html"
-
-
 class IntegrationsDemo(TemplateView):
     template_name = "web/demo/integrations.html"
 
