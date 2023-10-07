@@ -14,7 +14,7 @@ In short:
 just update
 
 # Create a local database and run migrations
-createdb gyana
+createdb website
 python manage.py migrate
 
 # Build the client

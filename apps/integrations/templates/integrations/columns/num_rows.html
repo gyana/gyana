@@ -1,9 +1,0 @@
-{% load humanize %}
-
-{% if record.num_rows == 0 %}
-  —
-{% else %}
-  <p>
-    <i>{{ record.num_rows|intcomma }}*</i>
-  </p>
-{% endif %}

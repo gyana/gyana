@@ -99,27 +99,8 @@ THIRD_PARTY_APPS = [
 
 # Put your project-specific apps here
 PROJECT_APPS = [
-    "apps.users.apps.UserConfig",
     "apps.web",
-    "apps.teams.apps.TeamsConfig",
-    "apps.projects",
-    "apps.integrations",
-    "apps.workflows",
-    "apps.dashboards",
-    "apps.widgets",
-    "apps.filters",
-    "apps.tables.apps.TablesConfig",
-    "apps.invites.apps.InvitesConfig",
     "apps.base.apps.BaseConfig",
-    "apps.nodes.apps.NodesConfig",
-    "apps.columns",
-    "apps.uploads",
-    "apps.sheets",
-    "apps.exports",
-    "apps.controls",
-    "apps.runs.apps.RunsConfig",
-    "apps.customapis",
-    "apps.oauth2",
     "apps.blog",
     "apps.learn",
 ]
@@ -209,7 +190,7 @@ FORM_RENDERER = "django.forms.renderers.TemplatesSetting"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": "gyana",
+        "NAME": "website",
         "USER": os.getenv("PG_USER", "postgres"),
         "PASSWORD": os.getenv("PG_PASSWORD", "***"),
         "HOST": "localhost",
@@ -222,7 +203,7 @@ DATABASES = {
 
 # Django recommends overriding the user model even if you don't think you need to because it makes
 # future changes much easier.
-AUTH_USER_MODEL = "users.CustomUser"
+# AUTH_USER_MODEL = "users.CustomUser"
 LOGIN_REDIRECT_URL = "/"
 
 # Password validation
@@ -396,7 +377,7 @@ SEGMENT_ANALYTICS_WRITE_KEY = os.environ.get("SEGMENT_ANALYTICS_WRITE_KEY", "")
 # web write key
 SEGMENT_ANALYTICS_JS_WRITE_KEY = os.environ.get("SEGMENT_ANALYTICS_JS_WRITE_KEY", "")
 
-INVITATIONS_INVITATION_MODEL = "invites.Invite"
+# INVITATIONS_INVITATION_MODEL = "invites.Invite"
 INVITATIONS_INVITATION_EXPIRY = 7
 INVITATIONS_ADAPTER = ACCOUNT_ADAPTER
 INVITATIONS_ACCEPT_INVITE_AFTER_SIGNUP = True
@@ -424,7 +405,7 @@ HONEYBADGER = {
 
 HELLONEXT_SSO_TOKEN = os.environ.get("HELLONEXT_SSO_TOKEN")
 
-WAFFLE_FLAG_MODEL = "teams.Flag"
+# WAFFLE_FLAG_MODEL = "teams.Flag"
 
 WAGTAIL_SITE_NAME = "Gyana CMS"
 WAGTAILSEARCH_BACKENDS = {

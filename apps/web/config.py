@@ -1,4 +1,9 @@
-import functools
+import json
+
+from django.db import models
+
+with open("apps/web/functions.json", "r") as file:
+    FUNCTIONS = json.load(file)
 
 NODE_CONFIG = {
     "input": {
@@ -151,15 +156,82 @@ NODE_CONFIG = {
 }
 
 
-def _add_max_parents(name):
-    from apps.nodes.bigquery import NODE_FROM_CONFIG, get_arity_from_node_func
+class WidgetKind(models.TextChoices):
+    TEXT = "text", "Text"
+    IMAGE = "image", "Image"
+    METRIC = "metric", "Metric"
+    TABLE = "table", "Table"
+    # using fusioncharts name for database
+    COLUMN = "mscolumn2d", "Column"
+    STACKED_COLUMN = "stackedcolumn2d", "Stacked Column"
+    BAR = "msbar2d", "Bar"
+    STACKED_BAR = "stackedbar2d", "Stacked Bar"
+    LINE = "msline", "Line"
+    STACKED_LINE = "msline-stacked", "Stacked Line"
+    PIE = "pie2d", "Pie"
+    AREA = "msarea", "Area"
+    DONUT = "doughnut2d", "Donut"
+    SCATTER = "scatter", "Scatter"
+    FUNNEL = "funnel", "Funnel"
+    RADAR = "radar", "Radar"
+    BUBBLE = "bubble", "Bubble"
+    HEATMAP = "heatmap", "Heatmap"
+    COMBO = "mscombidy2d", "Combination chart"
+    IFRAME = "iframe", "iframe"
+    GAUGE = "angulargauge", "Gauge"
 
-    func = NODE_FROM_CONFIG.get(name, None)
-    # 0, False for text node
-    min_arity, variable_args = get_arity_from_node_func(func) if func else (0, False)
-    return -1 if variable_args else min_arity
+
+class WidgetCategory(models.TextChoices):
+    CONTENT = "content", "Content"
+    SIMPLE = "simple", "Simple charts"
+    ADVANCED = "advanced", "Advanced charts"
+    COMBO = "combination", "Combination charts"
 
 
-@functools.cache
-def get_node_config_with_arity():
-    return {k: {**v, "maxParents": _add_max_parents(k)} for k, v in NODE_CONFIG.items()}
+WIDGET_KIND_TO_WEB = {
+    WidgetKind.TEXT.value: ("fa-text", WidgetCategory.CONTENT, "Text"),
+    WidgetKind.IMAGE.value: ("fa-image", WidgetCategory.CONTENT, "Image"),
+    WidgetKind.IFRAME.value: (
+        "fa-browser",
+        WidgetCategory.CONTENT,
+        "URL Embed",
+    ),
+    WidgetKind.METRIC.value: ("fa-value-absolute", WidgetCategory.SIMPLE, "Metric"),
+    WidgetKind.TABLE.value: ("fa-table", WidgetCategory.SIMPLE, "Table"),
+    WidgetKind.COLUMN.value: ("fa-chart-bar", WidgetCategory.SIMPLE, "Column"),
+    WidgetKind.STACKED_COLUMN.value: (
+        "fa-chart-bar",
+        WidgetCategory.ADVANCED,
+        "Stacked Column",
+    ),
+    WidgetKind.BAR.value: ("fa-chart-bar", WidgetCategory.SIMPLE, "Bar"),
+    WidgetKind.STACKED_BAR.value: (
+        "fa-chart-bar",
+        WidgetCategory.ADVANCED,
+        "Stacked Bar",
+    ),
+    WidgetKind.LINE.value: ("fa-chart-line", WidgetCategory.SIMPLE, "Line"),
+    WidgetKind.STACKED_LINE.value: (
+        "fa-chart-line",
+        WidgetCategory.ADVANCED,
+        "Stacked Line",
+    ),
+    WidgetKind.PIE.value: ("fa-chart-pie", WidgetCategory.SIMPLE, "Pie"),
+    WidgetKind.AREA.value: ("fa-chart-area", WidgetCategory.ADVANCED, "Area"),
+    WidgetKind.DONUT.value: ("fa-dot-circle", WidgetCategory.SIMPLE, "Donut"),
+    WidgetKind.SCATTER.value: (
+        "fa-chart-scatter",
+        WidgetCategory.ADVANCED,
+        "Scatter",
+    ),
+    WidgetKind.FUNNEL.value: ("fa-filter", WidgetCategory.ADVANCED, "Funnel"),
+    WidgetKind.RADAR.value: ("fa-radar", WidgetCategory.ADVANCED, "Radar"),
+    WidgetKind.BUBBLE.value: ("fa-soap", WidgetCategory.ADVANCED, "Bubble"),
+    WidgetKind.HEATMAP.value: ("fa-map", WidgetCategory.ADVANCED, "Heatmap"),
+    WidgetKind.COMBO.value: (
+        "fa-analytics",
+        WidgetCategory.COMBO,
+        "Combination chart",
+    ),
+    WidgetKind.GAUGE.value: ("fa-tachometer-fast", WidgetCategory.SIMPLE, "Gauge"),
+}
