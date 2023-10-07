@@ -225,13 +225,8 @@ WEBSITE_GTM_ID = os.environ.get("WEBSITE_GTM_ID")
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
-GCP_PROJECT = os.environ.get("GCP_PROJECT")
-GCP_BQ_SVC_ACCOUNT = os.environ.get("GCP_BQ_SVC_ACCOUNT")
-
 DEFAULT_FILE_STORAGE = "storages.backends.gcloud.GoogleCloudStorage"
 GS_BUCKET_NAME = os.environ.get("GS_BUCKET_NAME")
-GS_PUBLIC_BUCKET_NAME = os.environ.get("GS_PUBLIC_BUCKET_NAME")
-GS_PUBLIC_CACHE_CONTROL = "public, max-age=31536000"
 
 # Feature flag for Alpha features
 FF_ALPHA = True
