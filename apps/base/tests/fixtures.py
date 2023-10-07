@@ -3,13 +3,14 @@ from unittest.mock import MagicMock
 import ibis.expr.schema as sch
 import pytest
 import waffle
+from django.contrib.auth import get_user_model
 from django.db import connection
 from django.utils import timezone
 from waffle.templatetags import waffle_tags
 
 from apps.base import clients
-from apps.teams.models import Team
-from apps.users.models import CustomUser
+
+User = get_user_model()
 
 
 class BlankMiddleware:
@@ -118,23 +119,12 @@ def drive_v2(mocker):
 
 @pytest.fixture
 def user():
-    team = Team.objects.create(name="Vayu")
-    user = CustomUser.objects.create_user(
-        "test", email="test@gyana.com", onboarded=True
-    )
-    team.members.add(user, through_defaults={"role": "member"})
-    return user
+    return User.objects.create_user("test", email="test@gyana.com")
 
 
 @pytest.fixture
 def logged_in_user(client):
-    team = Team.objects.create(name="Vayu")
-    user = CustomUser.objects.create_user(
-        "test", email="test@gyana.com", onboarded=True
-    )
-    team.members.add(user, through_defaults={"role": "admin"})
-    client.force_login(user)
-    return user
+    return User.objects.create_user("test", email="test@gyana.com")
 
 
 @pytest.fixture
