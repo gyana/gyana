@@ -23,98 +23,35 @@
     <link rel="stylesheet" href="{% static "css/tailwind.css" %}" />
     <link rel="stylesheet" href="{% static "css/style.css" %}" />
 
-    {% comment %} Enables iframe embedding with top navigation {% endcomment %}
-    {% if request.GET.iframe %}
-      <base target="_parent">
-    {% endif %}
-    <script src="{% static "js/stimulus-bundle.js" %}"></script>
-    <script src="{% static "js/base-bundle.js" %}"></script>
-
     <script src="{% static 'js/htmx@1.8.5.min.js' %}" defer></script>
     {% django_htmx_script %}
 
-    <script src="{% static 'celery_progress/celery_progress.js' %}"></script>
     <script src="//unpkg.com/alpinejs" defer></script>
 
-    {% block head %}
-      <link
-        href="//fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap"
-        rel="stylesheet"
-      />
+    <link
+      href="//fonts.googleapis.com/css2?family=Caveat:wght@400&display=swap"
+      rel="stylesheet"
+    />
 
-      <script src="{% static "rest_framework/js/coreapi-0.1.1.js" %}"></script>
-      <script src="{% url "api_schemajs" %}"></script>
+    <link rel="stylesheet" href="{% static "css/website.css" %}" />
 
-      {% if not request.user.is_hijacked %}
-        {% if SEGMENT_ANALYTICS_JS_WRITE_KEY %}
-          {% include "web/components/analytics.html" %}
-        {% endif %}
-      {% endif %}
-    {% endblock head %}
-
-    {% block head.extra %}{% endblock head.extra %}
-
-    {% if not request.user.is_hijacked %}
-      {% if WEBSITE_GTM_ID %}
-        {% include "web/components/gtm_head.html" %}
-      {% endif %}
+    {% if WEBSITE_GTM_ID %}
+      {% include "web/components/gtm_head.html" %}
     {% endif %}
 
   </head>
 
-  <body
-    {% if request.user.is_hijacked %}
-      class="isHijacked"
-    {% endif %}
-    {% block body.attrs %}{% endblock body.attrs %}
-    {% comment %} entire body is a single Alpine app, e.g. for tooltips {% endcomment %}
-    x-data
-  >
+  <body>
     {% block body %}
-      {% block body.banner %}{% endblock %}
+      {% include "web/site/header.html" %}
 
-      {% block body.messages %}
-        {% include "web/components/messages.html" %}
-      {% endblock body.messages %}
+      {% block body.content %}{% endblock body.content %}
 
-      <main>
-        {% block body.content %}{% endblock body.content %}
-      </main>
-
-      {% comment %}
-    For use with the `tf_modal_controller.js` controller.
-    {% endcomment %}
-      {% block body.modal %}
-        <div
-          data-tf-modal-target="modal"
-          class="tf-modal"
-          hidden
-        >
-          <div class="card card--none card--modal">
-            {% block modal.body %}
-              <div
-                id="hx-modal"
-                class="overflow-hidden flex-1"
-                data-tf-modal-target="htmx"
-                hx-trigger="hx-modal-load"
-                hx-target="this"
-              >
-                <div class="placeholder-scr placeholder-scr--fillscreen">
-                  <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-2x"></i>
-                </div>
-              </div>
-            {% endblock modal.body %}
-          </div>
-        </div>
-
-        {% include "components/modal_closing_warning.html" %}
-      {% endblock body.modal %}
-
-      {% block body.javascript %}{% endblock body.javascript %}
-
-      {% if WEBSITE_GTM_ID %}
-        {% include "web/components/gtm_body.html" %}
-      {% endif %}
+      {% include "web/site/footer.html" %}
     {% endblock body %}
+
+    {% if WEBSITE_GTM_ID %}
+      {% include "web/components/gtm_body.html" %}
+    {% endif %}
   </body>
 </html>
