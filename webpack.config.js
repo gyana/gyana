@@ -10,7 +10,6 @@ module.exports = {
   entry: {
     base: './apps/base/javascript/index.ts',
     fontawesome: './apps/base/styles/vendors/fontawesome.css',
-    stimulus: './apps/base/javascript/stimulus.ts',
     style: './apps/base/styles/style.scss',
     website: './apps/web/styles/website.scss',
     tailwind: './apps/base/styles/vendors/tailwind.pcss',
