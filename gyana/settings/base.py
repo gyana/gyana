@@ -74,7 +74,7 @@ THIRD_PARTY_APPS = [
 ]
 
 # Put your project-specific apps here
-PROJECT_APPS = ["apps.web", "apps.base.apps.BaseConfig", "apps.blog"]
+PROJECT_APPS = ["apps.web", "apps.base", "apps.blog"]
 
 INSTALLED_APPS = DJANGO_APPS + PROJECT_APPS + THIRD_PARTY_APPS + ["django.forms"]
 
@@ -86,7 +86,6 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "apps.base.middleware.HoneybadgerUserContextMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "simple_history.middleware.HistoryRequestMiddleware",
