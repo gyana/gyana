@@ -1,8 +1,6 @@
 -c requirements.txt
 autoflake
 black
-cookiecutter
-deepdiff
 django-coverage-plugin
 djhtml
 factory-boy
