@@ -8,7 +8,6 @@ module.exports = {
     plugins: [new TsconfigPathsPlugin()],
   },
   entry: {
-    base: './apps/base/javascript/index.ts',
     fontawesome: './apps/base/styles/vendors/fontawesome.css',
     style: './apps/base/styles/style.scss',
     website: './apps/web/styles/website.scss',

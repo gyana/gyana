@@ -51,7 +51,6 @@ DJANGO_APPS = [
 # Put your third-party apps here
 THIRD_PARTY_APPS = [
     "rest_framework",
-    "django_tables2",
     "cacheops",
     "heroicons",
     "django_htmx",

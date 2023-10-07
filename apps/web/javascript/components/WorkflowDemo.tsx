@@ -1,4 +1,4 @@
-import { getLayoutedElements } from 'apps/base/javascript/layout'
+import { getLayoutedElements } from 'apps/web/javascript/layout'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 
 import ReactFlow, { isEdge, useStoreState, useZoomPanHelper } from 'react-flow-renderer'
