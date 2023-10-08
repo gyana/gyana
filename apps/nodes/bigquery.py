@@ -23,7 +23,6 @@ from apps.filters.bigquery import get_query_from_filters
 from apps.nodes.exceptions import ColumnNamesDontMatch, JoinTypeError, NodeResultNone
 from apps.nodes.models import Node
 from apps.tables.data import get_query_from_table
-from apps.teams.models import OutOfCreditsException
 
 from ._utils import create_or_replace_intermediate_table, get_parent_updated
 

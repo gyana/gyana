@@ -23,7 +23,7 @@ def run_workflow_task(self, run_id: int):
     workflow = run.workflow
     output_nodes = workflow.nodes.filter(kind=Node.Kind.OUTPUT).all()
 
-    client = clients.bigquery()
+    client = clients.ibis_client()
 
     for node in output_nodes:
         try:
@@ -43,10 +43,9 @@ def run_workflow_task(self, run_id: int):
                     project=workflow.project,
                     workflow_node=node,
                 )
-
-                client.query(
-                    f"CREATE OR REPLACE TABLE {table.bq_id} as ({query.compile()})"
-                ).result()
+                # TODO: Update to ibis 7 to support overwrite=True
+                # Or if too much work delete table before recreation
+                client.create_table(table.bq_id, query)
 
                 table.data_updated = timezone.now()
                 table.save()
@@ -71,5 +70,5 @@ def run_workflow(workflow: Workflow, user: CustomUser):
         started_at=timezone.now(),
         user=user,
     )
-    run_workflow_task.apply_async((run.id,), task_id=str(run.task_id))
+    run_workflow_task((run.id))
     return run
