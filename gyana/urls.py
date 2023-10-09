@@ -38,7 +38,6 @@ from apps.sheets import urls as sheet_urls
 from apps.teams import urls as team_urls
 from apps.uploads import urls as upload_urls
 from apps.users import urls as users_urls
-from apps.web.sitemaps import WebSitemap
 from apps.widgets import urls as widget_urls
 from apps.workflows import urls as workflow_urls
 
@@ -107,12 +106,6 @@ urlpatterns = [
     path("docs/", include_docs_urls(title="API Docs")),
     path("schemajs/", schemajs_view, name="api_schemajs"),
     path("", include(users_urls.accounts_urlpatterns)),
-    path(
-        "sitemap.xml",
-        sitemap,
-        {"sitemaps": {"web": WebSitemap}},
-        name="django.contrib.sitemaps.views.sitemap",
-    ),
 ]
 
 if settings.CYPRESS_URLS:

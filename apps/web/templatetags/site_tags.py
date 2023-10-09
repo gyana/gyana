@@ -16,6 +16,8 @@ EXTERNAL_URLS = {
     "demo_dashboard": "https://www.gyana.com/dashboards/a7b7458f-8162-4ec9-b92b-5b6911e02d49?embed=true",
     "github": "https://www.github.com/gyana/gyana",
     "hire_an_expert": "",
+    "terms_of_use": "https://www.gyana.com/terms-of-use",
+    "privacy_policy": "https://www.gyana.com/privacy-policy",
     # social
     "facebook": "https://www.facebook.com/GyanaHQ",
     "twitter": "https://twitter.com/GyanaHQ",

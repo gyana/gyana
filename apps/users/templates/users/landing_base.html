@@ -1,5 +1,5 @@
 {% extends "web/base.html" %}
-{% load static %}
+{% load static site_tags %}
 
 {% block body.content %}
   <div class="landing">
@@ -22,9 +22,9 @@
         {% block footer %}
           <p>
             By using the app, you agree to our
-            <a href="{% url 'web:terms-of-use' %}" class="link">terms of service</a>
+            <a href="{% external_url 'terms_of_use' %}" class="link">terms of service</a>
             and
-            <a href="{% url 'web:privacy-policy' %}" class="link">privacy policy</a>.
+            <a href="{% external_url 'privacy_policy' %}" class="link">privacy policy</a>.
           </p>
         {% endblock %}
       </footer>
