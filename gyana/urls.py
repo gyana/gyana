@@ -26,7 +26,6 @@ from apps.base.converters import HashIdConverter
 
 register_converter(HashIdConverter if settings.USE_HASHIDS else IntConverter, "hashid")
 
-from apps.blog.sitemaps import BlogSitemap
 from apps.controls import urls as control_urls
 from apps.customapis import urls as api_urls
 from apps.dashboards import urls as dashboard_urls
@@ -100,7 +99,6 @@ urlpatterns = [
     path("uploads/", include("apps.uploads.urls")),
     path("sheets/", include("apps.sheets.urls")),
     path("oauth2/", include("apps.oauth2.urls")),
-    path("blog/", include("apps.blog.urls")),
     path("", include("apps.web.urls")),
     path("celery-progress/", include("celery_progress.urls")),
     path("hijack/", include("hijack.urls", namespace="hijack")),
@@ -112,7 +110,7 @@ urlpatterns = [
     path(
         "sitemap.xml",
         sitemap,
-        {"sitemaps": {"web": WebSitemap, "blog": BlogSitemap}},
+        {"sitemaps": {"web": WebSitemap}},
         name="django.contrib.sitemaps.views.sitemap",
     ),
 ]
