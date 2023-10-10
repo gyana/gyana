@@ -32,9 +32,6 @@ DEBUG = True
 TEST = False
 
 ALLOWED_HOSTS = ["*"]
-# custom allowed hosts middleware for cnames
-CNAME_ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -74,29 +71,12 @@ THIRD_PARTY_APPS = [
     "hijack.contrib.admin",
     "waffle",
     "safedelete",
-    "djpaddle",
     "timezone_field",
     "django_celery_beat",
     "django_celery_results",
     # TODO: Remove after website migration is complete
     "heroicons",
     "simple_history",
-    # wagtail
-    "wagtail.contrib.forms",
-    "wagtail.contrib.redirects",
-    "wagtail.embeds",
-    "wagtail.sites",
-    "wagtail.users",
-    "wagtail.snippets",
-    "wagtail.documents",
-    "wagtail.images",
-    "wagtail.search",
-    "wagtail.admin",
-    "wagtail.core",
-    "modelcluster",
-    "taggit",
-    "wagtail.contrib.modeladmin",
-    "wagtailmenus",
     "django_htmx",
     "crispy_forms",
 ]
@@ -119,14 +99,11 @@ PROJECT_APPS = [
     "apps.columns",
     "apps.uploads",
     "apps.sheets",
-    "apps.cnames.apps.CNamesConfig",
     "apps.exports",
     "apps.controls",
     "apps.runs.apps.RunsConfig",
     "apps.customapis",
     "apps.oauth2",
-    "apps.blog",
-    "apps.learn",
 ]
 
 INSTALLED_APPS = (
@@ -134,7 +111,6 @@ INSTALLED_APPS = (
 )
 
 MIDDLEWARE = [
-    "apps.cnames.middleware.HostMiddleware",
     "honeybadger.contrib.DjangoHoneybadgerMiddleware",
     "beeline.middleware.django.HoneyMiddleware",
     "django.middleware.security.SecurityMiddleware",
@@ -148,7 +124,6 @@ MIDDLEWARE = [
     "simple_history.middleware.HistoryRequestMiddleware",
     "hijack.middleware.HijackUserMiddleware",
     "waffle.middleware.WaffleMiddleware",
-    "wagtail.contrib.redirects.middleware.RedirectMiddleware",
     "django_htmx.middleware.HtmxMiddleware",
 ]
 
@@ -192,9 +167,7 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 "apps.web.context_processors.user_meta",
                 "apps.web.context_processors.project_meta",
-                "apps.web.context_processors.google_analytics_id",
                 "gyana.context_processors.django_settings",
-                "wagtailmenus.context_processors.wagtailmenus",
             ],
             # equivalent of APP_DIRS=True, plus admin_tools template loader
             "loaders": [
@@ -366,10 +339,6 @@ PROJECT_METADATA = {
     "CONTACT_EMAIL": "developers@gyana.com",
 }
 
-GOOGLE_ANALYTICS_ID = os.environ.get("GOOGLE_ANALYTICS_ID")
-WEBSITE_GTM_ID = os.environ.get("WEBSITE_GTM_ID")
-
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
@@ -430,51 +399,7 @@ HONEYBADGER = {
 
 HELLONEXT_SSO_TOKEN = os.environ.get("HELLONEXT_SSO_TOKEN")
 
-HEROKU_API_KEY = os.environ.get("HEROKU_API_KEY")
-HEROKU_APP = os.environ.get("HEROKU_APP")
-
-CNAME_DOMAIN = os.environ.get("CNAME_DOMAIN")
-
-# can be found at https://vendors.paddle.com/authentication
-# needs a default value
-DJPADDLE_VENDOR_ID = os.getenv("DJPADDLE_VENDOR_ID", "0000")
-
-# create one at https://vendors.paddle.com/authentication
-# needs a default value
-DJPADDLE_API_KEY = os.getenv("DJPADDLE_API_KEY", "0000")
-
-# can be found at https://vendors.paddle.com/public-key
-# needs a valid RSA key, but this is meaningless
-DJPADDLE_PUBLIC_KEY = os.getenv(
-    "DJPADDLE_PUBLIC_KEY",
-    """-----BEGIN PUBLIC KEY-----
-MIGeMA0GCSqGSIb3DQEBAQUAA4GMADCBiAKBgGmojhfiUOJztHJyWdRehmQuBVQa
-ZP10acfRWBQsLFxK+HRzycYKQlzZxGKz+89qmZOvylS0HdS5m20ghEdfUeNW7HRU
-ZT/srO/tz4Jlr7+QtKIiO+GD8KTIqWJNB+gca0ZaocTUtfMEEb/ESTIHdFfns706
-KYXRy8564UME3qd3AgMBAAE=
------END PUBLIC KEY-----""",
-)
-
-DJPADDLE_SANDBOX = os.getenv("DJPADDLE_SANDBOX", default="True") == "True"
-DJPADDLE_SUBSCRIBER_MODEL = "teams.Team"
-DJPADDLE_SUBSCRIBER_BY_PAYLOAD = "apps.teams.paddle.get_subscriber_by_payload"
-DJPADDLE_LINK_STALE_SUBSCRIPTIONS = False
-
-DJPADDLE_PRO_PLAN_ID = int(os.getenv("DJPADDLE_PRO_PLAN_ID", default="0"))
-
-# https://stackoverflow.com/questions/47153776/how-to-store-third-party-apps-migrations-in-django
-MIGRATION_MODULES = {"djpaddle": "apps.teams.migrate.djpaddle"}
-
-
 WAFFLE_FLAG_MODEL = "teams.Flag"
-
-WAGTAIL_SITE_NAME = "Gyana CMS"
-WAGTAILSEARCH_BACKENDS = {
-    "default": {
-        "BACKEND": "wagtail.search.backends.database",
-    }
-}
-
 
 CACHEOPS_REDIS = CELERY_BROKER_URL
 CACHEOPS = {"*.*": {"timeout": 60 * 60}}

@@ -1,10 +1,6 @@
-from allauth.account.views import SignupView
 from django.contrib.auth.decorators import login_required
 from django.urls import include, path
 from django.views.defaults import page_not_found
-from django.views.generic.base import RedirectView
-
-from apps.base.clickjacking import xframe_options_sameorigin_allowlist
 
 from . import frames, views
 
@@ -27,12 +23,6 @@ accounts_urlpatterns = [
         page_not_found,
         {"exception": Exception("Not Found")},
         name="account_email",
-    ),
-    path("signin/", RedirectView.as_view(pattern_name="account_login")),
-    path(
-        "signup/",
-        xframe_options_sameorigin_allowlist(SignupView.as_view()),
-        name="account_signup",
     ),
     path("", include("allauth.urls")),
 ]

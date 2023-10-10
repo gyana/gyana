@@ -23,13 +23,3 @@ def project_meta(request):
         "page_description": "",
         "page_image": "",
     }
-
-
-def google_analytics_id(request):
-    """
-    Adds google analytics id to all requests
-    """
-    return {
-        "GOOGLE_ANALYTICS_ID": settings.GOOGLE_ANALYTICS_ID,
-        "WEBSITE_GTM_ID": settings.WEBSITE_GTM_ID,
-    }

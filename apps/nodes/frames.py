@@ -68,8 +68,6 @@ class NodeUpdate(UpdateView):
 
     def get_form_kwargs(self):
         form_kwargs = super().get_form_kwargs()
-        if self.object.kind == Node.Kind.SENTIMENT:
-            form_kwargs["user"] = self.request.user
         if parent := self.object.parents.first():
             form_kwargs["schema"] = parent.schema
         return form_kwargs
@@ -134,27 +132,6 @@ class NodeGrid(SingleTableMixin, DetailView):
         return RequestConfig(
             self.request, paginate=self.get_table_pagination(table)
         ).configure(table)
-
-
-class NodeCreditConfirmation(UpdateView):
-    model = Node
-    fields = ("always_use_credits",)
-    template_name = "nodes/errors/credit_exception.html"
-
-    def get_success_url(self) -> str:
-        return reverse(
-            "nodes:grid",
-            args=(self.object.id,),
-        )
-
-    def form_valid(self, form):
-        r = super().form_valid(form)
-
-        self.object.credit_use_confirmed = timezone.now()
-        self.object.credit_confirmed_user = self.request.user
-        self.object.save()
-
-        return r
 
 
 with open("apps/columns/functions.json") as f:

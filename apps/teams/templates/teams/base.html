@@ -41,14 +41,6 @@
     </a>
 
     <a
-      class="sidebar__link {% if request.resolver_match.url_name in 'account,subscription,plan,payments,pricing' %}sidebar__link--active{% endif %}"
-      href="{% url 'teams:account' team.id %}"
-      x-tooltip.sidebar="Billing"
-    >
-      <i class="far fa-fw fa-wallet"></i>Billing
-    </a>
-
-    <a
       class="sidebar__link {% if request.resolver_match.url_name == 'update' %}sidebar__link--active{% endif %}"
       href="{% url 'teams:update' team.id %}"
       x-tooltip.sidebar="Settings"

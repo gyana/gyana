@@ -75,7 +75,7 @@
 
       {% if object.ready or object.state == 'done' %}
         <p class="ml-4">
-          <span x-tooltip="~{{ integration.row_percentage }}% of your quota">
+          <span>
             <strong>{{ integration.num_rows|intcomma }}</strong> row{{ integration.num_rows|pluralize }}
           </span>
         </p>

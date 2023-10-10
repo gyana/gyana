@@ -1,7 +1,5 @@
 import pytest
 from deepdiff import DeepDiff
-from django.conf import settings
-from djpaddle.models import Plan
 from pytest_django.asserts import assertContains, assertRedirects
 
 from apps.base.tests.asserts import (
@@ -10,10 +8,8 @@ from apps.base.tests.asserts import (
     assertOK,
     assertSelectorHasAttribute,
     assertSelectorLength,
-    assertSelectorText,
 )
 from apps.base.tests.snapshot import get_instance_dict
-from apps.base.tests.subscribe import upgrade_to_pro
 from apps.nodes.models import Node
 from apps.projects.models import Project
 from apps.tables.models import Table
@@ -63,7 +59,7 @@ def test_project_crudl(client, logged_in_user):
     # update
     r = client.get(f"/projects/{project.id}/update")
     assertOK(r)
-    assertFormRenders(r, ["name", "description", "access", "cname"])
+    assertFormRenders(r, ["name", "description", "access"])
     assertLink(r, f"/projects/{project.id}/delete", "Delete")
 
     r = client.post(
@@ -125,15 +121,6 @@ def test_private_projects(client, logged_in_user):
     project = team.project_set.first()
     assert project is None
 
-    # Upgrade user
-    pro_plan = Plan.objects.create(
-        id=settings.DJPADDLE_PRO_PLAN_ID,
-        name="Business",
-        billing_type="month",
-        billing_period=1,
-    )
-    upgrade_to_pro(logged_in_user, team, pro_plan)
-
     r = client.post(
         f"/teams/{team.id}/projects/new",
         data={
@@ -155,23 +142,7 @@ def test_private_projects(client, logged_in_user):
     assertSelectorLength(client.get(f"/teams/{team.id}"), "table tbody tr", 0)
     assert client.get(f"/projects/{project.id}").status_code == 404
 
-
-def test_free_tier_project_limit(client, logged_in_user, project_factory):
-    # Create 3 projects
-    team = logged_in_user.teams.first()
-    project_factory.create_batch(3, team=team)
-
-    r = client.get(f"/teams/{team.id}")
-    assertSelectorLength(r, "#new-project-disabled", 1)
-
-    r = client.post(
-        f"/teams/{team.id}/projects/new",
-        data={"name": "Metrics", "access": "everyone"},
-    )
-    assert r.status_code == 422
-
-
-def test_automate(client, logged_in_user, project_factory, graph_run_factory, is_paid):
+def test_automate(client, logged_in_user, project_factory, graph_run_factory):
 
     team = logged_in_user.teams.first()
     project = project_factory(team=team)
@@ -282,15 +253,3 @@ def test_duplicate_simple_project(
     new_project_dict = get_instance_dict(project)
     # Confirm original project hasn't been changed through deletion
     assert not DeepDiff(project_dict, new_project_dict)
-
-
-def test_duplicate_project_disabled(client, project, project_factory):
-    team = project.team
-    project_factory.create_batch(2, team=team)
-
-    r = client.get(f"/projects/{project.id}/duplicate")
-    assertOK(r)
-    assertSelectorHasAttribute(r, "button", "disabled")
-
-    r = client.post(f"/projects/{project.id}/duplicate")
-    assert r.status_code == 404

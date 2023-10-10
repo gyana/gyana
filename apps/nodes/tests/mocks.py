@@ -7,11 +7,6 @@ from google.cloud.bigquery.table import Table as BqTable
 
 from apps.base.tests.mock_data import TABLE
 from apps.base.tests.mocks import TABLE_NAME, PickableMock
-from apps.nodes._sentiment_utils import (
-    DELIMITER,
-    SENTIMENT_COLUMN_NAME,
-    TEXT_COLUMN_NAME,
-)
 
 POSITIVE_SCORE = +0.9
 NEGATIVE_SCORE = -0.9
@@ -22,25 +17,6 @@ SENTIMENT_LOOKUP = {
     SAKURA: POSITIVE_SCORE,
     USAIN: NEGATIVE_SCORE,
 }  # cache as creating mocks is expensive
-
-
-@lru_cache(len(SENTIMENT_LOOKUP))
-def score_to_sentence_mock(sentence_text: str):
-    """Mocks a sentence to place inside an AnalyzeSentimentResponse"""
-    sentence = MagicMock()
-    sentence.text.content = sentence_text
-    sentence.sentiment.score = SENTIMENT_LOOKUP[sentence_text]
-    return sentence
-
-
-def mock_gcp_analyze_sentiment(text, _):
-    """Mocks the AnalyzeSentimentResponse sent back from GCP"""
-    mocked = MagicMock()
-
-    # covers the scalar case too as scalars are sent over as a single-row column
-    mocked.sentences = [score_to_sentence_mock(x) for x in text.split(DELIMITER)]
-
-    return mocked
 
 
 INPUT_QUERY = f"SELECT t0.*\nFROM `{TABLE_NAME}` t0"
@@ -101,19 +77,10 @@ def mock_bq_client_data(bigquery):
 
 def mock_bq_client_schema(bigquery):
     def side_effect(table, **kwargs):
-        if table.split(".")[-1].split("_")[0] in [
-            "cache",
-            "intermediate",
-        ]:
-            schema = [
-                SchemaField(TEXT_COLUMN_NAME, "string"),
-                SchemaField(SENTIMENT_COLUMN_NAME, "float"),
-            ]
-        else:
-            schema = [
-                SchemaField(column, str(type_))
-                for column, type_ in TABLE.schema().items()
-            ][:3]
+        schema = [
+            SchemaField(column, str(type_))
+            for column, type_ in TABLE.schema().items()
+        ][:3]
         return BqTable(
             table,
             schema=schema,

@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 from django.db import transaction
 
 from apps.base import clients
-from apps.base.account import is_scheduled_paid_only
+from apps.base.account import is_scheduled_help_text
 from apps.base.forms import BaseModelForm, LiveFormsetMixin
 
 from .models import Sheet
@@ -40,7 +40,7 @@ class SheetCreateForm(FormExtraMixin, BaseModelForm):
         super().__init__(*args, **kwargs)
 
         self.fields["url"].initial = url
-        is_scheduled_paid_only(self.fields["is_scheduled"], self._project)
+        is_scheduled_help_text(self.fields["is_scheduled"], self._project)
 
     def clean_url(self):
         url = self.cleaned_data["url"]
@@ -102,7 +102,7 @@ class SheetUpdateForm(LiveFormsetMixin, BaseModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["is_scheduled"].initial = self.instance.integration.is_scheduled
-        is_scheduled_paid_only(
+        is_scheduled_help_text(
             self.fields["is_scheduled"], self.instance.integration.project
         )
 

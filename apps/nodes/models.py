@@ -42,7 +42,6 @@ class Node(DirtyFieldsMixin, BaseModel):
         UNPIVOT = "unpivot", "Unpivot"
         TEXT = "text", "Text"
         WINDOW = "window", "Window and Calculate"
-        SENTIMENT = "sentiment", "Sentiment"
 
     _clone_excluded_m2m_fields = ["parents", "node_set"]
     _clone_excluded_m2o_or_o2m_fields = [
@@ -161,22 +160,6 @@ class Node(DirtyFieldsMixin, BaseModel):
         blank=True,
         help_text="Name of the new category column",
     )
-    sentiment_column = models.CharField(
-        max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH,
-        null=True,
-        blank=True,
-        help_text="Select the text column to get the sentiment of.",
-    )
-
-    # Credits
-    always_use_credits = models.BooleanField(default=False)
-    uses_credits = models.IntegerField(default=0)
-    credit_use_confirmed = models.DateTimeField(null=True, editable=False)
-    # To know who spent credits without having a global user session item or
-    # pass down the user through multiple functions we persist it in the database
-    credit_confirmed_user = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True
-    )
 
     has_been_saved = models.BooleanField(default=False)
 
@@ -186,10 +169,6 @@ class Node(DirtyFieldsMixin, BaseModel):
             "x",
             "y",
             "error",
-            "always_use_credits",
-            "uses_credits",
-            "credit_use_confirmed",
-            "credit_confirmed_user",
         }
         if dirty_fields:
             self.workflow.data_updated = timezone.now()
@@ -203,7 +182,6 @@ class Node(DirtyFieldsMixin, BaseModel):
     def is_valid(self):
         return self.has_been_saved or self.kind not in [
             self.Kind.INPUT,
-            self.Kind.SENTIMENT,
             self.Kind.JOIN,
             self.Kind.PIVOT,
             self.Kind.UNPIVOT,

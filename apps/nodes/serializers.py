@@ -158,10 +158,6 @@ def get_window_desc(obj):
     return f"Add window columns: {', '.join(texts)}"
 
 
-def get_sentiment_desc(obj):
-    return f"Analysis sentiment of {obj.sentiment_column}."
-
-
 def get_convert_desc(obj):
     return f"Convert {', '.join(f'{col.column} to {col.target_type}' for col in obj.convert_columns.iterator())}"
 
@@ -186,7 +182,6 @@ DESCRIPTIONS = {
     "pivot": get_pivot_desc,
     "unpivot": get_unpivot_desc,
     "intersect": get_intersection_desc,
-    "sentiment": get_sentiment_desc,
     "window": get_window_desc,
     "convert": get_convert_desc,
 }

@@ -33,8 +33,6 @@ class ProjectDuplicate(UpdateView):
     template_name = "projects/duplicate.html"
 
     def form_valid(self, form):
-        if not self.object.team.can_create_project:
-            raise Http404("Cannot create new projects on the current plan")
         duplicate_project.delay(self.object.id, self.request.user.id)
         return super().form_valid(form)
 

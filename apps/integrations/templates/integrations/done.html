@@ -8,30 +8,14 @@
     </h1>
 
     <div class="flex flex-col flex-1 justify-center gap-3">
-
-      {% if exceeds_per_integration_row_limit %}
-        <h1 class="flex items-center justify-center gap-3 mb-7">
-          Insufficient rows
-        </h1>
-        <p>
-          The total rows synced is <strong>{{ object.num_rows }}</strong>,
-          which exceeds your rows per integration limit of <strong>{{ project.team.rows_per_integration_limit|intcomma }}</strong>.
-        </p>
-
-        <p class="alert">
-          You can either reduce your row count, or reach out for an upgrade.
-        </p>
-
-      {% else %}
-        <h1 class="flex items-center justify-center gap-3 mb-7">
-          Success
-        </h1>
-        <p>
-          <strong>Your data is ready.</strong> You can still edit your
-          <a class="link" href="{% url 'project_integrations:configure' project.id object.id %}">configuration</a>
-          if you want to make more changes or trigger an import.
-        </p>
-      {% endif %}
+      <h1 class="flex items-center justify-center gap-3 mb-7">
+        Success
+      </h1>
+      <p>
+        <strong>Your data is ready.</strong> You can still edit your
+        <a class="link" href="{% url 'project_integrations:configure' project.id object.id %}">configuration</a>
+        if you want to make more changes or trigger an import.
+      </p>
     </div>
   </div>
   </div>

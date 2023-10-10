@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.urls import include, path
+from django.urls import path
 
 from . import views
 from .access import login_and_admin_required, login_and_team_required
@@ -27,40 +27,12 @@ membership_urlpatterns = (
     "team_members",
 )
 
-paddle_urlpatterns = (
-    [
-        # https://github.com/pennersr/django-allauth/issues/1109
-        path(
-            "post-checkout/",
-            views.PaddlePostCheckoutApiView.as_view(),
-            name="post_checkout_api",
-        ),
-        path("", include("djpaddle.urls")),
-    ],
-    "djpaddle",
-)
-
 urlpatterns = [
     path("new", login_required(views.TeamCreate.as_view()), name="create"),
     path(
         "<hashid:team_id>",
         login_and_team_required(views.TeamDetail.as_view()),
         name="detail",
-    ),
-    path(
-        "<hashid:team_id>/checkout",
-        login_and_admin_required(views.TeamCheckout.as_view()),
-        name="checkout",
-    ),
-    path(
-        "<hashid:team_id>/subscription",
-        login_and_admin_required(views.TeamSubscription.as_view()),
-        name="subscription",
-    ),
-    path(
-        "<hashid:team_id>/payments",
-        login_and_admin_required(views.TeamPayments.as_view()),
-        name="payments",
     ),
     path(
         "<hashid:team_id>/update",
@@ -71,15 +43,5 @@ urlpatterns = [
         "<hashid:team_id>/delete",
         login_and_admin_required(views.TeamDelete.as_view()),
         name="delete",
-    ),
-    path(
-        "<hashid:team_id>/account",
-        login_and_admin_required(views.TeamAccount.as_view()),
-        name="account",
-    ),
-    path(
-        "<hashid:team_id>/pricing",
-        login_and_admin_required(views.TeamPricing.as_view()),
-        name="pricing",
     ),
 ]

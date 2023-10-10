@@ -235,7 +235,7 @@ class IntegrationDone(ProjectMixin, UpdateView):
         team = self.project.team
         team.update_row_count()
 
-        if not self.object.ready and not team.check_new_rows(self.object.num_rows):
+        if not self.object.ready:
             return "integrations/review.html"
 
         return "integrations/done.html"
@@ -261,10 +261,6 @@ class IntegrationDone(ProjectMixin, UpdateView):
         team = self.project.team
         team.update_row_count()
 
-        context_data["exceeds_row_limit"] = team.check_new_rows(self.object.num_rows)
-        context_data[
-            "exceeds_per_integration_row_limit"
-        ] = team.check_new_rows_per_integration(self.object.num_rows)
         context_data["projected_num_rows"] = team.add_new_rows(self.object.num_rows)
 
         return context_data

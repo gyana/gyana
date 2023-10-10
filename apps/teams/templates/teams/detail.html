@@ -44,32 +44,18 @@
           </template>
         </div>
 
-        {% if team.can_create_project %}
-          <a
-            class="button button--sm"
-            href="{% url 'team_projects:create' team.id %}"
-          >
-            <i class="fas fa-fw fa-plus"></i> New Project
-          </a>
-        {% else %}
-          <div id="new-project-disabled"
-            x-tooltip="You have reached the maximum number of projects on your current plan.">
-            <p
-              class="button button--sm"
-              disabled
-            >
-              <i class="fas fa-fw fa-plus"></i> New Project
-            </p>
-          </div>
-        {% endif %}
+        <a
+          class="button button--sm"
+          href="{% url 'team_projects:create' team.id %}"
+        >
+          <i class="fas fa-fw fa-plus"></i> New Project
+        </a>
       </div>
 
-      {% if team.is_free %}
-        <p class="alert my-7">
-          Need help building your report? Book a
-          <a class="link" href="{% external_url 'onboarding' %}">personalized onboarding</a>.
-        </p>
-      {% endif %}
+      <p class="alert my-7">
+        Need help building your report?
+        <a class="link" href="{% external_url 'onboarding' %}">Hire an expert</a>.
+      </p>
 
       {% render_table table %}
 
@@ -91,9 +77,8 @@
           <strong>Note:</strong> Look out for
           <span class="button button--sm button--circle button--tertiary"/><i class="fas fa-fw fa-question"></i></span>
         buttons, click them to go to relevant help articles.
-        {% if team.is_free %}
-          Need help building your report? Book a <a class="link" href="{% external_url 'onboarding' %}">personalized onboarding</a>.
-        {% endif %}
+
+        Need help building your report? <a class="link" href="{% external_url 'hire_an_expert' %}">Hire an expert</a>.
       </p>
 
       <div class="flex gap-8 mt-7">

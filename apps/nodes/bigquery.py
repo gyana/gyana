@@ -23,9 +23,7 @@ from apps.filters.bigquery import get_query_from_filters
 from apps.nodes.exceptions import ColumnNamesDontMatch, JoinTypeError, NodeResultNone
 from apps.nodes.models import Node
 from apps.tables.bigquery import get_query_from_table
-from apps.teams.models import OutOfCreditsException
 
-from ._sentiment_utils import CreditException, get_gcp_sentiment
 from ._utils import create_or_replace_intermediate_table, get_parent_updated
 
 
@@ -321,20 +319,6 @@ def get_window_query(node, query):
     return query
 
 
-def get_sentiment_query(node, parent):
-    table = getattr(node, "intermediate_table", None)
-    conn = clients.ibis_client()
-
-    # if the table doesn't need updating we can simply return the previous computed table
-    if table and table.data_updated > max(tuple(get_parent_updated(node))):
-        return conn.table(table.bq_table, database=table.bq_dataset)
-
-    task = get_gcp_sentiment.delay(node.id)
-    bq_table, bq_dataset = task.wait(timeout=None, interval=0.1)
-
-    return conn.table(bq_table, database=bq_dataset)
-
-
 def get_convert_query(node, query):
     converted_columns = {
         column.column: convert_column(query, column)
@@ -363,7 +347,6 @@ NODE_FROM_CONFIG = {
     "pivot": get_pivot_query,
     "unpivot": get_unpivot_query,
     "intersect": get_intersect_query,
-    "sentiment": get_sentiment_query,
     "window": get_window_query,
     "convert": get_convert_query,
 }
@@ -415,13 +398,9 @@ def get_query_from_node(current_node):
             results[node] = func(node, *args)
             if node.error:
                 node.error = None
-                # Only update error field to avoid overwriting changes performed
-                # In celery (e.g. adding the intermediate table for sentiment)
-                node.save(update_fields=["error"])
+                node.save()
         except Exception as err:
             node.error = error_name_to_snake(err)
-            if isinstance(err, (CreditException, OutOfCreditsException)):
-                node.uses_credits = err.uses_credits
             node.save()
             if current_node != node:
                 raise NodeResultNone(node=node) from err

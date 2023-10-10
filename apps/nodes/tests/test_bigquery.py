@@ -12,21 +12,13 @@ from apps.base import clients
 from apps.columns.models import Column
 from apps.filters.models import DateRange, Filter
 from apps.nodes.bigquery import get_pivot_query, get_query_from_node, get_unpivot_query
-from apps.nodes.exceptions import CreditException
 from apps.nodes.models import Node
 from apps.nodes.tests.mocks import (
     DEFAULT_X_Y,
-    INPUT_DATA,
     INPUT_QUERY,
-    NEGATIVE_SCORE,
-    POSITIVE_SCORE,
-    SAKURA,
-    USAIN,
     mock_bq_client_data,
     mock_bq_client_schema,
-    mock_gcp_analyze_sentiment,
 )
-from apps.teams.models import CreditTransaction, OutOfCreditsException
 
 pytestmark = pytest.mark.django_db
 
@@ -538,72 +530,6 @@ def test_unpivot_node(setup):
     )
 
 
-SENTIMENT_QUERY = "SELECT t0\\.\\*\nFROM `project\\.cypress_team_.*_tables\\..*` t0"
-
-
-def _create_sentiment_node(input_node, workflow):
-    node = Node.objects.create(
-        kind=Node.Kind.SENTIMENT,
-        workflow=workflow,
-        **DEFAULT_X_Y,
-        sentiment_column="athlete",
-        data_updated=timezone.now(),
-    )
-    node.parents.add(input_node)
-    return node
-
-
-def test_sentiment_query(mocker, logged_in_user, setup):
-    input_node, workflow = setup
-    sentiment_node = _create_sentiment_node(input_node, workflow)
-    team = logged_in_user.teams.first()
-
-    with pytest.raises(CreditException) as err:
-        get_query_from_node(sentiment_node)
-
-    # Should error and not charge any credits
-    assert sentiment_node.error == "credit_exception"
-    assert sentiment_node.uses_credits == len(INPUT_DATA)
-    assert team.current_credit_balance == 0
-
-    # Confirm credit usage
-    sentiment_node.credit_use_confirmed = timezone.now()
-    sentiment_node.credit_confirmed_user = logged_in_user
-    sentiment_node.save()
-
-    mocker.patch(
-        target="apps.nodes._sentiment_utils._gcp_analyze_sentiment",
-        side_effect=mock_gcp_analyze_sentiment,
-    )
-    mocker.patch(
-        "apps.nodes._sentiment_utils.LanguageServiceClient",
-        side_effect=mock.MagicMock,
-    )
-    query = get_query_from_node(sentiment_node)
-    assert re.match(re.compile(SENTIMENT_QUERY), query.compile())
-
-    # Should have charged credits and uploaded the right dataframe
-    uploaded_df = clients.bigquery().load_table_from_dataframe.call_args.args[0]
-    assert team.current_credit_balance == 2
-    pd._testing.assert_frame_equal(
-        uploaded_df,
-        pd.DataFrame(
-            {"text": [USAIN, SAKURA], "sentiment": [NEGATIVE_SCORE, POSITIVE_SCORE]}
-        ),
-    )
-
-    # Fake update to input node
-    # It still shouldnt charge any credits
-    input_node.data_updated = timezone.now()
-    input_node.save()
-    # Need to refresh object because it has new props updated in the celery task
-    sentiment_node.refresh_from_db()
-
-    query = get_query_from_node(sentiment_node)
-    assert re.match(re.compile(SENTIMENT_QUERY), query.compile())
-    assert team.current_credit_balance == 2
-
-
 def test_convert_node(setup):
     input_node, workflow = setup
     convert_node = Node.objects.create(
@@ -627,20 +553,3 @@ CAST(t0.`id` AS STRING) AS `id`,
        CAST(t0.`athlete` AS INT64) AS `athlete`,
        CAST(t0.`birthday` AS TIMESTAMP) AS `birthday`""",
     )
-
-
-def test_sentiment_query_out_of_credits(logged_in_user, setup):
-    input_node, workflow = setup
-    sentiment_node = _create_sentiment_node(input_node, workflow)
-    team = logged_in_user.teams.first()
-
-    # Add credits so that operation would consume too many credits
-    team.credittransaction_set.create(
-        transaction_type=CreditTransaction.TransactionType.INCREASE,
-        amount=99,
-        user=logged_in_user,
-    )
-    with pytest.raises(OutOfCreditsException) as err:
-        get_query_from_node(sentiment_node)
-
-    assert sentiment_node.error == "out_of_credits_exception"

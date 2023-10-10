@@ -21,19 +21,11 @@ from django.contrib.sitemaps.views import sitemap
 from django.urls import include, path, register_converter
 from django.urls.converters import IntConverter
 from rest_framework.documentation import get_schemajs_view, include_docs_urls
-from wagtail.admin import urls as wagtailadmin_urls
-from wagtail.contrib.sitemaps import Sitemap as WagtailSitemap
-from wagtail.core import urls as wagtail_urls
-from wagtail.documents import urls as wagtaildocs_urls
 
 from apps.base.converters import HashIdConverter
 
 register_converter(HashIdConverter if settings.USE_HASHIDS else IntConverter, "hashid")
 
-
-from wagtail.api.v2.views import PagesAPIViewSet
-
-from apps.cnames import urls as cname_urls
 from apps.controls import urls as control_urls
 from apps.customapis import urls as api_urls
 from apps.dashboards import urls as dashboard_urls
@@ -46,11 +38,9 @@ from apps.sheets import urls as sheet_urls
 from apps.teams import urls as team_urls
 from apps.uploads import urls as upload_urls
 from apps.users import urls as users_urls
-from apps.web.sitemaps import WebSitemap
 from apps.widgets import urls as widget_urls
 from apps.workflows import urls as workflow_urls
 
-PagesAPIViewSet.schema = None
 schemajs_view = get_schemajs_view(title="API")
 
 
@@ -86,7 +76,6 @@ teams_urlpatterns = [
     path("<hashid:team_id>/invites/", include(invite_urls.team_urlpatterns)),
     path("<hashid:team_id>/projects/", include(project_urls.team_urlpatterns)),
     path("<hashid:team_id>/members/", include(team_urls.membership_urlpatterns)),
-    path("<hashid:team_id>/cnames/", include(cname_urls.team_urlpatterns)),
 ]
 
 
@@ -108,26 +97,15 @@ urlpatterns = [
     path("nodes/", include("apps.nodes.urls")),
     path("uploads/", include("apps.uploads.urls")),
     path("sheets/", include("apps.sheets.urls")),
-    path("cnames/", include("apps.cnames.urls")),
     path("oauth2/", include("apps.oauth2.urls")),
-    path("learn/", include("apps.learn.urls")),
     path("", include("apps.web.urls")),
     path("celery-progress/", include("celery_progress.urls")),
     path("hijack/", include("hijack.urls", namespace="hijack")),
-    path("paddle/", include(team_urls.paddle_urlpatterns)),
     # API docs
     # these are needed for schema.js
     path("docs/", include_docs_urls(title="API Docs")),
     path("schemajs/", schemajs_view, name="api_schemajs"),
     path("", include(users_urls.accounts_urlpatterns)),
-    path("cms/", include(wagtailadmin_urls)),
-    path("documents/", include(wagtaildocs_urls)),
-    path(
-        "sitemap.xml",
-        sitemap,
-        {"sitemaps": {"web": WebSitemap, "wagtail": WagtailSitemap}},
-        name="django.contrib.sitemaps.views.sitemap",
-    ),
 ]
 
 if settings.CYPRESS_URLS:
@@ -138,6 +116,4 @@ if settings.CYPRESS_URLS:
 if settings.DEBUG:
     urlpatterns += [path("silk/", include("silk.urls", namespace="silk"))]
 
-urlpatterns += [
-    path("", include(wagtail_urls)),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

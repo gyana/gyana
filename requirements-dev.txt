@@ -4,18 +4,10 @@
 #
 #    pip-compile requirements-dev.in
 #
-anyascii==0.3.1
-    # via
-    #   -c requirements.txt
-    #   wagtail
 appnope==0.1.3
     # via ipython
 arrow==1.2.3
     # via jinja2-time
-asgiref==3.5.2
-    # via
-    #   -c requirements.txt
-    #   django
 attrs==20.3.0
     # via
     #   -c requirements.txt
@@ -24,10 +16,6 @@ autoflake==1.7.7
     # via -r requirements-dev.in
 backcall==0.2.0
     # via ipython
-beautifulsoup4==4.9.3
-    # via
-    #   -c requirements.txt
-    #   wagtail
 binaryornot==0.4.4
     # via cookiecutter
 black==22.10.0
@@ -59,63 +47,16 @@ decorator==5.1.1
     #   ipython
 deepdiff==5.8.1
     # via -r requirements-dev.in
-django==4.0.8
-    # via
-    #   -c requirements.txt
-    #   django-filter
-    #   django-modelcluster
-    #   django-permissionedforms
-    #   django-taggit
-    #   django-treebeard
-    #   djangorestframework
-    #   wagtail
 django-coverage-plugin==2.0.4
     # via -r requirements-dev.in
-django-filter==2.4.0
-    # via
-    #   -c requirements.txt
-    #   wagtail
-django-modelcluster==6.0
-    # via
-    #   -c requirements.txt
-    #   wagtail
-django-permissionedforms==0.1
-    # via
-    #   -c requirements.txt
-    #   wagtail
-django-taggit==2.1.0
-    # via
-    #   -c requirements.txt
-    #   wagtail
-django-treebeard==4.5.1
-    # via
-    #   -c requirements.txt
-    #   wagtail
-djangorestframework==3.14.0
-    # via
-    #   -c requirements.txt
-    #   wagtail
 djhtml==2.0.0
     # via -r requirements-dev.in
-draftjs-exporter==2.1.7
-    # via
-    #   -c requirements.txt
-    #   wagtail
-et-xmlfile==1.1.0
-    # via
-    #   -c requirements.txt
-    #   openpyxl
 factory-boy==3.2.1
     # via
     #   -r requirements-dev.in
     #   pytest-factoryboy
-    #   wagtail-factories
 faker==15.1.3
     # via factory-boy
-html5lib==1.1
-    # via
-    #   -c requirements.txt
-    #   wagtail
 idna==3.4
     # via
     #   -c requirements.txt
@@ -141,10 +82,6 @@ jinja2==3.1.2
     #   jinja2-time
 jinja2-time==0.2.0
     # via cookiecutter
-l18n==2021.3
-    # via
-    #   -c requirements.txt
-    #   wagtail
 markupsafe==2.1.1
     # via
     #   -c requirements.txt
@@ -157,10 +94,6 @@ mypy-extensions==0.4.3
     # via
     #   black
     #   mypy
-openpyxl==3.0.10
-    # via
-    #   -c requirements.txt
-    #   tablib
 ordered-set==4.1.0
     # via deepdiff
 packaging==21.3
@@ -175,10 +108,6 @@ pexpect==4.8.0
     # via ipython
 pickleshare==0.7.5
     # via ipython
-pillow==9.3.0
-    # via
-    #   -c requirements.txt
-    #   wagtail
 platformdirs==2.5.2
     # via black
 pluggy==1.0.0
@@ -227,41 +156,16 @@ python-dateutil==2.8.2
     #   faker
 python-slugify==6.1.2
     # via cookiecutter
-pytz==2022.7.1
-    # via
-    #   -c requirements.txt
-    #   django-modelcluster
-    #   djangorestframework
-    #   l18n
 requests==2.28.1
     # via
     #   -c requirements.txt
     #   cookiecutter
-    #   wagtail
 six==1.16.0
     # via
     #   -c requirements.txt
     #   cookiecutter
     #   django-coverage-plugin
-    #   html5lib
-    #   l18n
     #   python-dateutil
-soupsieve==2.3.2.post1
-    # via
-    #   -c requirements.txt
-    #   beautifulsoup4
-sqlparse==0.4.3
-    # via
-    #   -c requirements.txt
-    #   django
-tablib[xls,xlsx]==3.2.1
-    # via
-    #   -c requirements.txt
-    #   wagtail
-telepath==0.3
-    # via
-    #   -c requirements.txt
-    #   wagtail
 text-unidecode==1.3
     # via python-slugify
 toml==0.10.2
@@ -289,36 +193,10 @@ urllib3==1.26.12
     # via
     #   -c requirements.txt
     #   requests
-wagtail==3.0.3
-    # via
-    #   -c requirements.txt
-    #   wagtail-factories
-wagtail-factories==2.1.0
-    # via -r requirements-dev.in
 wcwidth==0.2.5
     # via
     #   -c requirements.txt
     #   prompt-toolkit
-webencodings==0.5.1
-    # via
-    #   -c requirements.txt
-    #   html5lib
-willow==1.4.1
-    # via
-    #   -c requirements.txt
-    #   wagtail
-xlrd==2.0.1
-    # via
-    #   -c requirements.txt
-    #   tablib
-xlsxwriter==3.0.3
-    # via
-    #   -c requirements.txt
-    #   wagtail
-xlwt==1.3.0
-    # via
-    #   -c requirements.txt
-    #   tablib
 
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools
