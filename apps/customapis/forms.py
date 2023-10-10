@@ -8,7 +8,7 @@ from django.urls import reverse
 from django.utils.html import mark_safe
 
 from apps.base.account import is_scheduled_help_text
-from apps.base.crispy import Tab
+from apps.base.crispy import CrispyFormset, Tab
 from apps.base.forms import BaseModelForm, LiveFormsetMixin, LiveModelForm
 from apps.base.formsets import RequiredInlineFormset
 from apps.base.widgets import DatalistInput
@@ -168,6 +168,8 @@ class CustomApiUpdateForm(LiveFormsetMixin, LiveModelForm):
             "oauth2": f"authorization == '{CustomApi.Authorization.OAUTH2}'",
             "body_raw": f"body == '{CustomApi.Body.RAW}'",
             "body_binary": f"body == '{CustomApi.Body.BINARY}'",
+            "formdataentries": f"body == '{CustomApi.Body.FORM_DATA}'",
+            "formurlencodedentries": f"body == '{CustomApi.Body.X_WWW_FORM_URLENCODED}'",
         }
         widgets = {
             "api_key_value": forms.PasswordInput(render_value=True),
@@ -211,11 +213,24 @@ class CustomApiUpdateForm(LiveFormsetMixin, LiveModelForm):
                 ),
                 Tab(
                     "Params",
+                    CrispyFormset("query_params", "Query Params", QueryParamFormset),
                 ),
                 Tab(
                     "Headers",
+                    CrispyFormset("httpheaders", "HTTP Headers", HttpHeaderFormset),
                 ),
-                Tab("Body", "body", "body_raw", "body_binary"),
+                Tab(
+                    "Body",
+                    "body",
+                    "body_raw",
+                    "body_binary",
+                    CrispyFormset("formdataentries", "Form Data", FormDataEntryFormset),
+                    CrispyFormset(
+                        "formurlencodedentries",
+                        "Form URL Encoded",
+                        FormURLEncodedEntryFormset,
+                    ),
+                ),
             )
         )
 

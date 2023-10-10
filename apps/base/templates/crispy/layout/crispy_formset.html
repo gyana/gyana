@@ -1,0 +1,9 @@
+{% load crispy_forms_tags %}
+
+
+<div {% if form.show %}{% if form.show|get_item:name %}x-show="{{ form.show|get_item:name }}"{% endif %}{% endif %}>
+  {{ label }}
+
+  {% crispy formset %}
+</div>
+
