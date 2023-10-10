@@ -23,32 +23,6 @@ from .models import (
 
 HEADERS_PATH = "apps/customapis/requests/headers.txt"
 
-AUTHORIZATION_TO_FIELDS = {
-    CustomApi.Authorization.NO_AUTH: [],
-    CustomApi.Authorization.API_KEY: [
-        "api_key_key",
-        "api_key_value",
-        "api_key_add_to",
-    ],
-    CustomApi.Authorization.BEARER_TOKEN: ["bearer_token"],
-    CustomApi.Authorization.BASIC_AUTH: ["username", "password"],
-    CustomApi.Authorization.DIGEST_AUTH: ["username", "password"],
-    CustomApi.Authorization.OAUTH2: ["oauth2"],
-}
-
-BODY_TO_FIELDS = {
-    CustomApi.Body.NONE: [],
-    CustomApi.Body.FORM_DATA: [],
-    CustomApi.Body.X_WWW_FORM_URLENCODED: [],
-    CustomApi.Body.RAW: ["body_raw"],
-    CustomApi.Body.BINARY: ["body_binary"],
-}
-
-FORMAT_TO_FIELDS = {
-    FormDataEntry.Format.TEXT: ["text"],
-    FormDataEntry.Format.FILE: ["file"],
-}
-
 
 @cache
 def get_headers():
@@ -91,16 +65,15 @@ HttpHeaderFormset = forms.inlineformset_factory(
 )
 
 
-class FormDataEntryForm(LiveModelForm):
+class FormDataEntryForm(BaseModelForm):
     class Meta:
         model = FormDataEntry
         fields = ["format", "key", "text", "file"]
+        show = {
+            "text": f"format == '{FormDataEntry.Format.TEXT}'",
+            "file": f"format == '{FormDataEntry.Format.FILE}'",
+        }
         help_texts = {"format": "Format", "key": "Key", "text": "Text", "file": "File"}
-
-    def get_live_fields(self):
-        live_fields = ["format", "key"]
-        live_fields += FORMAT_TO_FIELDS[self.get_live_field("format")]
-        return live_fields
 
 
 FormDataEntryFormset = forms.inlineformset_factory(
@@ -111,6 +84,8 @@ FormDataEntryFormset = forms.inlineformset_factory(
     extra=0,
     formset=RequiredInlineFormset,
 )
+
+FormDataEntryFormset.show = f"body == '{CustomApi.Body.FORM_DATA}'"
 
 
 class FormURLEncodedEntryForm(LiveModelForm):
@@ -129,10 +104,7 @@ FormURLEncodedEntryFormset = forms.inlineformset_factory(
     formset=RequiredInlineFormset,
 )
 
-BODY_TO_FORMSETS = {
-    CustomApi.Body.FORM_DATA: [FormDataEntryFormset],
-    CustomApi.Body.X_WWW_FORM_URLENCODED: [FormURLEncodedEntryFormset],
-}
+FormURLEncodedEntryFormset.show = f"body == '{CustomApi.Body.X_WWW_FORM_URLENCODED}'"
 
 
 class CustomApiCreateForm(BaseModelForm):
@@ -186,6 +158,17 @@ class CustomApiUpdateForm(LiveFormsetMixin, LiveModelForm):
             "body_raw",
             "body_binary",
         ]
+        show = {
+            "api_key_key": f"authorization == '{CustomApi.Authorization.API_KEY}'",
+            "api_key_value": f"authorization == '{CustomApi.Authorization.API_KEY}'",
+            "api_key_add_to": f"authorization == '{CustomApi.Authorization.API_KEY}'",
+            "bearer_token": f"authorization == '{CustomApi.Authorization.BEARER_TOKEN}'",
+            "username": f"authorization == '{CustomApi.Authorization.BASIC_AUTH}' || authorization == '{CustomApi.Authorization.DIGEST_AUTH}'",
+            "password": f"authorization == '{CustomApi.Authorization.BASIC_AUTH}' || authorization == '{CustomApi.Authorization.DIGEST_AUTH}'",
+            "oauth2": f"authorization == '{CustomApi.Authorization.OAUTH2}'",
+            "body_raw": f"body == '{CustomApi.Body.RAW}'",
+            "body_binary": f"body == '{CustomApi.Body.BINARY}'",
+        }
         widgets = {
             "api_key_value": forms.PasswordInput(render_value=True),
             "bearer_token": forms.PasswordInput(render_value=True),
@@ -238,29 +221,19 @@ class CustomApiUpdateForm(LiveFormsetMixin, LiveModelForm):
 
         self.fields["url"].required = True
 
-        if self.get_live_field("authorization") == CustomApi.Authorization.OAUTH2:
-            field = self.fields["oauth2"]
-            project = self.instance.integration.project
+        field = self.fields["oauth2"]
+        project = self.instance.integration.project
 
-            field.queryset = project.oauth2_set.filter(token__isnull=False).all()
-            settings_url = reverse("projects:update", args=(project.id,))
-            field.help_text = mark_safe(
-                f'You can authorize services with OAuth2 in your project <a href="{settings_url}" class="link">settings</a>'
-            )
-
-    def get_live_fields(self):
-        live_fields = [
-            "url",
-            "json_path",
-            "http_request_method",
-            "authorization",
-            "body",
-        ]
-        live_fields += AUTHORIZATION_TO_FIELDS[self.get_live_field("authorization")]
-        live_fields += BODY_TO_FIELDS[self.get_live_field("body")]
-        return live_fields
+        field.queryset = project.oauth2_set.filter(token__isnull=False).all()
+        settings_url = reverse("projects:update", args=(project.id,))
+        field.help_text = mark_safe(
+            f'You can authorize services with OAuth2 in your project <a href="{settings_url}" class="link">settings</a>'
+        )
 
     def get_live_formsets(self):
-        live_formsets = BODY_TO_FORMSETS.get(self.get_live_field("body"), [])
-        live_formsets += [QueryParamFormset, HttpHeaderFormset]
-        return live_formsets
+        return [
+            FormDataEntryFormset,
+            FormURLEncodedEntryFormset,
+            QueryParamFormset,
+            HttpHeaderFormset,
+        ]

@@ -1,14 +1,34 @@
 from functools import cache
 
+from crispy_forms import utils
 from django import forms
 from django.contrib.postgres.search import TrigramSimilarity
 from django.db import transaction
 from django.db.models import Case, Q, When
 from django.db.models.functions import Greatest
+from django.forms.models import ModelFormOptions
 from django.utils.datastructures import MultiValueDict
 
 from apps.base.core.utils import create_column_choices
 from apps.tables.models import Table
+
+
+# By default, django-crispy-form caches the template, breaking hot-reloading in development
+def default_field_template(template_pack=utils.TEMPLATE_PACK):
+    return utils.get_template("%s/field.html" % template_pack)
+
+
+utils.default_field_template = default_field_template
+
+ModelFormOptions__init__ = ModelFormOptions.__init__
+
+
+def __init__(self, options=None):
+    ModelFormOptions__init__(self, options=options)
+    self.show = getattr(options, "show", None)
+
+
+ModelFormOptions.__init__ = __init__
 
 
 def get_formsets(self):
@@ -36,7 +56,7 @@ FORMSET_LABELS = {
     "queryparams": "Query Params",
     "httpheaders": "HTTP Headers",
     "formdataentries": "Form Data",
-    "formurlencodedentries": "Form Data",
+    "formurlencodedentries": "Form URL Encoded",
 }
 
 
@@ -85,6 +105,10 @@ class BaseModelForm(forms.ModelForm):
                 self.save_m2m()
                 self.post_save(instance)
         return instance
+
+    @property
+    def show(self):
+        return self._meta.show
 
 
 class LiveModelForm(BaseModelForm):
