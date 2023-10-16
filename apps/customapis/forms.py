@@ -9,7 +9,12 @@ from django.utils.html import mark_safe
 
 from apps.base.account import is_scheduled_help_text
 from apps.base.crispy import CrispyFormset, Tab
-from apps.base.forms import BaseModelForm, LiveFormsetMixin, LiveModelForm
+from apps.base.forms import (
+    BaseModelForm,
+    LiveAlpineModelForm,
+    LiveFormsetMixin,
+    LiveModelForm,
+)
 from apps.base.formsets import RequiredInlineFormset
 from apps.base.widgets import DatalistInput
 
@@ -139,7 +144,7 @@ class CustomApiCreateForm(BaseModelForm):
         instance.integration.project.update_schedule()
 
 
-class CustomApiUpdateForm(LiveFormsetMixin, LiveModelForm):
+class CustomApiUpdateForm(LiveFormsetMixin, LiveAlpineModelForm):
     class Meta:
         model = CustomApi
         fields = [
@@ -236,14 +241,15 @@ class CustomApiUpdateForm(LiveFormsetMixin, LiveModelForm):
 
         self.fields["url"].required = True
 
-        field = self.fields["oauth2"]
-        project = self.instance.integration.project
+        if "oauth" in self.fields:
+            field = self.fields["oauth2"]
+            project = self.instance.integration.project
 
-        field.queryset = project.oauth2_set.filter(token__isnull=False).all()
-        settings_url = reverse("projects:update", args=(project.id,))
-        field.help_text = mark_safe(
-            f'You can authorize services with OAuth2 in your project <a href="{settings_url}" class="link">settings</a>'
-        )
+            field.queryset = project.oauth2_set.filter(token__isnull=False).all()
+            settings_url = reverse("projects:update", args=(project.id,))
+            field.help_text = mark_safe(
+                f'You can authorize services with OAuth2 in your project <a href="{settings_url}" class="link">settings</a>'
+            )
 
     def get_live_formsets(self):
         return [

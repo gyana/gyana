@@ -125,7 +125,6 @@ class CustomApi(BaseModel):
 
 
 class QueryParam(BaseModel):
-
     customapi = models.ForeignKey(
         CustomApi, on_delete=models.CASCADE, related_name="queryparams"
     )
@@ -134,7 +133,6 @@ class QueryParam(BaseModel):
 
 
 class HttpHeader(BaseModel):
-
     customapi = models.ForeignKey(
         CustomApi, on_delete=models.CASCADE, related_name="httpheaders"
     )

@@ -7,7 +7,7 @@
     {% include 'crispy/uni_formset_row.html' with form=formset.empty_form %}
   </template>
 
-  <div x-ref="forms">
+  <div x-ref="forms" class="formset-list">
     {% for form in formset %}
       {% include 'crispy/uni_formset_row.html' %}
     {% endfor %}

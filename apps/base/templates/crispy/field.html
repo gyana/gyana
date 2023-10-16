@@ -3,23 +3,25 @@
 {% if field.is_hidden %}
   {{ field }}
 {% else %}
-  <div id="div_{{ field.auto_id }}" {% if form.show %}{% if form.show|get_item:field.name %}x-show="{{ form.show|get_item:field.name }}"{% endif %}{% endif %} class="{% if wrapper_class %}{{ wrapper_class }} {% endif %}{% if field_class %}{{ field_class }}{% else %}label{% endif %}">
+  <template x-if="{% if form.show %}{% if form.show|get_item:field.name %}{{ form.show|get_item:field.name }}{% else %}true{% endif %}{% else %}true{% endif %}">
+    <div id="div_{{ field.auto_id }}" class="{% if wrapper_class %}{{ wrapper_class }} {% endif %}{% if field_class %}{{ field_class }}{% else %}label{% endif %}">
 
-    {% if field.label and form_show_labels %}
-      <label for="{{ field.id_for_label }}" class="{% if label_class %}{{ label_class }}{% endif %}">
-        {{ field.label|safe }}{% if field.field.required %} *{% endif %}
+      {% if field.label and form_show_labels %}
+        <label for="{{ field.id_for_label }}" class="{% if label_class %}{{ label_class }}{% endif %}">
+          {{ field.label|safe }}{% if field.field.required %} *{% endif %}
 
-        {% if field.help_text %}
-          <p class="input__help-text">
-            {{ field.help_text }}
-          </p>
-        {% endif %}
-      </label>
-    {% endif %}
+          {% if field.help_text %}
+            <p class="input__help-text">
+              {{ field.help_text }}
+            </p>
+          {% endif %}
+        </label>
+      {% endif %}
 
-    {% crispy_field field %}
+      {% crispy_field field %}
 
-    {{ field.errors }}
-
-  </div>
+      {{ field.errors }}
+      
+    </div>
+  </template>
 {% endif %}

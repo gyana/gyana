@@ -111,11 +111,20 @@ class BaseModelForm(forms.ModelForm):
         return self._meta.show
 
 
+class LiveAlpineModelForm(BaseModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # data populated by POST request in update
+        # TODO: HTMX plugin for HTML checkboxes false values
+        if self.data:
+            self.fields = {k: v for k, v in self.fields.items() if k in self.data}
+
+
 class LiveModelForm(BaseModelForm):
     ignore_live_update_fields = []
 
     def __init__(self, *args, **kwargs):
-
         self.parent_instance = kwargs.pop("parent_instance", None)
         super().__init__(*args, **kwargs)
 

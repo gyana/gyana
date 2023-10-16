@@ -1,6 +1,6 @@
 {% load crispy_forms_utils %}
 
-<div x-ref="wrapper_{{ forloop.counter0 }}">
+<div class="formset-wrapper" x-ref="wrapper_{{ forloop.counter0 }}">
   {% specialspaceless %}
     {% if include_media %}{{ form.media }}{% endif %}
     {% if form_show_errors %}

@@ -13,7 +13,9 @@
             id="configure-update-form"
             method="POST"
             action="{{ request.get_full_path }}"
+            hx-boost="false"
             enctype='multipart/form-data'
+            novalidate
           >
             <p class="alert">
               If you're not sure about these options, you can start with the defaults and tweak them later.
