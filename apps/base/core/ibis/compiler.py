@@ -8,10 +8,10 @@ from ibis.expr.operations import (
     Reduction,
     TimeDiff,
     TimestampDiff,
-    ValueOp,
+    Value,
 )
 from ibis.expr.types import (
-    ColumnExpr,
+    Column,
     DateValue,
     StringValue,
     StructValue,
@@ -34,7 +34,7 @@ def any_value(arg):
     return AnyValue(arg).to_expr()
 
 
-ColumnExpr.any_value = any_value
+Column.any_value = any_value
 
 
 @compiles(AnyValue)
@@ -44,7 +44,7 @@ def _any_value(t, expr):
     return f"ANY_VALUE({t.translate(arg)})"
 
 
-class TimestampDifference(ValueOp):
+class TimestampDifference(Value):
     left = rlz.timestamp
     right = rlz.timestamp
     unit = rlz.string
@@ -68,7 +68,7 @@ def _timestamp_difference(translator, expr):
     return f"TIMESTAMP_DIFF({t_left}, {t_right}, {t_unit})"
 
 
-class DateDifference(ValueOp):
+class DateDifference(Value):
     left = rlz.date
     right = rlz.date
     unit = rlz.string
@@ -92,7 +92,7 @@ def _date_difference(translator, expr):
     return f"DATE_DIFF({t_left}, {t_right}, {t_unit})"
 
 
-class TimeDifference(ValueOp):
+class TimeDifference(Value):
     left = rlz.time
     right = rlz.time
     unit = rlz.string
@@ -132,7 +132,7 @@ _compiles_timestamp_diff_op(TimeDiff, "TIME_DIFF", "SECOND")
 _compiles_timestamp_diff_op(DateDiff, "DATE_DIFF", "DAY")
 
 
-class JSONExtract(ValueOp):
+class JSONExtract(Value):
     value = rlz.string
     json_path = rlz.string
     output_shape = rlz.shape_like("value")
@@ -155,7 +155,7 @@ def _json_extract(t, expr):
     return f"JSON_QUERY({t_value}, {t_json_path})"
 
 
-class ISOWeek(ValueOp):
+class ISOWeek(Value):
     arg = rlz.one_of([rlz.date, rlz.timestamp])
     output_shape = rlz.shape_like("arg")
     output_dtype = dt.int32
@@ -176,7 +176,7 @@ def _isoweek(t, expr):
     return f"EXTRACT(ISOWEEK from {t.translate(arg)})"
 
 
-class DayOfWeek(ValueOp):
+class DayOfWeek(Value):
     arg = rlz.one_of([rlz.date, rlz.timestamp])
     output_shape = rlz.shape_like("arg")
     output_dtype = dt.int32
@@ -197,7 +197,7 @@ def _day_of_week(t, expr):
     return f"EXTRACT(DAYOFWEEK FROM {t.translate(arg)})"
 
 
-class ParseDate(ValueOp):
+class ParseDate(Value):
     value = rlz.string
     format_ = rlz.string
     output_shape = rlz.shape_like("value")
@@ -217,7 +217,7 @@ def _parse_date(t, expr):
     return f"PARSE_DATE({t.translate(format_)}, {t.translate(value)})"
 
 
-class ParseTime(ValueOp):
+class ParseTime(Value):
     value = rlz.string
     format_ = rlz.string
     output_shape = rlz.shape_like("value")
@@ -237,7 +237,7 @@ def _parse_time(t, expr):
     return f"PARSE_TIME({t.translate(format_)}, {t.translate(value)})"
 
 
-class ParseDatetime(ValueOp):
+class ParseDatetime(Value):
     value = rlz.string
     format_ = rlz.string
     output_shape = rlz.shape_like("value")
@@ -278,7 +278,7 @@ def _today(t, expr):
 
 
 # Unfortunately, ibis INTERVAL doesnt except variables
-class SubtractDays(ValueOp):
+class SubtractDays(Value):
     date = rlz.date
     days = rlz.integer
     output_shape = rlz.shape_like("args")
@@ -301,7 +301,7 @@ def _subtract_days(translator, expr):
     return f"DATE_SUB({t_date}, INTERVAL {t_days} DAY)"
 
 
-class Date(ValueOp):
+class Date(Value):
     date = rlz.date
     output_shape = rlz.shape_like("date")
     output_dtype = dt.date
@@ -320,7 +320,7 @@ def _date(t, expr):
     return t.translate(d)
 
 
-class ToJsonString(ValueOp):
+class ToJsonString(Value):
     struct = rlz.struct
     output_shape = rlz.shape_like("struct")
     output_dtype = dt.string
@@ -341,7 +341,7 @@ def _to_json_string(t, expr):
 
 
 # Converts bigquery DATETIME to TIMESTAMP in UTC timezone
-class ToTimestamp(ValueOp):
+class ToTimestamp(Value):
     datetime = rlz.timestamp
     output_shape = rlz.shape_like("datetime")
     output_dtype = dt.timestamp
@@ -360,7 +360,7 @@ def _to_timestamp(t, expr):
     return f"TIMESTAMP({t.translate(d)})"
 
 
-class ToTimezone(ValueOp):
+class ToTimezone(Value):
     datetime = rlz.timestamp
     timezone = rlz.string
     output_shape = rlz.shape_like("datetime")

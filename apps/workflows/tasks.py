@@ -44,7 +44,8 @@ def run_workflow_task(self, run_id: int):
                     workflow_node=node,
                 )
                 # TODO: Update to ibis 7 to support overwrite=True
-                # Or if too much work delete table before recreation
+                if table.bq_id in client.tables:
+                    client.drop_table(table.bq_id)
                 client.create_table(table.bq_id, query)
 
                 table.data_updated = timezone.now()
@@ -70,5 +71,5 @@ def run_workflow(workflow: Workflow, user: CustomUser):
         started_at=timezone.now(),
         user=user,
     )
-    run_workflow_task((run.id))
+    run_workflow_task.apply_async((run.id,), task_id=str(run.task_id))
     return run
