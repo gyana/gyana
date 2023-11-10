@@ -1,6 +1,4 @@
 from django import forms
-from django.db.models import Case, When
-from django.forms.widgets import HiddenInput
 from django.utils.functional import cached_property
 
 from apps.base.core.utils import create_column_choices
@@ -9,7 +7,6 @@ from apps.base.widgets import MultiSelect, SourceSelect
 from apps.columns.forms import AGGREGATION_TYPE_MAP
 from apps.columns.models import Column
 from apps.nodes.formsets import KIND_TO_FORMSETS
-from apps.tables.models import Table
 
 from .models import Node
 
@@ -208,7 +205,6 @@ class UnpivotNodeForm(NodeForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.form_description = "Transform multiple columns into a single column."
-
 
 
 class ExceptNodeForm(DefaultNodeForm):

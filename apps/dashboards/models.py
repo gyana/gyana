@@ -11,7 +11,7 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
-from django.db.models import Deferrable, Q, UniqueConstraint
+from django.db.models import Deferrable, UniqueConstraint
 from django.urls import reverse
 from django.utils.translation import gettext_lazy
 

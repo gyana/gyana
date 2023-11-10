@@ -2,7 +2,6 @@ import json
 import logging
 
 from django.urls import reverse
-from django.utils import timezone
 from django.views.generic import DetailView
 from django_tables2.views import SingleTableMixin
 from fuzzywuzzy import process

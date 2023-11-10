@@ -1,8 +1,7 @@
 from typing import Any, Dict
 
 from apps.base.core.table_data import get_table
-from apps.columns.bigquery import aggregate_columns, get_groups, resolve_colname
-from apps.columns.currency_symbols import CURRENCY_SYMBOLS_MAP
+from apps.columns.bigquery import aggregate_columns, get_groups
 from apps.controls.bigquery import slice_query
 from apps.filters.bigquery import get_query_from_filters
 from apps.tables.data import get_query_from_table
@@ -34,7 +33,7 @@ def chart_to_output(widget: Widget, control) -> Dict[str, Any]:
     query = get_query_from_widget(widget, query)
     # TODO: before we were fetching result and row count in
     # a single query now I have split it into two queries
-    total_rows=query.count().execute()
+    total_rows = query.count().execute()
 
     if (total_rows) > CHART_MAX_ROWS:
         raise MaxRowsExceeded
@@ -97,4 +96,3 @@ def metric_to_output(widget, control, use_previous_period=False):
     )
 
     return query.execute()
-    

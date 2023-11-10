@@ -1,6 +1,5 @@
 from django.db import transaction
 
-from apps.base import clients
 from apps.base.bigquery import copy_table
 
 

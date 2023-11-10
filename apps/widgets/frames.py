@@ -2,7 +2,6 @@ import logging
 from decimal import Decimal
 
 import analytics
-from django import forms
 from django.shortcuts import render
 from django.urls import reverse
 from django.views.generic import DetailView

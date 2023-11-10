@@ -18,13 +18,13 @@ from apps.base.analytics import (
     DASHBOARD_DUPLICATED_EVENT,
 )
 from apps.base.views import CreateView, UpdateView
-from apps.dashboards.mixins import DashboardMixin, PageMixin
+from apps.dashboards.mixins import PageMixin
 from apps.dashboards.tables import DashboardTable
 from apps.integrations.models import Integration
 from apps.projects.mixins import ProjectMixin
 from apps.widgets.models import WIDGET_CHOICES_ARRAY, Widget
 
-from .forms import DashboardCreateForm, DashboardLoginForm, DashboardNameForm
+from .forms import DashboardCreateForm, DashboardLoginForm
 from .models import Dashboard, DashboardUpdate, DashboardVersion, Page
 
 

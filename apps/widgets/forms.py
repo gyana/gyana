@@ -17,14 +17,7 @@ from apps.columns.bigquery import resolve_colname
 from apps.dashboards.widgets import PaletteColorsField
 
 from .formsets import FORMSETS, AggregationColumnFormset, ControlFormset, FilterFormset
-from .models import (
-    CATEGORIES,
-    COUNT_COLUMN_NAME,
-    DEFAULT_HEIGHT,
-    DEFAULT_WIDTH,
-    WIDGET_KIND_TO_WEB,
-    Widget,
-)
+from .models import CATEGORIES, COUNT_COLUMN_NAME, DEFAULT_HEIGHT, DEFAULT_WIDTH, Widget
 
 
 def get_not_deleted_entries(data, regex):

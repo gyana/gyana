@@ -1,18 +1,13 @@
 import pytest
 from pytest_django.asserts import assertContains, assertFormError, assertRedirects
 
-from apps.base.core.aggregations import AggregationFunctions
 from apps.base.tests.asserts import (
     assertFormRenders,
     assertLink,
     assertOK,
     assertSelectorLength,
 )
-from apps.columns.models import AggregationColumn
-from apps.controls.models import Control, ControlWidget
-from apps.dashboards.models import Dashboard, DashboardVersion
-from apps.filters.models import Filter
-from apps.widgets.models import Widget
+from apps.dashboards.models import Dashboard
 
 pytestmark = pytest.mark.django_db
 

@@ -1,5 +1,4 @@
 import pytest
-from django.forms import ValidationError
 from django.http import QueryDict
 
 from apps.base.core.aggregations import AggregationFunctions

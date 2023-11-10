@@ -1,7 +1,6 @@
 import pytest
 
 from apps.base.tests.asserts import assertLink, assertOK
-from apps.users.models import CustomUser
 
 pytestmark = pytest.mark.django_db
 

@@ -1,6 +1,5 @@
 from uuid import uuid4
 
-import ibis
 from celery import shared_task
 from django.db import transaction
 from django.utils import timezone

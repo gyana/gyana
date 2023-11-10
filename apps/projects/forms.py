@@ -1,6 +1,4 @@
 from django import forms
-from django.urls import reverse
-from django.utils.html import mark_safe
 
 from apps.base.forms import BaseModelForm, LiveModelForm
 
@@ -49,12 +47,7 @@ class ProjectCreateForm(MemberSelectMixin, LiveModelForm):
 class ProjectUpdateForm(MemberSelectMixin, LiveModelForm):
     class Meta:
         model = Project
-        fields = [
-            "name",
-            "description",
-            "access",
-            "members"
-        ]
+        fields = ["name", "description", "access", "members"]
         widgets = {"members": MemberSelect()}
 
     def get_live_fields(self):

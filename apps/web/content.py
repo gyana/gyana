@@ -1,7 +1,4 @@
-from functools import cache
-
 import yaml
-from django.conf import settings
 from django.template import Context, Template
 
 CONTENT_ROOT = "apps/web/content"

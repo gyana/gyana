@@ -142,6 +142,7 @@ def test_private_projects(client, logged_in_user):
     assertSelectorLength(client.get(f"/teams/{team.id}"), "table tbody tr", 0)
     assert client.get(f"/projects/{project.id}").status_code == 404
 
+
 def test_automate(client, logged_in_user, project_factory, graph_run_factory):
 
     team = logged_in_user.teams.first()

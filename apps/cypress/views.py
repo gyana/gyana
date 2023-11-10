@@ -5,7 +5,6 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
 
-from apps.base import clients
 from apps.integrations.periodic import delete_outdated_pending_integrations
 from apps.teams.periodic import update_team_row_counts
 

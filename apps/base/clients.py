@@ -55,14 +55,17 @@ def bigquery():
         credentials=credentials, project=project, location=settings.BIGQUERY_LOCATION
     )
 
+
 @lru_cache
 def postgres():
     return create_engine(settings.DATABASE_URL)
+
 
 def get_backend_name():
     if settings.DATABASE_URL and settings.DATABASE_URL.startswith("postgresql://"):
         return "postgres"
     return "bigquery"
+
 
 @lru_cache
 def ibis_client():

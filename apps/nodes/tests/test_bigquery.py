@@ -1,14 +1,9 @@
-import re
 import textwrap
 from datetime import datetime
-from unittest import mock
-from unittest.mock import MagicMock, Mock
 
-import pandas as pd
 import pytest
 from django.utils import timezone
 
-from apps.base import clients
 from apps.columns.models import Column
 from apps.filters.models import DateRange, Filter
 from apps.nodes.bigquery import get_pivot_query, get_query_from_node, get_unpivot_query
