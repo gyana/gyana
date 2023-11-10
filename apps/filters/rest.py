@@ -51,10 +51,9 @@ def autocomplete_options(request):
             else get_query_from_node(parent.parents.first())
         )
 
-        client = clients.bigquery()
         options = [
             row[column]
-            for row in client.get_query_results(
+            for row in (
                 query[query[column].cast(dt.String()).lower().startswith(q)]
                 .projection([column])
                 .distinct()
@@ -62,8 +61,9 @@ def autocomplete_options(request):
                 # Later we could also make the list scrollable
                 # and send in chunks
                 .limit(20)
-                .compile()
-            ).rows_dict
+                .execute()
+                .to_dict(orient="records")
+            )
         ]
         return Response(options)
 
