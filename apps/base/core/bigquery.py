@@ -82,6 +82,8 @@ class QueryResults(_QueryResults):
         return pd.DataFrame(self.rows_dict)
 
 
+# TODO: Now that we arent using it directly anymore we have to check
+# Whether this is also monkey-patching the ibis bigquery client
 @beeline.traced(name="bigquery_query_results")
 def get_query_results(client, query, max_results=100) -> QueryResults:
     # run a synchronous query and retrieve results in one API call
