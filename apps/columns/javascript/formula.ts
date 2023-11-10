@@ -63,7 +63,7 @@ const init = ($el, columns) => {
 const operations = functions.map((f) => f.name)
 const operationRegex = new RegExp(`\(${operations.join('|')}\)\(?=\\(\)`)
 const stringRegex = /"(?:[^\\]|\\.)*?(?:"|$)/
-const columnRegex = /[a-zA-Z_][0-9a-zA-Z_]*/g
+const columnRegex = /[a-zA-Z_][0-9a-zA-Z_:]*/g
 
 CodeMirror.defineSimpleMode('gyanaformula', {
   // The start state contains the rules that are initially used
