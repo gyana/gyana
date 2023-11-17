@@ -105,7 +105,6 @@ ENVIRONMENT = production
 EXTERNAL_URL = https://app.gyana.com
 GCP_BQ_SVC_ACCOUNT = gyana-app@gyana-app-314217.iam.gserviceaccount.com
 GCP_PROJECT = gyana-app-314217
-GOOGLE_ANALYTICS_ID = {{ key }}
 GOOGLE_APPLICATION_CREDENTIALS = google-credentials.json
 GOOGLE_CREDENTIALS = {{ credential_json_from_svc_account }}
 GS_BUCKET_NAME = gyana-app
@@ -119,7 +118,6 @@ SECRET_KEY = {{ secret_key }} # generate online
 SEGMENT_ANALYTICS_JS_WRITE_KEY = {{ segment_js_secret }}
 SEGMENT_ANALYTICS_WRITE_KEY = {{ segment_py_secret }}
 SENDGRID_API_KEY = {{ sendgrid_api_secret }}
-WEBSITE_GTM_ID = {{ key }}
 ```
 
 The database and redis config variable are generated automatically by the add-ons.

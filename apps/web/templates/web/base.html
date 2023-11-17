@@ -53,13 +53,6 @@
     {% endblock head %}
 
     {% block head.extra %}{% endblock head.extra %}
-
-    {% if not request.user.is_hijacked %}
-      {% if WEBSITE_GTM_ID %}
-        {% include "web/components/gtm_head.html" %}
-      {% endif %}
-    {% endif %}
-
   </head>
 
   <body
@@ -111,10 +104,6 @@
       {% endblock body.modal %}
 
       {% block body.javascript %}{% endblock body.javascript %}
-
-      {% if WEBSITE_GTM_ID %}
-        {% include "web/components/gtm_body.html" %}
-      {% endif %}
     {% endblock body %}
   </body>
 </html>

@@ -28,9 +28,4 @@
       </a>
     </p>
   </section>
-
-  {% comment %} Hubspot automatically captures conversion to signup {% endcomment %}
-  {% if WEBSITE_GTM_ID %}
-    {% include "web/components/hubspot_identify.html" %}
-  {% endif %}
 {% endblock %}

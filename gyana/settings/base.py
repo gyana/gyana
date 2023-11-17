@@ -104,7 +104,6 @@ PROJECT_APPS = [
     "apps.runs.apps.RunsConfig",
     "apps.customapis",
     "apps.oauth2",
-    "apps.blog",
 ]
 
 INSTALLED_APPS = (
@@ -168,7 +167,6 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
                 "apps.web.context_processors.user_meta",
                 "apps.web.context_processors.project_meta",
-                "apps.web.context_processors.google_analytics_id",
                 "gyana.context_processors.django_settings",
             ],
             # equivalent of APP_DIRS=True, plus admin_tools template loader
@@ -340,10 +338,6 @@ PROJECT_METADATA = {
     "KEYWORDS": "SaaS, django",
     "CONTACT_EMAIL": "developers@gyana.com",
 }
-
-GOOGLE_ANALYTICS_ID = os.environ.get("GOOGLE_ANALYTICS_ID")
-WEBSITE_GTM_ID = os.environ.get("WEBSITE_GTM_ID")
-
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
