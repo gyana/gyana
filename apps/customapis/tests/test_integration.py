@@ -21,8 +21,28 @@ def base_formset(formset):
     }
 
 
+fields = [
+    "url",
+    "json_path",
+    "http_request_method",
+    "authorization",
+    "api_key_key",
+    "api_key_value",
+    "api_key_add_to",
+    "bearer_token",
+    "username",
+    "password",
+    "oauth2",
+    "body",
+    "body_raw",
+    "body_binary",
+]
+
 QUERY_PARAMS_BASE_DATA = base_formset("queryparams")
 HTTP_HEADERS_BASE_DATA = base_formset("httpheaders")
+FORM_URL_ENCODED_ENTRIES_BASE_DATA = base_formset("formurlencodedentries")
+FORM_DATA_ENCODED_ENTRIES_BASE_DATA = base_formset("formdataentries")
+
 
 TEST_JSON = {
     "products": [
@@ -45,7 +65,6 @@ def request_safe(mocker):
 
 
 def test_customapi_create(client, logged_in_user, project, bigquery, request_safe):
-
     # mock the configuration
     bigquery.load_table_from_uri().exception = lambda: False
     bigquery.reset_mock()  # reset the call count
@@ -80,13 +99,11 @@ def test_customapi_create(client, logged_in_user, project, bigquery, request_saf
         r,
         [
             "name",
-            "url",
-            "json_path",
-            "http_request_method",
-            "authorization",
-            "body",
+            *fields,
             *QUERY_PARAMS_BASE_DATA.keys(),
             *HTTP_HEADERS_BASE_DATA.keys(),
+            *FORM_URL_ENCODED_ENTRIES_BASE_DATA.keys(),
+            *FORM_DATA_ENCODED_ENTRIES_BASE_DATA.keys(),
         ],
     )
 
@@ -105,6 +122,8 @@ def test_customapi_create(client, logged_in_user, project, bigquery, request_saf
             "body": "none",
             **QUERY_PARAMS_BASE_DATA,
             **HTTP_HEADERS_BASE_DATA,
+            **FORM_URL_ENCODED_ENTRIES_BASE_DATA,
+            **FORM_DATA_ENCODED_ENTRIES_BASE_DATA,
         },
     )
     assertRedirects(r, f"{DETAIL}/load", target_status_code=302)
