@@ -9,12 +9,7 @@ from django.utils.html import mark_safe
 
 from apps.base.account import is_scheduled_help_text
 from apps.base.crispy import CrispyFormset, Tab
-from apps.base.forms import (
-    BaseModelForm,
-    LiveAlpineModelForm,
-    LiveFormsetMixin,
-    LiveModelForm,
-)
+from apps.base.forms import BaseModelForm, LiveAlpineModelForm, LiveFormsetMixin
 from apps.base.formsets import RequiredInlineFormset
 from apps.base.widgets import DatalistInput
 
@@ -93,7 +88,7 @@ FormDataEntryFormset = forms.inlineformset_factory(
 FormDataEntryFormset.show = f"body == '{CustomApi.Body.FORM_DATA}'"
 
 
-class FormURLEncodedEntryForm(LiveModelForm):
+class FormURLEncodedEntryForm(BaseModelForm):
     class Meta:
         model = FormURLEncodedEntry
         fields = ["key", "value"]
