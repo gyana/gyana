@@ -59,7 +59,7 @@ def test_project_crudl(client, logged_in_user):
     # update
     r = client.get(f"/projects/{project.id}/update")
     assertOK(r)
-    assertFormRenders(r, ["name", "description", "access"])
+    assertFormRenders(r, ["name", "description", "access", "members"])
     assertLink(r, f"/projects/{project.id}/delete", "Delete")
 
     r = client.post(
