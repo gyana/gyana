@@ -1,6 +1,7 @@
 from functools import cache
 
 from crispy_forms import utils
+from crispy_forms.helper import FormHelper
 from django import forms
 from django.contrib.postgres.search import TrigramSimilarity
 from django.db import transaction
@@ -87,6 +88,11 @@ class SchemaFormMixin:
 
 class BaseModelForm(forms.ModelForm):
     template_name = "django/forms/default_form.html"
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
 
     def pre_save(self, instance):
         # override in child to add behaviour on commit save
