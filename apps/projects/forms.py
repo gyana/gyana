@@ -2,7 +2,7 @@ from django import forms
 from django.urls import reverse
 from django.utils.html import mark_safe
 
-from apps.base.forms import BaseModelForm, LiveModelForm
+from apps.base.forms import BaseModelForm, LiveAlpineModelForm
 
 from .models import Project
 from .widgets import MemberSelect
@@ -18,52 +18,24 @@ class MemberSelectMixin:
             members_field.queryset = self._team.members.all()
             members_field.widget.current_user = current_user
 
-        if access_field := self.fields.get("access"):
-            access_field.required = False
-            access_field.widget = forms.Select(
-                choices=access_field.choices, attrs={"disabled": "disabled"}
-            )
-            access_field.help_text = (
-                "Invite only projects are not available on your current plan"
-            )
 
-
-class ProjectCreateForm(MemberSelectMixin, LiveModelForm):
+class ProjectCreateForm(MemberSelectMixin, LiveAlpineModelForm):
     class Meta:
         model = Project
         fields = ["name", "description", "access", "members"]
+        show = {"members": f'access == "{Project.Access.INVITE_ONLY}"'}
         widgets = {"members": MemberSelect()}
-
-    def get_live_fields(self):
-        fields = ["name", "description", "access"]
-
-        if self.get_live_field("access") == Project.Access.INVITE_ONLY:
-            fields += ["members"]
-
-        return fields
 
     def pre_save(self, instance):
         instance.team = self._team
 
 
-class ProjectUpdateForm(MemberSelectMixin, LiveModelForm):
+class ProjectUpdateForm(MemberSelectMixin, LiveAlpineModelForm):
     class Meta:
         model = Project
-        fields = [
-            "name",
-            "description",
-            "access",
-            "members"
-        ]
+        fields = ["name", "description", "access", "members"]
+        show = {"members": f'access == "{Project.Access.INVITE_ONLY}"'}
         widgets = {"members": MemberSelect()}
-
-    def get_live_fields(self):
-        fields = ["name", "description", "access"]
-
-        if self.get_live_field("access") == Project.Access.INVITE_ONLY:
-            fields += ["members"]
-
-        return fields
 
 
 class ProjectRunForm(BaseModelForm):
