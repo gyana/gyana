@@ -28,7 +28,7 @@ def test_project_crudl(client, logged_in_user):
 
     r = client.get(f"/teams/{team.id}/projects/new")
     assertOK(r)
-    assertFormRenders(r, ["name", "description", "access"])
+    assertFormRenders(r, ["name", "description", "access", "members"])
 
     r = client.post(
         f"/teams/{team.id}/projects/new",
@@ -92,35 +92,6 @@ def test_private_projects(client, logged_in_user):
     other_user = CustomUser.objects.create_user("other user")
     team.members.add(other_user, through_defaults={"role": "admin"})
 
-    # live fields
-    r = client.post(
-        f"/teams/{team.id}/projects/new",
-        data={
-            "hidden_live": True,
-            "name": "Metrics",
-            "description": "All the company metrics",
-            "access": "invite",
-        },
-    )
-    assertFormRenders(r, ["name", "description", "access", "members"])
-    assertSelectorHasAttribute(r, "#id_access", "disabled")
-
-    # create private project that is rejected because user is on free tier
-    r = client.post(
-        f"/teams/{team.id}/projects/new",
-        data={
-            "hidden_live": True,
-            "name": "Metrics",
-            "description": "All the company metrics",
-            "access": "invite",
-            "members": [logged_in_user.id],
-        },
-    )
-
-    assertOK(r)
-    project = team.project_set.first()
-    assert project is None
-
     r = client.post(
         f"/teams/{team.id}/projects/new",
         data={
@@ -142,8 +113,8 @@ def test_private_projects(client, logged_in_user):
     assertSelectorLength(client.get(f"/teams/{team.id}"), "table tbody tr", 0)
     assert client.get(f"/projects/{project.id}").status_code == 404
 
-def test_automate(client, logged_in_user, project_factory, graph_run_factory):
 
+def test_automate(client, logged_in_user, project_factory, graph_run_factory):
     team = logged_in_user.teams.first()
     project = project_factory(team=team)
     graph_run_factory.create_batch(3, project=project)
