@@ -1,5 +1,5 @@
 {% extends "projects/base.html" %}
-{% load waffle_tags %}
+{% load waffle_tags crispy_forms_tags %}
 {% block app %}
   <div class="flex flex-col flex-1 overflow-auto">
     <div class="mb-auto pad">
@@ -11,14 +11,13 @@
 
       <form
         id='project-{{ object.id }}-update'
-        data-controller="live-update"
         method="post"
         action="{% url 'projects:update' object.id %}"
         class="form max-w-3xl mb-8"
       >
         {% csrf_token %}
 
-        {{ form }}
+        {% crispy form %}
 
         <button type="submit" name='submit' value='submit' class="button button--success w-full">
           Save changes

@@ -12,14 +12,13 @@
 
       <form
         id='project-{{ object.id }}-create'
-        data-controller="live-update"
         method="post"
         action="{% url 'team_projects:create' team.id %}"
         class="relative input-group"
       >
         {% csrf_token %}
 
-        {{ form|crispy }}
+        {% crispy form %}
 
         <button
           type="submit"

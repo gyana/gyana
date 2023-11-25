@@ -9,7 +9,9 @@ class MemberSelect(SelectMultiple):
     def get_context(self, name: str, value, attrs):
         context = super().get_context(name, value, attrs)
         # For some reason when changing from everyone to invite, value can contain an empty list
-        value = value if len(value) > 0 and not isinstance(value[0], list) else []
+        value = (
+            value if value and len(value) > 0 and not isinstance(value[0], list) else []
+        )
         context["users"] = self.choices.queryset.annotate(
             is_current_user=Case(
                 When(id=self.current_user.id, then=Value(True)),

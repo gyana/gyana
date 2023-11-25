@@ -35,6 +35,16 @@ fieldset {
     }
   }
 
+  .formset-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.6rem;
+
+    & > :last-child {
+      margin-bottom: 1.6rem;
+    }
+  }
+
   [data-formset-target='target'] {
     display: flex;
     flex-direction: column;

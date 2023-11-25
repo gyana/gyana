@@ -1,0 +1,6 @@
+<li class="tabbar__link cursor-pointer"
+  :class="{ 'tabbar__link--active': tab === '{{ link.css_id }}' }"
+  @click="tab = '{{ link.css_id }}'"
+  {% if 'active' in link.css_class %}x-init="tab = '{{ link.css_id }}'" {% endif %}>
+  {{ link.name|capfirst }}{% if tab.errors %}!{% endif %}
+</li>

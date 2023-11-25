@@ -3,6 +3,8 @@
 {% if field.is_hidden %}
   {{ field }}
 {% else %}
+
+  {% if form.show and form.show|get_item:field.name %}<template x-if="{{ form.show|get_item:field.name }}">{% endif %}
   <div id="div_{{ field.auto_id }}" class="{% if wrapper_class %}{{ wrapper_class }} {% endif %}{% if field_class %}{{ field_class }}{% else %}label{% endif %}">
 
     {% if field.label and form_show_labels %}
@@ -22,4 +24,5 @@
     {{ field.errors }}
 
   </div>
+  {% if form.show and form.show|get_item:field.name %}</template>{% endif %}
 {% endif %}

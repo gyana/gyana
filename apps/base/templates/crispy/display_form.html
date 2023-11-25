@@ -1,0 +1,13 @@
+{% load crispy_forms_tags %}
+
+<div x-data="{ tab: null, {% for field in form %}{{ field.name }}: '{{ field.value }}', {% endfor %} }" class="input-group">
+  {% if form.form_html %}
+    {% if include_media %}{{ form.media }}{% endif %}
+    {% if form_show_errors %}
+      {% include "crispy/errors.html" %}
+    {% endif %}
+    {{ form.form_html }}
+  {% else %}
+    {% include "crispy/uni_form.html" %}
+  {% endif %}
+</div>

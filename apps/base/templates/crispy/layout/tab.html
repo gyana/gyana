@@ -1,0 +1,8 @@
+<div class="card card--none w-full">
+  <ul{% if tabs.css_id %} id="{{ tabs.css_id }}"{% endif %} class="tabbar">
+    {{ links|safe }}
+  </ul>
+  <div x-cloak class="p-8">
+    {{ content|safe }}
+  </div>
+</div>

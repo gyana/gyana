@@ -1,0 +1,31 @@
+<div x-data>
+  {% with formset.management_form as form %}
+    {% include 'crispy/uni_form.html' %}
+  {% endwith %}
+
+  <template x-ref="template">
+    {% include 'crispy/uni_formset_row.html' with form=formset.empty_form %}
+  </template>
+
+  <div x-ref="forms" class="formset-list">
+    {% for form in formset %}
+      {% include 'crispy/uni_formset_row.html' %}
+    {% endfor %}
+  </div>
+
+  <button
+    id="{{ formset.get_default_prefix }}-add"
+    type="submit"
+    class="button button--sm button--rounded"
+    @click.prevent="const TOTAL_FORMS = $root.querySelector('#id_{{ formset.get_default_prefix }}-TOTAL_FORMS')
+      const total = parseInt(TOTAL_FORMS.value)
+
+      const content = $refs.template.innerHTML.replace(/__prefix__/g, total)
+      $refs.forms.insertAdjacentHTML('beforeend', content)
+
+      // Increment the total forms index, for consistency with live update form
+      TOTAL_FORMS.value = parseInt(total) + 1"
+  >
+    <i class="far fa-fw fa-plus"></i> Add new
+  </button>
+</div>

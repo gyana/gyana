@@ -1,5 +1,5 @@
 {% extends 'integrations/base.html' %}
-{% load waffle_tags cache %}
+{% load waffle_tags cache crispy_forms_tags %}
 
 {% block tab %}
 
@@ -8,35 +8,50 @@
       <h1 class="flex items-center justify-center gap-3 mb-7">Configure import</h1>
       <div class="flex flex-1 justify-center items-center">
 
-        <form
-          id="configure-update-form"
-          method="POST"
-          action="{{ request.get_full_path }}"
-          {% if object.kind == 'customapi' %}
-            data-controller="live-update"
+        {% if object.kind == 'customapi' %}
+          <form
+            id="configure-update-form"
+            method="POST"
+            action="{{ request.get_full_path }}"
+            hx-boost="false"
             enctype='multipart/form-data'
-            data-action="
-              formset:remove->live-update#updateForm
-              formset:add->live-update#updateForm
-            "
-          {% endif %}
-        >
-          <span data-live-update-target="loading" hidden>
-            <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-fw fa-2x"></i>
-          </span>
+            novalidate
+          >
+            <p class="alert">
+              If you're not sure about these options, you can start with the defaults and tweak them later.
+            </p>
 
-          <p class="alert">
-            If you're not sure about these options, you can start with the defaults and tweak them later.
-          </p>
+            {% csrf_token %}
 
-          {% csrf_token %}
+            {% crispy form %}
 
-          {{ form }}
+            <button type="submit" name="submit" value="submit" class="button button--success">
+              Import
+            </button>
+          </form>
+        {% else %}
+          <form
+            id="configure-update-form"
+            method="POST"
+            action="{{ request.get_full_path }}"
+          >
+            <span data-live-update-target="loading" hidden>
+              <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-fw fa-2x"></i>
+            </span>
 
-          <button type="submit" name="submit" value="submit" class="button button--success mt-4 w-full">
-            Import
-          </button>
-        </form>
+            <p class="alert">
+              If you're not sure about these options, you can start with the defaults and tweak them later.
+            </p>
+
+            {% csrf_token %}
+
+            {{ form }}
+
+            <button type="submit" name="submit" value="submit" class="button button--success mt-4 w-full">
+              Import
+            </button>
+          </form>
+        {% endif %}
       </div>
     </div>
   </div>

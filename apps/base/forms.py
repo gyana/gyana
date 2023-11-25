@@ -1,14 +1,35 @@
 from functools import cache
 
+from crispy_forms import utils
+from crispy_forms.helper import FormHelper
 from django import forms
 from django.contrib.postgres.search import TrigramSimilarity
 from django.db import transaction
 from django.db.models import Case, Q, When
 from django.db.models.functions import Greatest
+from django.forms.models import ModelFormOptions
 from django.utils.datastructures import MultiValueDict
 
 from apps.base.core.utils import create_column_choices
 from apps.tables.models import Table
+
+
+# By default, django-crispy-form caches the template, breaking hot-reloading in development
+def default_field_template(template_pack=utils.TEMPLATE_PACK):
+    return utils.get_template("%s/field.html" % template_pack)
+
+
+utils.default_field_template = default_field_template
+
+ModelFormOptions__init__ = ModelFormOptions.__init__
+
+
+def __init__(self, options=None):
+    ModelFormOptions__init__(self, options=options)
+    self.show = getattr(options, "show", None)
+
+
+ModelFormOptions.__init__ = __init__
 
 
 def get_formsets(self):
@@ -36,7 +57,7 @@ FORMSET_LABELS = {
     "queryparams": "Query Params",
     "httpheaders": "HTTP Headers",
     "formdataentries": "Form Data",
-    "formurlencodedentries": "Form Data",
+    "formurlencodedentries": "Form URL Encoded",
 }
 
 
@@ -68,6 +89,11 @@ class SchemaFormMixin:
 class BaseModelForm(forms.ModelForm):
     template_name = "django/forms/default_form.html"
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_tag = False
+
     def pre_save(self, instance):
         # override in child to add behaviour on commit save
         pass
@@ -86,12 +112,25 @@ class BaseModelForm(forms.ModelForm):
                 self.post_save(instance)
         return instance
 
+    @property
+    def show(self):
+        return self._meta.show
+
+
+class LiveAlpineModelForm(BaseModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # data populated by POST request in update
+        # TODO: HTMX plugin for HTML checkboxes false values
+        if self.data:
+            self.fields = {k: v for k, v in self.fields.items() if k in self.data}
+
 
 class LiveModelForm(BaseModelForm):
     ignore_live_update_fields = []
 
     def __init__(self, *args, **kwargs):
-
         self.parent_instance = kwargs.pop("parent_instance", None)
         super().__init__(*args, **kwargs)
 
