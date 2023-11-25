@@ -33,9 +33,7 @@ def run_workflow_task(self, run_id: int):
             node.save()
             query = None
         if query is not None:
-
             with transaction.atomic():
-
                 table, _ = Table.objects.get_or_create(
                     source=Table.Source.WORKFLOW_NODE,
                     bq_table=node.bq_output_table_id,
@@ -44,9 +42,9 @@ def run_workflow_task(self, run_id: int):
                     workflow_node=node,
                 )
                 # TODO: Update to ibis 7 to support overwrite=True
-                if table.bq_id in client.tables:
-                    client.drop_table(table.bq_id)
-                client.create_table(table.bq_id, query)
+                query = client.raw_sql(
+                    f"CREATE OR REPLACE TABLE {table.bq_id} as ({query.compile()})"
+                )
 
                 table.data_updated = timezone.now()
                 table.save()

@@ -53,7 +53,7 @@ def test_integration_access(
 ):
     integration = integration_table_factory().integration
     upload_factory(integration=integration)
-    mock_bq_client_with_records(bigquery, [{"name": "Neera", "age": 4}])
+    mock_bq_client_with_records(bigquery, {"name": ["Neera"], "age": [4]})
     mock_bq_client_with_schema(bigquery, [("name", "STRING"), ("age", "INTEGER")])
     url = url.format(integration_id=integration.id, project_id=integration.project.id)
     assertLoginRedirect(client, url)

@@ -47,10 +47,13 @@ class GyanaTableData(TableData):
     def _get_query_results(self, start=0, stop=None):
         data = self.data
         if start > 0:
-            data = data.limit(stop - start, offset=start)
+            limit = stop - start
+            data = data.limit(limit, offset=start)
+        else:
+            limit = self.rows_per_page
         return [
             {md5(k): v for k, v in row.items()}
-            for row in data.execute(limit=self.rows_per_page).to_dict(orient="records")
+            for row in data.execute(limit=limit).to_dict(orient="records")
         ]
 
     def __getitem__(self, page: slice):

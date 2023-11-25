@@ -84,7 +84,7 @@ def test_integration_schema_and_preview(
     mock_bq_client_with_schema(bigquery, [("name", "STRING"), ("age", "INTEGER")])
     mock_bq_client_with_records(
         bigquery,
-        [{"name": "Neera", "age": 4}] * 15 + [{"name": "Vayu", "age": 2}] * 5,
+        {"name": ["Neera"] * 15 + ["Vayu"] * 5, "age": [4] * 15 + [2] * 5},
     )
 
     # test: user can view the data tab, and view the schema and preview information
@@ -114,9 +114,11 @@ def test_integration_schema_and_preview(
     assertContains(r, "Neera")
     assertContains(r, "4")
 
-    assert bigquery.get_query_results.call_count == 1
-    assert bigquery.get_query_results.call_args.args == (
-        "SELECT t0.*\nFROM `project.dataset.table` t0",
+    # WARN: Because the number of rows is a second database request right now
+    # Querying is called twice
+    assert bigquery.query.call_count == 2
+    assert bigquery.query.call_args.args == (
+        "SELECT t0.*\nFROM `project.dataset.table` t0\nLIMIT 50",
     )
 
     # preview page 2
@@ -130,8 +132,8 @@ def test_integration_schema_and_preview(
     assertContains(r, "Vayu")
     assertContains(r, "2")
 
-    assert bigquery.get_query_results.call_count == 2
-    assert bigquery.get_query_results.call_args.args == (
+    assert bigquery.query.call_count == 3
+    assert bigquery.query.call_args.args == (
         "SELECT t0.*\nFROM `project.dataset.table` t0\nLIMIT 5 OFFSET 15",
     )
 
@@ -147,8 +149,8 @@ def test_integration_schema_and_preview(
     assertContains(r, "Vayu")
     assertContains(r, "2")
 
-    assert bigquery.get_query_results.call_count == 3
-    assert bigquery.get_query_results.call_args.args == (
+    assert bigquery.query.call_count == 4
+    assert bigquery.query.call_args.args == (
         "SELECT t0.*\nFROM `project.dataset.table` t0\nORDER BY t0.`name` DESC\nLIMIT 5 OFFSET 15",
     )
 

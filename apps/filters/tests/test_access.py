@@ -18,7 +18,7 @@ def test_access_autocomplete_options(
     mock_bq_client_with_schema(
         bigquery, [(name, str(type_)) for name, type_ in TABLE.schema().items()]
     )
-    mock_bq_client_with_records(bigquery, [{"athlete": x} for x in SOURCE_DATA])
+    mock_bq_client_with_records(bigquery, {"athlete": SOURCE_DATA})
 
     table = integration_table_factory()
     input_node = node_factory(kind=Node.Kind.INPUT, input_table=table)

@@ -25,7 +25,7 @@ def test_filter_autocomplete(
     mock_bq_client_with_schema(
         bigquery, [(name, str(type_)) for name, type_ in TABLE.schema().items()]
     )
-    mock_bq_client_with_records(bigquery, [{"athlete": x} for x in SOURCE_DATA])
+    mock_bq_client_with_records(bigquery, {"athlete": SOURCE_DATA})
 
     table = integration_table_factory(project=project)
     input_node = node_factory(
@@ -37,8 +37,8 @@ def test_filter_autocomplete(
     r = client.get(AUTOCOMPLETE_URL.format(q="", p=filter_node.id))
     assertOK(r)
     assert r.data == SOURCE_DATA
-    assert bigquery.get_query_results.call_args[0][0] == FILTER_SQL.format("''")
+    assert bigquery.query.call_args[0][0] == FILTER_SQL.format("''")
 
     r = client.get(AUTOCOMPLETE_URL.format(q="3", p=filter_node.id))
     assertOK(r)
-    assert bigquery.get_query_results.call_args[0][0] == FILTER_SQL.format("'3'")
+    assert bigquery.query.call_args[0][0] == FILTER_SQL.format("'3'")
