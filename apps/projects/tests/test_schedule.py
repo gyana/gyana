@@ -2,8 +2,6 @@ import json
 from uuid import uuid4
 
 import pytest
-from celery.exceptions import RetryTaskError
-from django.utils import timezone
 from django_celery_beat.models import CrontabSchedule, PeriodicTask
 from pytest_django.asserts import assertRedirects
 

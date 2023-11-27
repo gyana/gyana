@@ -1,5 +1,4 @@
 from django import template
-from django.urls import reverse_lazy
 
 EXTERNAL_URLS = {
     "status": "https://c6df0725-5be1-435b-a2d7-1a90649a7bc5.site.hbuptime.com/",

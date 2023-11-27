@@ -22,12 +22,12 @@
     "editor.tabSize": 2
   },
   "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter",
     "editor.codeActionsOnSave": {
       "source.organizeImports": true
     },
     "editor.tabSize": 4
   },
-  "python.formatting.provider": "black",
   "python.languageServer": "Pylance",
   "html.format.templating": true,
   "html.format.endWithNewline": true,

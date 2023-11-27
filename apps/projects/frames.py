@@ -1,4 +1,3 @@
-from django.http import Http404
 from django.urls import reverse
 from django_tables2.views import SingleTableMixin
 

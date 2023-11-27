@@ -3,7 +3,7 @@ from functools import partial
 
 from django import forms
 
-from apps.base.forms import BaseLiveSchemaForm, BaseSchemaForm
+from apps.base.forms import BaseSchemaForm
 from apps.base.formsets import BaseInlineFormset, RequiredInlineFormset
 from apps.columns.forms import (
     AddColumnForm,

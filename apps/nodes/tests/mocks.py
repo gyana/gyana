@@ -1,5 +1,4 @@
 from datetime import date
-from functools import lru_cache
 from unittest.mock import MagicMock, Mock
 
 from google.cloud.bigquery.schema import SchemaField
@@ -78,8 +77,7 @@ def mock_bq_client_data(bigquery):
 def mock_bq_client_schema(bigquery):
     def side_effect(table, **kwargs):
         schema = [
-            SchemaField(column, str(type_))
-            for column, type_ in TABLE.schema().items()
+            SchemaField(column, str(type_)) for column, type_ in TABLE.schema().items()
         ][:3]
         return BqTable(
             table,

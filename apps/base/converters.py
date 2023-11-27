@@ -1,7 +1,6 @@
 # https://spapas.github.io/2021/01/07/django-hashids/
 
 from django.conf import settings
-from django.core.exceptions import ValidationError
 from hashids import Hashids
 
 hashids = Hashids(settings.HASHIDS_SALT, min_length=8)

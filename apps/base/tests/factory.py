@@ -1,5 +1,3 @@
-import uuid
-
 import factory
 from django.utils import timezone
 from pytest_factoryboy import register

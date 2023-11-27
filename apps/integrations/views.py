@@ -7,7 +7,6 @@ from django.utils import timezone
 from django.views.generic import DeleteView, DetailView
 from django_filters.views import FilterView
 from django_tables2.views import SingleTableMixin
-from waffle import flag_is_active
 
 from apps.base.analytics import INTEGRATION_SYNC_STARTED_EVENT
 from apps.base.views import UpdateView

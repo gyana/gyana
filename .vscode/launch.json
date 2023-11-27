@@ -28,6 +28,15 @@
       "program": "${workspaceFolder}/manage.py",
       "args": ["runserver", "--settings", "gyana.settings.cypress"],
       "django": true
+    },
+    {
+      "name": "Python: Debug Tests",
+      "type": "python",
+      "request": "launch",
+      "program": "${file}",
+      "purpose": ["debug-test"],
+      "console": "integratedTerminal",
+      "justMyCode": false
     }
   ]
 }

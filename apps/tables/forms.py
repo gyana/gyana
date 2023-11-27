@@ -1,4 +1,3 @@
-
 from apps.base.forms import BaseModelForm
 
 from .models import Table

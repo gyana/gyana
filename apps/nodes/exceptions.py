@@ -8,7 +8,6 @@ from apps.base.core.utils import error_name_to_snake
 from apps.base.templates import template_exists
 from apps.columns.exceptions import ArgumentError, ColumnAttributeError, ParseError
 from apps.columns.transformer import FUNCTIONS, ColumnNotFound, FunctionNotFound
-from apps.nodes.models import Node
 
 
 class JoinTypeError(Exception):
