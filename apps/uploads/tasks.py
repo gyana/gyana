@@ -9,8 +9,6 @@ from apps.base.core.utils import catchtime
 from apps.integrations.emails import send_integration_ready_email
 from apps.runs.models import JobRun
 from apps.tables.models import Table
-from apps.uploads import bigquery as bq
-from apps.uploads import postgres as pg
 from apps.users.models import CustomUser
 
 from .models import Upload
@@ -18,7 +16,6 @@ from .models import Upload
 
 @shared_task(bind=True)
 def run_upload_sync_task(self, run_id: int):
-
     run = JobRun.objects.get(pk=run_id)
     integration = run.integration
     upload = integration.upload
@@ -28,7 +25,6 @@ def run_upload_sync_task(self, run_id: int):
     # table creation, avoids orphaned table entities
 
     with transaction.atomic():
-
         table, created = Table.objects.get_or_create(
             integration=integration,
             source=Table.Source.INTEGRATION,
@@ -38,10 +34,8 @@ def run_upload_sync_task(self, run_id: int):
         )
 
         with catchtime() as get_time_to_sync:
-            if clients.get_backend_name() == "postgres":
-                pg.import_table_from_upload(table=table, upload=upload)
-            else:
-                bq.import_table_from_upload(table=table, upload=upload)
+            client = clients.get_backend_client()
+            client.import_table_from_upload(table=table, upload=upload)
 
         table.sync_updates_from_bigquery()
 

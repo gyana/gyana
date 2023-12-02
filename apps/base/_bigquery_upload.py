@@ -1,17 +1,19 @@
+from typing import TYPE_CHECKING
+
 from google.cloud import bigquery
 from google.cloud.bigquery.job.load import LoadJob
 
-from apps.base import clients
 from apps.base.core.bigquery import (
     bq_table_schema_is_string_only,
     sanitize_bq_column_name,
 )
-from apps.tables.models import Table
 
-from .models import Upload
+if TYPE_CHECKING:
+    from apps.tables.models import Table
+    from apps.uploads.models import Upload
 
 
-def _create_external_table(upload: Upload, table_id: str, **job_kwargs):
+def _create_external_table(upload: "Upload", table_id: str, **job_kwargs):
     # https://cloud.google.com/bigquery/external-data-drive#python
     external_config = bigquery.ExternalConfig("CSV")
     external_config.source_uris = [upload.gcs_uri]
@@ -28,10 +30,7 @@ def _create_external_table(upload: Upload, table_id: str, **job_kwargs):
     return bigquery.QueryJobConfig(table_definitions={table_id: external_config})
 
 
-def _load_table(upload: Upload, table: Table, **job_kwargs):
-
-    client = clients.bigquery()
-
+def _load_table(upload: "Upload", table: "Table", client, **job_kwargs):
     job_config = bigquery.LoadJobConfig(
         source_format=bigquery.SourceFormat.CSV,
         write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,
@@ -49,11 +48,8 @@ def _load_table(upload: Upload, table: Table, **job_kwargs):
         raise Exception(load_job.errors[0]["message"])
 
 
-def import_table_from_upload(table: Table, upload: Upload) -> LoadJob:
-
-    client = clients.bigquery()
-
-    _load_table(upload, table, autodetect=True, skip_leading_rows=1)
+def import_table_from_upload(table: "Table", upload: "Upload", client) -> LoadJob:
+    _load_table(upload, table, client, autodetect=True, skip_leading_rows=1)
 
     # bigquery does not autodetect the column names if all columns are strings
     # https://cloud.google.com/bigquery/docs/schema-detect#csv_header
@@ -61,7 +57,6 @@ def import_table_from_upload(table: Table, upload: Upload) -> LoadJob:
     # https://cloud.google.com/bigquery/docs/manually-changing-schemas#option_2_exporting_your_data_and_loading_it_into_a_new_table
 
     if bq_table_schema_is_string_only(table.bq_obj):
-
         # create temporary table without skipping the header row, so we can get the header names
 
         temp_table_id = f"{table.bq_table}_temp"
@@ -89,6 +84,7 @@ def import_table_from_upload(table: Table, upload: Upload) -> LoadJob:
         _load_table(
             upload,
             table,
+            client,
             skip_leading_rows=1,
             schema=[
                 bigquery.SchemaField(sanitize_bq_column_name(field), "STRING")

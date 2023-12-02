@@ -1,8 +1,7 @@
 from django.core.cache import cache
 from ibis.expr.types import TableExpr
 
-from apps.base import clients
-from apps.base.clients import get_backend_name, ibis_client
+from apps.base.clients import bigquery, get_backend_client
 from apps.base.core.utils import md5_kwargs
 
 from .models import Table
@@ -17,17 +16,10 @@ def get_query_from_table(table: Table) -> TableExpr:
     Queries a bigquery table through Ibis client.
     """
 
-    conn = ibis_client()
+    client = get_backend_client()
 
     key = _get_cache_key_for_table(table)
-
-    if get_backend_name() == "postgres":
-        tbl = conn.table(
-            table.bq_table,
-            schema=table.bq_dataset,
-        )
-    else:
-        tbl = conn.table(table.bq_table, database=table.bq_dataset)
+    tbl = client.get_table(table)
 
     cache.set(key, tbl.schema(), 24 * 3600)
 
@@ -35,5 +27,5 @@ def get_query_from_table(table: Table) -> TableExpr:
 
 
 def get_bq_table_schema_from_table(table: Table):
-    schema = clients.bigquery().get_table(table.bq_id).schema
+    schema = bigquery().get_table(table.bq_id).schema
     return list(schema)
