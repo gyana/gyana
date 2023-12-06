@@ -101,8 +101,9 @@ def test_integration_schema_and_preview(
     assertContains(r, "name")
     assertContains(r, "Text")
 
-    assert bigquery.get_table.call_count == 1
-    assert bigquery.get_table.call_args.args == (table.bq_id,)
+    # Schema also calls get_table
+    assert bigquery.get_table.call_count == 2
+    assert bigquery.get_table.call_args_list[0].args == (f"project.{table.bq_id}",)
 
     # preview (default)
     r = client.get_htmx_partial(

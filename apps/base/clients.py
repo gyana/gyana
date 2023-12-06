@@ -92,6 +92,8 @@ def get_bucket():
 
 
 class BaseClient(ABC):
+    client: ibis.BaseBackend
+
     @abstractmethod
     def get_table(self, table: "Table"):
         raise NotImplementedError
