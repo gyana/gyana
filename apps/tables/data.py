@@ -24,8 +24,3 @@ def get_query_from_table(table: Table) -> TableExpr:
     cache.set(key, tbl.schema(), 24 * 3600)
 
     return tbl
-
-
-def get_bq_table_schema_from_table(table: Table):
-    schema = bigquery().get_table(table.bq_id).schema
-    return list(schema)

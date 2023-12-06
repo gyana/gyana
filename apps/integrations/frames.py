@@ -3,13 +3,13 @@ from django.views.generic import DetailView, TemplateView
 from django_tables2.tables import Table
 from django_tables2.views import SingleTableMixin
 
-from apps.base.core.bigquery import get_humanize_from_bigquery_type
+from apps.base.core.ibis.humanize import humanize_from_ibis_type
 from apps.base.core.table_data import RequestConfig, get_table
 from apps.base.views import UpdateView
 from apps.integrations.forms import IntegrationNameForm
 from apps.integrations.tables import StructureTable
 from apps.projects.mixins import ProjectMixin
-from apps.tables.data import get_bq_table_schema_from_table, get_query_from_table
+from apps.tables.data import get_query_from_table
 
 from .mixins import TableInstanceMixin
 from .models import Integration
@@ -83,8 +83,8 @@ class IntegrationSchema(TableInstanceMixin, SingleTableMixin, DetailView):
         if not self.table_instance:
             return []
         return [
-            {"type": get_humanize_from_bigquery_type(t.field_type), "name": str(t.name)}
-            for t in get_bq_table_schema_from_table(self.table_instance)
+            {"type": humanize_from_ibis_type(type_), "name": name}
+            for name, type_ in self.table_instance.schema.items()
         ]
 
 
