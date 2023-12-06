@@ -11,12 +11,11 @@ pytestmark = pytest.mark.django_db
 @pytest.fixture(autouse=True)
 def bq_table_schema_is_not_string_only(mocker):
     mocker.patch(
-        "apps.uploads.bigquery.bq_table_schema_is_string_only", return_value=False
+        "apps.base._bigquery_upload.bq_table_schema_is_string_only", return_value=False
     )
 
 
 def test_upload_create(client, logged_in_user, project, bigquery):
-
     # mock the configuration
     bigquery.load_table_from_uri().exception = lambda: False
     bigquery.reset_mock()  # reset the call count
