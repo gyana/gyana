@@ -70,7 +70,7 @@ def bind(instance, name, func):
     )
 
 
-def mock_ibis_client_get_schema(self, name):
+def mock_backend_client_get_schema(self, name):
     bq_table = self.client.get_table(name)
     return sch.infer(bq_table)
 
@@ -87,13 +87,13 @@ def bigquery(mocker, settings):
     )
     mocker.patch("apps.base.clients.bigquery", return_value=client)
     mocker.patch("ibis.backends.bigquery.client.bq.Client", return_value=client)
-    ibis_client = clients.ibis_client()
-    ibis_client.client = client
 
+    ibis_client = clients.get_backend_client().client
+    ibis_client.client = client
     bind(
         ibis_client,
         "get_schema",
-        mock_ibis_client_get_schema,
+        mock_backend_client_get_schema,
     )
 
     client.get_table().num_rows = 10

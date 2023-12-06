@@ -85,11 +85,6 @@ def get_backend_client():
     return BigQueryClient()
 
 
-@lru_cache
-def ibis_client():
-    return get_backend_client().client
-
-
 @lru_cache()
 def get_bucket():
     client = storage.Client()

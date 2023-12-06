@@ -23,7 +23,7 @@ def run_workflow_task(self, run_id: int):
     workflow = run.workflow
     output_nodes = workflow.nodes.filter(kind=Node.Kind.OUTPUT).all()
 
-    client = clients.ibis_client()
+    client = clients.get_backend_client().client
 
     for node in output_nodes:
         try:

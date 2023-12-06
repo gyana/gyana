@@ -73,9 +73,8 @@ def _format_literal(value, type_):
 def use_intermediate_table(func):
     @wraps(func)
     def wrapper(node, parent):
-
         table = getattr(node, "intermediate_table", None)
-        conn = clients.ibis_client()
+        conn = clients.get_backend_client().client
 
         # if the table doesn't need updating we can simply return the previous computed pivot table
         if table and table.data_updated > max(tuple(get_parent_updated(node))):
@@ -360,7 +359,6 @@ def _get_all_parents(node):
 
 
 def get_arity_from_node_func(func):
-
     node_arg, *params = inspect.signature(func).parameters.values()
 
     # testing for "*args" in signature
@@ -373,14 +371,12 @@ def get_arity_from_node_func(func):
 
 
 def _validate_arity(func, len_args):
-
     min_arity, variable_args = get_arity_from_node_func(func)
     return len_args >= min_arity if variable_args else len_args == min_arity
 
 
 @cached_as(Node, timeout=60)
 def get_query_from_node(current_node):
-
     nodes = _get_all_parents(current_node)
     # remove duplicates (python dicts are insertion ordered)
     nodes = list(dict.fromkeys(nodes))
