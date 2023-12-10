@@ -7,7 +7,7 @@ from django.db import connection
 from django.utils import timezone
 from waffle.templatetags import waffle_tags
 
-from apps.base import clients
+from apps.base import engine
 from apps.teams.models import Team
 from apps.users.models import CustomUser
 
@@ -85,10 +85,10 @@ def bigquery(mocker, settings):
         "ibis.backends.bigquery.pydata_google_auth.default",
         return_value=(None, "project"),
     )
-    mocker.patch("apps.base.clients.bigquery", return_value=client)
+    mocker.patch("apps.base.engine.bigquery.bigquery", return_value=client)
     mocker.patch("ibis.backends.bigquery.client.bq.Client", return_value=client)
 
-    ibis_client = clients.get_backend_client().client
+    ibis_client = engine.get_backend_client().client
     ibis_client.client = client
     bind(
         ibis_client,

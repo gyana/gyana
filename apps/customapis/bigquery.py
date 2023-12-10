@@ -1,15 +1,14 @@
 from google.cloud import bigquery
 from google.cloud.bigquery.job.load import LoadJob
 
-from apps.base import clients
+from apps.base.engine.bigquery import bigquery
 from apps.tables.models import Table
 
 from .models import CustomApi
 
 
 def import_table_from_customapi(table: Table, customapi: CustomApi) -> LoadJob:
-
-    client = clients.bigquery()
+    client = bigquery()
 
     job_config = bigquery.LoadJobConfig(
         source_format=bigquery.SourceFormat.NEWLINE_DELIMITED_JSON,

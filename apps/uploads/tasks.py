@@ -4,7 +4,7 @@ from celery import shared_task
 from django.db import transaction
 from django.utils import timezone
 
-from apps.base import clients
+from apps.base import engine
 from apps.base.core.utils import catchtime
 from apps.integrations.emails import send_integration_ready_email
 from apps.runs.models import JobRun
@@ -34,7 +34,7 @@ def run_upload_sync_task(self, run_id: int):
         )
 
         with catchtime() as get_time_to_sync:
-            client = clients.get_backend_client()
+            client = engine.get_backend_client()
             client.import_table_from_upload(table=table, upload=upload)
 
         table.sync_updates_from_bigquery()

@@ -11,7 +11,7 @@ pytestmark = pytest.mark.django_db
 @pytest.fixture(autouse=True)
 def bq_table_schema_is_not_string_only(mocker):
     mocker.patch(
-        "apps.base._bigquery_upload.bq_table_schema_is_string_only", return_value=False
+        "apps.base.engine.bigquery.bq_table_schema_is_string_only", return_value=False
     )
 
 

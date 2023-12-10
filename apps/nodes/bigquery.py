@@ -9,8 +9,9 @@ import ibis.expr.operations as ops
 from cacheops import cached_as
 from ibis.expr.datatypes import String
 
-from apps.base import clients
+from apps.base import engine
 from apps.base.core.utils import error_name_to_snake
+from apps.base.engine.bigquery import bigquery
 from apps.columns.bigquery import (
     aggregate_columns,
     compile_formula,
@@ -74,7 +75,7 @@ def use_intermediate_table(func):
     @wraps(func)
     def wrapper(node, parent):
         table = getattr(node, "intermediate_table", None)
-        conn = clients.get_backend_client().client
+        conn = engine.get_backend_client().client
 
         # if the table doesn't need updating we can simply return the previous computed pivot table
         if table and table.data_updated > max(tuple(get_parent_updated(node))):
@@ -261,7 +262,7 @@ def get_distinct_query(node, query):
 
 @use_intermediate_table
 def get_pivot_query(node, parent):
-    client = clients.bigquery()
+    client = bigquery()
     column_type = parent[node.pivot_column].type()
 
     # the new column names consist of the unique values inside the selected column

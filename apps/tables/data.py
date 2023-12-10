@@ -1,8 +1,8 @@
 from django.core.cache import cache
 from ibis.expr.types import TableExpr
 
-from apps.base.clients import bigquery, get_backend_client
 from apps.base.core.utils import md5_kwargs
+from apps.base.engine import get_backend_client
 
 from .models import Table
 

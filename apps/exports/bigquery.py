@@ -1,8 +1,8 @@
-from apps.base import clients
+from apps.base.engine.bigquery import bigquery
 
 
 def query_to_gcs(query, gcs_path):
-    client = clients.bigquery()
+    client = bigquery()
     # Create temporary table in bigquery
     job = client.query(query)
     job.result()

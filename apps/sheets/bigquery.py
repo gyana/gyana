@@ -3,12 +3,12 @@ import re
 from google.cloud import bigquery
 from google.cloud.bigquery.job.query import QueryJob
 
-from apps.base import clients
 from apps.base.core.bigquery import (
     bq_table_schema_is_string_only,
     sanitize_bq_column_name,
 )
 from apps.base.core.utils import excel_colnum_string
+from apps.base.engine.bigquery import bigquery as bigquery_client
 from apps.tables.models import Table
 
 from .models import Sheet
@@ -51,8 +51,7 @@ CONVERSION_ERROR = re.compile(
 
 
 def _load_table(sheet: Sheet, table: Table, **job_kwargs):
-
-    client = clients.bigquery()
+    client = bigquery_client()
 
     external_table_id = f"{table.bq_table}_external"
 
@@ -83,14 +82,13 @@ def import_table_from_sheet(table: Table, sheet: Sheet) -> QueryJob:
     https://cloud.google.com/bigquery/docs/tables-intro
     """
 
-    client = clients.bigquery()
+    client = bigquery_client()
 
     _load_table(sheet, table, autodetect=True)
 
     # see apps/uploads/bigquery.py for motivation
 
     if bq_table_schema_is_string_only(table.bq_obj):
-
         # create temporary table but skipping the header rows
 
         temp_table_id = f"{table.bq_table}_temp"

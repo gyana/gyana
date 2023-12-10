@@ -3,7 +3,7 @@ from unittest.mock import Mock
 import pytest
 from google.cloud.bigquery.schema import SchemaField
 
-from apps.base.clients import get_backend_client
+from apps.base.engine import get_backend_client
 
 pytestmark = pytest.mark.django_db
 
