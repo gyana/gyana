@@ -4,7 +4,7 @@ from django.conf import settings
 from django.db import models
 from django.utils.functional import cached_property
 
-from apps.base.engine.bigquery import bigquery
+from apps.base.engine import bigquery as bq
 from apps.base.models import BaseModel
 from apps.projects.models import Project
 from apps.tables.clone import create_attrs
@@ -73,7 +73,7 @@ class Table(BaseModel):
 
     @property
     def bq_obj(self):
-        return bigquery().get_table(self.bq_id)
+        return bq.bigquery().get_table(self.bq_id)
 
     @property
     def humanize(self):

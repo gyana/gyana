@@ -8,7 +8,7 @@ from apps.base.core.bigquery import (
     sanitize_bq_column_name,
 )
 from apps.base.core.utils import excel_colnum_string
-from apps.base.engine.bigquery import bigquery as bigquery_client
+from apps.base.engine import bigquery as bq
 from apps.tables.models import Table
 
 from .models import Sheet
@@ -51,7 +51,7 @@ CONVERSION_ERROR = re.compile(
 
 
 def _load_table(sheet: Sheet, table: Table, **job_kwargs):
-    client = bigquery_client()
+    client = bq.bigquery()
 
     external_table_id = f"{table.bq_table}_external"
 
@@ -82,7 +82,7 @@ def import_table_from_sheet(table: Table, sheet: Sheet) -> QueryJob:
     https://cloud.google.com/bigquery/docs/tables-intro
     """
 
-    client = bigquery_client()
+    client = bq.bigquery()
 
     _load_table(sheet, table, autodetect=True)
 
