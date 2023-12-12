@@ -14,6 +14,7 @@ from apps.base.engine.base import BaseClient
 
 if TYPE_CHECKING:
     from apps.tables.models import Table
+    from apps.teams.models import Team
     from apps.uploads.models import Upload
 
 
@@ -127,3 +128,14 @@ class BigQueryClient(BaseClient):
             )
 
         return
+
+    def create_team_dataset(self, team: "Team"):
+        client = bigquery()
+        # exists ok is for testing
+        client.create_dataset(team.tables_dataset_id, exists_ok=True)
+
+    def delete_team_dataset(self, team: "Team"):
+        client = bigquery()
+        client.delete_dataset(
+            team.tables_dataset_id, delete_contents=True, not_found_ok=True
+        )

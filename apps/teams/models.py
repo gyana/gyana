@@ -8,6 +8,7 @@ from storages.backends.gcloud import GoogleCloudStorage
 from timezone_field import TimeZoneField
 from timezone_field.choices import with_gmt_offset
 
+from apps.base.engine import get_backend_client
 from apps.base.models import BaseModel
 
 from . import roles
@@ -49,12 +50,10 @@ class Team(DirtyFieldsMixin, BaseModel, SafeDeleteModel):
     has_free_trial = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
-        from .bigquery import create_team_dataset
-
         create = not self.pk
         super().save(*args, **kwargs)
         if create:
-            create_team_dataset(self)
+            get_backend_client().create_team_dataset(self)
 
     def update_row_count(self):
         from apps.tables.models import Table

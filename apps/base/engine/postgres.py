@@ -45,3 +45,9 @@ class PostgresClient(BaseClient):
             if_exists="replace",
             index=False,
         )
+
+    def create_team_dataset(self, team: "Team"):
+        self.client.create_schema(team.tables_dataset_id, force=True)
+
+    def delete_team_dataset(self, team: "Team"):
+        self.client.drop_schema(team.tables_dataset_id, force=True)

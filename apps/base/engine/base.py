@@ -5,6 +5,7 @@ import ibis
 
 if TYPE_CHECKING:
     from apps.tables.models import Table
+    from apps.teams.models import Team
     from apps.uploads.models import Upload
 
 
@@ -17,4 +18,12 @@ class BaseClient(ABC):
 
     @abstractmethod
     def import_table_from_upload(self, table: "Table", upload: "Upload"):
+        raise NotImplementedError
+
+    @abstractmethod
+    def create_team_dataset(self, team: "Team"):
+        raise NotImplementedError
+
+    @abstractmethod
+    def delete_team_dataset(self, team: "Team"):
         raise NotImplementedError
