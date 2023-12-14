@@ -195,8 +195,6 @@ class CustomApiUpdateForm(LiveFormsetMixin, LiveAlpineModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.form_tag = False
         self.helper.layout = Layout(
             TabHolder(
                 Tab("General", "url", "json_path", "http_request_method"),

@@ -1,3 +1,4 @@
+import json
 from functools import cache
 
 from crispy_forms import utils
@@ -76,6 +77,7 @@ class SchemaFormMixin:
 
     def __init__(self, *args, **kwargs):
         self.schema = kwargs.pop("schema", None)
+        self.schema_json = json.dumps({c: self.schema[c].name for c in self.schema})
 
         super().__init__(*args, **kwargs)
 
@@ -93,6 +95,10 @@ class BaseModelForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_tag = False
+
+    @property
+    def fields_json(self):
+        return json.dumps({field.name: field.value() for field in self})
 
     def pre_save(self, instance):
         # override in child to add behaviour on commit save
