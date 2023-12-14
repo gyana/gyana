@@ -18,7 +18,11 @@ class CrispyFormset(TemplateNameMixin):
     def render(self, form, context, template_pack=TEMPLATE_PACK, **kwargs):
         template = self.get_template_name(template_pack)
         context.update(
-            {"name": self.name, "label": self.label, "formset": self.formset}
+            {
+                "name": self.name,
+                "label": self.label,
+                "formset": form.get_formset(self.formset),
+            }
         )
 
         return render_to_string(template, context.flatten())
