@@ -20,6 +20,7 @@ from .formsets import (
     AddColumnFormSet,
     EditColumnFormSet,
     FilterFormSet,
+    RenameColumnFormSet,
 )
 from .models import Node
 
@@ -257,12 +258,21 @@ class EditColumnNodeForm(DefaultNodeForm):
         )
 
 
-class AddColumnNode(DefaultNodeForm):
+class AddColumnNodeForm(DefaultNodeForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.helper.layout = Layout(
             CrispyFormset("edit", "Edit columns", AddColumnFormSet),
+        )
+
+
+class RenameColumnNodeForm(DefaultNodeForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.helper.layout = Layout(
+            CrispyFormset("edit", "Rename columns", RenameColumnFormSet),
         )
 
 
@@ -279,9 +289,9 @@ KIND_TO_FORM = {
     # Is defined in the filter app and will be rendered via a
     # different htmx partial
     "filter": FilterNodeForm,
-    "edit": AddColumnNode,
-    "add": AddColumnNode,
-    "rename": DefaultNodeForm,
+    "edit": EditColumnNodeForm,
+    "add": AddColumnNodeForm,
+    "rename": RenameColumnNodeForm,
     "formula": DefaultNodeForm,
     "distinct": DistinctNodeForm,
     "pivot": PivotNodeForm,
