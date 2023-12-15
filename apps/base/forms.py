@@ -125,6 +125,7 @@ class BaseModelForm(forms.ModelForm):
 
 class LiveAlpineModelForm(BaseModelForm):
     def __init__(self, *args, **kwargs):
+        self.parent_instance = kwargs.pop("parent_instance", None)
         super().__init__(*args, **kwargs)
 
         # data populated by POST request in update
@@ -244,7 +245,9 @@ class LiveFormsetMixin:
         forms_kwargs = self.get_formset_form_kwargs(formset)
 
         # provide a reference to parent instance in live update forms
-        if issubclass(formset.form, LiveModelForm):
+        if issubclass(formset.form, LiveModelForm) or issubclass(
+            formset.form, LiveAlpineModelForm
+        ):
             forms_kwargs["parent_instance"] = self.instance
 
         if issubclass(formset.form, SchemaFormMixin):

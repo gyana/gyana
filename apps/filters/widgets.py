@@ -7,15 +7,15 @@ class SelectAutocomplete(Widget):
 
     template_name = "django/forms/widgets/select_autocomplete.html"
 
-    def __init__(self, attrs, instance, column) -> None:
+    def __init__(self, attrs, parent_type, parent_id, selected) -> None:
         super().__init__(attrs=attrs)
-        self.instance = instance
-        self.column = column
+        self.parent_type = parent_type
+        self.parent_id = parent_id
+        self.selected = selected
 
     def get_context(self, name, value, attrs):
         context = super().get_context(name, value, attrs)
-        context["parent_type"] = self.instance.parent_type
-        context["parent"] = self.instance.parent.id
-        context["selected"] = getattr(self.instance, name.split("-").pop()) or []
-        context["column"] = self.column
+        context["parent_type"] = self.parent_type
+        context["parent"] = self.parent_id
+        context["selected"] = self.selected
         return context

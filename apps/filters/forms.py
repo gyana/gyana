@@ -104,11 +104,13 @@ class FilterForm(SchemaFormMixin, LiveAlpineModelForm):
 
         # We add the widgets for the array values here because
         # We need to initialize them with some run-time configurations
-        # field = list(filter(lambda x: x.endswith("_values"), self.fields.keys()))
-        # if field:
-        #     self.fields[field[0]].widget = SelectAutocomplete(
-        #         None, instance=self.instance, column=self.get_live_field("column")
-        #     )
+        for field in [k for k in self.fields if k.endswith("_values")]:
+            self.fields[field].widget = SelectAutocomplete(
+                None,
+                parent_type=self.parent_instance._meta.model_name,
+                parent_id=self.parent_instance.id,
+                selected=getattr(self.instance, field) or [],
+            )
 
         if self.schema:
             self.fields["column"].choices = create_column_choices(self.schema)
