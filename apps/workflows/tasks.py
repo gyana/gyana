@@ -23,8 +23,6 @@ def run_workflow_task(self, run_id: int):
     workflow = run.workflow
     output_nodes = workflow.nodes.filter(kind=Node.Kind.OUTPUT).all()
 
-    client = get_backend_client().client
-
     for node in output_nodes:
         try:
             query = get_query_from_node(node)
@@ -41,9 +39,8 @@ def run_workflow_task(self, run_id: int):
                     project=workflow.project,
                     workflow_node=node,
                 )
-                # TODO: Update to ibis 7 to support overwrite=True
-                query = client.raw_sql(
-                    f"CREATE OR REPLACE TABLE {table.bq_id} as ({query.compile()})"
+                get_backend_client().create_or_replace_table(
+                    table.bq_id, query.compile()
                 )
 
                 table.data_updated = timezone.now()

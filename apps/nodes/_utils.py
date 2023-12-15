@@ -1,7 +1,7 @@
 from django.db import transaction
 from django.utils import timezone
 
-from apps.base.engine import bigquery as bq
+from apps.base.engine import get_backend_client
 from apps.tables.models import Table
 
 
@@ -20,8 +20,6 @@ def get_parent_updated(node):
 
 def create_or_replace_intermediate_table(node, query):
     """Creates a new intermediate table or replaces an existing one"""
-    client = bq.bigquery()
-
     with transaction.atomic():
         table, _ = Table.objects.get_or_create(
             source=Table.Source.INTERMEDIATE_NODE,
@@ -31,7 +29,7 @@ def create_or_replace_intermediate_table(node, query):
             intermediate_node=node,
         )
 
-        client.query(f"CREATE OR REPLACE TABLE {table.bq_id} as ({query})").result()
+        get_backend_client().create_or_replace_table(table.bq_id, query.compile())
 
         table.data_updated = timezone.now()
         table.save()

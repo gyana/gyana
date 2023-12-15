@@ -1,4 +1,4 @@
-from apps.base import engine
+from apps.base.engine import get_backend_client
 
 
 def copy_table(from_table, to_table):
@@ -7,8 +7,6 @@ def copy_table(from_table, to_table):
     Replaces if the table already exists, mostly important to work locally,
     in prod that shouldn't be necessary.
     """
-    client = engine.get_backend_client().client
-
-    return client.raw_sql(
-        f"CREATE OR REPLACE TABLE {to_table} as (SELECT * FROM {from_table})"
+    return get_backend_client().create_or_replace_table(
+        to_table, f"SELECT * FROM {from_table}"
     )
