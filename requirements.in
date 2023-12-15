@@ -48,7 +48,6 @@ pandas
 pathvalidate
 plotly
 psycopg2-binary
-pytest-mock
 python-Levenshtein
 readtime
 sqlalchemy
