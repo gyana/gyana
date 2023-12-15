@@ -35,7 +35,7 @@ TYPE_TO_IBIS = {
 }
 
 
-def get_show_for_filter_type(filter_type):
+def _get_show_for_filter_type(filter_type):
     predicate = PREDICATE_MAP[filter_type]
     ibis = TYPE_TO_IBIS[filter_type]
     value = f"{filter_type.lower()}_value"
@@ -96,7 +96,7 @@ class FilterForm(SchemaFormMixin, LiveAlpineModelForm):
         show = {
             k: v
             for filter_type in Filter.Type
-            for k, v in get_show_for_filter_type(filter_type).items()
+            for k, v in _get_show_for_filter_type(filter_type).items()
         }
 
     def __init__(self, *args, **kwargs):

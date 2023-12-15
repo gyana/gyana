@@ -3,7 +3,7 @@ from ibis.expr.datatypes import Array, Date, Floating, Integer, Struct, Timestam
 
 from apps.base.core.aggregations import AGGREGATION_TYPE_MAP
 from apps.base.core.utils import create_column_choices
-from apps.base.forms import BaseLiveSchemaForm
+from apps.base.forms import BaseLiveSchemaForm, LiveAlpineModelForm, SchemaFormMixin
 from apps.base.widgets import Datalist, SelectWithDisable
 from apps.columns.models import (
     AddColumn,
@@ -33,6 +33,15 @@ IBIS_TO_FUNCTION = {
     "Date": "date_function",
     "Time": "time_function",
     "Boolean": "boolean_function",
+}
+
+FUNCTION_TO_IBIS = {
+    "string_function": ["String"],
+    "integer_function": ["Int8", "Int16", "Int32", "Int64", "Float64"],
+    "datetime_function": ["Timestamp"],
+    "date_function": ["Date"],
+    "time_function": ["Time"],
+    "boolean_function": ["Boolean"],
 }
 
 
@@ -149,7 +158,6 @@ class AggregationColumnForm(BaseLiveSchemaForm):
         return fields
 
     def __init__(self, *args, **kwargs):
-
         super().__init__(*args, **kwargs)
         disable_struct_and_array_columns(
             self.fields, self.fields["column"], self.schema
@@ -222,7 +230,21 @@ class AggregationFormWithFormatting(AggregationColumnForm):
         return fields
 
 
-class OperationColumnForm(BaseLiveSchemaForm):
+def _get_show_for_function_field(function_type):
+    ibis = FUNCTION_TO_IBIS[function_type]
+    return f"{ibis}.includes(schema[column])"
+
+
+def _get_show_for_value_field(value):
+    operations = [
+        k
+        for k, v in AllOperations.items()
+        if v.arguments == 1 and v.value_field == value
+    ]
+    return f"{operations}.includes($data[computed])"
+
+
+class OperationColumnForm(SchemaFormMixin, LiveAlpineModelForm):
     class Meta:
         model = EditColumn
         fields = (
@@ -242,24 +264,21 @@ class OperationColumnForm(BaseLiveSchemaForm):
             "string_value": forms.Textarea(attrs={"rows": 1}),
         }
 
+        show = {
+            k: _get_show_for_function_field(k)
+            for k in fields
+            if k.endswith("_function")
+        } | {k: _get_show_for_value_field(k) for k in fields if k.endswith("_value")}
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         disable_struct_and_array_columns(
             self.fields, self.fields["column"], self.schema
         )
 
-    def get_live_fields(self):
-        fields = ["column"]
-
-        if self.column_type and (
-            function_field := IBIS_TO_FUNCTION[self.column_type.name]
-        ):
-            fields += [function_field]
-            operation = AllOperations.get(self.get_live_field(function_field))
-            if operation and operation.arguments == 1:
-                fields += [operation.value_field]
-
-        return fields
+        self.fields["column"].widget.attrs.update(
+            {"x-effect": f"computed = {IBIS_TO_FUNCTION}[schema[column]]"}
+        )
 
     def save(self, commit: bool):
         # Make sure only one function is set and turn the others to Null

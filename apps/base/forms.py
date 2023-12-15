@@ -104,6 +104,7 @@ class BaseModelForm(forms.ModelForm):
                 for field in self
                 if not isinstance(field.field, forms.FileField)
             }
+            | {"computed": None}
         )
 
     def pre_save(self, instance):

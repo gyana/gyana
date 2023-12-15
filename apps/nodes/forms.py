@@ -15,7 +15,7 @@ from apps.base.widgets import MultiSelect, SourceSelect
 from apps.columns.forms import AGGREGATION_TYPE_MAP
 from apps.columns.models import Column
 
-from .formsets import KIND_TO_FORMSETS, FilterFormSet
+from .formsets import KIND_TO_FORMSETS, EditColumnFormSet, FilterFormSet
 from .models import Node
 
 
@@ -239,7 +239,16 @@ class FilterNodeForm(DefaultNodeForm):
         super().__init__(*args, **kwargs)
 
         self.helper.layout = Layout(
-            CrispyFormset("filters", "Filters", FilterFormSet),
+            CrispyFormset("filter", "Filters", FilterFormSet),
+        )
+
+
+class EditNodeForm(DefaultNodeForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.helper.layout = Layout(
+            CrispyFormset("edit", "Edit columns", EditColumnFormSet),
         )
 
 
@@ -256,7 +265,7 @@ KIND_TO_FORM = {
     # Is defined in the filter app and will be rendered via a
     # different htmx partial
     "filter": FilterNodeForm,
-    "edit": DefaultNodeForm,
+    "edit": EditNodeForm,
     "add": DefaultNodeForm,
     "rename": DefaultNodeForm,
     "formula": DefaultNodeForm,
