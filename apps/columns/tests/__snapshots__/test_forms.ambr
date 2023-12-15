@@ -1,0 +1,80 @@
+# serializer version: 1
+# name: test_add_column_form
+  dict({
+    'effect': dict({
+      'column': 'computed.function_field = $store.ibis.functions[schema[column]]',
+    }),
+    'show': dict({
+      'boolean_function': "'boolean_function' == $store.ibis.functions[schema[column]]",
+      'date_function': "'date_function' == $store.ibis.functions[schema[column]]",
+      'datetime_function': "'datetime_function' == $store.ibis.functions[schema[column]]",
+      'float_value': "$store.ibis.operations['float_value'].includes($data[computed.function_field])",
+      'integer_function': "'integer_function' == $store.ibis.functions[schema[column]]",
+      'integer_value': "$store.ibis.operations['integer_value'].includes($data[computed.function_field])",
+      'label': 'computed != null',
+      'string_function': "'string_function' == $store.ibis.functions[schema[column]]",
+      'string_value': "$store.ibis.operations['string_value'].includes($data[computed.function_field])",
+      'time_function': "'time_function' == $store.ibis.functions[schema[column]]",
+    }),
+  })
+# ---
+# name: test_aggregation_form
+  dict({
+    'effect': dict({
+      'column': 'choices.function = $store.ibis.aggregations[schema[column]]',
+    }),
+    'show': dict({
+      'function': 'column != null',
+    }),
+  })
+# ---
+# name: test_edit_form
+  dict({
+    'effect': dict({
+      'column': 'computed.function_field = $store.ibis.functions[schema[column]]',
+    }),
+    'show': dict({
+      'boolean_function': "'boolean_function' == $store.ibis.functions[schema[column]]",
+      'date_function': "'date_function' == $store.ibis.functions[schema[column]]",
+      'datetime_function': "'datetime_function' == $store.ibis.functions[schema[column]]",
+      'float_value': "$store.ibis.operations['float_value'].includes($data[computed.function_field])",
+      'integer_function': "'integer_function' == $store.ibis.functions[schema[column]]",
+      'integer_value': "$store.ibis.operations['integer_value'].includes($data[computed.function_field])",
+      'string_function': "'string_function' == $store.ibis.functions[schema[column]]",
+      'string_value': "$store.ibis.operations['string_value'].includes($data[computed.function_field])",
+      'time_function': "'time_function' == $store.ibis.functions[schema[column]]",
+    }),
+  })
+# ---
+# name: test_operation_column_form
+  dict({
+    'effect': dict({
+      'column': 'computed.function_field = $store.ibis.functions[schema[column]]',
+    }),
+    'show': dict({
+      'boolean_function': "'boolean_function' == $store.ibis.functions[schema[column]]",
+      'date_function': "'date_function' == $store.ibis.functions[schema[column]]",
+      'datetime_function': "'datetime_function' == $store.ibis.functions[schema[column]]",
+      'float_value': "$store.ibis.operations['float_value'].includes($data[computed.function_field])",
+      'integer_function': "'integer_function' == $store.ibis.functions[schema[column]]",
+      'integer_value': "$store.ibis.operations['integer_value'].includes($data[computed.function_field])",
+      'string_function': "'string_function' == $store.ibis.functions[schema[column]]",
+      'string_value': "$store.ibis.operations['string_value'].includes($data[computed.function_field])",
+      'time_function': "'time_function' == $store.ibis.functions[schema[column]]",
+    }),
+  })
+# ---
+# name: test_window_form
+  dict({
+    'effect': dict({
+      'function': '$choices.function = $store.ibis.aggregrations[schema[column]]',
+    }),
+    'show': dict({
+      'ascending': '$data.function != null',
+      'function': 'column != null',
+      'group_by': '$data.function != null',
+      'label': '$data.function != null',
+      'order_by': '$data.function != null',
+    }),
+  })
+# ---

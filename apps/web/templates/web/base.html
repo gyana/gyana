@@ -107,3 +107,11 @@
     {% endblock body %}
   </body>
 </html>
+
+{{ ibis_store|json_script:"ibis_store" }}
+
+<script>
+  document.addEventListener('alpine:init', () => {
+    Alpine.store('ibis', JSON.parse(document.getElementById('ibis_store').textContent))
+  })
+</script>

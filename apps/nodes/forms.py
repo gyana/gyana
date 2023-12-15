@@ -180,6 +180,9 @@ class PivotNodeForm(NodeForm):
         show = {
             "pivot_aggregation": "pivot_value != null",
         }
+        effect = {
+            "pivot_value": f"choices.pivot_aggregation = $store.ibis.aggregations[schema[pivot_value]]"
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -196,13 +199,6 @@ class PivotNodeForm(NodeForm):
         )
         self.fields["pivot_value"] = forms.ChoiceField(
             choices=column_choices, help_text=self.fields["pivot_value"].help_text
-        )
-
-        agg = {k: [x.value for x in v] for k, v in AGGREGATION_TYPE_MAP.items()}
-        self.fields["pivot_value"].widget.attrs.update(
-            {
-                "x-effect": f"$data.pivot_aggregation_choices = {agg}[schema[pivot_value]] || []"
-            }
         )
 
 

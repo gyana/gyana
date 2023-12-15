@@ -28,6 +28,7 @@ ModelFormOptions__init__ = ModelFormOptions.__init__
 def __init__(self, options=None):
     ModelFormOptions__init__(self, options=options)
     self.show = getattr(options, "show", None)
+    self.effect = getattr(options, "effect", {})
 
 
 ModelFormOptions.__init__ = __init__
@@ -96,6 +97,9 @@ class BaseModelForm(forms.ModelForm):
         self.helper = FormHelper()
         self.helper.form_tag = False
 
+        for k, v in self.effect.items():
+            self.fields[k].widget.attrs.update({"x-effect": v})
+
     @property
     def fields_json(self):
         return json.dumps(
@@ -104,6 +108,7 @@ class BaseModelForm(forms.ModelForm):
                 for field in self
                 if not isinstance(field.field, forms.FileField)
             }
+            | {"computed": {}, "choices": {}}
         )
 
     def pre_save(self, instance):
@@ -127,6 +132,10 @@ class BaseModelForm(forms.ModelForm):
     @property
     def show(self):
         return self._meta.show
+
+    @property
+    def effect(self):
+        return self._meta.effect
 
 
 class LiveAlpineModelForm(BaseModelForm):
