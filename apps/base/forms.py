@@ -134,10 +134,15 @@ class LiveAlpineModelForm(BaseModelForm):
         self.parent_instance = kwargs.pop("parent_instance", None)
         super().__init__(*args, **kwargs)
 
-        # data populated by POST request in update
+        # filter to data populated by POST request in update
+        # excluded fields are not rendered in the form
         # TODO: HTMX plugin for HTML checkboxes false values
         if self.data:
-            self.fields = {k: v for k, v in self.fields.items() if k in self.data}
+            self.fields = {
+                k: v
+                for k, v in self.fields.items()
+                if (f"{self.prefix}-{k}" if self.prefix else k) in self.data
+            }
 
 
 class LiveModelForm(BaseModelForm):
