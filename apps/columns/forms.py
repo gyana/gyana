@@ -59,16 +59,14 @@ def disable_struct_and_array_columns(fields, column_field, schema):
     )
 
 
-class ColumnForm(BaseLiveSchemaForm):
+class ColumnForm(SchemaFormMixin, LiveAlpineModelForm):
     class Meta:
         fields = ("column", "part")
         model = Column
 
-    def get_live_fields(self):
-        fields = ["column"]
-        if isinstance(self.column_type, (Timestamp, Date)):
-            fields += ["part"]
-        return fields
+        show = {
+            "part": "['Date', 'Timestamp'].includes(schema[column])",
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -76,12 +74,13 @@ class ColumnForm(BaseLiveSchemaForm):
             self.fields, self.fields["column"], self.schema
         )
 
-        if "part" in self.fields and isinstance(self.column_type, Date):
-            self.fields["part"].choices = [
-                choice
-                for choice in self.fields["part"].choices
-                if choice[0] != DatePeriod.DATE.value
-            ]
+        date_periods = {
+            "Date": [DatePeriod.DATE.value],
+            "Timestamp": [x.value for x in DatePeriod],
+        }
+        self.fields["column"].widget.attrs.update(
+            {"x-effect": f"$data.part_choices = {date_periods}[schema[column]]"}
+        )
 
 
 class ColumnFormWithFormatting(ColumnForm):
@@ -137,7 +136,7 @@ class ColumnFormWithFormatting(ColumnForm):
         return fields
 
 
-class AggregationColumnForm(BaseLiveSchemaForm):
+class AggregationColumnForm(SchemaFormMixin, LiveAlpineModelForm):
     class Meta:
         fields = (
             "column",
@@ -148,14 +147,7 @@ class AggregationColumnForm(BaseLiveSchemaForm):
             "function": "Select the aggregation function",
         }
         model = AggregationColumn
-
-    def get_live_fields(self):
-        fields = ["column"]
-
-        if self.column_type is not None:
-            fields += ["function"]
-
-        return fields
+        show = {"function": "column != null"}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -163,11 +155,10 @@ class AggregationColumnForm(BaseLiveSchemaForm):
             self.fields, self.fields["column"], self.schema
         )
 
-        if self.column_type is not None:
-            self.fields["function"].choices = [
-                (choice.value, choice.name)
-                for choice in AGGREGATION_TYPE_MAP[self.column_type.name]
-            ]
+        agg = {k: [x.value for x in v] for k, v in AGGREGATION_TYPE_MAP.items()}
+        self.fields["column"].widget.attrs.update(
+            {"x-effect": f"$data.function_choices = {agg}[schema[column]] || []"}
+        )
 
 
 class AggregationFormWithFormatting(AggregationColumnForm):
@@ -277,7 +268,7 @@ class OperationColumnForm(SchemaFormMixin, LiveAlpineModelForm):
         )
 
         self.fields["column"].widget.attrs.update(
-            {"x-effect": f"computed = {IBIS_TO_FUNCTION}[schema[column]]"}
+            {"x-effect": f"$data.computed = {IBIS_TO_FUNCTION}[schema[column]]"}
         )
 
     def save(self, commit: bool):
@@ -322,7 +313,7 @@ class AddColumnForm(SchemaFormMixin, LiveAlpineModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["column"].widget.attrs.update(
-            {"x-effect": f"computed = {IBIS_TO_FUNCTION}[schema[column]]"}
+            {"x-effect": f"$data.computed = {IBIS_TO_FUNCTION}[schema[column]]"}
         )
 
     def clean_label(self):

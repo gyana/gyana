@@ -18,6 +18,8 @@ from apps.columns.models import Column
 from .formsets import (
     KIND_TO_FORMSETS,
     AddColumnFormSet,
+    AggregationColumnFormSet,
+    ColumnFormSet,
     ConvertColumnFormSet,
     EditColumnFormSet,
     FilterFormSet,
@@ -306,13 +308,23 @@ class FormulaColumnNodeForm(DefaultNodeForm):
         )
 
 
+class AggregateNodeForm(DefaultNodeForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.helper.layout = Layout(
+            CrispyFormset("group", "Group columns", ColumnFormSet),
+            CrispyFormset("aggregrate", "Aggregations", AggregationColumnFormSet),
+        )
+
+
 KIND_TO_FORM = {
     "input": InputNodeForm,
     "output": OutputNodeForm,
     "select": SelectNodeForm,
     "except": ExceptNodeForm,
     "join": JoinNodeForm,
-    "aggregation": DefaultNodeForm,
+    "aggregation": AggregateNodeForm,
     "union": UnionNodeForm,
     "sort": SortColumnNodeForm,
     "limit": LimitNodeForm,
