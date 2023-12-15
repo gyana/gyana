@@ -288,7 +288,7 @@ class OperationColumnForm(SchemaFormMixin, LiveAlpineModelForm):
         return super().save(commit=commit)
 
 
-class AddColumnForm(BaseLiveSchemaForm):
+class AddColumnForm(SchemaFormMixin, LiveAlpineModelForm):
     class Meta:
         model = AddColumn
         fields = (
@@ -309,20 +309,21 @@ class AddColumnForm(BaseLiveSchemaForm):
             "string_value": forms.Textarea(attrs={"rows": 1}),
         }
 
-    def get_live_fields(self):
-        fields = ["column"]
-        if self.column_type and (
-            function_field := IBIS_TO_FUNCTION[self.column_type.name]
-        ):
-            fields += [function_field]
-            operation = AllOperations.get(self.get_live_field(function_field))
-            if operation and operation.arguments == 1:
-                fields += [operation.value_field]
+        show = (
+            {
+                k: _get_show_for_function_field(k)
+                for k in fields
+                if k.endswith("_function")
+            }
+            | {k: _get_show_for_value_field(k) for k in fields if k.endswith("_value")}
+            | {"label": "computed != null"}
+        )
 
-            if self.get_live_field(function_field) is not None:
-                fields += ["label"]
-
-        return fields
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["column"].widget.attrs.update(
+            {"x-effect": f"computed = {IBIS_TO_FUNCTION}[schema[column]]"}
+        )
 
     def clean_label(self):
         return column_naming_validation(self.cleaned_data["label"], self.schema.names)
