@@ -21,8 +21,7 @@
         <form
           id="node-update-form"
           class="form--no-layout overflow-hidden flex-1"
-          action="{% url 'nodes:update' node.id %}"
-          method="post"
+          hx-post="{% url 'nodes:update' node.id %}"
           data-tf-modal-target="form"
           {% comment %} data-controller="live-update" {% endcomment %}
           data-action="
