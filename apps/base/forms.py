@@ -98,7 +98,13 @@ class BaseModelForm(forms.ModelForm):
 
     @property
     def fields_json(self):
-        return json.dumps({field.name: field.value() for field in self})
+        return json.dumps(
+            {
+                field.name: field.value()
+                for field in self
+                if not isinstance(field.field, forms.FileField)
+            }
+        )
 
     def pre_save(self, instance):
         # override in child to add behaviour on commit save
