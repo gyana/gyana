@@ -26,6 +26,7 @@ from .formsets import (
     FormulaColumnFormSet,
     RenameColumnFormSet,
     SortColumnFormSet,
+    WindowColumnFormSet,
 )
 from .models import Node
 
@@ -310,6 +311,15 @@ class AggregateNodeForm(DefaultNodeForm):
         )
 
 
+class WindowColumnNodeform(DefaultNodeForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.helper.layout = Layout(
+            CrispyFormset("window", "Window columns", WindowColumnFormSet),
+        )
+
+
 KIND_TO_FORM = {
     "input": InputNodeForm,
     "output": OutputNodeForm,
@@ -331,6 +341,6 @@ KIND_TO_FORM = {
     "pivot": PivotNodeForm,
     "unpivot": UnpivotNodeForm,
     "intersect": DefaultNodeForm,
-    "window": DefaultNodeForm,
+    "window": WindowColumnNodeform,
     "convert": ConvertColumnNodeForm,
 }

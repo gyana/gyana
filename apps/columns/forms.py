@@ -334,10 +334,17 @@ class FormulaColumnForm(BaseLiveSchemaForm):
         return column_naming_validation(self.cleaned_data["label"], self.schema.names)
 
 
-class WindowColumnForm(BaseLiveSchemaForm):
+class WindowColumnForm(SchemaFormMixin, LiveAlpineModelForm):
     class Meta:
         fields = ("column", "function", "group_by", "order_by", "ascending", "label")
         model = WindowColumn
+        show = {
+            "function": "column != null",
+            "group_by": "$data.function != null",
+            "order_by": "$data.function != null",
+            "ascending": "$data.function != null",
+            "label": "$data.function != null",
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -347,36 +354,28 @@ class WindowColumnForm(BaseLiveSchemaForm):
         )
         choices = create_column_choices(self.schema)
 
-        if self.column_type is not None:
-            self.fields["function"].choices = [
-                (choice.value, choice.name)
-                for choice in AGGREGATION_TYPE_MAP[self.column_type.name]
-            ]
-            self.fields["group_by"] = forms.ChoiceField(
-                choices=choices,
-                help_text=self.base_fields["group_by"].help_text,
-                required=False,
-                widget=SelectWithDisable(
-                    disabled={
-                        name: f"You cannot group by a {type_} column"
-                        for name, type_ in self.schema.items()
-                        if isinstance(type_, Floating)
-                    }
-                ),
-            )
-            self.fields["order_by"] = forms.ChoiceField(
-                choices=choices,
-                help_text=self.base_fields["order_by"].help_text,
-                required=False,
-            )
+        self.fields["group_by"] = forms.ChoiceField(
+            choices=choices,
+            help_text=self.base_fields["group_by"].help_text,
+            required=False,
+            widget=SelectWithDisable(
+                disabled={
+                    name: f"You cannot group by a {type_} column"
+                    for name, type_ in self.schema.items()
+                    if isinstance(type_, Floating)
+                }
+            ),
+        )
+        self.fields["order_by"] = forms.ChoiceField(
+            choices=choices,
+            help_text=self.base_fields["order_by"].help_text,
+            required=False,
+        )
 
-    def get_live_fields(self):
-        fields = ["column"]
-
-        if self.column_type is not None:
-            fields += ["function", "group_by", "order_by", "ascending", "label"]
-
-        return fields
+        agg = {k: [x.value for x in v] for k, v in AGGREGATION_TYPE_MAP.items()}
+        self.fields["function"].widget.attrs.update(
+            {"x-effect": f"$data.function_choices = {agg}[schema[column]] || []"}
+        )
 
     def clean_label(self):
         return column_naming_validation(self.cleaned_data["label"], self.schema.names)
