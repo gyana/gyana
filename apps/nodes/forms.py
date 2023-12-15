@@ -176,9 +176,9 @@ class PivotNodeForm(NodeForm):
             "pivot_value": "Value column",
             "pivot_aggregation": "Aggregation function",
         }
-        # show = {
-        #     "pivot_aggregation": "pivot_value != null",
-        # }
+        show = {
+            "pivot_aggregation": "pivot_value != null",
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -197,20 +197,12 @@ class PivotNodeForm(NodeForm):
             choices=column_choices, help_text=self.fields["pivot_value"].help_text
         )
 
-        pivot_value = self.get_live_field("pivot_value")
-        if pivot_value in schema:
-            column_type = schema[pivot_value].name
-
-            self.fields["pivot_aggregation"].choices = [
-                (choice.value, choice.name)
-                for choice in AGGREGATION_TYPE_MAP[column_type]
-            ]
-
-    def get_live_fields(self):
-        fields = ["pivot_index", "pivot_column", "pivot_value"]
-        if self.get_live_field("pivot_value") is not None:
-            fields += ["pivot_aggregation"]
-        return fields
+        agg = {k: [x.value for x in v] for k, v in AGGREGATION_TYPE_MAP.items()}
+        self.fields["pivot_value"].widget.attrs.update(
+            {
+                "x-effect": f"$data.pivot_aggregation_choices = {agg}[schema[pivot_value]] || []"
+            }
+        )
 
 
 class UnpivotNodeForm(NodeForm):
