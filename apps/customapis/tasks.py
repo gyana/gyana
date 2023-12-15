@@ -129,7 +129,7 @@ def run_customapi_sync_task(self, run_id):
                 table=table, customapi=customapi
             )
 
-        table.sync_updates_from_bigquery()
+        table.update_modified_and_num_rows()
 
     if created:
         send_integration_ready_email(integration, int(get_time_to_sync()))

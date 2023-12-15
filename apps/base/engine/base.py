@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 
 import ibis
+from django.utils import timezone
 
 if TYPE_CHECKING:
     from apps.customapis.models import CustomApi
@@ -39,3 +40,8 @@ class BaseClient(ABC):
 
     def drop_table(self, table_id: str):
         self.client.drop_table(table_id, force=True)
+
+    def get_modified_and_num_rows(self, table: "Table"):
+        modified = timezone.now()
+        num_rows = self.get_table(table).count().execute()
+        return modified, num_rows

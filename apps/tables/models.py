@@ -4,7 +4,7 @@ from django.conf import settings
 from django.db import models
 from django.utils.functional import cached_property
 
-from apps.base.engine import bigquery as bq
+from apps.base.engine import get_backend_client
 from apps.base.models import BaseModel
 from apps.projects.models import Project
 from apps.tables.clone import create_attrs
@@ -72,10 +72,6 @@ class Table(BaseModel):
         return f"{self.bq_dataset}.{self.bq_table}"
 
     @property
-    def bq_obj(self):
-        return bq.bigquery().get_table(self.bq_id)
-
-    @property
     def humanize(self):
         return self.bq_table.replace("_", " ").title()
 
@@ -95,9 +91,10 @@ class Table(BaseModel):
     def bq_dashboard_url(self):
         return f"https://console.cloud.google.com/bigquery?project={settings.GCP_PROJECT}&p={settings.GCP_PROJECT}&d={self.bq_dataset}&t={self.bq_table}&page=table"
 
-    def sync_updates_from_bigquery(self):
-        self.data_updated = self.bq_obj.modified
-        self.num_rows = self.bq_obj.num_rows
+    def update_modified_and_num_rows(self):
+        modified, num_rows = get_backend_client().get_modified_and_num_rows(self)
+        self.data_updated = modified
+        self.num_rows = num_rows
         self.save()
 
     @property

@@ -83,6 +83,9 @@ class BigQueryClient(BaseClient):
     def get_table(self, table: "Table"):
         return self.client.table(table.bq_id, database=table.bq_dataset)
 
+    def _get_bigquery_object(self, bq_id):
+        return bigquery().get_table(bq_id)
+
     def import_table_from_upload(self, table: "Table", upload: "Upload"):
         client = bigquery()
         _load_table(upload, table, client, autodetect=True, skip_leading_rows=1)
@@ -92,7 +95,7 @@ class BigQueryClient(BaseClient):
         # the recommended approach for cost is to reload into bigquery rather than updating names
         # https://cloud.google.com/bigquery/docs/manually-changing-schemas#option_2_exporting_your_data_and_loading_it_into_a_new_table
 
-        if bq_table_schema_is_string_only(table.bq_obj):
+        if bq_table_schema_is_string_only(self._get_bigquery_object(table.bq_id)):
             # create temporary table without skipping the header row, so we can get the header names
 
             temp_table_id = f"{table.bq_table}_temp"
@@ -159,3 +162,7 @@ class BigQueryClient(BaseClient):
 
     def drop_table(self, table_id: str):
         return bigquery().delete_table(table_id, not_found_ok=True)
+
+    def get_modified_and_num_rows(self, table: "Table"):
+        bq_obj = self._get_bigquery_object(table.bq_id)
+        return bq_obj.modified, bq_obj.num_rows

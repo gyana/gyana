@@ -37,7 +37,7 @@ def run_upload_sync_task(self, run_id: int):
             client = engine.get_backend_client()
             client.import_table_from_upload(table=table, upload=upload)
 
-        table.sync_updates_from_bigquery()
+        table.update_modified_and_num_rows()
 
     if created:
         send_integration_ready_email(integration, int(get_time_to_sync()))

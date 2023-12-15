@@ -25,7 +25,6 @@ def run_sheet_sync_task(self, run_id, skip_up_to_date=False):
     # table creation, avoids orphaned table entities
 
     with transaction.atomic():
-
         table, created = Table.objects.get_or_create(
             integration=integration,
             source=Table.Source.INTEGRATION,
@@ -40,7 +39,7 @@ def run_sheet_sync_task(self, run_id, skip_up_to_date=False):
             with catchtime() as get_time_to_sync:
                 import_table_from_sheet(table=table, sheet=sheet)
 
-            table.sync_updates_from_bigquery()
+            table.update_modified_and_num_rows()
             sheet.drive_file_last_modified_at_sync = sheet.drive_modified_date
             sheet.save()
 

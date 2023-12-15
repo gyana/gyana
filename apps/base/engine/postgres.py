@@ -48,6 +48,7 @@ class PostgresClient(BaseClient):
         )
 
     def import_table_from_upload(self, table: "Table", upload: "Upload"):
+        # TODO: Potentially can use ibis client read_csv when updating ibis
         df = read_csv(upload.gcs_uri)
 
         self._df_to_sql(df, table.bq_table, table.bq_dataset)
@@ -59,6 +60,7 @@ class PostgresClient(BaseClient):
         self.client.drop_schema(team.tables_dataset_id, force=True)
 
     def import_table_from_customapi(self, table: "Table", customapi: "CustomApi"):
-        df = read_json(customapi.gcs_uri)
+        # TODO: Potentially can use ibis client read_json when updating ibis
+        df = read_json(customapi.gcs_uri, lines=True)
 
         self._df_to_sql(df, table.bq_table, table.bq_dataset)
