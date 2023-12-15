@@ -18,9 +18,12 @@ from apps.columns.models import Column
 from .formsets import (
     KIND_TO_FORMSETS,
     AddColumnFormSet,
+    ConvertColumnFormSet,
     EditColumnFormSet,
     FilterFormSet,
+    FormulaColumnFormSet,
     RenameColumnFormSet,
+    SortColumnFormSet,
 )
 from .models import Node
 
@@ -272,7 +275,34 @@ class RenameColumnNodeForm(DefaultNodeForm):
         super().__init__(*args, **kwargs)
 
         self.helper.layout = Layout(
-            CrispyFormset("edit", "Rename columns", RenameColumnFormSet),
+            CrispyFormset("rename", "Rename columns", RenameColumnFormSet),
+        )
+
+
+class SortColumnNodeForm(DefaultNodeForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.helper.layout = Layout(
+            CrispyFormset("sort", "Sort columns", SortColumnFormSet),
+        )
+
+
+class ConvertColumnNodeForm(DefaultNodeForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.helper.layout = Layout(
+            CrispyFormset("convert", "Select columns to convert", ConvertColumnFormSet),
+        )
+
+
+class FormulaColumnNodeForm(DefaultNodeForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.helper.layout = Layout(
+            CrispyFormset("formula", "Formula columns", FormulaColumnFormSet),
         )
 
 
@@ -284,7 +314,7 @@ KIND_TO_FORM = {
     "join": JoinNodeForm,
     "aggregation": DefaultNodeForm,
     "union": UnionNodeForm,
-    "sort": DefaultNodeForm,
+    "sort": SortColumnNodeForm,
     "limit": LimitNodeForm,
     # Is defined in the filter app and will be rendered via a
     # different htmx partial
@@ -292,11 +322,11 @@ KIND_TO_FORM = {
     "edit": EditColumnNodeForm,
     "add": AddColumnNodeForm,
     "rename": RenameColumnNodeForm,
-    "formula": DefaultNodeForm,
+    "formula": FormulaColumnNodeForm,
     "distinct": DistinctNodeForm,
     "pivot": PivotNodeForm,
     "unpivot": UnpivotNodeForm,
     "intersect": DefaultNodeForm,
     "window": DefaultNodeForm,
-    "convert": DefaultNodeForm,
+    "convert": ConvertColumnNodeForm,
 }
