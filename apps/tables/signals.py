@@ -16,4 +16,4 @@ def delete_backend_table(sender, instance, *args, **kwargs):
     if " copy " in instance.bq_id:
         return
     # TODO: Make sure it works for postgres backend
-    get_backend_client().client.drop_table(instance.bq_id, force=True)
+    get_backend_client().drop_table(instance.bq_id)

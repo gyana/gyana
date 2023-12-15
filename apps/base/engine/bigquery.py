@@ -156,3 +156,6 @@ class BigQueryClient(BaseClient):
 
         if load_job.exception():
             raise Exception(load_job.errors[0]["message"])
+
+    def drop_table(self, table_id: str):
+        return bigquery().delete_table(table_id, not_found_ok=True)

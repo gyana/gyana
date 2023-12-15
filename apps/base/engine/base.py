@@ -36,3 +36,6 @@ class BaseClient(ABC):
     def create_or_replace_table(self, table_id: str, query: str):
         # TODO: Update to ibis 7 to support create_tablr with overwrite=True
         self.client.raw_sql(f"CREATE OR REPLACE TABLE {table_id} as ({query})")
+
+    def drop_table(self, table_id: str):
+        self.client.drop_table(table_id, force=True)
