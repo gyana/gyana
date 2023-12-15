@@ -13,6 +13,7 @@ from apps.base.core.bigquery import (
 from apps.base.engine.base import BaseClient
 
 if TYPE_CHECKING:
+    from apps.customapis.models import CustomApi
     from apps.tables.models import Table
     from apps.teams.models import Team
     from apps.uploads.models import Upload
@@ -139,3 +140,19 @@ class BigQueryClient(BaseClient):
         client.delete_dataset(
             team.tables_dataset_id, delete_contents=True, not_found_ok=True
         )
+
+    def import_table_from_customapi(self, table: "Table", customapi: "CustomApi"):
+        client = bigquery()
+
+        job_config = bq.LoadJobConfig(
+            source_format=bq.SourceFormat.NEWLINE_DELIMITED_JSON,
+            write_disposition=bq.WriteDisposition.WRITE_TRUNCATE,
+            autodetect=True,
+        )
+
+        load_job = client.load_table_from_uri(
+            customapi.gcs_uri, table.bq_id, job_config=job_config
+        )
+
+        if load_job.exception():
+            raise Exception(load_job.errors[0]["message"])
