@@ -5,12 +5,12 @@ from django.db import transaction
 from django.utils import timezone
 
 from apps.base.core.utils import catchtime
+from apps.base.engine import get_backend_client
 from apps.integrations.emails import send_integration_ready_email
 from apps.runs.models import JobRun
 from apps.tables.models import Table
 from apps.users.models import CustomUser
 
-from .bigquery import import_table_from_sheet
 from .models import Sheet
 
 
@@ -37,7 +37,7 @@ def run_sheet_sync_task(self, run_id, skip_up_to_date=False):
 
         if not (sheet.up_to_date_with_drive and skip_up_to_date):
             with catchtime() as get_time_to_sync:
-                import_table_from_sheet(table=table, sheet=sheet)
+                get_backend_client().import_table_from_sheet(table=table, sheet=sheet)
 
             table.update_modified_and_num_rows()
             sheet.drive_file_last_modified_at_sync = sheet.drive_modified_date

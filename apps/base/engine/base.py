@@ -4,8 +4,11 @@ from typing import TYPE_CHECKING
 import ibis
 from django.utils import timezone
 
+from ._sheet import create_dataframe_from_sheet
+
 if TYPE_CHECKING:
     from apps.customapis.models import CustomApi
+    from apps.sheets.models import Sheet
     from apps.tables.models import Table
     from apps.teams.models import Team
     from apps.uploads.models import Upload
@@ -45,3 +48,8 @@ class BaseClient(ABC):
         modified = timezone.now()
         num_rows = self.get_table(table).count().execute()
         return modified, num_rows
+
+    def import_table_from_sheet(self, table: "Table", sheet: "Sheet"):
+        df = create_dataframe_from_sheet(sheet)
+
+        self._df_to_sql(df, table.bq_table, table.bq_dataset)

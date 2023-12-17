@@ -5,7 +5,7 @@ from django.utils.text import slugify
 from google.cloud import storage
 from googleapiclient import discovery
 
-from apps.base.engine.bigquery import get_credentials
+from apps.base.engine.credentials import get_credentials
 
 from .core.bigquery import *  # noqa
 from .core.ibis.client import *  # noqa
