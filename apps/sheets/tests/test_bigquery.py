@@ -84,20 +84,20 @@ def test_cell_range_construction(
     sheet = sheet_factory(integration__project=project, cell_range=None)
     table = integration_table_factory(project=project, integration=sheet.integration)
 
-    import_table_from_sheet(table, sheet)
+    get_backend_client().import_table_from_sheet(table, sheet)
     assert get_cell_range_from_job(bigquery) is None
     bigquery.reset_mock()
 
     sheet.cell_range = "A1:B2"
-    import_table_from_sheet(table, sheet)
+    get_backend_client().import_table_from_sheet(table, sheet)
     assert get_cell_range_from_job(bigquery) == sheet.cell_range
     bigquery.reset_mock()
 
     sheet.sheet_name = "Easy"
-    import_table_from_sheet(table, sheet)
+    get_backend_client().import_table_from_sheet(table, sheet)
     assert get_cell_range_from_job(bigquery) == f"{sheet.sheet_name}!{sheet.cell_range}"
     bigquery.reset_mock()
 
     sheet.cell_range = None
-    import_table_from_sheet(table, sheet)
+    get_backend_client().import_table_from_sheet(table, sheet)
     assert get_cell_range_from_job(bigquery) == sheet.sheet_name
