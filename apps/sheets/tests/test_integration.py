@@ -16,7 +16,7 @@ pytestmark = pytest.mark.django_db
 @pytest.fixture(autouse=True)
 def bq_table_schema_is_not_string_only(mocker):
     mocker.patch(
-        "apps.sheets.bigquery.bq_table_schema_is_string_only", return_value=False
+        "apps.base.engine.bigquery.bq_table_schema_is_string_only", return_value=False
     )
 
 
@@ -28,7 +28,6 @@ def test_sheet_create(
     sheets,
     drive_v2,
 ):
-
     # mock sheet client to get title from Google Sheets
     sheets.spreadsheets().get().execute = Mock(
         return_value={"properties": {"title": "Store Info"}}
@@ -148,7 +147,6 @@ def test_validation_failures(client, logged_in_user, sheet_factory, sheets):
 
 
 def test_runtime_error(client, logged_in_user, sheet_factory, bigquery, drive_v2):
-
     team = logged_in_user.teams.first()
     sheet = sheet_factory(integration__project__team=team)
     integration = sheet.integration
@@ -178,7 +176,6 @@ def test_runtime_error(client, logged_in_user, sheet_factory, bigquery, drive_v2
 def test_resync_after_source_update(
     client, logged_in_user, sheet_factory, drive_v2, bigquery
 ):
-
     team = logged_in_user.teams.first()
     sheet = sheet_factory(
         integration__project__team=team,
