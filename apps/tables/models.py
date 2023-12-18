@@ -77,9 +77,7 @@ class Table(BaseModel):
 
     @cached_property
     def schema(self):
-        from apps.tables.data import get_query_from_table
-
-        return get_query_from_table(self).schema()
+        return get_backend_client().get_table(self).schema()
 
     @property
     def owner_name(self):

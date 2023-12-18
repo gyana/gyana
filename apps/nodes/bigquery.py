@@ -12,6 +12,7 @@ from ibis.expr.datatypes import String
 from apps.base import engine
 from apps.base.core.utils import error_name_to_snake
 from apps.base.engine import bigquery as bq
+from apps.base.engine import get_backend_client
 from apps.columns.bigquery import (
     aggregate_columns,
     compile_formula,
@@ -23,7 +24,6 @@ from apps.columns.bigquery import (
 from apps.filters.bigquery import get_query_from_filters
 from apps.nodes.exceptions import ColumnNamesDontMatch, JoinTypeError, NodeResultNone
 from apps.nodes.models import Node
-from apps.tables.data import get_query_from_table
 
 from ._utils import create_or_replace_intermediate_table, get_parent_updated
 
@@ -90,7 +90,9 @@ def use_intermediate_table(func):
 
 
 def get_input_query(node):
-    return get_query_from_table(node.input_table) if node.input_table else None
+    return (
+        get_backend_client().get_table(node.input_table) if node.input_table else None
+    )
 
 
 def get_output_query(node, parent):

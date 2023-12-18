@@ -1,7 +1,4 @@
-from django.core.cache import cache
-
 from apps.base.account import is_scheduled_help_text
-from apps.base.engine import get_backend_client
 from apps.base.forms import BaseModelForm
 from apps.customapis.forms import CustomApiUpdateForm
 from apps.sheets.forms import SheetUpdateForm
@@ -34,5 +31,3 @@ class IntegrationUpdateForm(BaseModelForm):
 
     def post_save(self, instance):
         instance.project.update_schedule()
-        # Ibis caches the fetched schemas of a table that could have changed.
-        get_backend_client().client.reconnect()
