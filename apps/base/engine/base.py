@@ -28,14 +28,28 @@ class BaseClient(ABC):
         )
 
     def create_team_dataset(self, team: "Team"):
-        self.client.create_schema(team.tables_dataset_id, force=True)
+        self.client.raw_sql(f"CREATE SCHEMA {team.tables_dataset_id}")
+        # TODO: Use this once upgraded to Ibis 7.0
+        # self.client.create_schema(team.tables_dataset_id, force=True)
 
     def delete_team_dataset(self, team: "Team"):
-        self.client.drop_schema(team.tables_dataset_id, force=True)
+        self.client.raw_sql(f"DROP SCHEMA {team.tables_dataset_id}")
+        # TODO: Use this once upgraded to Ibis 7.0
+        # self.client.drop_schema(team.tables_dataset_id, force=True)
 
-    def create_or_replace_table(self, table_id: str, query: str):
-        # TODO: Update to ibis 7 to support create_tablr with overwrite=True
-        self.client.raw_sql(f"CREATE OR REPLACE TABLE {table_id} as ({query})")
+    def create_or_replace_table(self, table_id: str, query):
+        # SQLAlchemy backends return an SQLAlchemy object
+        # Might be able to remove after upgradin ibis that introduces
+        # a sql method
+        if not isinstance(query, str):
+            query = str(query.compile(compile_kwargs={"literal_binds": True})).replace(
+                "\n", ""
+            )
+        with self.raw_client.connect() as conn:
+            # TODO: Update to ibis 7 to support create_table with overwrite=True
+            conn.execute(sa.text(f"DROP TABLE IF EXISTS {table_id}"))
+            conn.execute(sa.text(f"CREATE TABLE {table_id} as ({query})"))
+            conn.commit()
 
     def drop_table(self, table_id: str):
         self.client.drop_table(table_id, force=True)

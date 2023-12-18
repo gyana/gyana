@@ -187,6 +187,10 @@ class BigQueryClient(BaseClient):
 
         return
 
+    def create_or_replace_table(self, table_id: str, query):
+        # TODO: Update to ibis 7 to support create_table with overwrite=True
+        self.client.raw_sql(f"CREATE OR REPLACE TABLE {table_id} as " f"({query})")
+
     def create_team_dataset(self, team: "Team"):
         client = bigquery()
         # exists ok is for testing
