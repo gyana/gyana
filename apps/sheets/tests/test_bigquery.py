@@ -3,7 +3,7 @@ from unittest.mock import Mock
 import pytest
 from google.cloud.bigquery.schema import SchemaField
 
-from apps.sheets.bigquery import import_table_from_sheet
+from apps.base.engine import get_backend_client
 
 pytestmark = pytest.mark.django_db
 
@@ -26,11 +26,10 @@ def mock_bigquery(bigquery):
 def test_sheet_all_string(
     project, mock_bigquery, bigquery, sheet_factory, integration_table_factory
 ):
-
     sheet = sheet_factory(integration__project=project)
     table = integration_table_factory(project=project, integration=sheet.integration)
 
-    import_table_from_sheet(table, sheet)
+    get_backend_client().import_table_from_sheet(table, sheet)
 
     # initial call has result with strings
     initial_call = bigquery.query.call_args_list[0]
@@ -82,7 +81,6 @@ def get_cell_range_from_job(bigquery):
 def test_cell_range_construction(
     project, mock_bigquery, bigquery, sheet_factory, integration_table_factory
 ):
-
     sheet = sheet_factory(integration__project=project, cell_range=None)
     table = integration_table_factory(project=project, integration=sheet.integration)
 
