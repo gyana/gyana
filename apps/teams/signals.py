@@ -8,7 +8,7 @@ from .models import Team
 
 
 @receiver(post_delete, sender=Team)
-def delete_backend_dataset(sender, instance, *args, **kwargs):
+def delete_engine_dataset(sender, instance, *args, **kwargs):
     if settings.MOCK_REMOTE_OBJECT_DELETION:
         return
 

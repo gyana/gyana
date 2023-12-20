@@ -8,7 +8,7 @@ from .models import Table
 
 
 @receiver(post_delete, sender=Table)
-def delete_backend_table(sender, instance, *args, **kwargs):
+def delete_engine_table(sender, instance, *args, **kwargs):
     if settings.MOCK_REMOTE_OBJECT_DELETION:
         return
 
