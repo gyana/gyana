@@ -13,6 +13,8 @@ def postgres():
 
 
 class PostgresClient(BaseClient):
+    excluded_nodes = ["pivot", "unpivot"]
+
     def __init__(self):
         self.client = ibis.postgres.connect(url=settings.ENGINE_URL)
         self.raw_client = postgres()

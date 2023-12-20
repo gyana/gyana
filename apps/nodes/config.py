@@ -1,6 +1,6 @@
 import functools
 
-from apps.base.clients import get_backend_name
+from apps.base.clients import get_engine
 
 NODE_CONFIG = {
     "input": {
@@ -121,7 +121,6 @@ NODE_CONFIG = {
         "description": "Pivot your table",
         "section": "Table manipulations",
         "explanation": "Use the pivot node to summarise the relationship between two columns.",
-        "disableFor": ["postgres"],
     },
     "unpivot": {
         "displayName": "Unpivot",
@@ -129,7 +128,6 @@ NODE_CONFIG = {
         "description": "Unpivot your table",
         "section": "Table manipulations",
         "explanation": "Use the unpivot node to reverse data that is pivoted.",
-        "disableFor": ["postgres"],
     },
     "intersect": {
         "displayName": "Intersect",
@@ -166,9 +164,9 @@ def _add_max_parents(name):
 
 @functools.cache
 def get_node_config_with_arity():
-    backend = get_backend_name()
+    excluded_nodes = get_engine().excluded_nodes
     return {
         k: {**v, "maxParents": _add_max_parents(k)}
         for k, v in NODE_CONFIG.items()
-        if backend not in v.get("disableFor", [])
+        if k not in excluded_nodes
     }

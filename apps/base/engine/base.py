@@ -20,6 +20,7 @@ if TYPE_CHECKING:
 class BaseClient(ABC):
     client: ibis.BaseBackend
     raw_client: sa.Engine
+    excluded_nodes = []
 
     def get_table(self, table: "Table"):
         return self.client.table(
