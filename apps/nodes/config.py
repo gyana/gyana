@@ -1,6 +1,6 @@
 import functools
 
-from apps.base.engine import get_backend_name
+from apps.base.clients import get_backend_name
 
 NODE_CONFIG = {
     "input": {
