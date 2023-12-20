@@ -99,3 +99,9 @@ class BaseClient(ABC):
         in prod that shouldn't be necessary.
         """
         return self.create_or_replace_table(to_table, f"SELECT * FROM {from_table}")
+
+    def export_to_csv(self, query, gcs_path):
+        """Exports a query to a csv on GCS"""
+
+        df = query.execute()
+        df.to_csv(gcs_path, index=False)

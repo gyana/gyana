@@ -9,7 +9,6 @@ from apps.exports.emails import send_export_email
 from apps.nodes.bigquery import get_query_from_node
 from apps.users.models import CustomUser
 
-from .bigquery import query_to_gcs
 from .models import Export
 
 
@@ -17,13 +16,13 @@ from .models import Export
 def export_to_gcs(export_id, user_id):
     export = Export.objects.get(pk=export_id)
     user = CustomUser.objects.get(pk=user_id)
-
+    client = get_engine()
     if export.node:
         query = get_query_from_node(export.node)
     else:
-        query = get_engine().get_table(export.integration_table)
+        query = client.get_table(export.integration_table)
 
-    query_to_gcs(query.compile(), f"gs://{settings.GS_BUCKET_NAME}/{export.path}")
+    client.export_to_csv(query, f"gs://{settings.GS_BUCKET_NAME}/{export.path}")
 
     send_export_email(export.path, user)
 
