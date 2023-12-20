@@ -3,7 +3,7 @@ from unittest.mock import Mock
 import pytest
 from google.cloud.bigquery.schema import SchemaField
 
-from apps.base.engine import get_backend_client
+from apps.base.clients import get_engine
 
 pytestmark = pytest.mark.django_db
 
@@ -29,7 +29,7 @@ def test_sheet_all_string(
     sheet = sheet_factory(integration__project=project)
     table = integration_table_factory(project=project, integration=sheet.integration)
 
-    get_backend_client().import_table_from_sheet(table, sheet)
+    get_engine().import_table_from_sheet(table, sheet)
 
     # initial call has result with strings
     initial_call = bigquery.query.call_args_list[0]
@@ -84,20 +84,20 @@ def test_cell_range_construction(
     sheet = sheet_factory(integration__project=project, cell_range=None)
     table = integration_table_factory(project=project, integration=sheet.integration)
 
-    get_backend_client().import_table_from_sheet(table, sheet)
+    get_engine().import_table_from_sheet(table, sheet)
     assert get_cell_range_from_job(bigquery) is None
     bigquery.reset_mock()
 
     sheet.cell_range = "A1:B2"
-    get_backend_client().import_table_from_sheet(table, sheet)
+    get_engine().import_table_from_sheet(table, sheet)
     assert get_cell_range_from_job(bigquery) == sheet.cell_range
     bigquery.reset_mock()
 
     sheet.sheet_name = "Easy"
-    get_backend_client().import_table_from_sheet(table, sheet)
+    get_engine().import_table_from_sheet(table, sheet)
     assert get_cell_range_from_job(bigquery) == f"{sheet.sheet_name}!{sheet.cell_range}"
     bigquery.reset_mock()
 
     sheet.cell_range = None
-    get_backend_client().import_table_from_sheet(table, sheet)
+    get_engine().import_table_from_sheet(table, sheet)
     assert get_cell_range_from_job(bigquery) == sheet.sheet_name

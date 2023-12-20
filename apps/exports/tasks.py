@@ -4,7 +4,7 @@ from django.conf import settings
 from django.utils import timezone
 
 from apps.base.analytics import EXPORT_CREATED
-from apps.base.engine import get_backend_client
+from apps.base.clients import get_engine
 from apps.exports.emails import send_export_email
 from apps.nodes.bigquery import get_query_from_node
 from apps.users.models import CustomUser
@@ -21,7 +21,7 @@ def export_to_gcs(export_id, user_id):
     if export.node:
         query = get_query_from_node(export.node)
     else:
-        query = get_backend_client().get_table(export.integration_table)
+        query = get_engine().get_table(export.integration_table)
 
     query_to_gcs(query.compile(), f"gs://{settings.GS_BUCKET_NAME}/{export.path}")
 

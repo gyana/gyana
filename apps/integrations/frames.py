@@ -3,9 +3,9 @@ from django.views.generic import DetailView, TemplateView
 from django_tables2.tables import Table
 from django_tables2.views import SingleTableMixin
 
+from apps.base.clients import get_engine
 from apps.base.core.ibis.humanize import humanize_from_ibis_type
 from apps.base.core.table_data import RequestConfig, get_table
-from apps.base.engine import get_backend_client
 from apps.base.views import UpdateView
 from apps.integrations.forms import IntegrationNameForm
 from apps.integrations.tables import StructureTable
@@ -51,7 +51,7 @@ class IntegrationGrid(TableInstanceMixin, SingleTableMixin, DetailView):
     def get_table(self, **kwargs):
         if not self.table_instance:
             return type("DynamicTable", (Table,), {})(data=[])
-        query = get_backend_client().get_table(self.table_instance)
+        query = get_engine().get_table(self.table_instance)
         table = get_table(query.schema(), query, None, **kwargs)
 
         return RequestConfig(
@@ -65,7 +65,7 @@ class IntegrationPreview(TableInstanceMixin, SingleTableMixin, DetailView):
     paginate_by = 5
 
     def get_table(self, **kwargs):
-        query = get_backend_client().get_table(self.table_instance)
+        query = get_engine().get_table(self.table_instance)
         table = get_table(query.schema(), query.limit(15), None, **kwargs)
 
         return RequestConfig(

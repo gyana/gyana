@@ -4,7 +4,7 @@ from django.conf import settings
 from django.db import models
 from django.utils.functional import cached_property
 
-from apps.base.engine import get_backend_client
+from apps.base.clients import get_engine
 from apps.base.models import BaseModel
 from apps.projects.models import Project
 from apps.tables.clone import create_attrs
@@ -77,7 +77,7 @@ class Table(BaseModel):
 
     @cached_property
     def schema(self):
-        return get_backend_client().get_table(self).schema()
+        return get_engine().get_table(self).schema()
 
     @property
     def owner_name(self):
@@ -90,7 +90,7 @@ class Table(BaseModel):
         return f"https://console.cloud.google.com/bigquery?project={settings.GCP_PROJECT}&p={settings.GCP_PROJECT}&d={self.bq_dataset}&t={self.bq_table}&page=table"
 
     def update_modified_and_num_rows(self):
-        modified, num_rows = get_backend_client().get_modified_and_num_rows(self)
+        modified, num_rows = get_engine().get_modified_and_num_rows(self)
         self.data_updated = modified
         self.num_rows = num_rows
         self.save()

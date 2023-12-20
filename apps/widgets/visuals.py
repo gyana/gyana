@@ -1,7 +1,7 @@
 from typing import Any, Dict
 
+from apps.base.clients import get_engine
 from apps.base.core.table_data import get_table
-from apps.base.engine import get_backend_client
 from apps.columns.bigquery import aggregate_columns, get_groups
 from apps.controls.bigquery import slice_query
 from apps.filters.bigquery import get_query_from_filters
@@ -18,7 +18,7 @@ class MaxRowsExceeded(Exception):
 
 
 def pre_filter(widget, control, use_previous_period=False):
-    query = get_backend_client().get_table(widget.table)
+    query = get_engine().get_table(widget.table)
     query = get_query_from_filters(query, widget.filters.all())
 
     if (

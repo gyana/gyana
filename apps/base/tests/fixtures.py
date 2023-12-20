@@ -88,7 +88,7 @@ def bigquery(mocker, settings):
     mocker.patch("apps.base.engine.bigquery.bigquery", return_value=client)
     mocker.patch("ibis.backends.bigquery.client.bq.Client", return_value=client)
 
-    ibis_client = engine.get_backend_client().client
+    ibis_client = engine.get_engine().client
     ibis_client.client = client
     bind(
         ibis_client,

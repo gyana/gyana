@@ -1,7 +1,7 @@
 from django.db import transaction
 from django.utils import timezone
 
-from apps.base.engine import get_backend_client
+from apps.base.clients import get_engine
 from apps.tables.models import Table
 
 
@@ -29,7 +29,7 @@ def create_or_replace_intermediate_table(node, query):
             intermediate_node=node,
         )
 
-        get_backend_client().create_or_replace_table(table.bq_id, query.compile())
+        get_engine().create_or_replace_table(table.bq_id, query.compile())
 
         table.data_updated = timezone.now()
         table.save()

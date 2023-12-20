@@ -4,7 +4,7 @@ from rest_framework.decorators import api_view
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
-from apps.base.engine import get_backend_client
+from apps.base.clients import get_engine
 from apps.nodes.bigquery import get_query_from_node
 from apps.nodes.models import Node
 from apps.projects.access import user_can_access_project
@@ -44,7 +44,7 @@ def autocomplete_options(request):
         # For nodes we actually want the parent of the parent
 
         query = (
-            get_backend_client().get_table(parent.table)
+            get_engine().get_table(parent.table)
             if parentType == "widget"
             else get_query_from_node(parent.parents.first())
         )

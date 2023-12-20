@@ -15,9 +15,9 @@ from apps.base.analytics import (
     WIDGET_CONFIGURED_EVENT,
     WIDGET_PREVIEWED_EVENT,
 )
+from apps.base.clients import get_engine
 from apps.base.core.table_data import RequestConfig, get_table
 from apps.base.core.utils import error_name_to_snake
-from apps.base.engine import get_backend_client
 from apps.base.templates import template_exists
 from apps.base.views import UpdateView
 from apps.columns.currency_symbols import CURRENCY_SYMBOLS_MAP
@@ -330,7 +330,7 @@ class WidgetInput(DashboardMixin, SingleTableMixin, DetailView):
 
     def get_table(self, **kwargs):
         if self.object.table:
-            query = get_backend_client().get_table(self.object.table)
+            query = get_engine().get_table(self.object.table)
             table = get_table(query.schema(), query)
             return RequestConfig(
                 self.request, paginate=self.get_table_pagination(table)

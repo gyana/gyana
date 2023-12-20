@@ -2,7 +2,7 @@ from django.conf import settings
 from django.db.models.signals import post_delete
 from django.dispatch.dispatcher import receiver
 
-from apps.base.engine import get_backend_client
+from apps.base.clients import get_engine
 
 from .models import Table
 
@@ -16,4 +16,4 @@ def delete_backend_table(sender, instance, *args, **kwargs):
     if " copy " in instance.bq_id:
         return
     # TODO: Make sure it works for postgres backend
-    get_backend_client().drop_table(instance.bq_id)
+    get_engine().drop_table(instance.bq_id)

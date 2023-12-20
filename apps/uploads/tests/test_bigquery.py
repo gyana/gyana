@@ -3,7 +3,7 @@ from unittest.mock import Mock
 import pytest
 from google.cloud.bigquery.schema import SchemaField
 
-from apps.base.engine import get_backend_client
+from apps.base.clients import get_engine
 
 pytestmark = pytest.mark.django_db
 
@@ -11,7 +11,7 @@ pytestmark = pytest.mark.django_db
 def test_upload_all_string(
     logged_in_user, bigquery, upload_factory, integration_table_factory
 ):
-    client = get_backend_client()
+    client = get_engine()
     upload = upload_factory(integration__project__team=logged_in_user.teams.first())
     table = integration_table_factory(
         project=upload.integration.project, integration=upload.integration

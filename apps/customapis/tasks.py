@@ -11,9 +11,9 @@ from django.utils import timezone
 from jsonpath_ng import parse
 from requests_oauthlib import OAuth2Session
 
+from apps.base.clients import get_engine
 from apps.base.core.bigquery import sanitize_bq_column_name
 from apps.base.core.utils import catchtime
-from apps.base.engine import get_backend_client
 from apps.integrations.emails import send_integration_ready_email
 from apps.runs.models import JobRun
 from apps.tables.models import Table
@@ -125,9 +125,7 @@ def run_customapi_sync_task(self, run_id):
         )
 
         with catchtime() as get_time_to_sync:
-            get_backend_client().import_table_from_customapi(
-                table=table, customapi=customapi
-            )
+            get_engine().import_table_from_customapi(table=table, customapi=customapi)
 
         table.update_modified_and_num_rows()
 

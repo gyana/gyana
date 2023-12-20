@@ -34,7 +34,7 @@ def run_upload_sync_task(self, run_id: int):
         )
 
         with catchtime() as get_time_to_sync:
-            client = engine.get_backend_client()
+            client = engine.get_engine()
             client.import_table_from_upload(table=table, upload=upload)
 
         table.update_modified_and_num_rows()

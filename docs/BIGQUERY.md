@@ -5,7 +5,7 @@ Actionable points for developers:
 <!-- TODO: This might need to change with the swap over to the ibis client -->
 
 - Use `apps.base.clients.bigquery.get_query_results` for synchronous queries
-- Use `apps.base.engine.get_backend_client().get_table` for fetching Ibis schema
+- Use `apps.base.engine.get_engine().get_table` for fetching Ibis schema
 - Avoid multiple BigQuery requests
 
 Details on performance optimisations for BigQuery queries:

@@ -5,7 +5,9 @@ from django.utils.text import slugify
 from google.cloud import storage
 from googleapiclient import discovery
 
+from apps.base.engine.bigquery import BigQueryClient
 from apps.base.engine.credentials import get_credentials
+from apps.base.engine.postgres import PostgresClient
 
 from .core.bigquery import *  # noqa
 from .core.ibis.client import *  # noqa
@@ -14,6 +16,19 @@ from .core.ibis.compiler import *  # noqa
 SLUG = (
     slugify(settings.CLOUD_NAMESPACE) if settings.CLOUD_NAMESPACE is not None else None
 )
+
+
+def get_backend_name():
+    if settings.ENGINE_URL and settings.ENGINE_URL.startswith("postgresql://"):
+        return "postgres"
+    return "bigquery"
+
+
+@lru_cache
+def get_engine():
+    if get_backend_name() == "postgres":
+        return PostgresClient()
+    return BigQueryClient()
 
 
 @lru_cache
