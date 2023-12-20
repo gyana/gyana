@@ -262,6 +262,7 @@ def get_distinct_query(node, query):
 
 @use_intermediate_table
 def get_pivot_query(node, parent):
+    # TODO: move this to the base client
     client = bq.bigquery()
     column_type = parent[node.pivot_column].type()
 

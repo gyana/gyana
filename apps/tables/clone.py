@@ -1,6 +1,6 @@
 from django.db import transaction
 
-from apps.base.data import copy_table
+from apps.base.clients import get_engine
 
 
 def create_attrs(attrs, original):
@@ -47,4 +47,4 @@ def create_attrs(attrs, original):
 
 # Make sure this is called inside a celery task, it could take a while
 def duplicate_table(original, clone):
-    transaction.on_commit(lambda: copy_table(original.bq_id, clone.bq_id))
+    transaction.on_commit(lambda: get_engine().copy_table(original.bq_id, clone.bq_id))

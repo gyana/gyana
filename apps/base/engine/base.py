@@ -90,3 +90,11 @@ class BaseClient(ABC):
             if_exists="replace",
             index=False,
         )
+
+    def copy_table(self, from_table, to_table):
+        """Copies a bigquery table from `from_table` to `to_table.
+
+        Replaces if the table already exists, mostly important to work locally,
+        in prod that shouldn't be necessary.
+        """
+        return self.create_or_replace_table(to_table, f"SELECT * FROM {from_table}")
