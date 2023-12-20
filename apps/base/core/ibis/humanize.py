@@ -1,6 +1,6 @@
 from ibis.expr.datatypes import DataType
 
-BIGQUERY_TYPE_TO_HUMAN = {
+IBIS_TYPE_TO_HUMAN = {
     "array": "Array",
     "boolean": "True/False",
     "binary": "Binary",
@@ -29,4 +29,4 @@ def humanize_from_ibis_type(type_: DataType):
     raw_type = str(type_).split("<")[0].split("(")[0]
 
     # for template types, share raw info for end user
-    return BIGQUERY_TYPE_TO_HUMAN.get(raw_type) or raw_type
+    return IBIS_TYPE_TO_HUMAN.get(raw_type) or raw_type
