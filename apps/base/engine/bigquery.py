@@ -122,7 +122,6 @@ def bigquery():
     # https://cloud.google.com/bigquery/external-data-drive#python
     credentials, project = get_credentials()
 
-    # return bigquery.Client(project=settings.GCP_PROJECT)
     return bq.Client(
         credentials=credentials, project=project, location=settings.BIGQUERY_LOCATION
     )

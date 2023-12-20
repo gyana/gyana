@@ -7,7 +7,7 @@ from apps.base.engine.postgres import PostgresClient
 
 
 def get_backend_name():
-    if settings.DATABASE_URL and settings.DATABASE_URL.startswith("postgresql://"):
+    if settings.ENGINE_URL and settings.ENGINE_URL.startswith("postgresql://"):
         return "postgres"
     return "bigquery"
 

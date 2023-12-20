@@ -344,8 +344,9 @@ PROJECT_METADATA = {
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
-DATABASE_URL = os.environ.get("DATABASE_URL")
-GCP_PROJECT = os.environ.get("GCP_PROJECT")
+ENGINE_URL = os.environ.get("ENGINE_URL", "bigquery://project")
+if ENGINE_URL.startswith("bigquery"):
+    GCP_PROJECT = ENGINE_URL.split("://")[1]
 GCP_BQ_SVC_ACCOUNT = os.environ.get("GCP_BQ_SVC_ACCOUNT")
 
 DEFAULT_FILE_STORAGE = "storages.backends.gcloud.GoogleCloudStorage"

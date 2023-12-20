@@ -9,10 +9,10 @@ from apps.base.engine.base import BaseClient
 
 @lru_cache
 def postgres():
-    return create_engine(settings.DATABASE_URL)
+    return create_engine(settings.ENGINE_URL)
 
 
 class PostgresClient(BaseClient):
     def __init__(self):
-        self.client = ibis.postgres.connect(url=settings.DATABASE_URL)
+        self.client = ibis.postgres.connect(url=settings.ENGINE_URL)
         self.raw_client = postgres()
