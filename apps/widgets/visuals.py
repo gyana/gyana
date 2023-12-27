@@ -33,11 +33,11 @@ def chart_to_output(widget: Widget, control) -> Dict[str, Any]:
     query = get_query_from_widget(widget, query)
     # TODO: before we were fetching result and row count in
     # a single query now I have split it into two queries
-    total_rows = query.count().execute()
 
-    if (total_rows) > CHART_MAX_ROWS:
+    df = query.limit(CHART_MAX_ROWS + 1).execute()
+    if len(df) > CHART_MAX_ROWS:
         raise MaxRowsExceeded
-    df = query.execute()
+
     chart, chart_id = to_chart(df, widget)
 
     return {"chart": chart}, chart_id
