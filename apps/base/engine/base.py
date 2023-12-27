@@ -55,9 +55,12 @@ class BaseClient(ABC):
     def drop_table(self, table_id: str):
         self.client.drop_table(table_id, force=True)
 
+    def get_table_size(self, table: "Table"):
+        return self.get_table(table).count().execute()
+
     def get_modified_and_num_rows(self, table: "Table"):
         modified = timezone.now()
-        num_rows = self.get_table(table).count().execute()
+        num_rows = self.get_table_size(table)
         return modified, num_rows
 
     def import_table_from_upload(self, table: "Table", upload: "Upload"):

@@ -33,11 +33,9 @@ class GyanaTableData(TableData):
         self,
         data,
     ):
-        self.full_data = data
         self.data = data
         # calculate before the order_by is applied, as len is not effected
-        # TODO: Confirm this is what we want, without str it returns different hashes
-        self._len_key = f"cache-table-length-{hash(str(data))}"
+        self._len_key = f"cache-table-length-{hash(data)}"
 
     @property
     def _page_selected(self):
@@ -62,11 +60,11 @@ class GyanaTableData(TableData):
         return data if self._page_selected else data[: page.stop - page.start]
 
     def __len__(self):
-        """Fetches the total size from BigQuery"""
+        """Fetches the total size from the database"""
         total_rows = cache.get(self._len_key)
 
         if not self._page_selected or total_rows is None:
-            total_rows = self.full_data.count().execute()
+            total_rows = self.data.count().execute()
             cache.set(self._len_key, total_rows, 24 * 3600)
 
         return total_rows

@@ -220,6 +220,9 @@ class BigQueryClient(BaseClient):
     def drop_table(self, table_id: str):
         return bigquery().delete_table(table_id, not_found_ok=True)
 
+    def get_table_size(self, table: "Table"):
+        return self._get_bigquery_object(table.bq_id).num_rows
+
     def get_modified_and_num_rows(self, table: "Table"):
         bq_obj = self._get_bigquery_object(table.bq_id)
         return bq_obj.modified, bq_obj.num_rows
