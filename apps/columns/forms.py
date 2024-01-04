@@ -54,7 +54,8 @@ def disable_struct_and_array_columns(fields, column_field, schema):
                 name: "Currently, you cannot use this column type here."
                 for name, type_ in schema.items()
                 if isinstance(type_, (Struct, Array))
-            }
+            },
+            attrs=column_field.widget.attrs,
         ),
     )
 
@@ -140,7 +141,7 @@ class AggregationColumnForm(SchemaFormMixin, LiveAlpineModelForm):
             "function": "Select the aggregation function",
         }
         model = AggregationColumn
-        show = {"function": "column != null"}
+        show = {"function": "column !== null"}
         effect = {
             "column": f"choices.function = $store.ibis.aggregations[schema[column]]"
         }

@@ -1,10 +1,12 @@
 import pytest
 from django.http import QueryDict
+from playwright.sync_api import expect
 
 from apps.base.core.aggregations import AggregationFunctions
 from apps.base.tests.asserts import assertFormChoicesLength
 from apps.base.tests.mock_data import TABLE
 from apps.base.tests.mocks import mock_bq_client_with_schema
+from apps.base.tests.playwright import playwright_form
 from apps.columns.forms import (
     AddColumnForm,
     AggregationColumnForm,
@@ -58,20 +60,26 @@ def test_column_form_with_formatting(column_factory, node_factory):
     }
 
 
-def test_aggregation_form(aggregation_column_factory, node_factory):
-    column = aggregation_column_factory(node=node_factory())
-    form = AggregationColumnForm(instance=column, schema=TABLE.schema())
+def test_aggregation_form(page):
+    form = AggregationColumnForm(schema=TABLE.schema())
+    playwright_form(page, form)
 
-    assert set(form.fields.keys()) == {"column"}
-    assertFormChoicesLength(form, "column", COLUMNS_LENGTH)
+    expect(page.locator("form input,select,textarea")).to_have_count(1)
+    expect(page.locator("select[name=column] option")).to_have_count(COLUMNS_LENGTH)
 
-    data = QueryDict(mutable=True)
-    data["column"] = "id"
-    form = AggregationColumnForm(instance=column, schema=TABLE.schema(), data=data)
-    assert set(form.fields.keys()) == {"column", "function"}
-    assert {choice[0] for choice in form.fields["function"].choices} == {
-        choice.value for choice in AggregationFunctions
+    page.locator("select[name=column]").select_option("id")
+    expect(page.locator("form input,select,textarea")).to_have_count(2)
+
+    check_values = {choice.value for choice in AggregationFunctions}
+    expect(page.locator("select[name=function] option")).to_have_count(
+        len(check_values)
+    )
+
+    option_values = {
+        option.get_attribute("value")
+        for option in page.locator("select[name=function] option").all()
     }
+    assert option_values == check_values
 
 
 def test_aggregation_form_with_formatting(aggregation_column_factory, node_factory):

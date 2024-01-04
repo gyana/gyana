@@ -86,6 +86,8 @@ class SchemaFormMixin:
             self.fields["column"] = forms.ChoiceField(
                 choices=create_column_choices(self.schema),
                 help_text=self.base_fields["column"].help_text,
+                # preserve widget attrs, notably x-effect
+                widget=self.fields["column"].widget,
             )
 
 
