@@ -8,8 +8,7 @@ Required:
 
 - just
 - direnv
-- pyenv
-- pip-tools
+- pyenv (`pyenv install 3.9.14`)
 - volta (`curl https://get.volta.sh | bash`)
 - watchexec
 - redis 6 (`brew services start redis`)
@@ -27,6 +26,12 @@ Authorize direnv to configure your local environment:
 
 ```bash
 direnv allow .
+```
+
+Install pip-tools in local python environment:
+
+```bash
+pip install pip-tools
 ```
 
 Install all required python and node dependencies:

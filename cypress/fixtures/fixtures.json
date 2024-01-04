@@ -1,24 +1,11 @@
 [
   {
-    "model": "auth.group",
-    "pk": 1,
-    "fields": {
-      "name": "Moderators",
-      "permissions": [423, 389, 390, 393, 391, 398, 399, 400]
-    }
-  },
-  {
-    "model": "auth.group",
-    "pk": 2,
-    "fields": {
-      "name": "Editors",
-      "permissions": [423, 389, 390, 393, 391, 398, 399, 400]
-    }
-  },
-  {
     "model": "sites.site",
     "pk": 1,
-    "fields": { "domain": "localhost:8000", "name": "localhost:8000" }
+    "fields": {
+      "domain": "localhost:8000",
+      "name": "localhost:8000"
+    }
   },
   {
     "model": "users.customuser",
@@ -2842,27 +2829,6 @@
     }
   },
   {
-    "model": "blog.author",
-    "pk": 1,
-    "fields": {
-      "name": "David Kell",
-      "avatar": "https://drive.google.com/uc?id=1VOFzW5akIang6sQ_R0O5VgnvAxbqcvAy"
-    }
-  },
-  {
-    "model": "blog.post",
-    "pk": 1,
-    "fields": {
-      "slug": "gyana-2021-wrapped",
-      "date": "2021-12-23",
-      "intro": "Happy holidays everyone. Our review of Gyana in 2021, reflections on no-code data platforms and what comes next. Have a wonderful break!",
-      "title": "Gyana 2021, Wrapped",
-      "body": "Happy holidays everyone.\n\nIf you’re reading this, chances are you helped us in some way this year. So … thank you. It means a lot, to all of us.\n\n**2021 was a good year for Gyana.** We launched [**Gyana 2.0**](\\\"https://www.gyana.com/blog/the-next-chapter-of-gyana\\\"), built our fantastic [**community**](\\\"https://www.facebook.com/groups/891928461364849\\\") and helped thousands of customers discover new ways to [**work with data**](\\\"https://www.gyana.com/blog/learnings-from-one-week-with-gyana\\\").\n\nToday, businesses who want be data-driven have only two options: spend $100k and hire a team of data engineers, or build a [**Rube-Goldberg machine**](\\\"https://en.wikipedia.org/wiki/Rube_Goldberg_machine\\\") of connectors, zaps, spreadsheets and dashboards. As you told us, in over a thousand chats and video calls.\n\n2021 is the year we proved, definitely, a third way is possible - the power of a custom data platform but with a no-code interface, for less than your Zoom subscription.\n\nIt took us a while to get here, but we’ve finally built something we’re really proud of. And we’re seeing the impact with our users, who have synced a total of **367,780,394 rows of data** into Gyana.\n\nAlthough on that note, I’m not sure about that word “users”…\n\n### **For the builders...**\n\nMy number one learning in 2021 is about the appetite to build.\n\nGyana is not a community of “users”, it’s a community of “builders”. Right now, you get a blank slate, a handful of tutorials, and it’s up to you to create. And you’ve exceeded our expectations, and then some.\n\nKudos to the person who built a workflow with a record **78 nodes**. It’s a thing of beauty. Really, it belongs in the Tate. You’ll never be truly appreciated, but we know what you did.\n\nAs builders ourselves, we understand the risk you take when committing to a platform like Gyana. Thank you for trusting us. **It’s a privilege to watch you unleash your creativity.** You keep being awesome, and we’ll do our best to get out of your way.\n\n### **What next for 2022?**\n\nFor 2021, we challenged ourselves to take the fundamentals of an enterprise data stack (ETL, modelling, analytics , BI, orchestration, IAM, …) and wrap it into a **single no-code web app that one person can manage**.\n\nIn 2022, we plan to build on that foundation. Our guiding principle: whatever the data source, analysis workflow, or dashboard - **you can build it in Gyana**. Keep an eye out for hundreds of new connectors, custom APIs and dashboards themes.\n\nOn top of that, we’ll be introducing new features to build towards our goal of the complete data platform. **Actions** enable you to use your data results to do things - like export a Google Sheet or send emails. **Predictions** will help you understand trends and forecast results using machine learning. And our **developer platform** will enable you to build your own data analytics application on Gyana - in days, not months.\n\nFinally, we’re going to put a _big_ focus on learning and educational content. Video tutorials, pre-built templates, blog posts, walkthroughs, and a complete revamp of the website … **we know how important it is and it’s coming**.\n\nHave a wonderful break!\n\n❤️ David + the Gyana team",
-      "feed_image": "https://drive.google.com/uc?id=1VOFzW5akIang6sQ_R0O5VgnvAxbqcvAy",
-      "author": 1
-    }
-  },
-  {
     "model": "account.emailaddress",
     "pk": 1,
     "fields": {
@@ -2901,7 +2867,9 @@
       "client_id": "766404612569-gn5hok52al6q1ob04rfmha8k4bns09me.apps.googleusercontent.com",
       "secret": "l9xbaHAi5xf4WuRji3PiTq-z",
       "key": "",
-      "sites": [1]
+      "sites": [
+        1
+      ]
     }
   },
   {
@@ -2919,7 +2887,9 @@
   {
     "model": "django_celery_beat.periodictasks",
     "pk": 1,
-    "fields": { "last_update": "2023-03-18T23:39:28.862Z" }
+    "fields": {
+      "last_update": "2023-03-18T23:39:28.862Z"
+    }
   },
   {
     "model": "django_celery_beat.periodictask",
