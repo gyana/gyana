@@ -1,6 +1,7 @@
 import pytest
 from django.http import QueryDict
 
+from apps.base.core.aggregations import AggregationFunctions
 from apps.base.tests.asserts import assertFormChoicesLength
 from apps.base.tests.mock_data import TABLE
 from apps.base.tests.mocks import mock_bq_client_with_schema
@@ -19,6 +20,7 @@ from apps.columns.forms import (
 from apps.nodes.models import Node
 
 pytestmark = pytest.mark.django_db
+from apps.columns.models import EditColumn
 
 COLUMNS_LENGTH = 10
 
@@ -56,13 +58,20 @@ def test_column_form_with_formatting(column_factory, node_factory):
     }
 
 
-def test_aggregation_form(aggregation_column_factory, node_factory, snapshot):
+def test_aggregation_form(aggregation_column_factory, node_factory):
     column = aggregation_column_factory(node=node_factory())
     form = AggregationColumnForm(instance=column, schema=TABLE.schema())
 
+    assert set(form.fields.keys()) == {"column"}
     assertFormChoicesLength(form, "column", COLUMNS_LENGTH)
 
-    assert {"show": form.show, "effect": form.effect} == snapshot
+    data = QueryDict(mutable=True)
+    data["column"] = "id"
+    form = AggregationColumnForm(instance=column, schema=TABLE.schema(), data=data)
+    assert set(form.fields.keys()) == {"column", "function"}
+    assert {choice[0] for choice in form.fields["function"].choices} == {
+        choice.value for choice in AggregationFunctions
+    }
 
 
 def test_aggregation_form_with_formatting(aggregation_column_factory, node_factory):
@@ -111,26 +120,51 @@ def test_aggregation_form_with_formatting(aggregation_column_factory, node_facto
     }
 
 
-def test_operation_column_form(edit_column_factory, snapshot):
+def test_operation_column_form(edit_column_factory):
     column = edit_column_factory()
     form = OperationColumnForm(instance=column, schema=TABLE.schema())
 
+    assert set(form.fields.keys()) == {"column"}
     assertFormChoicesLength(form, "column", COLUMNS_LENGTH)
 
+    # Adding a column changes the function field
+    data = QueryDict(mutable=True)
+    data["column"] = "athlete"
+    form = OperationColumnForm(instance=column, schema=TABLE.schema(), data=data)
+    assert set(form.fields.keys()) == {"column", "string_function"}
     assertFormChoicesLength(form, "string_function", 13)
+
+    data = QueryDict(mutable=True)
+    data["column"] = "birthday"
+    form = OperationColumnForm(instance=column, schema=TABLE.schema(), data=data)
+    assert set(form.fields.keys()) == {"column", "date_function"}
     assertFormChoicesLength(form, "date_function", 6)
-    assert {"show": form.show, "effect": form.effect} == snapshot
 
 
-def test_add_column_form(add_column_factory, snapshot):
+def test_add_column_form(add_column_factory):
     column = add_column_factory()
     form = AddColumnForm(instance=column, schema=TABLE.schema())
 
+    assert set(form.fields.keys()) == {"column"}
     assertFormChoicesLength(form, "column", COLUMNS_LENGTH)
 
+    # Adding a column changes the function field
+    data = QueryDict(mutable=True)
+    data["column"] = "stars"
+    form = AddColumnForm(instance=column, schema=TABLE.schema(), data=data)
+    assert set(form.fields.keys()) == {"column", "integer_function"}
     assertFormChoicesLength(form, "integer_function", 18)
+
+    data = QueryDict(mutable=True)
+    data["column"] = "lunch"
+    data["time_function"] = "hour"
+    form = AddColumnForm(instance=column, schema=TABLE.schema(), data=data)
+    assert set(form.fields.keys()) == {
+        "column",
+        "time_function",
+        "label",
+    }
     assertFormChoicesLength(form, "time_function", 7)
-    assert {"show": form.show, "effect": form.effect} == snapshot
 
 
 def test_formula_form(formula_column_factory):
@@ -140,15 +174,27 @@ def test_formula_form(formula_column_factory):
     assert set(form.fields.keys()) == {"formula", "label"}
 
 
-def test_window_form(window_column_factory, snapshot):
+def test_window_form(window_column_factory):
     column = window_column_factory()
     form = WindowColumnForm(instance=column, schema=TABLE.schema())
 
+    assert set(form.fields.keys()) == {"column"}
     assertFormChoicesLength(form, "column", COLUMNS_LENGTH)
+
+    data = QueryDict(mutable=True)
+    data["column"] = "medals"
+    form = WindowColumnForm(instance=column, schema=TABLE.schema(), data=data)
+    assert set(form.fields.keys()) == {
+        "column",
+        "function",
+        "group_by",
+        "order_by",
+        "ascending",
+        "label",
+    }
+    assertFormChoicesLength(form, "function", 7)
     assertFormChoicesLength(form, "group_by", COLUMNS_LENGTH)
     assertFormChoicesLength(form, "order_by", COLUMNS_LENGTH)
-
-    assert {"show": form.show, "effect": form.effect} == snapshot
 
 
 def test_convert_form(convert_column_factory):
@@ -191,13 +237,49 @@ def test_join_form(
     assertFormChoicesLength(form, "how", 4)
 
 
-def test_edit_form(edit_column_factory, snapshot):
-    column = edit_column_factory()
-    form = OperationColumnForm(instance=column, schema=TABLE.schema())
-
-    assertFormChoicesLength(form, "column", COLUMNS_LENGTH)
-
-    assert {"show": form.show, "effect": form.effect} == snapshot
+@pytest.mark.parametrize(
+    "edit, fields",
+    [
+        pytest.param(EditColumn(), ["column"], id="Empty edit"),
+        pytest.param(
+            EditColumn(column="id"), ["column", "integer_function"], id="Integer column"
+        ),
+        pytest.param(
+            EditColumn(column="id", integer_function="sub"),
+            ["column", "integer_function", "float_value"],
+            id="Integer column with function",
+        ),
+        pytest.param(
+            EditColumn(column="stars", integer_function="sub"),
+            ["column", "integer_function", "float_value"],
+            id="Float column",
+        ),
+        pytest.param(
+            EditColumn(column="athlete"),
+            ["column", "string_function"],
+            id="String column",
+        ),
+        pytest.param(
+            EditColumn(column="athlete", string_function="like"),
+            ["column", "string_function", "string_value"],
+            id="String column with function",
+        ),
+        pytest.param(
+            EditColumn(column="when"),
+            ["column", "datetime_function"],
+            id="Datetime column",
+        ),
+        pytest.param(
+            EditColumn(column="birthday"), ["column", "date_function"], id="Date column"
+        ),
+        pytest.param(
+            EditColumn(column="lunch"), ["column", "time_function"], id="Time column"
+        ),
+    ],
+)
+def test_edit_live_fields(edit, fields):
+    form = OperationColumnForm(schema=TABLE.schema(), instance=edit)
+    assert form.get_live_fields() == fields
 
 
 def test_rename_form(rename_column_factory):
