@@ -286,7 +286,7 @@ class AddColumnForm(SchemaFormMixin, LiveAlpineModelForm):
         show = (
             {k: _show_function_field(k) for k in fields if k.endswith("_function")}
             | {k: _show_value_field(k) for k in fields if k.endswith("_value")}
-            | {"label": "computed != null"}
+            | {"label": "!!$data[computed.function_field]"}
         )
         effect = {
             "column": f"computed.function_field = $store.ibis.functions[schema[column]]"
@@ -315,14 +315,14 @@ class WindowColumnForm(SchemaFormMixin, LiveAlpineModelForm):
         fields = ("column", "function", "group_by", "order_by", "ascending", "label")
         model = WindowColumn
         show = {
-            "function": "column != null",
-            "group_by": "$data.function != null",
-            "order_by": "$data.function != null",
-            "ascending": "$data.function != null",
-            "label": "$data.function != null",
+            "function": "column !== null",
+            "group_by": "column !== null",
+            "order_by": "column !== null",
+            "ascending": "column !== null",
+            "label": "column !== null",
         }
         effect = {
-            "function": f"$choices.function = $store.ibis.aggregrations[schema[column]]"
+            "column": f"choices.function = $store.ibis.aggregations[schema[column]]"
         }
 
     def __init__(self, *args, **kwargs):

@@ -257,7 +257,7 @@ class AddColumnNodeForm(DefaultNodeForm):
         super().__init__(*args, **kwargs)
 
         self.helper.layout = Layout(
-            CrispyFormset("edit", "Edit columns", AddColumnFormSet),
+            CrispyFormset("add", "Add columns", AddColumnFormSet),
         )
 
 

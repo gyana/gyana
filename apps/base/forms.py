@@ -83,12 +83,13 @@ class SchemaFormMixin:
         super().__init__(*args, **kwargs)
 
         if self.fields.get("column"):
+            attrs = self.fields["column"].widget.attrs
             self.fields["column"] = forms.ChoiceField(
                 choices=create_column_choices(self.schema),
                 help_text=self.base_fields["column"].help_text,
-                # preserve widget attrs, notably x-effect
-                widget=self.fields["column"].widget,
             )
+            # preserve widget attrs, notably x-effect
+            self.fields["column"].widget.attrs.update(attrs)
 
 
 class BaseModelForm(forms.ModelForm):
