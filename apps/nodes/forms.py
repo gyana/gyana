@@ -178,7 +178,7 @@ class PivotNodeForm(NodeForm):
             "pivot_aggregation": "Aggregation function",
         }
         show = {
-            "pivot_aggregation": "pivot_value != null",
+            "pivot_aggregation": "pivot_value !== null",
         }
         effect = {
             "pivot_value": f"choices.pivot_aggregation = $store.ibis.aggregations[schema[pivot_value]]"

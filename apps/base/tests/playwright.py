@@ -6,6 +6,7 @@ from apps.base.alpine import ibis_store
 class PlaywrightForm:
     def __init__(self, page):
         self.page = page
+        self.page.set_default_timeout(1000)
 
     def render(self, form):
         html = render_to_string(
@@ -19,7 +20,9 @@ class PlaywrightForm:
     def assert_fields(self, expected):
         field_names = {
             el.get_attribute("name")
-            for el in self.page.locator("form input,select,textarea").all()
+            for el in self.page.locator(
+                "form input,select,textarea,gy-select-autocomplete"
+            ).all()
         }
         assert field_names == set(expected), f"{field_names} != {set(expected)}"
 

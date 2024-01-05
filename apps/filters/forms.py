@@ -35,25 +35,30 @@ TYPE_TO_IBIS = {
 }
 
 
-def _get_show_for_filter_type(filter_type):
+def _get_show_for_predicate(predicate):
+    filter_types = [
+        k for k, v in PREDICATE_MAP.items() if v == f"{predicate}_predicate"
+    ]
+    ibis = [y for x in filter_types for y in TYPE_TO_IBIS[x]]
+    return f"{ibis}.includes(schema[column])"
+
+
+def _get_show_for_value(filter_type, multiple=False):
     predicate = PREDICATE_MAP[filter_type]
     ibis = TYPE_TO_IBIS[filter_type]
-    value = f"{filter_type.lower()}_value"
-    values = value + "s"
     no_value = [x.value for x in NO_VALUE]
 
     is_ibis = f"{ibis}.includes(schema[column])"
-    is_predicate = f"({predicate} != null) && !{no_value}.includes({predicate})"
+    is_predicate = f"({predicate} !== null) && !{no_value}.includes({predicate})"
     is_multiple = f"['isin', 'notin'].includes({predicate})"
 
     # TODO: clarify this comment
     # Predicate can be None for booleans
 
-    return {
-        predicate: is_ibis,
-        value: f"{is_ibis} && {is_predicate} && !{is_multiple}",
-        values: f"{is_ibis} && {is_predicate} && {is_multiple}",
-    }
+    if multiple:
+        return f"{is_ibis} && {is_predicate} && {is_multiple}"
+
+    return f"{is_ibis} && {is_predicate} && !{is_multiple}"
 
 
 class FilterForm(SchemaFormMixin, LiveAlpineModelForm):
@@ -94,10 +99,18 @@ class FilterForm(SchemaFormMixin, LiveAlpineModelForm):
         }
 
         show = {
-            k: v
-            for filter_type in Filter.Type
-            for k, v in _get_show_for_filter_type(filter_type).items()
+            **{
+                f"{p}_predicate": _get_show_for_predicate(p)
+                for p in ["string", "numeric", "time", "datetime", "struct", "bool"]
+            },
+            **{f"{f.lower()}_value": _get_show_for_value(f) for f in Filter.Type},
+            **{
+                f"{f.lower()}_values": _get_show_for_value(f, multiple=True)
+                for f in [Filter.Type.INTEGER, Filter.Type.STRING, Filter.Type.FLOAT]
+            },
         }
+
+        print(show)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

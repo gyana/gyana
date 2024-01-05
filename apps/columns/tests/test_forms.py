@@ -5,7 +5,6 @@ from apps.base.core.aggregations import AggregationFunctions
 from apps.base.tests.asserts import assertFormChoicesLength
 from apps.base.tests.mock_data import TABLE
 from apps.base.tests.mocks import mock_bq_client_with_schema
-from apps.base.tests.playwright import PlaywrightForm
 from apps.columns.forms import (
     AddColumnForm,
     AggregationColumnForm,
@@ -23,11 +22,6 @@ from apps.nodes.models import Node
 pytestmark = pytest.mark.django_db
 
 COLUMNS_LENGTH = 10
-
-
-@pytest.fixture
-def pwf(page):
-    return PlaywrightForm(page)
 
 
 def test_column_form_with_formatting(column_factory, node_factory):
