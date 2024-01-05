@@ -77,7 +77,32 @@ class ColumnForm(SchemaFormMixin, LiveAlpineModelForm):
         )
 
 
-class ColumnFormWithFormatting(ColumnForm):
+class BaseColumnFormWithFormatting(BaseLiveSchemaForm):
+    class Meta:
+        fields = ("column", "part")
+        model = Column
+
+    def get_live_fields(self):
+        fields = ["column"]
+        if isinstance(self.column_type, (Timestamp, Date)):
+            fields += ["part"]
+        return fields
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        disable_struct_and_array_columns(
+            self.fields, self.fields["column"], self.schema
+        )
+
+        if "part" in self.fields and isinstance(self.column_type, Date):
+            self.fields["part"].choices = [
+                choice
+                for choice in self.fields["part"].choices
+                if choice[0] != DatePeriod.DATE.value
+            ]
+
+
+class ColumnFormWithFormatting(BaseColumnFormWithFormatting):
     formatting_unfolded = forms.BooleanField(initial=False, required=False)
     formatting_unfolded.widget.attrs.update({"x-model": "open", "class": "hidden"})
     template_name = "columns/forms/column_form.html"
@@ -153,7 +178,41 @@ class AggregationColumnForm(SchemaFormMixin, LiveAlpineModelForm):
         )
 
 
-class AggregationFormWithFormatting(AggregationColumnForm):
+# TODO: remove this after Alpine forms for widgets
+class BaseAggregationColumnFormWithFormatting(BaseLiveSchemaForm):
+    class Meta:
+        fields = (
+            "column",
+            "function",
+        )
+        help_texts = {
+            "column": "Select the column to aggregate over",
+            "function": "Select the aggregation function",
+        }
+        model = AggregationColumn
+
+    def get_live_fields(self):
+        fields = ["column"]
+
+        if self.column_type is not None:
+            fields += ["function"]
+
+        return fields
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        disable_struct_and_array_columns(
+            self.fields, self.fields["column"], self.schema
+        )
+
+        if self.column_type is not None:
+            self.fields["function"].choices = [
+                (choice.value, choice.name)
+                for choice in AGGREGATION_TYPE_MAP[self.column_type.name]
+            ]
+
+
+class AggregationFormWithFormatting(BaseAggregationColumnFormWithFormatting):
     formatting_unfolded = forms.BooleanField(initial=False, required=False)
     formatting_unfolded.widget.attrs.update({"x-model": "open", "class": "hidden"})
     template_name = "columns/forms/column_form.html"

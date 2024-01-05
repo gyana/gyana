@@ -30,38 +30,37 @@ def pwf(page):
     return PlaywrightForm(page)
 
 
-# TODO: Fix this test for Alpine widget PR
-# def test_column_form_with_formatting(column_factory, node_factory):
-#     column = column_factory(node=node_factory())
-#     form = ColumnFormWithFormatting(instance=column, schema=TABLE.schema())
+def test_column_form_with_formatting(column_factory, node_factory):
+    column = column_factory(node=node_factory())
+    form = ColumnFormWithFormatting(instance=column, schema=TABLE.schema())
 
-#     assert set(form.fields.keys()) == {"column", "sort_index"}
-#     assertFormChoicesLength(form, "column", COLUMNS_LENGTH)
+    assert set(form.fields.keys()) == {"column", "sort_index"}
+    assertFormChoicesLength(form, "column", COLUMNS_LENGTH)
 
-#     data = QueryDict(mutable=True)
-#     data["column"] = "id"
-#     form = ColumnFormWithFormatting(instance=column, schema=TABLE.schema(), data=data)
-#     assert set(form.fields.keys()) == {
-#         "column",
-#         "sort_index",
-#         "currency",
-#         "name",
-#         "rounding",
-#         "formatting_unfolded",
-#         "is_percentage",
-#         "conditional_formatting",
-#         "positive_threshold",
-#         "negative_threshold",
-#     }
+    data = QueryDict(mutable=True)
+    data["column"] = "id"
+    form = ColumnFormWithFormatting(instance=column, schema=TABLE.schema(), data=data)
+    assert set(form.fields.keys()) == {
+        "column",
+        "sort_index",
+        "currency",
+        "name",
+        "rounding",
+        "formatting_unfolded",
+        "is_percentage",
+        "conditional_formatting",
+        "positive_threshold",
+        "negative_threshold",
+    }
 
-#     data["column"] = "athlete"
-#     form = ColumnFormWithFormatting(instance=column, schema=TABLE.schema(), data=data)
-#     assert set(form.fields.keys()) == {
-#         "column",
-#         "sort_index",
-#         "name",
-#         "formatting_unfolded",
-#     }
+    data["column"] = "athlete"
+    form = ColumnFormWithFormatting(instance=column, schema=TABLE.schema(), data=data)
+    assert set(form.fields.keys()) == {
+        "column",
+        "sort_index",
+        "name",
+        "formatting_unfolded",
+    }
 
 
 def test_aggregation_form(pwf):
@@ -78,51 +77,50 @@ def test_aggregation_form(pwf):
     )
 
 
-# TODO: Fix this test for Alpine widget PR
-# def test_aggregation_form_with_formatting(aggregation_column_factory, node_factory):
-#     column = aggregation_column_factory(node=node_factory())
-#     form = AggregationFormWithFormatting(instance=column, schema=TABLE.schema())
+def test_aggregation_form_with_formatting(aggregation_column_factory, node_factory):
+    column = aggregation_column_factory(node=node_factory())
+    form = AggregationFormWithFormatting(instance=column, schema=TABLE.schema())
 
-#     assert set(form.fields.keys()) == {"column", "sort_index"}
-#     assertFormChoicesLength(form, "column", COLUMNS_LENGTH)
+    assert set(form.fields.keys()) == {"column", "sort_index"}
+    assertFormChoicesLength(form, "column", COLUMNS_LENGTH)
 
-#     data = QueryDict(mutable=True)
-#     data["column"] = "id"
-#     form = AggregationFormWithFormatting(
-#         instance=column, schema=TABLE.schema(), data=data
-#     )
-#     assert set(form.fields.keys()) == {
-#         "column",
-#         "sort_index",
-#         "function",
-#         "currency",
-#         "name",
-#         "rounding",
-#         "formatting_unfolded",
-#         "is_percentage",
-#         "conditional_formatting",
-#         "positive_threshold",
-#         "negative_threshold",
-#     }
+    data = QueryDict(mutable=True)
+    data["column"] = "id"
+    form = AggregationFormWithFormatting(
+        instance=column, schema=TABLE.schema(), data=data
+    )
+    assert set(form.fields.keys()) == {
+        "column",
+        "sort_index",
+        "function",
+        "currency",
+        "name",
+        "rounding",
+        "formatting_unfolded",
+        "is_percentage",
+        "conditional_formatting",
+        "positive_threshold",
+        "negative_threshold",
+    }
 
-#     data["column"] = "athlete"
-#     form = AggregationFormWithFormatting(
-#         instance=column, schema=TABLE.schema(), data=data
-#     )
-#     assert set(form.fields.keys()) == {
-#         "column",
-#         "sort_index",
-#         "function",
-#         "name",
-#         "formatting_unfolded",
-#         "currency",
-#         "rounding",
-#         "formatting_unfolded",
-#         "is_percentage",
-#         "conditional_formatting",
-#         "positive_threshold",
-#         "negative_threshold",
-#     }
+    data["column"] = "athlete"
+    form = AggregationFormWithFormatting(
+        instance=column, schema=TABLE.schema(), data=data
+    )
+    assert set(form.fields.keys()) == {
+        "column",
+        "sort_index",
+        "function",
+        "name",
+        "formatting_unfolded",
+        "currency",
+        "rounding",
+        "formatting_unfolded",
+        "is_percentage",
+        "conditional_formatting",
+        "positive_threshold",
+        "negative_threshold",
+    }
 
 
 def test_operation_column_form(pwf):
