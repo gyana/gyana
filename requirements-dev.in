@@ -9,6 +9,7 @@ factory-boy
 ipython
 isort
 mypy
+playwright
 pytest
 pytest-cov
 pytest-django
