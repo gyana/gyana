@@ -109,7 +109,7 @@ pickleshare==0.7.5
 platformdirs==2.5.2
     # via black
 playwright==1.40.0
-    # via -r requirements-dev.in
+    # via pytest-playwright
 pluggy==1.0.0
     # via pytest
 poyo==0.5.0
@@ -135,10 +135,14 @@ pyparsing==3.0.9
 pytest==7.4.3
     # via
     #   -r requirements-dev.in
+    #   pytest-base-url
     #   pytest-cov
     #   pytest-django
     #   pytest-factoryboy
     #   pytest-mock
+    #   pytest-playwright
+pytest-base-url==2.0.0
+    # via pytest-playwright
 pytest-cov==3.0.0
     # via -r requirements-dev.in
 pytest-django==4.5.2
@@ -147,17 +151,22 @@ pytest-factoryboy==2.5.0
     # via -r requirements-dev.in
 pytest-mock==3.12.0
     # via -r requirements-dev.in
+pytest-playwright==0.4.3
+    # via -r requirements-dev.in
 python-dateutil==2.8.2
     # via
     #   -c requirements.txt
     #   arrow
     #   faker
 python-slugify==6.1.2
-    # via cookiecutter
+    # via
+    #   cookiecutter
+    #   pytest-playwright
 requests==2.28.1
     # via
     #   -c requirements.txt
     #   cookiecutter
+    #   pytest-base-url
 six==1.16.0
     # via
     #   -c requirements.txt
