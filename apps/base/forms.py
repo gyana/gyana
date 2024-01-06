@@ -155,7 +155,6 @@ class LiveAlpineModelForm(BaseModelForm):
 
         # filter to data populated by POST request in update
         # excluded fields are not rendered in the form
-        # TODO: HTMX plugin for HTML checkboxes false values
         if self.data:
             self.fields = {
                 k: v
