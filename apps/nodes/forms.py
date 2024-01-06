@@ -24,6 +24,7 @@ from .formsets import (
     EditColumnFormSet,
     FilterFormSet,
     FormulaColumnFormSet,
+    JoinColumnFormset,
     RenameColumnFormSet,
     SortColumnFormSet,
     WindowColumnFormSet,
@@ -70,19 +71,20 @@ class InputNodeForm(IntegrationSearchMixin, NodeForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.order_fields(["search", "input_table"])
-        self.fields["search"].widget.attrs["data-action"] = "input->tf-modal#search"
+        if "search" in self.fields:
+            self.order_fields(["search", "input_table"])
+            self.fields["search"].widget.attrs["data-action"] = "input->tf-modal#search"
 
-        # Re-focus the search bar when there is a value
-        if self.data.get("search"):
-            self.fields["search"].widget.attrs["autofocus"] = ""
+            # Re-focus the search bar when there is a value
+            if self.data.get("search"):
+                self.fields["search"].widget.attrs["autofocus"] = ""
 
-        self.search_queryset(
-            self.fields["input_table"],
-            self.instance.workflow.project,
-            self.instance.input_table,
-            self.instance.workflow.input_tables_fk,
-        )
+            self.search_queryset(
+                self.fields["input_table"],
+                self.instance.workflow.project,
+                self.instance.input_table,
+                self.instance.workflow.input_tables_fk,
+            )
 
 
 class OutputNodeForm(NodeForm):
@@ -225,6 +227,13 @@ class ExceptNodeForm(DefaultNodeForm):
 
 
 class JoinNodeForm(DefaultNodeForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.helper.layout = Layout(
+            CrispyFormset("joins", "Join columns", JoinColumnFormset),
+        )
+
     def get_formset_kwargs(self, formset):
         parents_count = self.instance.parents.count()
         names = [f"Join Input {i+2}" for i in range(parents_count)]
