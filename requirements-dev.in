@@ -9,9 +9,9 @@ factory-boy
 ipython
 isort
 mypy
-pytest-playwright
 pytest
 pytest-cov
 pytest-django
 pytest-factoryboy
 pytest-mock
+pytest-playwright

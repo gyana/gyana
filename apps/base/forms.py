@@ -78,7 +78,8 @@ class SchemaFormMixin:
 
     def __init__(self, *args, **kwargs):
         self.schema = kwargs.pop("schema", None)
-        self.schema_json = json.dumps({c: self.schema[c].name for c in self.schema})
+        if self.schema:
+            self.schema_json = json.dumps({c: self.schema[c].name for c in self.schema})
 
         super().__init__(*args, **kwargs)
 
