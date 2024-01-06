@@ -215,16 +215,6 @@ class UnpivotNodeForm(NodeForm):
             "unpivot_column": "Category column name",
         }
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.form_description = "Transform multiple columns into a single column."
-
-
-class ExceptNodeForm(DefaultNodeForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.form_description = "Remove rows that exist in a second table."
-
 
 class JoinNodeForm(DefaultNodeForm):
     def __init__(self, *args, **kwargs):
@@ -330,7 +320,7 @@ KIND_TO_FORM = {
     "input": InputNodeForm,
     "output": OutputNodeForm,
     "select": SelectNodeForm,
-    "except": ExceptNodeForm,
+    "except": DefaultNodeForm,
     "join": JoinNodeForm,
     "aggregation": AggregateNodeForm,
     "union": UnionNodeForm,

@@ -1,3 +1,4 @@
+from django import forms
 from django.template.loader import render_to_string
 
 from apps.base.alpine import ibis_store
@@ -8,10 +9,16 @@ class PlaywrightForm:
         self.page = page
         self.page.set_default_timeout(1000)
 
-    def render(self, form):
-        html = render_to_string(
-            "test/form.html", {"form": form, "ibis_store": ibis_store}
-        )
+    def render(self, content):
+        if isinstance(content, forms.Form):
+            html = render_to_string(
+                "test/form.html", {"form": content, "ibis_store": ibis_store}
+            )
+        else:
+            html = render_to_string(
+                "test/integration.html",
+                {"content": content.decode("utf-8"), "ibis_store": ibis_store},
+            )
         self.page.set_content(html)
 
     def select_value(self, name, value):
@@ -23,7 +30,7 @@ class PlaywrightForm:
             for el in self.page.locator(
                 "form input,select,textarea,gy-select-autocomplete"
             ).all()
-        }
+        } - {"csrfmiddlewaretoken"}
         assert field_names == set(expected), f"{field_names} != {set(expected)}"
 
     def assert_select_options_length(self, name, expected):
