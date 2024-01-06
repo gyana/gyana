@@ -10,7 +10,7 @@ class PlaywrightForm:
         self.page.set_default_timeout(1000)
 
     def render(self, content):
-        if isinstance(content, forms.Form):
+        if isinstance(content, forms.BaseForm):
             html = render_to_string(
                 "test/form.html", {"form": content, "ibis_store": ibis_store}
             )
