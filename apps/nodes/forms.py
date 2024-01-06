@@ -26,7 +26,9 @@ from .formsets import (
     FormulaColumnFormSet,
     JoinColumnFormset,
     RenameColumnFormSet,
+    SelectColumnFormSet,
     SortColumnFormSet,
+    UnpivotColumnFormSet,
     WindowColumnFormSet,
 )
 from .models import Node
@@ -214,6 +216,16 @@ class UnpivotNodeForm(NodeForm):
             "unpivot_value": "Value column name",
             "unpivot_column": "Category column name",
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.helper.layout = Layout(
+            "unpivot_value",
+            "unpivot_column",
+            CrispyFormset("unpivot", "Unpivot columns", UnpivotColumnFormSet),
+            CrispyFormset("select", "Select columns", SelectColumnFormSet),
+        )
 
 
 class JoinNodeForm(DefaultNodeForm):
