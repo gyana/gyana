@@ -1,4 +1,3 @@
-from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout
 from django import forms
 from django.utils.functional import cached_property
@@ -204,7 +203,6 @@ class PivotNodeForm(NodeForm):
         self.fields["pivot_value"] = forms.ChoiceField(
             choices=column_choices, help_text=self.fields["pivot_value"].help_text
         )
-        self.fields["pivot_value"].widget.attrs["x-effect"] = self.effect["pivot_value"]
 
 
 class UnpivotNodeForm(NodeForm):

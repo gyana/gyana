@@ -84,16 +84,21 @@ class SchemaFormMixin:
         super().__init__(*args, **kwargs)
 
         if self.fields.get("column"):
-            attrs = self.fields["column"].widget.attrs
             self.fields["column"] = forms.ChoiceField(
                 choices=create_column_choices(self.schema),
                 help_text=self.base_fields["column"].help_text,
             )
-            # preserve widget attrs, notably x-effect
-            self.fields["column"].widget.attrs.update(attrs)
 
 
-class BaseModelForm(forms.ModelForm):
+# guarantee that widget attrs are updated after any changes in subclass __init__
+class PostInitCaller(forms.models.ModelFormMetaclass):
+    def __call__(cls, *args, **kwargs):
+        obj = type.__call__(cls, *args, **kwargs)
+        obj.__post_init__()
+        return obj
+
+
+class BaseModelForm(forms.ModelForm, metaclass=PostInitCaller):
     template_name = "django/forms/default_form.html"
 
     def __init__(self, *args, **kwargs):
@@ -101,6 +106,7 @@ class BaseModelForm(forms.ModelForm):
         self.helper = FormHelper()
         self.helper.form_tag = False
 
+    def __post_init__(self):
         for k, v in self.effect.items():
             self.fields[k].widget.attrs.update({"x-effect": v})
 

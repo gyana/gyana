@@ -55,7 +55,6 @@ def disable_struct_and_array_columns(fields, column_field, schema):
                 for name, type_ in schema.items()
                 if isinstance(type_, (Struct, Array))
             },
-            attrs=column_field.widget.attrs,
         ),
     )
 
