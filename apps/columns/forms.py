@@ -482,7 +482,7 @@ class JoinColumnForm(BaseLiveSchemaForm):
         return super().save(*args, **kwargs)
 
 
-class SortColumnForm(BaseLiveSchemaForm):
+class SortColumnForm(BaseLiveSchemaForm, LiveAlpineModelForm):
     class Meta:
         model = SortColumn
         fields = ["column", "ascending", "sort_index"]
