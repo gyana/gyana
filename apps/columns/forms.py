@@ -19,7 +19,7 @@ from apps.columns.models import (
 )
 from apps.widgets.models import Widget
 
-from .bigquery import AllOperations, DatePeriod
+from .bigquery import DatePeriod
 from .widgets import CodeMirror
 
 IBIS_TO_FUNCTION = {
@@ -33,15 +33,6 @@ IBIS_TO_FUNCTION = {
     "Date": "date_function",
     "Time": "time_function",
     "Boolean": "boolean_function",
-}
-
-FUNCTION_TO_IBIS = {
-    "string_function": ["String"],
-    "integer_function": ["Int8", "Int16", "Int32", "Int64", "Float64"],
-    "datetime_function": ["Timestamp"],
-    "date_function": ["Date"],
-    "time_function": ["Time"],
-    "boolean_function": ["Boolean"],
 }
 
 

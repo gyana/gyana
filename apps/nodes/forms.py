@@ -11,7 +11,6 @@ from apps.base.forms import (
     SchemaFormMixin,
 )
 from apps.base.widgets import MultiSelect, SourceSelect
-from apps.columns.forms import AGGREGATION_TYPE_MAP
 from apps.columns.models import Column
 
 from .formsets import (

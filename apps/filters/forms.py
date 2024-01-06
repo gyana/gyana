@@ -98,17 +98,17 @@ class FilterForm(SchemaFormMixin, LiveAlpineModelForm):
             "time_value": type("TimeInput", (Input,), {"input_type": "time"}),
         }
 
-        show = {
-            **{
+        show = (
+            {
                 f"{p}_predicate": _get_show_for_predicate(p)
                 for p in ["string", "numeric", "time", "datetime", "struct", "bool"]
-            },
-            **{f"{f.lower()}_value": _get_show_for_value(f) for f in Filter.Type},
-            **{
+            }
+            | {f"{f.lower()}_value": _get_show_for_value(f) for f in Filter.Type}
+            | {
                 f"{f.lower()}_values": _get_show_for_value(f, multiple=True)
                 for f in [Filter.Type.INTEGER, Filter.Type.STRING, Filter.Type.FLOAT]
-            },
-        }
+            }
+        )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
