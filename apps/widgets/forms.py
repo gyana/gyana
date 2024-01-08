@@ -1,22 +1,41 @@
 import math
 import re
 
+from crispy_forms.layout import Layout
 from django import forms
 from ibis.expr.datatypes import Date, Time, Timestamp
 
 from apps.base.core.utils import create_column_choices
+from apps.base.crispy import CrispyFormset
 from apps.base.fields import ColorField
 from apps.base.forms import (
     BaseModelForm,
     IntegrationSearchMixin,
     LiveFormsetForm,
     LiveFormsetMixin,
+    LiveFormsetMixin,
+    SchemaFormMixin,
+    LiveAlpineModelForm,
 )
 from apps.base.widgets import Datalist, SelectWithDisable, SourceSelect
 from apps.columns.bigquery import resolve_colname
 from apps.dashboards.widgets import PaletteColorsField
 
-from .formsets import FORMSETS, AggregationColumnFormset, ControlFormset, FilterFormset
+from .formsets import (
+    FORMSETS,
+    AggregationColumnFormset,
+    AggregationWithFormattingFormset,
+    ColumnFormset,
+    CombinationChartFormset,
+    ControlFormset,
+    FilterFormset,
+    Min2Formset,
+    Min3Formset,
+    OptionalMetricFormset,
+    SingleMetricFormset,
+    XYMetricFormset,
+    XYZMetricFormset,
+)
 from .models import CATEGORIES, COUNT_COLUMN_NAME, DEFAULT_HEIGHT, DEFAULT_WIDTH, Widget
 
 
@@ -98,7 +117,7 @@ class WidgetSourceForm(IntegrationSearchMixin, BaseModelForm):
             )
 
 
-class GenericWidgetForm(LiveFormsetForm):
+class GenericWidgetForm(LiveFormsetMixin, SchemaFormMixin, LiveAlpineModelForm):
     dimension = forms.ChoiceField(choices=())
     second_dimension = forms.ChoiceField(choices=())
     sort_column = forms.ChoiceField(choices=(), required=False)
@@ -118,6 +137,30 @@ class GenericWidgetForm(LiveFormsetForm):
             "compare_previous_period",
             "positive_decrease",
         ]
+        show = {
+            "dimension": f"!{[str(k) for k in (Widget.Kind.METRIC, Widget.Kind.TABLE, Widget.Kind.COMBO)]}.includes(kind)",
+            "part": "dimension !== null && ['Date', 'Timestamp'].includes(schema[dimension])",
+            "second_dimension": f"kind === '{Widget.Kind.HEATMAP}'",
+            "sort_column": f"!{[str(k) for k in (Widget.Kind.METRIC, Widget.Kind.COMBO, Widget.Kind.HEATMAP)]}.includes(kind)",
+            "sort_ascending": f"!{[str(k) for k in (Widget.Kind.METRIC, Widget.Kind.COMBO, Widget.Kind.HEATMAP)]}.includes(kind)",
+            "stack_100_percent": f"{[str(k) for k in (Widget.Kind.STACKED_COLUMN, Widget.Kind.STACKED_BAR)]}.includes(kind)",
+            "show_summary_row": f"kind === '{Widget.Kind.TABLE}'",
+            # TODO: need to check for existence of control on page OR add a note to say this is required
+            "compare_previous_period": f"kind === '{Widget.Kind.METRIC}' && date_column !== null",
+            "positive_decrease": f"kind === '{Widget.Kind.METRIC}' && date_column !== null",
+            # formsets
+            "default_metrics": f"{[str(k) for k in (Widget.Kind.COLUMN, Widget.Kind.BAR, Widget.Kind.LINE, Widget.Kind.AREA, Widget.Kind.DONUT, Widget.Kind.HEATMAP)]}.includes(kind)",
+            "optional_metrics": f"{[str(k) for k in (Widget.Kind.PIE, Widget.Kind.STACKED_BAR, Widget.Kind.STACKED_COLUMN, Widget.Kind.STACKED_LINE, Widget.Kind.HEATMAP)]}.includes(kind)",
+            "xy": f"kind === '{Widget.Kind.SCATTER}'",
+            "xyz": f"kind === '{Widget.Kind.BUBBLE}'",
+            "min3": f"kind === '{Widget.Kind.RADAR}'",
+            "min2": f"kind === '{Widget.Kind.FUNNEL}'",
+            "single_metric": f"{[str(k) for k in (Widget.Kind.METRIC, Widget.Kind.GAUGE,)]}.includes(kind)",
+            "combo": f"kind === '{Widget.Kind.COMBO}'",
+            "dimensions": f"kind === '{Widget.Kind.TABLE}'",
+            "metrics": f"kind === '{Widget.Kind.TABLE}'",
+            "controls": "date_column !== null",
+        }
 
     def get_aggregations(self):
         formsets = self.get_formsets()
@@ -163,64 +206,95 @@ class GenericWidgetForm(LiveFormsetForm):
         ]
 
         schema = self.instance.table.schema
-        if "date_column" in self.fields:
-            self.fields["date_column"] = forms.ChoiceField(
-                required=False,
-                widget=SelectWithDisable(
-                    disabled=disable_non_time(schema),
-                ),
-                choices=create_column_choices(schema),
-                help_text=self.base_fields["date_column"].help_text,
-            )
 
-        if self.get_live_field("kind") == Widget.Kind.TABLE:
-            if columns := self.get_groups() + self.get_aggregations():
-                self.fields["sort_column"].choices = [("", "No column selected")] + [
-                    (name, name) for name in columns
-                ]
-            else:
-                self.fields["sort_column"].choices = create_column_choices(schema)
+        self.fields["dimension"].choices = create_column_choices(schema)
 
-    def get_live_fields(self):
-        fields = ["kind", "date_column"]
+        self.fields["date_column"] = forms.ChoiceField(
+            required=False,
+            widget=SelectWithDisable(
+                disabled=disable_non_time(schema),
+            ),
+            choices=create_column_choices(schema),
+            help_text=self.base_fields["date_column"].help_text,
+        )
 
-        if self.get_live_field("kind") == Widget.Kind.TABLE:
-            fields += ["sort_column", "sort_ascending", "show_summary_row"]
+        self.helper.layout = Layout(
+            "kind",
+            "dimension",
+            "part",
+            "second_dimension",
+            CrispyFormset("default_metrics", "Metrics", AggregationColumnFormset),
+            CrispyFormset(
+                "optional_metrics", "Optional metrics", OptionalMetricFormset
+            ),
+            CrispyFormset("xy", "Metrics", XYMetricFormset),
+            CrispyFormset("xyz", "Metrics", XYZMetricFormset),
+            CrispyFormset("min3", "Metrics (minimum 3)", Min3Formset),
+            CrispyFormset("min2", "Metrics (minimum 2)", Min2Formset),
+            CrispyFormset("single_metric", "Metric", SingleMetricFormset),
+            CrispyFormset("combo", "Metrics", CombinationChartFormset),
+            CrispyFormset("dimensions", "Dimensions", ColumnFormset),
+            CrispyFormset("metrics", "Metrics", AggregationWithFormattingFormset),
+            "sort_column",
+            "sort_ascending",
+            "stack_100_percent",
+            "date_column",
+            "show_summary_row",
+            "compare_previous_period",
+            "positive_decrease",
+            CrispyFormset("controls", "Controls", ControlFormset),
+            CrispyFormset("filters", "Filters", FilterFormset),
+        )
 
-        if (
-            self.get_live_field("kind") == Widget.Kind.METRIC
-            and self.get_live_field("date_column")
-            and (
-                self.instance.page.has_control
-                or (
-                    (controls := self.get_formsets().get("control"))
-                    and len([form for form in controls.forms if not form.deleted]) == 1
-                )
-            )
-        ):
-            fields += ["compare_previous_period", "positive_decrease"]
-        return fields
+        # if self.get_live_field("kind") == Widget.Kind.TABLE:
+        #     if columns := self.get_groups() + self.get_aggregations():
+        #         self.fields["sort_column"].choices = [("", "No column selected")] + [
+        #             (name, name) for name in columns
+        #         ]
+        #     else:
+        #         self.fields["sort_column"].choices = create_column_choices(schema)
 
-    def get_live_formsets(self):
-        formsets = [FilterFormset]
+    # def get_live_fields(self):
+    #     fields = ["kind", "date_column"]
 
-        if self.get_live_field("date_column"):
-            # Inserting at the beginning because we want it to be before the filter
-            formsets.insert(0, ControlFormset)
-        kind = self.get_live_field("kind")
-        if chart_formsets := FORMSETS.get(kind):
-            formsets += chart_formsets
-        else:
-            formsets += [AggregationColumnFormset]
+    #     if self.get_live_field("kind") == Widget.Kind.TABLE:
+    #         fields += ["sort_column", "sort_ascending", "show_summary_row"]
 
-        return formsets
+    #     if (
+    #         self.get_live_field("kind") == Widget.Kind.METRIC
+    #         and self.get_live_field("date_column")
+    #         and (
+    #             self.instance.page.has_control
+    #             or (
+    #                 (controls := self.get_formsets().get("control"))
+    #                 and len([form for form in controls.forms if not form.deleted]) == 1
+    #             )
+    #         )
+    #     ):
+    #         fields += ["compare_previous_period", "positive_decrease"]
+    #     return fields
+
+    # def get_live_formsets(self):
+    #     formsets = [FilterFormset]
+
+    #     if self.get_live_field("date_column"):
+    #         # Inserting at the beginning because we want it to be before the filter
+    #         formsets.insert(0, ControlFormset)
+    #     kind = self.get_live_field("kind")
+    #     if chart_formsets := FORMSETS.get(kind):
+    #         formsets += chart_formsets
+    #     else:
+    #         formsets += [AggregationColumnFormset]
+
+    #     return formsets
 
     def get_formset_kwargs(self, formset):
-        kind = self.get_live_field("kind")
-        if kind == Widget.Kind.SCATTER:
-            return {"names": ["X", "Y"]}
-        if kind == Widget.Kind.BUBBLE:
-            return {"names": ["X", "Y", "Z"]}
+        # TODO: Fix this
+        # kind = self.get_live_field("kind")
+        # if kind == Widget.Kind.SCATTER:
+        #     return {"names": ["X", "Y"]}
+        # if kind == Widget.Kind.BUBBLE:
+        #     return {"names": ["X", "Y", "Z"]}
         return {}
 
 
@@ -236,36 +310,36 @@ class OneDimensionForm(GenericWidgetForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        schema = self.instance.table.schema
+        # schema = self.instance.table.schema
 
-        if "dimension" in self.fields:
-            self.fields["dimension"].choices = create_column_choices(schema)
+        # if "dimension" in self.fields:
+        #     self.fields["dimension"].choices = create_column_choices(schema)
 
-        if "sort_column" in self.fields:
-            columns = [self.get_live_field("dimension")] + (
-                self.get_aggregations() or [COUNT_COLUMN_NAME]
-            )
-            self.fields["sort_column"].choices = [("", "No column selected")] + [
-                (name, name) for name in columns
-            ]
+        # if "sort_column" in self.fields:
+        #     columns = [self.get_live_field("dimension")] + (
+        #         self.get_aggregations() or [COUNT_COLUMN_NAME]
+        #     )
+        #     self.fields["sort_column"].choices = [("", "No column selected")] + [
+        #         (name, name) for name in columns
+        #     ]
 
-    def get_live_fields(self):
-        fields = super().get_live_fields()
-        fields += ["dimension"]
-        if self.get_live_field("kind") != Widget.Kind.COMBO and self.get_live_field(
-            "dimension"
-        ):
-            fields += ["sort_column", "sort_ascending"]
+    # def get_live_fields(self):
+    #     fields = super().get_live_fields()
+    #     fields += ["dimension"]
+    #     if self.get_live_field("kind") != Widget.Kind.COMBO and self.get_live_field(
+    #         "dimension"
+    #     ):
+    #         fields += ["sort_column", "sort_ascending"]
 
-        schema = self.instance.table.schema
+    #     schema = self.instance.table.schema
 
-        if (
-            (dimension := self.get_live_field("dimension"))
-            and dimension in schema
-            and isinstance(schema[dimension], (Date, Timestamp))
-        ):
-            fields += ["part"]
-        return fields
+    #     if (
+    #         (dimension := self.get_live_field("dimension"))
+    #         and dimension in schema
+    #         and isinstance(schema[dimension], (Date, Timestamp))
+    #     ):
+    #         fields += ["part"]
+    #     return fields
 
 
 class TwoDimensionForm(GenericWidgetForm):
