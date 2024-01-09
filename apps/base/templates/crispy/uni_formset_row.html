@@ -1,6 +1,6 @@
 {% load crispy_forms_utils %}
 
-<div x-data="{ ...{{ form.fields_json }} }" class="formset-wrapper">
+<div x-data="{ ...{{ form.fields_json }} }" x-init="$watch('$data', () => $dispatch('formset'))" class="formset-wrapper">
   {% specialspaceless %}
     {% if include_media %}{{ form.media }}{% endif %}
     {% if form_show_errors %}
@@ -25,7 +25,10 @@
         const input = wrapper.querySelector(`input[name*='-DELETE']`)
         input.value = 'on'
         input.setAttribute('checked', '')
-        }"
+        }
+        
+        // Notify parent form of update to formset
+        $dispatch('formset')"
     >
       <i class="far fa-fw fa-times"></i>
     </button>

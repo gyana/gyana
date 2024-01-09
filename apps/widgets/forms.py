@@ -222,6 +222,12 @@ class GenericWidgetForm(LiveFormsetMixin, SchemaFormMixin, LiveAlpineModelForm):
             help_text=self.base_fields["date_column"].help_text,
         )
 
+        self.helper.attrs[
+            "@formset"
+        ] = """const extra_columns = $formset.filter(d => d.function !== null && d.column !== null).map(d => `${d.function}_${d.column}`)
+choices.sort_column = [...Object.keys(schema), ...extra_columns]
+"""
+
         self.helper.layout = Layout(
             "kind",
             "dimension",

@@ -160,8 +160,6 @@ class AggregationColumnForm(SchemaFormMixin, LiveAlpineModelForm):
         # TODO: effect should be a list of expressions added as attrs to root component
         effect = {
             "column": f"choices.function = $store.ibis.aggregations[schema[column]]",
-            # TODO: explicitly update the parent form information
-            "function": "computed.derived_column = (column !== null && function !== null) ? `${column}_{function}` : null",
         }
 
     def __init__(self, *args, **kwargs):
