@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 import ibis
 from django.conf import settings
 from google.cloud import bigquery as bq
+from ibis.backends.bigquery.client import BigQueryCursor
 
 from apps.base.core.bigquery import (
     bq_table_schema_is_string_only,
@@ -127,10 +128,27 @@ def bigquery():
     )
 
 
+# Function to monkeypatch the bigquery ibis client _execute method
+# To use the synchronous bigquery endpoint
+def _execute(self, stmt, results=True, query_parameters=None):
+    job_config = bq.QueryJobConfig(query_parameters=query_parameters or [])
+    query = self.client.query(
+        stmt, job_config=job_config, project=self.billing_project, api_method="INSERT"
+    )
+    query.result()  # blocks until finished
+    return BigQueryCursor(query)
+
+
 class BigQueryClient(BaseClient):
     def __init__(self):
         self.client = ibis.bigquery.connect(
             project_id=settings.GCP_PROJECT, auth_external_data=True
+        )
+        # Just replacing the function doesnt add the the self class instance
+        setattr(
+            self.client,
+            "_execute",
+            _execute.__get__(self.client, self.client.__class__),
         )
 
     def get_table(self, table: "Table"):
