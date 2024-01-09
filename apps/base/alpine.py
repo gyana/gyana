@@ -2,10 +2,14 @@ from apps.base.core.aggregations import AGGREGATION_TYPE_MAP
 from apps.columns.bigquery import AllOperations, DatePeriod
 from apps.columns.forms import IBIS_TO_FUNCTION
 
-aggregations = {k: [x.value for x in v] for k, v in AGGREGATION_TYPE_MAP.items()}
+aggregations = {
+    k: [{"value": x.value, "label": x.label} for x in v]
+    for k, v in AGGREGATION_TYPE_MAP.items()
+}
+print(aggregations)
 date_periods = {
-    "Date": [DatePeriod.DATE.value],
-    "Timestamp": [x.value for x in DatePeriod],
+    "Date": [{"value": DatePeriod.DATE.value, "label": DatePeriod.DATE.label}],
+    "Timestamp": [{"value": x.value, "label": x.label} for x in DatePeriod],
 }
 operations = {
     f: [k for k, v in AllOperations.items() if v.arguments == 1 and v.value_field == f]
@@ -18,6 +22,7 @@ operations = {
 
 ibis_store = {
     "aggregations": aggregations,
+    "aggregation_labels": aggregations,
     "functions": IBIS_TO_FUNCTION,
     "date_periods": date_periods,
     "operations": operations,

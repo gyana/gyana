@@ -161,10 +161,6 @@ class GenericWidgetForm(LiveFormsetMixin, SchemaFormMixin, LiveAlpineModelForm):
             "metrics": f"kind === '{Widget.Kind.TABLE}'",
             "controls": "date_column !== null",
         }
-        effect = {
-            # TODO: add effect to compute the sort_columns, based on schema and derived_columns
-            # Use a querySelectorAll or $formset on the keys to check which ones still exist and filter accordingly
-        }
 
     def get_aggregations(self):
         formsets = self.get_formsets()
@@ -222,10 +218,14 @@ class GenericWidgetForm(LiveFormsetMixin, SchemaFormMixin, LiveAlpineModelForm):
             help_text=self.base_fields["date_column"].help_text,
         )
 
+        # TODO: decision on column names for metrics
         self.helper.attrs[
             "@formset"
-        ] = """const extra_columns = $formset.filter(d => d.function !== null && d.column !== null).map(d => `${d.function}_${d.column}`)
-choices.sort_column = [...Object.keys(schema), ...extra_columns]
+        ] = """const extra = $formset.filter(d => d.column !== null)
+const stats = extra.reduce((acc, d) => {acc[d.column] = (acc[d.column] || 0)+1; return acc}, {[$data.dimension]: 1})
+const extra_columns = extra.map(d => (stats[d.column] > 1 && d.function !== undefined) ? `${d.function}_${d.column}` : d.column)
+const dimensions = [$data.dimension, $data.second_dimension].filter(d => d !== undefined)
+choices.sort_column = [...dimensions, ...extra_columns].map(d => ({value: d, label: d}))
 """
 
         self.helper.layout = Layout(

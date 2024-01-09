@@ -11,7 +11,7 @@
   {% comment %} dynamically set the select choices via the choices.{field} attribute {% endcomment %}
   <select x-model="$data.{{ widget.name|form_name }}" name="{{ widget.name }}"{% include "django/forms/widgets/attrs.html" %}>
     <template x-for="choice in choices.{{ widget.name|form_name }}">
-      <option :value="choice" x-text="choice"></option>
+      <option :value="choice.value" x-text="choice.label"></option>
     </template>
   </select>
 </template>
