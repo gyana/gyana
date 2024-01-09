@@ -223,8 +223,8 @@ class GenericWidgetForm(LiveFormsetMixin, SchemaFormMixin, LiveAlpineModelForm):
             "@formset"
         ] = """const extra = $formset.filter(d => d.column !== null)
 const stats = extra.reduce((acc, d) => {acc[d.column] = (acc[d.column] || 0)+1; return acc}, {[$data.dimension]: 1})
-const extra_columns = extra.map(d => (stats[d.column] > 1 && d.function !== undefined) ? `${d.function}_${d.column}` : d.column)
-const dimensions = [$data.dimension, $data.second_dimension].filter(d => d !== undefined)
+const extra_columns = extra.map(d => (stats[d.column] > 1 && d.function !== null) ? `${d.function}_${d.column}` : d.column)
+const dimensions = [$data.dimension, $data.second_dimension].filter(d => d !== null)
 choices.sort_column = [...dimensions, ...extra_columns].map(d => ({value: d, label: d}))
 """
 
