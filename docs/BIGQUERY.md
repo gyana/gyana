@@ -4,7 +4,7 @@ Actionable points for developers:
 
 <!-- TODO: This might need to change with the swap over to the ibis client -->
 
-- Use `apps.base.clients.bigquery.get_query_results` for synchronous queries
+- We are monkeypatching the ibis client `_execute` method to use synchronous api_method. When upgrading ibis we need to check that this method is still used.
 - Use `apps.base.engine.get_engine().get_table` for fetching Ibis schema
 - Avoid multiple BigQuery requests
 
