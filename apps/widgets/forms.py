@@ -1,5 +1,4 @@
 import math
-import re
 
 from crispy_forms.layout import Layout
 from django import forms
@@ -150,6 +149,7 @@ class GenericWidgetForm(LiveFormsetMixin, SchemaFormMixin, LiveAlpineModelForm):
 
         show = {
             "dimension": is_not_kind(K.METRIC, K.TABLE, K.COMBO),
+            # TODO: custom form for datetime parts, possibly with a multi-widget
             "part": "dimension !== null && ['Date', 'Timestamp'].includes(schema[dimension])",
             "second_dimension": is_kind(
                 K.STACKED_COLUMN, K.STACKED_BAR, K.STACKED_LINE, K.HEATMAP

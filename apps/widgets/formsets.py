@@ -135,9 +135,10 @@ class CombinationChartForm(AggregationColumnForm):
             "column": "Select the column to aggregate over",
             "function": "Select the aggregation function",
         }
-
-    def get_live_fields(self):
-        return [*super().get_live_fields(), "kind", "on_secondary"]
+        show = {"function": "column !== null"}
+        effect = {
+            "column": f"choices.function = $store.ibis.aggregations[schema[column]]",
+        }
 
 
 CombinationChartFormset = forms.inlineformset_factory(
