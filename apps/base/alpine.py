@@ -6,7 +6,6 @@ aggregations = {
     k: [{"value": x.value, "label": x.label} for x in v]
     for k, v in AGGREGATION_TYPE_MAP.items()
 }
-print(aggregations)
 date_periods = {
     "Date": [{"value": DatePeriod.DATE.value, "label": DatePeriod.DATE.label}],
     "Timestamp": [{"value": x.value, "label": x.label} for x in DatePeriod],
