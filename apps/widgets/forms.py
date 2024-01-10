@@ -181,39 +181,39 @@ class GenericWidgetForm(LiveFormsetMixin, SchemaFormMixin, LiveAlpineModelForm):
             "controls": "date_column !== null",
         }
 
-    def get_aggregations(self):
-        formsets = self.get_formsets()
-        if self.data:
-            aggregations = [
-                (
-                    form.data[f"{form.prefix}-column"],
-                    form.data[f"{form.prefix}-function"],
-                )
-                for form in formsets["Aggregations"].forms
-                if not form.deleted and form.data.get(f"{form.prefix}-column")
-            ]
-            names = [aggregation[0] for aggregation in aggregations]
-            return [
-                resolve_colname(column, function, names)
-                for column, function in aggregations
-            ]
-        aggregations = self.instance.aggregations.all()
-        names = [column.column for column in aggregations]
-        return [
-            resolve_colname(column.column, column.function, names)
-            for column in aggregations
-        ]
+    # def get_aggregations(self):
+    #     formsets = self.get_formsets()
+    #     if self.data:
+    #         aggregations = [
+    #             (
+    #                 form.data[f"{form.prefix}-column"],
+    #                 form.data[f"{form.prefix}-function"],
+    #             )
+    #             for form in formsets["Aggregations"].forms
+    #             if not form.deleted and form.data.get(f"{form.prefix}-column")
+    #         ]
+    #         names = [aggregation[0] for aggregation in aggregations]
+    #         return [
+    #             resolve_colname(column, function, names)
+    #             for column, function in aggregations
+    #         ]
+    #     aggregations = self.instance.aggregations.all()
+    #     names = [column.column for column in aggregations]
+    #     return [
+    #         resolve_colname(column.column, column.function, names)
+    #         for column in aggregations
+    #     ]
 
-    def get_groups(self):
-        formsets = self.get_formsets()
-        if self.data:
-            return [
-                form.data[f"{form.prefix}-column"]
-                for form in formsets["Group columns"].forms
-                if not form.deleted and form.data.get(f"{form.prefix}-column")
-            ]
+    # def get_groups(self):
+    #     formsets = self.get_formsets()
+    #     if self.data:
+    #         return [
+    #             form.data[f"{form.prefix}-column"]
+    #             for form in formsets["Group columns"].forms
+    #             if not form.deleted and form.data.get(f"{form.prefix}-column")
+    #         ]
 
-        return [column.column for column in self.instance.columns.all()]
+    #     return [column.column for column in self.instance.columns.all()]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
