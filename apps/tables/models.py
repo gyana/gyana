@@ -89,6 +89,8 @@ class Table(BaseModel):
     def bq_dashboard_url(self):
         return f"https://console.cloud.google.com/bigquery?project={settings.GCP_PROJECT}&p={settings.GCP_PROJECT}&d={self.bq_dataset}&t={self.bq_table}&page=table"
 
+    # TODO: For anything other than the BigQuery Engine this is not actually fetching
+    # the last modified time but sets it to the current time explicitly
     def update_modified_and_num_rows(self):
         modified, num_rows = get_engine().get_modified_and_num_rows(self)
         self.data_updated = modified
