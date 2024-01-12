@@ -135,8 +135,8 @@ class WorkflowTableFactory(factory.django.DjangoModelFactory):
     num_rows = 10
 
 
-@register
-class PageFactory(factory.django.DjangoModelFactory):
+# renamed from PageFactory, to avoid conflict with playwright `page` fixture
+class DashboardPageFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Page
 
@@ -148,7 +148,7 @@ class WidgetFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Widget
 
-    page = factory.SubFactory(PageFactory)
+    page = factory.SubFactory(DashboardPageFactory)
     table = factory.SubFactory(IntegrationTableFactory)
 
 
@@ -227,7 +227,7 @@ class ControlFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Control
 
-    page = factory.SubFactory(PageFactory)
+    page = factory.SubFactory(DashboardPageFactory)
 
 
 @register
@@ -236,7 +236,7 @@ class ControlWidgetFactory(factory.django.DjangoModelFactory):
         model = ControlWidget
 
     control = factory.SubFactory(ControlFactory)
-    page = factory.SubFactory(PageFactory)
+    page = factory.SubFactory(DashboardPageFactory)
 
 
 @register

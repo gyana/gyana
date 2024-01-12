@@ -13,7 +13,6 @@ pytestmark = pytest.mark.django_db
 
 
 def test_dashboard_crudl(client, project, dashboard_factory):
-
     LIST = f"/projects/{project.id}/dashboards"
 
     # zero state
@@ -91,7 +90,7 @@ def test_dashboard_share(
     )
     r = client.get(f"/dashboards/{dashboard.id}/share")
     assertOK(r)
-    assertFormRenders(r, ["shared_status"])
+    assertFormRenders(r, ["shared_status", "password"])
 
     # public
     r = client.post(
@@ -113,15 +112,6 @@ def test_dashboard_share(
 
     # password protected
     client.force_login(logged_in_user)
-    r = client.post(
-        f"/dashboards/{dashboard.id}/share",
-        data={
-            "hidden_live": True,
-            "shared_status": Dashboard.SharedStatus.PASSWORD_PROTECTED,
-        },
-    )
-    assertOK(r)
-    assertFormRenders(r, ["shared_status", "password"])
 
     r = client.post(
         f"/dashboards/{dashboard.id}/share",

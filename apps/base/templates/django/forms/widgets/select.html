@@ -1,5 +1,12 @@
-<select x-model="{{ widget.name }}" name="{{ widget.name }}"{% include "django/forms/widgets/attrs.html" %}>{% for group_name, group_choices, group_index in widget.optgroups %}{% if group_name %}
-  <optgroup label="{{ group_name }}">{% endif %}{% for option in group_choices %}
-    {% include option.template_name with widget=option %}{% endfor %}{% if group_name %}
-      </optgroup>{% endif %}{% endfor %}
+<select x-model="$data.{{ widget.name|form_name }}" name="{{ widget.name }}"{% include "django/forms/widgets/attrs.html" %}>
+  {% for group_name, group_choices, group_index in widget.optgroups %}
+    {% if group_name %}<optgroup label="{{ group_name }}">{% endif %}
+    {% for option in group_choices %}
+      {% comment %} dynamically set the select choices via the {field}_choices attribute {% endcomment %}
+      {% if option.value != None %}<template x-if="!choices.{{ widget.name|form_name }} || choices.{{ widget.name|form_name }}.includes('{{ option.value }}')">{% endif %}
+      {% include option.template_name with widget=option %}
+      {% if option.value != None %}</template>{% endif %}
+    {% endfor %}
+    {% if group_name %}</optgroup>{% endif %}
+  {% endfor %}
 </select>

@@ -11,6 +11,8 @@ from apps.base import clients
 from apps.teams.models import Team
 from apps.users.models import CustomUser
 
+from .playwright import PlaywrightForm
+
 
 class BlankMiddleware:
     def __init__(self, get_response):
@@ -140,3 +142,8 @@ def logged_in_user(client):
 @pytest.fixture
 def project(project_factory, logged_in_user):
     return project_factory(team=logged_in_user.teams.first())
+
+
+@pytest.fixture
+def pwf(page):
+    return PlaywrightForm(page)

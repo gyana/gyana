@@ -1,4 +1,4 @@
-{% load help_utils humanize %}
+{% load help_utils humanize crispy_forms_tags %}
 
 <div class="workflow-modal">
   {% if parent_error_node is None %}
@@ -21,17 +21,9 @@
         <form
           id="node-update-form"
           class="form--no-layout overflow-hidden flex-1"
-          action="{% url 'nodes:update' node.id %}"
-          method="post"
+          hx-post="{% url 'nodes:update' node.id %}"
           data-tf-modal-target="form"
-          data-controller="live-update"
-          data-action="
-            change->tf-modal#change
-            formset:remove->live-update#updateForm
-            formset:add->live-update#updateForm
-            formset:remove->tf-modal#change
-            formset:add->tf-modal#change
-          "
+          data-action="change->tf-modal#change"
           x-data
           @submit="$dispatch('gyana:update-workflow')
             $dispatch('gyana:update-node-{{ object.id }}')"
@@ -40,12 +32,9 @@
           <div data-cy="update-sidebar" class="workflow-detail__sidebar">
             <p class="pb-5">{{ node.explanation }}</p>
 
-            <span data-live-update-target="loading" hidden>
-              <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-fw fa-2x"></i>
-            </span>
             {% csrf_token %}
 
-            {{ form }}
+            {% crispy form %}
           </div>
 
           <div class='workflow-modal__footer'>

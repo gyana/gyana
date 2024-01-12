@@ -7,7 +7,7 @@ from django.forms.widgets import HiddenInput, PasswordInput
 from django.utils import timezone
 
 from apps.base.fields import ColorField
-from apps.base.forms import BaseModelForm, LiveModelForm
+from apps.base.forms import BaseModelForm, LiveAlpineModelForm
 
 from .models import DASHBOARD_SETTING_TO_CATEGORY, Dashboard
 from .widgets import PaletteColorsField, TextareaCode
@@ -138,21 +138,14 @@ class DashboardForm(BaseModelForm):
                     field.widget = forms.HiddenInput()
 
 
-class DashboardShareForm(LiveModelForm):
+class DashboardShareForm(LiveAlpineModelForm):
     class Meta:
         model = Dashboard
         fields = ["shared_status", "password"]
+        show = {
+            "password": f"shared_status == '{Dashboard.SharedStatus.PASSWORD_PROTECTED}'"
+        }
         widgets = {"password": PasswordInput(attrs={"autocomplete": "one-time-code"})}
-
-    def get_live_fields(self):
-        fields = ["shared_status"]
-
-        if (
-            self.get_live_field("shared_status")
-            == Dashboard.SharedStatus.PASSWORD_PROTECTED
-        ):
-            fields += ["password"]
-        return fields
 
     def save(self, commit=True):
         dashboard = super().save(commit=False)
@@ -164,9 +157,8 @@ class DashboardShareForm(LiveModelForm):
             dashboard.shared_id = uuid.uuid4()
 
         if (
-            self.get_live_field("shared_status")
-            == Dashboard.SharedStatus.PASSWORD_PROTECTED
-        ) and self.get_live_field("password"):
+            dashboard.shared_status == Dashboard.SharedStatus.PASSWORD_PROTECTED
+        ) and self.cleaned_data.get("password"):
             dashboard.set_password(self.cleaned_data["password"])
             dashboard.password_set = timezone.now()
         if commit:
@@ -192,7 +184,6 @@ class DashboardLoginForm(forms.Form):
 
 
 class DashboardVersionSaveForm(BaseModelForm):
-
     version_name = forms.CharField(required=False)
 
     class Meta:

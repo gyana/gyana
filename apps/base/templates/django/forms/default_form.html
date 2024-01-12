@@ -1,8 +1,3 @@
-{% comment %} https://docs.djangoproject.com/en/4.0/ref/forms/api/#attributes-of-boundfield {% endcomment %}
-{% if form.form_description %}
-  <div class="form__description">{{ form.form_description }}</div>
-{% endif %}
-
 {% for hidden_field in form.hidden_fields %}
   {{ hidden_field }}
 {% endfor %}

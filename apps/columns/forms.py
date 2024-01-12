@@ -3,7 +3,7 @@ from ibis.expr.datatypes import Array, Date, Floating, Integer, Struct, Timestam
 
 from apps.base.core.aggregations import AGGREGATION_TYPE_MAP
 from apps.base.core.utils import create_column_choices
-from apps.base.forms import BaseLiveSchemaForm
+from apps.base.forms import BaseLiveSchemaForm, LiveAlpineModelForm, SchemaFormMixin
 from apps.base.widgets import Datalist, SelectWithDisable
 from apps.columns.models import (
     AddColumn,
@@ -19,7 +19,7 @@ from apps.columns.models import (
 )
 from apps.widgets.models import Widget
 
-from .bigquery import AllOperations, DatePeriod
+from .bigquery import DatePeriod
 from .widgets import CodeMirror
 
 IBIS_TO_FUNCTION = {
@@ -45,12 +45,29 @@ def disable_struct_and_array_columns(fields, column_field, schema):
                 name: "Currently, you cannot use this column type here."
                 for name, type_ in schema.items()
                 if isinstance(type_, (Struct, Array))
-            }
+            },
         ),
     )
 
 
-class ColumnForm(BaseLiveSchemaForm):
+class ColumnForm(SchemaFormMixin, LiveAlpineModelForm):
+    class Meta:
+        fields = ("column", "part")
+        model = Column
+
+        show = {
+            "part": "['Date', 'Timestamp'].includes(schema[column])",
+        }
+        effect = {"column": f"choices.part = $store.ibis.date_periods[schema[column]]"}
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        disable_struct_and_array_columns(
+            self.fields, self.fields["column"], self.schema
+        )
+
+
+class BaseColumnFormWithFormatting(BaseLiveSchemaForm):
     class Meta:
         fields = ("column", "part")
         model = Column
@@ -75,7 +92,7 @@ class ColumnForm(BaseLiveSchemaForm):
             ]
 
 
-class ColumnFormWithFormatting(ColumnForm):
+class ColumnFormWithFormatting(BaseColumnFormWithFormatting):
     formatting_unfolded = forms.BooleanField(initial=False, required=False)
     formatting_unfolded.widget.attrs.update({"x-model": "open", "class": "hidden"})
     template_name = "columns/forms/column_form.html"
@@ -128,7 +145,31 @@ class ColumnFormWithFormatting(ColumnForm):
         return fields
 
 
-class AggregationColumnForm(BaseLiveSchemaForm):
+class AggregationColumnForm(SchemaFormMixin, LiveAlpineModelForm):
+    class Meta:
+        fields = (
+            "column",
+            "function",
+        )
+        help_texts = {
+            "column": "Select the column to aggregate over",
+            "function": "Select the aggregation function",
+        }
+        model = AggregationColumn
+        show = {"function": "column !== null"}
+        effect = {
+            "column": f"choices.function = $store.ibis.aggregations[schema[column]]"
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        disable_struct_and_array_columns(
+            self.fields, self.fields["column"], self.schema
+        )
+
+
+# TODO: remove this after Alpine forms for widgets
+class BaseAggregationColumnFormWithFormatting(BaseLiveSchemaForm):
     class Meta:
         fields = (
             "column",
@@ -149,7 +190,6 @@ class AggregationColumnForm(BaseLiveSchemaForm):
         return fields
 
     def __init__(self, *args, **kwargs):
-
         super().__init__(*args, **kwargs)
         disable_struct_and_array_columns(
             self.fields, self.fields["column"], self.schema
@@ -162,7 +202,7 @@ class AggregationColumnForm(BaseLiveSchemaForm):
             ]
 
 
-class AggregationFormWithFormatting(AggregationColumnForm):
+class AggregationFormWithFormatting(BaseAggregationColumnFormWithFormatting):
     formatting_unfolded = forms.BooleanField(initial=False, required=False)
     formatting_unfolded.widget.attrs.update({"x-model": "open", "class": "hidden"})
     template_name = "columns/forms/column_form.html"
@@ -222,7 +262,15 @@ class AggregationFormWithFormatting(AggregationColumnForm):
         return fields
 
 
-class OperationColumnForm(BaseLiveSchemaForm):
+def _show_function_field(field):
+    return f"'{field}' == $store.ibis.functions[schema[column]]"
+
+
+def _show_value_field(field):
+    return f"$store.ibis.operations['{field}'].includes($data[computed.function_field])"
+
+
+class OperationColumnForm(SchemaFormMixin, LiveAlpineModelForm):
     class Meta:
         model = EditColumn
         fields = (
@@ -242,24 +290,18 @@ class OperationColumnForm(BaseLiveSchemaForm):
             "string_value": forms.Textarea(attrs={"rows": 1}),
         }
 
+        show = {
+            k: _show_function_field(k) for k in fields if k.endswith("_function")
+        } | {k: _show_value_field(k) for k in fields if k.endswith("_value")}
+        effect = {
+            "column": f"computed.function_field = $store.ibis.functions[schema[column]]"
+        }
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         disable_struct_and_array_columns(
             self.fields, self.fields["column"], self.schema
         )
-
-    def get_live_fields(self):
-        fields = ["column"]
-
-        if self.column_type and (
-            function_field := IBIS_TO_FUNCTION[self.column_type.name]
-        ):
-            fields += [function_field]
-            operation = AllOperations.get(self.get_live_field(function_field))
-            if operation and operation.arguments == 1:
-                fields += [operation.value_field]
-
-        return fields
 
     def save(self, commit: bool):
         # Make sure only one function is set and turn the others to Null
@@ -269,7 +311,7 @@ class OperationColumnForm(BaseLiveSchemaForm):
         return super().save(commit=commit)
 
 
-class AddColumnForm(BaseLiveSchemaForm):
+class AddColumnForm(SchemaFormMixin, LiveAlpineModelForm):
     class Meta:
         model = AddColumn
         fields = (
@@ -290,20 +332,14 @@ class AddColumnForm(BaseLiveSchemaForm):
             "string_value": forms.Textarea(attrs={"rows": 1}),
         }
 
-    def get_live_fields(self):
-        fields = ["column"]
-        if self.column_type and (
-            function_field := IBIS_TO_FUNCTION[self.column_type.name]
-        ):
-            fields += [function_field]
-            operation = AllOperations.get(self.get_live_field(function_field))
-            if operation and operation.arguments == 1:
-                fields += [operation.value_field]
-
-            if self.get_live_field(function_field) is not None:
-                fields += ["label"]
-
-        return fields
+        show = (
+            {k: _show_function_field(k) for k in fields if k.endswith("_function")}
+            | {k: _show_value_field(k) for k in fields if k.endswith("_value")}
+            | {"label": "!!$data[computed.function_field]"}
+        )
+        effect = {
+            "column": f"computed.function_field = $store.ibis.functions[schema[column]]"
+        }
 
     def clean_label(self):
         return column_naming_validation(self.cleaned_data["label"], self.schema.names)
@@ -323,10 +359,20 @@ class FormulaColumnForm(BaseLiveSchemaForm):
         return column_naming_validation(self.cleaned_data["label"], self.schema.names)
 
 
-class WindowColumnForm(BaseLiveSchemaForm):
+class WindowColumnForm(SchemaFormMixin, LiveAlpineModelForm):
     class Meta:
         fields = ("column", "function", "group_by", "order_by", "ascending", "label")
         model = WindowColumn
+        show = {
+            "function": "column !== null",
+            "group_by": "column !== null",
+            "order_by": "column !== null",
+            "ascending": "column !== null",
+            "label": "column !== null",
+        }
+        effect = {
+            "column": f"choices.function = $store.ibis.aggregations[schema[column]]"
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -336,36 +382,23 @@ class WindowColumnForm(BaseLiveSchemaForm):
         )
         choices = create_column_choices(self.schema)
 
-        if self.column_type is not None:
-            self.fields["function"].choices = [
-                (choice.value, choice.name)
-                for choice in AGGREGATION_TYPE_MAP[self.column_type.name]
-            ]
-            self.fields["group_by"] = forms.ChoiceField(
-                choices=choices,
-                help_text=self.base_fields["group_by"].help_text,
-                required=False,
-                widget=SelectWithDisable(
-                    disabled={
-                        name: f"You cannot group by a {type_} column"
-                        for name, type_ in self.schema.items()
-                        if isinstance(type_, Floating)
-                    }
-                ),
-            )
-            self.fields["order_by"] = forms.ChoiceField(
-                choices=choices,
-                help_text=self.base_fields["order_by"].help_text,
-                required=False,
-            )
-
-    def get_live_fields(self):
-        fields = ["column"]
-
-        if self.column_type is not None:
-            fields += ["function", "group_by", "order_by", "ascending", "label"]
-
-        return fields
+        self.fields["group_by"] = forms.ChoiceField(
+            choices=choices,
+            help_text=self.base_fields["group_by"].help_text,
+            required=False,
+            widget=SelectWithDisable(
+                disabled={
+                    name: f"You cannot group by a {type_} column"
+                    for name, type_ in self.schema.items()
+                    if isinstance(type_, Floating)
+                }
+            ),
+        )
+        self.fields["order_by"] = forms.ChoiceField(
+            choices=choices,
+            help_text=self.base_fields["order_by"].help_text,
+            required=False,
+        )
 
     def clean_label(self):
         return column_naming_validation(self.cleaned_data["label"], self.schema.names)
@@ -439,7 +472,7 @@ class JoinColumnForm(BaseLiveSchemaForm):
         return super().save(*args, **kwargs)
 
 
-class SortColumnForm(BaseLiveSchemaForm):
+class SortColumnForm(BaseLiveSchemaForm, LiveAlpineModelForm):
     class Meta:
         model = SortColumn
         fields = ["column", "ascending", "sort_index"]

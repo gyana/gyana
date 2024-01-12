@@ -1,3 +1,4 @@
+import json
 from functools import cache
 
 from crispy_forms import utils
@@ -27,6 +28,7 @@ ModelFormOptions__init__ = ModelFormOptions.__init__
 def __init__(self, options=None):
     ModelFormOptions__init__(self, options=options)
     self.show = getattr(options, "show", None)
+    self.effect = getattr(options, "effect", {})
 
 
 ModelFormOptions.__init__ = __init__
@@ -76,6 +78,8 @@ class SchemaFormMixin:
 
     def __init__(self, *args, **kwargs):
         self.schema = kwargs.pop("schema", None)
+        if self.schema:
+            self.schema_json = json.dumps({c: self.schema[c].name for c in self.schema})
 
         super().__init__(*args, **kwargs)
 
@@ -86,13 +90,36 @@ class SchemaFormMixin:
             )
 
 
-class BaseModelForm(forms.ModelForm):
+# guarantee that widget attrs are updated after any changes in subclass __init__
+class PostInitCaller(forms.models.ModelFormMetaclass):
+    def __call__(cls, *args, **kwargs):
+        obj = type.__call__(cls, *args, **kwargs)
+        obj.__post_init__()
+        return obj
+
+
+class BaseModelForm(forms.ModelForm, metaclass=PostInitCaller):
     template_name = "django/forms/default_form.html"
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_tag = False
+
+    def __post_init__(self):
+        for k, v in self.effect.items():
+            self.fields[k].widget.attrs.update({"x-effect": v})
+
+    @property
+    def fields_json(self):
+        return json.dumps(
+            {
+                field.name: field.value()
+                for field in self
+                if not isinstance(field.field, forms.FileField)
+            }
+            | {"computed": {}, "choices": {}}
+        )
 
     def pre_save(self, instance):
         # override in child to add behaviour on commit save
@@ -116,15 +143,24 @@ class BaseModelForm(forms.ModelForm):
     def show(self):
         return self._meta.show
 
+    @property
+    def effect(self):
+        return self._meta.effect
+
 
 class LiveAlpineModelForm(BaseModelForm):
     def __init__(self, *args, **kwargs):
+        self.parent_instance = kwargs.pop("parent_instance", None)
         super().__init__(*args, **kwargs)
 
-        # data populated by POST request in update
-        # TODO: HTMX plugin for HTML checkboxes false values
+        # filter to data populated by POST request in update
+        # excluded fields are not rendered in the form
         if self.data:
-            self.fields = {k: v for k, v in self.fields.items() if k in self.data}
+            self.fields = {
+                k: v
+                for k, v in self.fields.items()
+                if (f"{self.prefix}-{k}" if self.prefix else k) in self.data
+            }
 
 
 class LiveModelForm(BaseModelForm):
@@ -238,7 +274,9 @@ class LiveFormsetMixin:
         forms_kwargs = self.get_formset_form_kwargs(formset)
 
         # provide a reference to parent instance in live update forms
-        if issubclass(formset.form, LiveModelForm):
+        if issubclass(formset.form, LiveModelForm) or issubclass(
+            formset.form, LiveAlpineModelForm
+        ):
             forms_kwargs["parent_instance"] = self.instance
 
         if issubclass(formset.form, SchemaFormMixin):

@@ -1,0 +1,13 @@
+{% load crispy_forms_tags %}
+
+<script src="https://unpkg.com/alpinejs" defer></script>
+
+{{ content|safe }}
+
+{{ ibis_store|json_script:"ibis_store" }}
+
+<script>
+  document.addEventListener('alpine:init', () => {
+    Alpine.store('ibis', JSON.parse(document.getElementById('ibis_store').textContent))
+  })
+</script>

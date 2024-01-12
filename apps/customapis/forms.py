@@ -1,7 +1,6 @@
 from functools import cache
 
 from crispy_forms.bootstrap import TabHolder
-from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout
 from django import forms
 from django.urls import reverse
@@ -195,8 +194,6 @@ class CustomApiUpdateForm(LiveFormsetMixin, LiveAlpineModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.helper = FormHelper()
-        self.helper.form_tag = False
         self.helper.layout = Layout(
             TabHolder(
                 Tab("General", "url", "json_path", "http_request_method"),

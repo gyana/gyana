@@ -205,15 +205,13 @@ def parametrize_column_predicate(
         ),
     ],
 )
-def test_filter_form(
-    data, expected_fields, choice_lengths, filter_factory, node_factory
-):
-    filter_ = filter_factory(node=node_factory())
-    query_dict = QueryDict(mutable=True)
-    query_dict.update(data)
-    form = FilterForm(instance=filter_, schema=TABLE.schema(), data=query_dict)
+def test_filter_form(data, expected_fields, choice_lengths, node_factory, pwf):
+    pwf.render(FilterForm(schema=TABLE.schema(), parent_instance=node_factory()))
 
-    assert set(form.fields.keys()) == expected_fields
+    for k, v in data.items():
+        pwf.select_value(k, v)
+
+    pwf.assert_fields(expected_fields)
 
     for field, length in choice_lengths.items():
-        assertFormChoicesLength(form, field, length)
+        pwf.assert_select_options_length(field, length)

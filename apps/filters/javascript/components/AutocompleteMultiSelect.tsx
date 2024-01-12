@@ -63,16 +63,17 @@ const AutocompleteMultiSelect_: React.FC<{
       })
   }, [search])
 
-  useEffect(() => {
-    if (
-      inputRef.current &&
-      selectedOptions.some((o) => !selected.includes(o))
-    ) {
-      // Manually fire the input change event for live update form
-      // https://stackoverflow.com/a/36648958/15425660
-      inputRef.current.dispatchEvent(new Event('change', { bubbles: true }))
-    }
-  }, [JSON.stringify(selectedOptions)])
+  // TODO: remove this hack
+  // useEffect(() => {
+  //   if (
+  //     inputRef.current &&
+  //     selectedOptions.some((o) => !selected.includes(o))
+  //   ) {
+  //     // Manually fire the input change event for live update form
+  //     // https://stackoverflow.com/a/36648958/15425660
+  //     inputRef.current.dispatchEvent(new Event('change', { bubbles: true }))
+  //   }
+  // }, [JSON.stringify(selectedOptions)])
 
   return (
     <Listbox
@@ -171,7 +172,9 @@ const Option = ({ label, remove }) => (
 )
 
 class AutocompleteMultiSelect extends HTMLElement {
-  connectedCallback() {
+  static observedAttributes = ['column']
+
+  attributeChangedCallback() {
     const mountPoint = document.createElement('div')
     // Because the Select dropdown will be absolute positioned we need to make the outer div relative
     mountPoint.setAttribute('class', 'relative w-full')
@@ -183,9 +186,15 @@ class AutocompleteMultiSelect extends HTMLElement {
     const parentId = this.attributes['parent'].value
 
     const name = this.attributes['name'].value
+
+    if (this.attributes['column'] === undefined) {
+      // column is added by AlpineJS, not available in the initial render
+      return
+    }
+
     const column = this.attributes['column'].value
 
-    this.appendChild(mountPoint)
+    this.replaceChildren(mountPoint)
     ReactDOM.render(
       <AutocompleteMultiSelect_
         parentType={parentType}

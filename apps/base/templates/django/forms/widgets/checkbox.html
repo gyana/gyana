@@ -2,6 +2,24 @@
   class="toggle"
   {% if 'hidden' in widget.attrs.class %}hidden{% endif %}
 >
+  {% comment %}
+  TODO: write an explicit playwright test for this behaviour
+  
+  For HTML checkboxes, we need to distinguish two possibilities:
+  - the value of the checkbox is false (unchecked)
+  - the field was not rendered (e.g. hidden by Alpine x-if)
+
+  Under the default HTML form implementation these are indistinguishable, as
+  HTML forms do not send data for unchecked checkboxes:
+  https://developer.mozilla.org/en-US/docs/Web/API/FormData/FormData
+
+  Solution: include hidden field to explicitly set the value to false if the
+  checkbox is unchecked. Note that when the field is checked, Django receives
+  ['false', 'on'] as the form data, and by default takes the last value. And so
+  this needs to go before the input[type=checkbox].
+  {% endcomment %}
+  <input type="hidden" name="{{ widget.name }}" value="false" />
+
   <input
     type="{{ widget.type }}"
     name="{{ widget.name }}"

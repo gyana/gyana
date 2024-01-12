@@ -1,17 +1,38 @@
+from crispy_forms.layout import Layout
 from django import forms
 from django.utils.functional import cached_property
 
 from apps.base.core.utils import create_column_choices
-from apps.base.forms import IntegrationSearchMixin, LiveFormsetForm
+from apps.base.crispy import CrispyFormset
+from apps.base.forms import (
+    IntegrationSearchMixin,
+    LiveAlpineModelForm,
+    LiveFormsetMixin,
+    SchemaFormMixin,
+)
 from apps.base.widgets import MultiSelect, SourceSelect
-from apps.columns.forms import AGGREGATION_TYPE_MAP
 from apps.columns.models import Column
-from apps.nodes.formsets import KIND_TO_FORMSETS
 
+from .formsets import (
+    KIND_TO_FORMSETS,
+    AddColumnFormSet,
+    AggregationColumnFormSet,
+    ColumnFormSet,
+    ConvertColumnFormSet,
+    EditColumnFormSet,
+    FilterFormSet,
+    FormulaColumnFormSet,
+    JoinColumnFormset,
+    RenameColumnFormSet,
+    SelectColumnFormSet,
+    SortColumnFormSet,
+    UnpivotColumnFormSet,
+    WindowColumnFormSet,
+)
 from .models import Node
 
 
-class NodeForm(LiveFormsetForm):
+class NodeForm(LiveFormsetMixin, SchemaFormMixin, LiveAlpineModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field in getattr(self.Meta, "required", []):
@@ -50,19 +71,20 @@ class InputNodeForm(IntegrationSearchMixin, NodeForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.order_fields(["search", "input_table"])
-        self.fields["search"].widget.attrs["data-action"] = "input->tf-modal#search"
+        if "search" in self.fields:
+            self.order_fields(["search", "input_table"])
+            self.fields["search"].widget.attrs["data-action"] = "input->tf-modal#search"
 
-        # Re-focus the search bar when there is a value
-        if self.data.get("search"):
-            self.fields["search"].widget.attrs["autofocus"] = ""
+            # Re-focus the search bar when there is a value
+            if self.data.get("search"):
+                self.fields["search"].widget.attrs["autofocus"] = ""
 
-        self.search_queryset(
-            self.fields["input_table"],
-            self.instance.workflow.project,
-            self.instance.input_table,
-            self.instance.workflow.input_tables_fk,
-        )
+            self.search_queryset(
+                self.fields["input_table"],
+                self.instance.workflow.project,
+                self.instance.input_table,
+                self.instance.workflow.input_tables_fk,
+            )
 
 
 class OutputNodeForm(NodeForm):
@@ -77,7 +99,6 @@ class OutputNodeForm(NodeForm):
 
 
 class SelectNodeForm(NodeForm):
-
     select_columns = forms.MultipleChoiceField(
         choices=(),
         widget=MultiSelect,
@@ -158,6 +179,12 @@ class PivotNodeForm(NodeForm):
             "pivot_value": "Value column",
             "pivot_aggregation": "Aggregation function",
         }
+        show = {
+            "pivot_aggregation": "pivot_value !== null",
+        }
+        effect = {
+            "pivot_value": f"choices.pivot_aggregation = $store.ibis.aggregations[schema[pivot_value]]"
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -176,21 +203,6 @@ class PivotNodeForm(NodeForm):
             choices=column_choices, help_text=self.fields["pivot_value"].help_text
         )
 
-        pivot_value = self.get_live_field("pivot_value")
-        if pivot_value in schema:
-            column_type = schema[pivot_value].name
-
-            self.fields["pivot_aggregation"].choices = [
-                (choice.value, choice.name)
-                for choice in AGGREGATION_TYPE_MAP[column_type]
-            ]
-
-    def get_live_fields(self):
-        fields = ["pivot_index", "pivot_column", "pivot_value"]
-        if self.get_live_field("pivot_value") is not None:
-            fields += ["pivot_aggregation"]
-        return fields
-
 
 class UnpivotNodeForm(NodeForm):
     class Meta:
@@ -204,16 +216,23 @@ class UnpivotNodeForm(NodeForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.form_description = "Transform multiple columns into a single column."
 
-
-class ExceptNodeForm(DefaultNodeForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.form_description = "Remove rows that exist in a second table."
+        self.helper.layout = Layout(
+            "unpivot_value",
+            "unpivot_column",
+            CrispyFormset("unpivot", "Unpivot columns", UnpivotColumnFormSet),
+            CrispyFormset("select", "Select columns", SelectColumnFormSet),
+        )
 
 
 class JoinNodeForm(DefaultNodeForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.helper.layout = Layout(
+            CrispyFormset("joins", "Join columns", JoinColumnFormset),
+        )
+
     def get_formset_kwargs(self, formset):
         parents_count = self.instance.parents.count()
         names = [f"Join Input {i+2}" for i in range(parents_count)]
@@ -224,27 +243,109 @@ class JoinNodeForm(DefaultNodeForm):
         }
 
 
+class FilterNodeForm(DefaultNodeForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.helper.layout = Layout(
+            CrispyFormset("filter", "Filters", FilterFormSet),
+        )
+
+
+class EditColumnNodeForm(DefaultNodeForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.helper.layout = Layout(
+            CrispyFormset("edit", "Edit columns", EditColumnFormSet),
+        )
+
+
+class AddColumnNodeForm(DefaultNodeForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.helper.layout = Layout(
+            CrispyFormset("add", "Add columns", AddColumnFormSet),
+        )
+
+
+class RenameColumnNodeForm(DefaultNodeForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.helper.layout = Layout(
+            CrispyFormset("rename", "Rename columns", RenameColumnFormSet),
+        )
+
+
+class SortColumnNodeForm(DefaultNodeForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.helper.layout = Layout(
+            CrispyFormset("sort", "Sort columns", SortColumnFormSet),
+        )
+
+
+class ConvertColumnNodeForm(DefaultNodeForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.helper.layout = Layout(
+            CrispyFormset("convert", "Select columns to convert", ConvertColumnFormSet),
+        )
+
+
+class FormulaColumnNodeForm(DefaultNodeForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.helper.layout = Layout(
+            CrispyFormset("formula", "Formula columns", FormulaColumnFormSet),
+        )
+
+
+class AggregateNodeForm(DefaultNodeForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.helper.layout = Layout(
+            CrispyFormset("group", "Group columns", ColumnFormSet),
+            CrispyFormset("aggregrate", "Aggregations", AggregationColumnFormSet),
+        )
+
+
+class WindowColumnNodeform(DefaultNodeForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.helper.layout = Layout(
+            CrispyFormset("window", "Window columns", WindowColumnFormSet),
+        )
+
+
 KIND_TO_FORM = {
     "input": InputNodeForm,
     "output": OutputNodeForm,
     "select": SelectNodeForm,
-    "except": ExceptNodeForm,
+    "except": DefaultNodeForm,
     "join": JoinNodeForm,
-    "aggregation": DefaultNodeForm,
+    "aggregation": AggregateNodeForm,
     "union": UnionNodeForm,
-    "sort": DefaultNodeForm,
+    "sort": SortColumnNodeForm,
     "limit": LimitNodeForm,
     # Is defined in the filter app and will be rendered via a
     # different htmx partial
-    "filter": DefaultNodeForm,
-    "edit": DefaultNodeForm,
-    "add": DefaultNodeForm,
-    "rename": DefaultNodeForm,
-    "formula": DefaultNodeForm,
+    "filter": FilterNodeForm,
+    "edit": EditColumnNodeForm,
+    "add": AddColumnNodeForm,
+    "rename": RenameColumnNodeForm,
+    "formula": FormulaColumnNodeForm,
     "distinct": DistinctNodeForm,
     "pivot": PivotNodeForm,
     "unpivot": UnpivotNodeForm,
     "intersect": DefaultNodeForm,
-    "window": DefaultNodeForm,
-    "convert": DefaultNodeForm,
+    "window": WindowColumnNodeform,
+    "convert": ConvertColumnNodeForm,
 }

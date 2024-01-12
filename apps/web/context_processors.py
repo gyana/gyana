@@ -2,6 +2,8 @@ from copy import copy
 
 from django.conf import settings
 
+from apps.base.alpine import ibis_store
+
 from .meta import absolute_url
 
 
@@ -22,4 +24,5 @@ def project_meta(request):
         "page_title": "",
         "page_description": "",
         "page_image": "",
+        "ibis_store": ibis_store,
     }

@@ -1,6 +1,7 @@
 import pytest
 from django.http import QueryDict
 
+from apps.base.tests.mock_data import TABLE
 from apps.filters.tests.test_forms import COLUMN_LENGTH
 from apps.nodes.forms import KIND_TO_FORM
 from apps.nodes.models import Node
@@ -28,7 +29,7 @@ def test_input_form(setup, node_factory):
     node = node_factory(kind=Node.Kind.INPUT, workflow=workflow)
     form = KIND_TO_FORM[node.kind](instance=node)
 
-    assert set(form.get_live_fields()) == {"input_table", "search"}
+    assert set(form.fields.keys()) == {"input_table", "search"}
     table_choices = list(form.fields["input_table"].choices)
     assert len(table_choices) == 2
     assert table_choices[0][0] == ""
@@ -108,29 +109,20 @@ def test_limit_form(setup, node_factory):
     assert set(form.fields.keys()) == {"limit_limit", "limit_offset"}
 
 
-def test_pivot_form(setup, node_factory):
+def test_pivot_form(setup, node_factory, pwf):
     table, workflow = setup
     node = create_and_connect(Node.Kind.PIVOT, node_factory, table, workflow)
-    form = KIND_TO_FORM[node.kind](instance=node)
+    form = KIND_TO_FORM[node.kind](instance=node, schema=TABLE.schema())
+    pwf.render(form)
 
-    assert set(form.fields.keys()) == {
-        "pivot_value",
-        "pivot_index",
-        "pivot_column",
-    }
-    assert get_choice_len(form, "pivot_column") == COLUMN_LENGTH + 1
+    pwf.assert_fields({"pivot_value", "pivot_index", "pivot_column"})
+    pwf.assert_select_options_length("pivot_column", COLUMN_LENGTH + 1)
 
-    # Test that pivot_aggregation is added to fields
-    data = QueryDict(mutable=True)
-    data["pivot_value"] = "id"
-    form = KIND_TO_FORM[node.kind](instance=node, data=data)
-    assert set(form.fields.keys()) == {
-        "pivot_value",
-        "pivot_index",
-        "pivot_column",
-        "pivot_aggregation",
-    }
-    assert get_choice_len(form, "pivot_aggregation") == 7
+    pwf.select_value("pivot_value", "id")
+    pwf.assert_fields(
+        {"pivot_value", "pivot_index", "pivot_column", "pivot_aggregation"}
+    )
+    pwf.assert_select_options_length("pivot_aggregation", 7)
 
 
 def test_unpivot_form(setup, node_factory):

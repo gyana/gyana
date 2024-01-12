@@ -2,7 +2,7 @@ from django import forms
 from django.forms.widgets import Input, TextInput
 
 from apps.base.core.utils import create_column_choices
-from apps.base.forms import BaseLiveSchemaForm
+from apps.base.forms import LiveAlpineModelForm, SchemaFormMixin
 from apps.base.widgets import DatetimeInput
 from apps.filters.models import NO_VALUE, PREDICATE_MAP, Filter
 
@@ -23,8 +23,45 @@ IBIS_TO_TYPE = {
     "Struct": Filter.Type.STRUCT,
 }
 
+TYPE_TO_IBIS = {
+    Filter.Type.INTEGER: ["Int8", "Int16", "Int32", "Int64"],
+    Filter.Type.STRING: ["String"],
+    Filter.Type.DATETIME: ["Timestamp"],
+    Filter.Type.TIME: ["Time"],
+    Filter.Type.DATE: ["Date"],
+    Filter.Type.FLOAT: ["Float64", "Decimal"],
+    Filter.Type.BOOL: ["Boolean"],
+    Filter.Type.STRUCT: ["Struct"],
+}
 
-class FilterForm(BaseLiveSchemaForm):
+
+def _get_show_for_predicate(predicate):
+    filter_types = [
+        k for k, v in PREDICATE_MAP.items() if v == f"{predicate}_predicate"
+    ]
+    ibis = [y for x in filter_types for y in TYPE_TO_IBIS[x]]
+    return f"{ibis}.includes(schema[column])"
+
+
+def _get_show_for_value(filter_type, multiple=False):
+    predicate = PREDICATE_MAP[filter_type]
+    ibis = TYPE_TO_IBIS[filter_type]
+    no_value = [x.value for x in NO_VALUE]
+
+    is_ibis = f"{ibis}.includes(schema[column])"
+    is_predicate = f"({predicate} !== null) && !{no_value}.includes({predicate})"
+    is_multiple = f"['isin', 'notin'].includes({predicate})"
+
+    # TODO: clarify this comment
+    # Predicate can be None for booleans
+
+    if multiple:
+        return f"{is_ibis} && {is_predicate} && {is_multiple}"
+
+    return f"{is_ibis} && {is_predicate} && !{is_multiple}"
+
+
+class FilterForm(SchemaFormMixin, LiveAlpineModelForm):
     column = forms.ChoiceField(choices=[])
 
     # We have to add the media here because otherwise the form fields
@@ -61,35 +98,29 @@ class FilterForm(BaseLiveSchemaForm):
             "time_value": type("TimeInput", (Input,), {"input_type": "time"}),
         }
 
-    def get_live_fields(self):
-
-        fields = ["column"]
-        if self.column_type:
-            filter_type = IBIS_TO_TYPE[self.column_type.name]
-            predicate = PREDICATE_MAP.get(filter_type)
-            value = f"{filter_type.lower()}_value"
-
-            # Predicate can be None for booleans
-            if predicate:
-                fields += [predicate]
-                if (
-                    pred := self.get_live_field(predicate)
-                ) is not None and pred not in NO_VALUE:
-
-                    fields += [value + "s"] if pred in ["isin", "notin"] else [value]
-
-        return fields
+        show = (
+            {
+                f"{p}_predicate": _get_show_for_predicate(p)
+                for p in ["string", "numeric", "time", "datetime", "struct", "bool"]
+            }
+            | {f"{f.lower()}_value": _get_show_for_value(f) for f in Filter.Type}
+            | {
+                f"{f.lower()}_values": _get_show_for_value(f, multiple=True)
+                for f in [Filter.Type.INTEGER, Filter.Type.STRING, Filter.Type.FLOAT]
+            }
+        )
 
     def __init__(self, *args, **kwargs):
-
         super().__init__(*args, **kwargs)
 
         # We add the widgets for the array values here because
         # We need to initialize them with some run-time configurations
-        field = list(filter(lambda x: x.endswith("_values"), self.fields.keys()))
-        if field:
-            self.fields[field[0]].widget = SelectAutocomplete(
-                None, instance=self.instance, column=self.get_live_field("column")
+        for field in [k for k in self.fields if k.endswith("_values")]:
+            self.fields[field].widget = SelectAutocomplete(
+                None,
+                parent_type=self.parent_instance._meta.model_name,
+                parent_id=self.parent_instance.id,
+                selected=getattr(self.instance, field) or [],
             )
 
         if self.schema:

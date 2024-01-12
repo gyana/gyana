@@ -274,9 +274,6 @@ def test_except_node(client, node_factory, setup):
     _, r = create_and_connect_node(
         client, Node.Kind.EXCEPT, node_factory, table, workflow
     )
-    assertSelectorText(
-        r, ".form__description", "Remove rows that exist in a second table."
-    )
 
 
 def test_intersect_node(client, node_factory, setup):
@@ -342,22 +339,23 @@ def test_limit_node(client, node_factory, setup):
     assert limit_node.limit_offset == 150
 
 
-def test_filter_node(client, node_factory, setup):
+def test_filter_node(client, node_factory, setup, pwf):
     table, workflow = setup
     filter_base = base_formset("filters")
     filter_node, r = create_and_connect_node(
         client, Node.Kind.FILTER, node_factory, table, workflow
     )
-    assertFormRenders(
-        r,
-        [
+
+    pwf.render(r.content)
+    pwf.assert_fields(
+        {
             "name",
             *filter_base.keys(),
             "filters-0-node",
             "filters-0-id",
             "filters-0-column",
             "filters-0-DELETE",
-        ],
+        }
     )
 
     r = update_node(
@@ -378,22 +376,22 @@ def test_filter_node(client, node_factory, setup):
     assert filter_column.string_predicate == "isupper"
 
 
-def test_edit_node(client, node_factory, setup):
+def test_edit_node(client, node_factory, setup, pwf):
     table, workflow = setup
     edit_base = base_formset("edit_columns")
     edit_node, r = create_and_connect_node(
         client, Node.Kind.EDIT, node_factory, table, workflow
     )
-    assertFormRenders(
-        r,
-        [
+    pwf.render(r.content)
+    pwf.assert_fields(
+        {
             *edit_base.keys(),
             "name",
             "edit_columns-0-DELETE",
             "edit_columns-0-node",
             "edit_columns-0-id",
             "edit_columns-0-column",
-        ],
+        }
     )
 
     r = update_node(
@@ -413,22 +411,22 @@ def test_edit_node(client, node_factory, setup):
     assert edit.string_function == "isnull"
 
 
-def test_add_node(client, node_factory, setup):
+def test_add_node(client, node_factory, setup, pwf):
     table, workflow = setup
     add_base = base_formset("add_columns")
     add_node, r = create_and_connect_node(
         client, Node.Kind.ADD, node_factory, table, workflow
     )
-    assertFormRenders(
-        r,
-        [
+    pwf.render(r.content)
+    pwf.assert_fields(
+        {
             *add_base.keys(),
             "name",
             "add_columns-0-DELETE",
             "add_columns-0-node",
             "add_columns-0-id",
             "add_columns-0-column",
-        ],
+        }
     )
 
     r = update_node(
@@ -537,22 +535,22 @@ def test_distinct_node(client, node_factory, setup):
     assert distinct_node.columns.count() == 2
 
 
-def test_window_node(client, node_factory, setup):
+def test_window_node(client, node_factory, setup, pwf):
     table, workflow = setup
     window_base = base_formset("window_columns")
     window_node, r = create_and_connect_node(
         client, Node.Kind.WINDOW, node_factory, table, workflow
     )
-    assertFormRenders(
-        r,
-        [
+    pwf.render(r.content)
+    pwf.assert_fields(
+        {
             *window_base.keys(),
             "name",
             "window_columns-0-column",
             "window_columns-0-node",
             "window_columns-0-id",
             "window_columns-0-DELETE",
-        ],
+        }
     )
 
     r = update_node(
@@ -576,19 +574,19 @@ def test_window_node(client, node_factory, setup):
     assert window.label == "sum_id"
 
 
-def test_pivot_node(client, node_factory, setup):
+def test_pivot_node(client, node_factory, setup, pwf):
     table, workflow = setup
     pivot_node, r = create_and_connect_node(
         client, Node.Kind.PIVOT, node_factory, table, workflow
     )
-    assertFormRenders(
-        r,
-        [
+    pwf.render(r.content)
+    pwf.assert_fields(
+        {
             "name",
             "pivot_index",
             "pivot_column",
             "pivot_value",
-        ],
+        }
     )
 
     r = update_node(

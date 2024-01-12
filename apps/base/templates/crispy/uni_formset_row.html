@@ -1,6 +1,6 @@
 {% load crispy_forms_utils %}
 
-<div class="formset-wrapper">
+<div x-data="{ ...{{ form.fields_json }} }" class="formset-wrapper">
   {% specialspaceless %}
     {% if include_media %}{{ form.media }}{% endif %}
     {% if form_show_errors %}

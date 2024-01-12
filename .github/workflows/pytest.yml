@@ -33,6 +33,8 @@ jobs:
           python-version: 3.9
           cache: 'pip'
       - run: pip install -r requirements.txt -r requirements-dev.txt
+      - name: Ensure browsers are installed
+        run: python -m playwright install --with-deps
         # required for collectstatic
       - uses: actions/setup-node@v2
         with:
