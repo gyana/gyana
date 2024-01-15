@@ -11,6 +11,7 @@ from apps.base.forms import (
     IntegrationSearchMixin,
     LiveFormsetForm,
     LiveFormsetMixin,
+    _get_formset_label,
 )
 from apps.base.widgets import Datalist, SelectWithDisable, SourceSelect
 from apps.columns.bigquery import resolve_colname
@@ -222,6 +223,12 @@ class GenericWidgetForm(LiveFormsetForm):
         if kind == Widget.Kind.BUBBLE:
             return {"names": ["X", "Y", "Z"]}
         return {}
+
+    def get_formsets(self):
+        return {
+            _get_formset_label(formset): self.get_formset(formset)
+            for formset in self.get_live_formsets()
+        }
 
 
 def disable_non_time(schema):
