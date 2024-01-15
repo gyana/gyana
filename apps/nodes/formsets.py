@@ -110,17 +110,3 @@ ConvertColumnFormSet = forms.inlineformset_factory(
 JoinColumnFormset = node_formset_factory(
     model=JoinColumn, form=JoinColumnForm, min_num=1
 )
-
-KIND_TO_FORMSETS = {
-    "aggregation": [ColumnFormSet, AggregationColumnFormSet],
-    "sort": [SortColumnFormSet],
-    "edit": [EditColumnFormSet],
-    "add": [AddColumnFormSet],
-    "rename": [RenameColumnFormSet],
-    "filter": [FilterFormSet],
-    "formula": [FormulaColumnFormSet],
-    "unpivot": [UnpivotColumnFormSet, SelectColumnFormSet],
-    "window": [WindowColumnFormSet],
-    "convert": [ConvertColumnFormSet],
-    "join": [JoinColumnFormset],
-}

@@ -1,3 +1,4 @@
+from contextlib import contextmanager
 import json
 from functools import cache
 
@@ -27,6 +28,7 @@ ModelFormOptions__init__ = ModelFormOptions.__init__
 
 def __init__(self, options=None):
     ModelFormOptions__init__(self, options=options)
+    self.formsets = getattr(options, "formsets", {})
     self.show = getattr(options, "show", None)
     self.effect = getattr(options, "effect", {})
 
@@ -147,6 +149,10 @@ class BaseModelForm(forms.ModelForm, metaclass=PostInitCaller):
     def effect(self):
         return self._meta.effect
 
+    @property
+    def formsets(self):
+        return self._meta.formsets
+
 
 class LiveAlpineModelForm(BaseModelForm):
     def __init__(self, *args, **kwargs):
@@ -161,6 +167,32 @@ class LiveAlpineModelForm(BaseModelForm):
                 for k, v in self.fields.items()
                 if (f"{self.prefix}-{k}" if self.prefix else k) in self.data
             }
+
+    def get_visible_fields(self):
+        return
+
+    @contextmanager
+    def alpine_fields(self):
+        all_fields = self.fields
+        self.fields = {
+            k: v
+            for k, v in self.fields.items()
+            if (f"{self.prefix}-{k}" if self.prefix else k) in self.data
+        }
+        yield
+        self.fields = all_fields
+
+    def is_valid(self):
+        with self.alpine_fields():
+            return super().is_valid()
+
+    def save(self, commit=True):
+        with self.alpine_fields():
+            return super().save(commit)
+
+    def save_m2m(self, commit=True):
+        with self.alpine_fields():
+            return super().save_m2m(commit)
 
 
 class LiveModelForm(BaseModelForm):
@@ -314,7 +346,7 @@ class LiveFormsetMixin:
     def get_formsets(self):
         return {
             _get_formset_label(formset): self.get_formset(formset)
-            for formset in self.get_live_formsets()
+            for formset in self.formsets.values()
         }
 
 

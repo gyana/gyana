@@ -10,10 +10,9 @@ class Tab(BaseTab):
 class CrispyFormset(TemplateNameMixin):
     template = "%s/layout/crispy_formset.html"
 
-    def __init__(self, name, label, formset):
+    def __init__(self, name, label):
         self.name = name
         self.label = label
-        self.formset = formset
 
     def render(self, form, context, template_pack=TEMPLATE_PACK, **kwargs):
         template = self.get_template_name(template_pack)
@@ -21,7 +20,7 @@ class CrispyFormset(TemplateNameMixin):
             {
                 "name": self.name,
                 "label": self.label,
-                "formset": form.get_formset(self.formset),
+                "formset": form.get_formset(form.formsets[self.name]),
             }
         )
 

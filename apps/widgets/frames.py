@@ -2,7 +2,6 @@ import logging
 from decimal import Decimal
 
 import analytics
-from django import forms
 from django.shortcuts import render
 from django.urls import reverse
 from django.views.generic import DetailView
@@ -18,6 +17,7 @@ from apps.base.analytics import (
 )
 from apps.base.core.table_data import RequestConfig, get_table
 from apps.base.core.utils import error_name_to_snake
+from apps.base.live_views import LiveUpdateView
 from apps.base.templates import template_exists
 from apps.base.views import UpdateView
 from apps.columns.currency_symbols import CURRENCY_SYMBOLS_MAP
@@ -97,7 +97,7 @@ class WidgetName(UpdateView):
         )
 
 
-class WidgetUpdate(DashboardMixin, UpdateView):
+class WidgetUpdate(DashboardMixin, LiveUpdateView):
     model = Widget
 
     def get_htmx_response(self, context):
