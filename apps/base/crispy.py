@@ -20,7 +20,7 @@ class CrispyFormset(TemplateNameMixin):
             {
                 "name": self.name,
                 "label": self.label,
-                "formset": form.get_formset(form.formsets[self.name]),
+                "formset": form.get_formset(self.name, form.formsets[self.name]),
             }
         )
 

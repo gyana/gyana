@@ -159,18 +159,9 @@ class LiveAlpineModelForm(BaseModelForm):
         self.parent_instance = kwargs.pop("parent_instance", None)
         super().__init__(*args, **kwargs)
 
-        # filter to data populated by POST request in update
-        # excluded fields are not rendered in the form
-        if self.data:
-            self.fields = {
-                k: v
-                for k, v in self.fields.items()
-                if (f"{self.prefix}-{k}" if self.prefix else k) in self.data
-            }
-
-    def get_visible_fields(self):
-        return
-
+    # TODO: Update comment here
+    # filter to data populated by POST request in update
+    # excluded fields are not rendered in the form
     @contextmanager
     def alpine_fields(self):
         all_fields = self.fields
@@ -302,7 +293,7 @@ class LiveFormsetMixin:
     def get_formset_form_kwargs(self, formset):
         return {}
 
-    def get_formset(self, formset):
+    def get_formset(self, prefix, formset):
         forms_kwargs = self.get_formset_form_kwargs(formset)
 
         # provide a reference to parent instance in live update forms
@@ -322,14 +313,16 @@ class LiveFormsetMixin:
                 instance=self.instance,
                 **self.get_formset_kwargs(formset),
                 form_kwargs=forms_kwargs,
+                prefix=prefix,
             )
             # form is only bound if formset is in previous render, otherwise load from database
-            if self.data and f"{formset.get_default_prefix()}-TOTAL_FORMS" in self.data
+            if self.data and f"{prefix}-TOTAL_FORMS" in self.data
             # initial render
             else formset(
                 instance=self.instance,
                 **self.get_formset_kwargs(formset),
                 form_kwargs=forms_kwargs,
+                prefix=prefix,
             )
         )
         # When the post contains the wrong total forms number new forms aren't
@@ -344,10 +337,7 @@ class LiveFormsetMixin:
 
     @cache
     def get_formsets(self):
-        return {
-            _get_formset_label(formset): self.get_formset(formset)
-            for formset in self.formsets.values()
-        }
+        return {k: self.get_formset(k, v) for k, v in self.formsets.items()}
 
 
 class LiveFormsetForm(LiveFormsetMixin, BaseLiveSchemaForm):

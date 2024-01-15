@@ -134,6 +134,20 @@ class GenericWidgetForm(LiveFormsetMixin, SchemaFormMixin, LiveAlpineModelForm):
             "compare_previous_period",
             "positive_decrease",
         ]
+        formsets = {
+            "default_metrics": AggregationColumnFormset,
+            "optional_metrics": OptionalMetricFormset,
+            "xy": XYMetricFormset,
+            "xyz": XYZMetricFormset,
+            "min3": Min3Formset,
+            "min2": Min2Formset,
+            "single_metric": SingleMetricFormset,
+            "combo": CombinationChartFormset,
+            "dimensions": ColumnFormset,
+            "metrics": AggregationWithFormattingFormset,
+            "controls": ControlFormset,
+            "filters": FilterFormset,
+        }
 
         K = Widget.Kind
 
@@ -227,8 +241,10 @@ class GenericWidgetForm(LiveFormsetMixin, SchemaFormMixin, LiveAlpineModelForm):
         schema = self.instance.table.schema
 
         choices = create_column_choices(schema)
-        self.fields["dimension"].choices = choices
-        self.fields["second_dimension"].choices = choices
+        if "dimension" in self.fields:
+            self.fields["dimension"].choices = choices
+        if "second_dimension" in self.fields:
+            self.fields["second_dimension"].choices = choices
 
         # TODO with Alpine for heatmap
         # self.fields["dimension"].label = "X"
@@ -263,18 +279,16 @@ choices.sort_column = [...dimensions, ...extra_columns].map(d => ({value: d, lab
             "dimension",
             "part",
             "second_dimension",
-            CrispyFormset("default_metrics", "Metrics", AggregationColumnFormset),
-            CrispyFormset(
-                "optional_metrics", "Optional metrics", OptionalMetricFormset
-            ),
-            CrispyFormset("xy", "Metrics", XYMetricFormset),
-            CrispyFormset("xyz", "Metrics", XYZMetricFormset),
-            CrispyFormset("min3", "Metrics (minimum 3)", Min3Formset),
-            CrispyFormset("min2", "Metrics (minimum 2)", Min2Formset),
-            CrispyFormset("single_metric", "Metric", SingleMetricFormset),
-            CrispyFormset("combo", "Metrics", CombinationChartFormset),
-            CrispyFormset("dimensions", "Dimensions", ColumnFormset),
-            CrispyFormset("metrics", "Metrics", AggregationWithFormattingFormset),
+            CrispyFormset("default_metrics", "Metrics"),
+            CrispyFormset("optional_metrics", "Optional metrics"),
+            CrispyFormset("xy", "Metrics"),
+            CrispyFormset("xyz", "Metrics"),
+            CrispyFormset("min3", "Metrics (minimum 3)"),
+            CrispyFormset("min2", "Metrics (minimum 2)"),
+            CrispyFormset("single_metric", "Metric"),
+            CrispyFormset("combo", "Metrics"),
+            CrispyFormset("dimensions", "Dimensions"),
+            CrispyFormset("metrics", "Metrics"),
             "sort_column",
             "sort_ascending",
             "stack_100_percent",
@@ -282,8 +296,8 @@ choices.sort_column = [...dimensions, ...extra_columns].map(d => ({value: d, lab
             "show_summary_row",
             "compare_previous_period",
             "positive_decrease",
-            CrispyFormset("controls", "Controls", ControlFormset),
-            CrispyFormset("filters", "Filters", FilterFormset),
+            CrispyFormset("controls", "Controls"),
+            CrispyFormset("filters", "Filters"),
         )
 
     def get_formset_kwargs(self, formset):

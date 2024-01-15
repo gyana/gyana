@@ -14,10 +14,10 @@
   </div>
 
   <button
-    id="{{ formset.get_default_prefix }}-add"
+    id="{{ formset.prefix }}-add"
     type="submit"
     class="button button--sm button--rounded"
-    @click.prevent="const TOTAL_FORMS = $root.querySelector('#id_{{ formset.get_default_prefix }}-TOTAL_FORMS')
+    @click.prevent="const TOTAL_FORMS = $root.querySelector('#id_{{ formset.prefix }}-TOTAL_FORMS')
       const total = parseInt(TOTAL_FORMS.value)
 
       const content = $refs.template.innerHTML.replace(/__prefix__/g, total)
@@ -25,7 +25,7 @@
 
       // Increment the total forms index, for consistency with live update form
       TOTAL_FORMS.value = parseInt(total) + 1
-      
+
       // Notify parent form of update to formset
       $dispatch('formset')"
   >

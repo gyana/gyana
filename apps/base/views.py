@@ -48,10 +48,13 @@ class AlpineMixin:
         # form logic and formset validation
 
         form = self.get_form()
+        self.formsets = [
+            f
+            for f in form.get_formsets().values()
+            if f"{f.prefix}-TOTAL_FORMS" in form.data
+        ]
 
-        if form.is_valid() and all(
-            formset.is_valid() for formset in form.get_formsets().values()
-        ):
+        if form.is_valid() and all(formset.is_valid() for formset in self.formsets):
             return self.form_valid(form)
         else:
             return self.form_invalid(form)
@@ -59,9 +62,10 @@ class AlpineMixin:
     def form_valid(self, form):
         with transaction.atomic():
             response = super().form_valid(form)
-            for formset in form.get_formsets().values():
-                if formset.is_valid():
-                    formset.save()
+
+            for formset in self.formsets:
+                # if formset.is_valid():
+                formset.save()
 
         return response
 
