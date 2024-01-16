@@ -117,7 +117,6 @@ def disable_non_time(schema):
 class GenericWidgetForm(LiveFormsetMixin, SchemaFormMixin, LiveAlpineModelForm):
     dimension = forms.ChoiceField(choices=())
     second_dimension = forms.ChoiceField(choices=())
-    sort_column = forms.ChoiceField(choices=(), required=False)
 
     class Meta:
         model = Widget
@@ -147,6 +146,11 @@ class GenericWidgetForm(LiveFormsetMixin, SchemaFormMixin, LiveAlpineModelForm):
             "metrics": AggregationWithFormattingFormset,
             "controls": ControlFormset,
             "filters": FilterFormset,
+        }
+        # TODO: implement sort as a formset of widget sort column (new model)
+        # remove the complex logic for generating name
+        widgets = {
+            "sort_column": forms.Select(),
         }
 
         K = Widget.Kind
