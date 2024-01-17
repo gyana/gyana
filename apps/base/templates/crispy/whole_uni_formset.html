@@ -10,7 +10,6 @@
     const TOTAL_FORMS = $root.querySelector('#id_{{ formset.prefix }}-TOTAL_FORMS')
     TOTAL_FORMS.value = total + marked_for_delete
     })"
-
 >
   {% with formset.management_form as form %}
     {% include 'crispy/uni_form.html' %}
@@ -35,6 +34,7 @@
       $refs.forms.insertAdjacentHTML('beforeend', content)
       index += 1
       total += 1"
+    data-pw="formset-{{ formset.prefix }}-add"
   >
     <i class="far fa-fw fa-plus"></i> Add new
   </button>
