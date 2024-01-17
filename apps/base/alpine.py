@@ -21,7 +21,6 @@ operations = {
 
 ibis_store = {
     "aggregations": aggregations,
-    "aggregation_labels": aggregations,
     "functions": IBIS_TO_FUNCTION,
     "date_periods": date_periods,
     "operations": operations,
