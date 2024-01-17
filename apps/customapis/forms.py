@@ -158,7 +158,7 @@ class CustomApiUpdateForm(LiveFormsetMixin, LiveAlpineModelForm):
             "body_binary",
         ]
         formsets = {
-            "query_params": QueryParamFormset,
+            "queryparams": QueryParamFormset,
             "httpheaders": HttpHeaderFormset,
             "formdataentries": FormDataEntryFormset,
             "formurlencodedentries": FormURLEncodedEntryFormset,
@@ -216,7 +216,7 @@ class CustomApiUpdateForm(LiveFormsetMixin, LiveAlpineModelForm):
                 ),
                 Tab(
                     "Params",
-                    CrispyFormset("query_params", "Query Params"),
+                    CrispyFormset("queryparams", "Query Params"),
                 ),
                 Tab(
                     "Headers",

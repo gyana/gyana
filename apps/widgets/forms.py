@@ -176,9 +176,7 @@ class GenericWidgetForm(LiveFormsetMixin, SchemaFormMixin, LiveAlpineModelForm):
             "compare_previous_period": f"kind === '{K.METRIC}' && date_column !== null",
             "positive_decrease": f"kind === '{K.METRIC}' && date_column !== null",
             # formsets
-            "default_metrics": is_kind(
-                K.COLUMN, K.BAR, K.LINE, K.AREA, K.DONUT, K.HEATMAP
-            ),
+            "default_metrics": is_kind(K.COLUMN, K.BAR, K.LINE, K.AREA, K.DONUT),
             "optional_metrics": is_kind(
                 K.PIE, K.STACKED_BAR, K.STACKED_COLUMN, K.STACKED_LINE, K.HEATMAP
             ),

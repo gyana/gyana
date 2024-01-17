@@ -1,5 +1,5 @@
-from contextlib import contextmanager
 import json
+from contextlib import contextmanager
 from functools import cache
 
 from crispy_forms import utils
@@ -173,9 +173,10 @@ class LiveAlpineModelForm(BaseModelForm):
         yield
         self.fields = all_fields
 
-    def is_valid(self):
+    @property
+    def errors(self):
         with self.alpine_fields():
-            return super().is_valid()
+            return super().errors
 
     def save(self, commit=True):
         with self.alpine_fields():

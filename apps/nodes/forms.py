@@ -204,7 +204,7 @@ class UnpivotNodeForm(NodeForm):
     class Meta:
         model = Node
         fields = ["unpivot_value", "unpivot_column"]
-        formsets = {"unpivot": UnpivotColumnFormSet, "select": SelectColumnFormSet}
+        formsets = {"columns": UnpivotColumnFormSet, "secondary_columns": SelectColumnFormSet}
         required = ["unpivot_value", "unpivot_column"]
         labels = {
             "unpivot_value": "Value column name",
@@ -217,8 +217,8 @@ class UnpivotNodeForm(NodeForm):
         self.helper.layout = Layout(
             "unpivot_value",
             "unpivot_column",
-            CrispyFormset("unpivot", "Unpivot columns"),
-            CrispyFormset("select", "Select columns"),
+            CrispyFormset("columns", "Unpivot columns"),
+            CrispyFormset("secondary_columns", "Select columns"),
         )
 
 
@@ -226,13 +226,13 @@ class JoinNodeForm(DefaultNodeForm):
     class Meta:
         model = Node
         fields = []
-        formsets = {"joins": JoinColumnFormset}
+        formsets = {"join_columns": JoinColumnFormset}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.helper.layout = Layout(
-            CrispyFormset("joins", "Join columns"),
+            CrispyFormset("join_columns", "Join columns"),
         )
 
     def get_formset_kwargs(self, formset):
@@ -249,13 +249,13 @@ class FilterNodeForm(DefaultNodeForm):
     class Meta:
         model = Node
         fields = []
-        formsets = {"filter": FilterFormSet}
+        formsets = {"filters": FilterFormSet}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.helper.layout = Layout(
-            CrispyFormset("filter", "Filters"),
+            CrispyFormset("filters", "Filters"),
         )
 
 
@@ -263,13 +263,13 @@ class EditColumnNodeForm(DefaultNodeForm):
     class Meta:
         model = Node
         fields = []
-        formsets = {"edit": EditColumnFormSet}
+        formsets = {"edit_columns": EditColumnFormSet}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.helper.layout = Layout(
-            CrispyFormset("edit", "Edit columns"),
+            CrispyFormset("edit_columns", "Edit columns"),
         )
 
 
@@ -277,13 +277,13 @@ class AddColumnNodeForm(DefaultNodeForm):
     class Meta:
         model = Node
         fields = []
-        formsets = {"add": AddColumnFormSet}
+        formsets = {"add_columns": AddColumnFormSet}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.helper.layout = Layout(
-            CrispyFormset("add", "Add columns"),
+            CrispyFormset("add_columns", "Add columns"),
         )
 
 
@@ -291,13 +291,13 @@ class RenameColumnNodeForm(DefaultNodeForm):
     class Meta:
         model = Node
         fields = []
-        formsets = {"rename": RenameColumnFormSet}
+        formsets = {"rename_columns": RenameColumnFormSet}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.helper.layout = Layout(
-            CrispyFormset("rename", "Rename columns"),
+            CrispyFormset("rename_columns", "Rename columns"),
         )
 
 
@@ -305,13 +305,13 @@ class SortColumnNodeForm(DefaultNodeForm):
     class Meta:
         model = Node
         fields = []
-        formsets = {"sort": SortColumnFormSet}
+        formsets = {"sort_columns": SortColumnFormSet}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.helper.layout = Layout(
-            CrispyFormset("sort", "Sort columns"),
+            CrispyFormset("sort_columns", "Sort columns"),
         )
 
 
@@ -319,13 +319,13 @@ class ConvertColumnNodeForm(DefaultNodeForm):
     class Meta:
         model = Node
         fields = []
-        formsets = {"convert": ConvertColumnFormSet}
+        formsets = {"convert_columns": ConvertColumnFormSet}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.helper.layout = Layout(
-            CrispyFormset("convert", "Select columns to convert"),
+            CrispyFormset("convert_columns", "Select columns to convert"),
         )
 
 
@@ -333,13 +333,13 @@ class FormulaColumnNodeForm(DefaultNodeForm):
     class Meta:
         model = Node
         fields = []
-        formsets = {"formula": FormulaColumnFormSet}
+        formsets = {"formula_columns": FormulaColumnFormSet}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.helper.layout = Layout(
-            CrispyFormset("formula", "Formula columns"),
+            CrispyFormset("formula_columns", "Formula columns"),
         )
 
 
@@ -347,14 +347,14 @@ class AggregateNodeForm(DefaultNodeForm):
     class Meta:
         model = Node
         fields = []
-        formsets = {"group": ColumnFormSet, "aggregrate": AggregationColumnFormSet}
+        formsets = {"columns": ColumnFormSet, "aggregations": AggregationColumnFormSet}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.helper.layout = Layout(
-            CrispyFormset("group", "Group columns"),
-            CrispyFormset("aggregrate", "Aggregations"),
+            CrispyFormset("columns", "Group columns"),
+            CrispyFormset("aggregations", "Aggregations"),
         )
 
 
@@ -362,13 +362,13 @@ class WindowColumnNodeform(DefaultNodeForm):
     class Meta:
         model = Node
         fields = []
-        formsets = {"window": WindowColumnFormSet}
+        formsets = {"window_columns": WindowColumnFormSet}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.helper.layout = Layout(
-            CrispyFormset("window", "Window columns"),
+            CrispyFormset("window_columns", "Window columns"),
         )
 
 

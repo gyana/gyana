@@ -170,8 +170,8 @@ def test_widget_generic_form_basic(setup, widget_factory, pwf):
         (Widget.Kind.FUNNEL, {"dimension", "sort_column", "sort_ascending"}, {"min2"}),
         (Widget.Kind.RADAR, {"dimension", "sort_column", "sort_ascending"}, {"min3"}),
         (Widget.Kind.BUBBLE, {"dimension", "sort_column", "sort_ascending"}, {"xyz"}),
-        (Widget.Kind.HEATMAP, {"dimension", "second_dimension"}, {"default_metrics"}),
-        (Widget.Kind.COMBO, set(), {"combination_chart"}),
+        (Widget.Kind.HEATMAP, {"dimension", "second_dimension"}, {"optional_metrics"}),
+        (Widget.Kind.COMBO, set(), {"combo"}),
     ],
 )
 def test_widget_generic_form(setup, widget_factory, pwf, kind, fields, formsets):
