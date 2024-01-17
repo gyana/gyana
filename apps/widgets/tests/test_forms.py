@@ -3,7 +3,7 @@ import pytest
 from apps.base.tests.asserts import assertFormChoicesLength
 from apps.base.tests.mock_data import TABLE
 from apps.base.tests.mocks import mock_bq_client_with_schema
-from apps.widgets.forms import FORMS, WidgetSourceForm
+from apps.widgets.forms import FORMS, GenericWidgetForm, WidgetSourceForm
 from apps.widgets.formsets import (
     AggregationColumnFormset,
     AggregationWithFormattingFormset,
@@ -164,3 +164,106 @@ def test_widget_source_form(setup, widget_factory):
     form = WidgetSourceForm(instance=widget)
     assert set(form.fields) == {"table", "search"}
     assertFormChoicesLength(form, "table", 2)
+
+
+@pytest.mark.parametrize(
+    "kind, fields, formsets",
+    [
+        (Widget.Kind.METRIC, set(), {"single_metric"}),
+        (
+            Widget.Kind.TABLE,
+            {"sort_column", "sort_ascending", "show_summary_row"},
+            {"dimensions", "metrics"},
+        ),
+        (
+            Widget.Kind.COLUMN,
+            {"dimension", "sort_column", "sort_ascending"},
+            {"default_metrics"},
+        ),
+        (
+            Widget.Kind.STACKED_COLUMN,
+            {
+                "dimension",
+                "sort_column",
+                "sort_ascending",
+                "second_dimension",
+                "stack_100_percent",
+            },
+            {"optional_metrics"},
+        ),
+        (
+            Widget.Kind.BAR,
+            {"dimension", "sort_column", "sort_ascending"},
+            {"default_metrics"},
+        ),
+        (
+            Widget.Kind.STACKED_BAR,
+            {
+                "dimension",
+                "sort_column",
+                "sort_ascending",
+                "second_dimension",
+                "stack_100_percent",
+            },
+            {"optional_metrics"},
+        ),
+        (
+            Widget.Kind.LINE,
+            {"dimension", "sort_column", "sort_ascending"},
+            {"default_metrics"},
+        ),
+        (
+            Widget.Kind.STACKED_LINE,
+            {
+                "dimension",
+                "sort_column",
+                "sort_ascending",
+                "second_dimension",
+                "stack_100_percent",
+            },
+            {"optional_metrics"},
+        ),
+        (
+            Widget.Kind.PIE,
+            {"dimension", "sort_column", "sort_ascending"},
+            {"optional_metrics"},
+        ),
+        (
+            Widget.Kind.AREA,
+            {"dimension", "sort_column", "sort_ascending"},
+            {"default_metrics"},
+        ),
+        (
+            Widget.Kind.DONUT,
+            {"dimension", "sort_column", "sort_ascending"},
+            {"default_metrics"},
+        ),
+        (Widget.Kind.SCATTER, {"dimension", "sort_column", "sort_ascending"}, {"xy"}),
+        (Widget.Kind.FUNNEL, {"dimension", "sort_column", "sort_ascending"}, {"min2"}),
+        (Widget.Kind.RADAR, {"dimension", "sort_column", "sort_ascending"}, {"min3"}),
+        (Widget.Kind.BUBBLE, {"dimension", "sort_column", "sort_ascending"}, {"xyz"}),
+        (Widget.Kind.HEATMAP, {"dimension", "second_dimension"}, {"default_metrics"}),
+        (Widget.Kind.COMBO, set(), {"combination_chart"}),
+    ],
+)
+def test_widget_generic_form(setup, widget_factory, pwf, kind, fields, formsets):
+    dashboard, table = setup
+    widget = widget_factory(kind=kind, table=table, page__dashboard=dashboard)
+    form = GenericWidgetForm(instance=widget, schema=TABLE.schema())
+
+    pwf.render(form)
+
+    pwf.assert_fields({"kind", "date_column"} | fields)
+    pwf.assert_formsets({"filters"} | formsets)
+
+    # TODO: metric
+    # {"compare_previous_period", "positive_decrease"}
+
+    # if "dimension" in fields:
+    #     pwf.assert_select_options_length("dimension", NUM_COLUMN_OPTIONS)
+
+    # if "second_dimension" in fields:
+    #     pwf.assert_select_options_length("second_dimension", NUM_COLUMN_OPTIONS)
+
+    # if "sort_column" in fields:
+    #     pwf.assert_select_options_length("sort_column", NUM_COLUMN_OPTIONS)

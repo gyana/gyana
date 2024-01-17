@@ -31,7 +31,7 @@ from .formsets import (
     XYMetricFormset,
     XYZMetricFormset,
 )
-from .models import CATEGORIES, COUNT_COLUMN_NAME, DEFAULT_HEIGHT, DEFAULT_WIDTH, Widget
+from .models import CATEGORIES, DEFAULT_HEIGHT, DEFAULT_WIDTH, Widget
 
 
 class WidgetCreateForm(BaseModelForm):
