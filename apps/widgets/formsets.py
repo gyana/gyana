@@ -150,19 +150,3 @@ CombinationChartFormset = forms.inlineformset_factory(
     extra=0,
     formset=RequiredInlineFormset,
 )
-
-FORMSETS = {
-    Widget.Kind.PIE: [OptionalMetricFormset],
-    Widget.Kind.STACKED_BAR: [OptionalMetricFormset],
-    Widget.Kind.STACKED_COLUMN: [OptionalMetricFormset],
-    Widget.Kind.STACKED_LINE: [OptionalMetricFormset],
-    Widget.Kind.SCATTER: [XYMetricFormset],
-    Widget.Kind.BUBBLE: [XYZMetricFormset],
-    Widget.Kind.HEATMAP: [OptionalMetricFormset],
-    Widget.Kind.RADAR: [Min3Formset],
-    Widget.Kind.FUNNEL: [Min2Formset],
-    Widget.Kind.METRIC: [SingleMetricFormset],
-    Widget.Kind.GAUGE: [SingleMetricFormset],
-    Widget.Kind.COMBO: [CombinationChartFormset],
-    Widget.Kind.TABLE: [ColumnFormset, AggregationWithFormattingFormset],
-}
