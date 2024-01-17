@@ -64,7 +64,6 @@ class AlpineMixin:
             response = super().form_valid(form)
 
             for formset in self.formsets:
-                # if formset.is_valid():
                 formset.save()
 
         return response
