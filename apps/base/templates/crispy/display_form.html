@@ -4,9 +4,7 @@
   ...{{ form.fields_json }},
   tab: null,
   {% if form.schema_json %}schema: {{form.schema_json}} {% endif %}
-  }"
-  {{ flat_attrs|safe }}
-  class="input-group">
+  }" class="input-group">
   {% if form.form_html %}
     {% if include_media %}{{ form.media }}{% endif %}
     {% if form_show_errors %}
