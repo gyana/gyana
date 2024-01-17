@@ -159,9 +159,8 @@ class LiveAlpineModelForm(BaseModelForm):
         self.parent_instance = kwargs.pop("parent_instance", None)
         super().__init__(*args, **kwargs)
 
-    # TODO: Update comment here
-    # filter to data populated by POST request in update
-    # excluded fields are not rendered in the form
+    # only clean/validate/save fields rendered in the form
+    # but keep track of all fields if form is invalid and is re-rendered
     @contextmanager
     def alpine_fields(self):
         all_fields = self.fields
