@@ -115,7 +115,7 @@ def disable_non_time(schema):
 class GenericWidgetForm(LiveFormsetMixin, SchemaFormMixin, LiveAlpineModelForm):
     dimension = forms.ChoiceField(choices=())
     second_dimension = forms.ChoiceField(choices=())
-    sort_column = forms.ChoiceField(choices=())
+    sort_column = forms.ChoiceField(choices=(), required=False)
 
     class Meta:
         model = Widget

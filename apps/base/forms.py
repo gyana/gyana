@@ -107,6 +107,7 @@ class BaseModelForm(forms.ModelForm, metaclass=PostInitCaller):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_tag = False
+        self.helper.render_hidden_fields = True
 
     def __post_init__(self):
         for k, v in self.effect.items():
