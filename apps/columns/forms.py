@@ -1,10 +1,11 @@
+from crispy_forms.layout import Layout
 from django import forms
-from ibis.expr.datatypes import Array, Date, Floating, Integer, Struct, Timestamp
+from ibis.expr.datatypes import Array, Floating, Struct
 
-from apps.base.core.aggregations import AGGREGATION_TYPE_MAP
 from apps.base.core.utils import create_column_choices
 from apps.base.forms import BaseLiveSchemaForm, LiveAlpineModelForm, SchemaFormMixin
 from apps.base.widgets import Datalist, SelectWithDisable
+from apps.columns.crispy import ColumnFormatting
 from apps.columns.models import (
     AddColumn,
     AggregationColumn,
@@ -19,7 +20,6 @@ from apps.columns.models import (
 )
 from apps.widgets.models import Widget
 
-from .bigquery import DatePeriod
 from .widgets import CodeMirror
 
 IBIS_TO_FUNCTION = {
@@ -67,35 +67,9 @@ class ColumnForm(SchemaFormMixin, LiveAlpineModelForm):
         )
 
 
-class BaseColumnFormWithFormatting(BaseLiveSchemaForm):
-    class Meta:
-        fields = ("column", "part")
-        model = Column
-
-    def get_live_fields(self):
-        fields = ["column"]
-        if isinstance(self.column_type, (Timestamp, Date)):
-            fields += ["part"]
-        return fields
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        disable_struct_and_array_columns(
-            self.fields, self.fields["column"], self.schema
-        )
-
-        if "part" in self.fields and isinstance(self.column_type, Date):
-            self.fields["part"].choices = [
-                choice
-                for choice in self.fields["part"].choices
-                if choice[0] != DatePeriod.DATE.value
-            ]
-
-
-class ColumnFormWithFormatting(BaseColumnFormWithFormatting):
+class ColumnFormWithFormatting(SchemaFormMixin, LiveAlpineModelForm):
     formatting_unfolded = forms.BooleanField(initial=False, required=False)
     formatting_unfolded.widget.attrs.update({"x-model": "open", "class": "hidden"})
-    template_name = "columns/forms/column_form.html"
 
     class Meta:
         model = Column
@@ -111,38 +85,45 @@ class ColumnFormWithFormatting(BaseColumnFormWithFormatting):
             "positive_threshold",
             "negative_threshold",
         )
-
         widgets = {
             "currency": Datalist(),
             "sort_index": forms.HiddenInput(),
         }
+        show = {
+            "part": "['Date', 'Timestamp'].includes(schema[column])",
+            "name": "column !== null",
+            "formatting_unfolded": "column !== null",
+            "rounding": "['Int8', 'Int16', 'Int32', 'Int64', 'Float64'].includes(schema[column])",
+            "currency": "['Int8', 'Int16', 'Int32', 'Int64', 'Float64'].includes(schema[column])",
+            "is_percentage": "['Int8', 'Int16', 'Int32', 'Int64', 'Float64'].includes(schema[column])",
+            "conditional_formatting": "['Int8', 'Int16', 'Int32', 'Int64', 'Float64'].includes(schema[column])",
+            "positive_threshold": "['Int8', 'Int16', 'Int32', 'Int64', 'Float64'].includes(schema[column])",
+            "negative_threshold": "['Int8', 'Int16', 'Int32', 'Int64', 'Float64'].includes(schema[column])",
+        }
+        effect = {"column": f"choices.part = $store.ibis.date_periods[schema[column]]"}
 
-    ignore_live_update_fields = [
-        "currency",
-        "name",
-        "rounding",
-        "positive_threshold",
-        "negative_threshold",
-        "conditional_formatting",
-    ]
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        disable_struct_and_array_columns(
+            self.fields, self.fields["column"], self.schema
+        )
 
-    def get_live_fields(self):
-        fields = super().get_live_fields()
-        fields += ["sort_index"]
-        if self.column_type:
-            fields += ["name", "formatting_unfolded"]
-
-        if isinstance(self.column_type, (Floating, Integer)):
-            fields += [
-                "rounding",
-                "currency",
-                "is_percentage",
-                "conditional_formatting",
-                "positive_threshold",
-                "negative_threshold",
-            ]
-
-        return fields
+        self.helper.layout = Layout(
+            "column",
+            "part",
+            ColumnFormatting(
+                "formatting_unfolded",
+                "name",
+                [
+                    "rounding",
+                    "currency",
+                    "is_percentage",
+                    "conditional_formatting",
+                    "positive_threshold",
+                    "negative_threshold",
+                ],
+            ),
+        )
 
 
 class AggregationColumnForm(SchemaFormMixin, LiveAlpineModelForm):
@@ -169,44 +150,9 @@ class AggregationColumnForm(SchemaFormMixin, LiveAlpineModelForm):
         )
 
 
-# TODO: remove this after Alpine forms for widgets
-class BaseAggregationColumnFormWithFormatting(BaseLiveSchemaForm):
-    class Meta:
-        fields = (
-            "column",
-            "function",
-        )
-        help_texts = {
-            "column": "Select the column to aggregate over",
-            "function": "Select the aggregation function",
-        }
-        model = AggregationColumn
-
-    def get_live_fields(self):
-        fields = ["column"]
-
-        if self.column_type is not None:
-            fields += ["function"]
-
-        return fields
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        disable_struct_and_array_columns(
-            self.fields, self.fields["column"], self.schema
-        )
-
-        if self.column_type is not None:
-            self.fields["function"].choices = [
-                (choice.value, choice.name)
-                for choice in AGGREGATION_TYPE_MAP[self.column_type.name]
-            ]
-
-
-class AggregationFormWithFormatting(BaseAggregationColumnFormWithFormatting):
+class AggregationFormWithFormatting(SchemaFormMixin, LiveAlpineModelForm):
     formatting_unfolded = forms.BooleanField(initial=False, required=False)
     formatting_unfolded.widget.attrs.update({"x-model": "open", "class": "hidden"})
-    template_name = "columns/forms/column_form.html"
 
     class Meta:
         fields = (
@@ -230,37 +176,50 @@ class AggregationFormWithFormatting(BaseAggregationColumnFormWithFormatting):
             "currency": Datalist(),
             "sort_index": forms.HiddenInput(),
         }
-
-    ignore_live_update_fields = [
-        "currency",
-        "name",
-        "rounding",
-        "positive_threshold",
-        "negative_threshold",
-        "conditional_formatting",
-    ]
-
-    def get_live_fields(self):
-        fields = super().get_live_fields()
-        fields += ["sort_index"]
-        if self.column_type:
-            if not (
-                isinstance(self.parent_instance, Widget)
-                and self.parent_instance.kind == Widget.Kind.METRIC
-            ):
-                fields += ["name"]
+        show = {
+            "function": "column !== null",
+            "name": f"column !== null && kind !== {Widget.Kind.METRIC}",
             # For aggregation column the numeric type of the output is guaranteed
-            fields += [
-                "formatting_unfolded",
-                "rounding",
-                "currency",
-                "is_percentage",
-                "conditional_formatting",
-                "positive_threshold",
-                "negative_threshold",
-            ]
+            "formatting_unfolded": "column !== null",
+            "rounding": "column !== null",
+            "currency": "column !== null",
+            "is_percentage": "column !== null",
+            "conditional_formatting": "column !== null",
+            "positive_threshold": "column !== null",
+            "negative_threshold": "column !== null",
+        }
+        effect = {
+            "column": f"choices.function = $store.ibis.aggregations[schema[column]]",
+        }
 
-        return fields
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        disable_struct_and_array_columns(
+            self.fields, self.fields["column"], self.schema
+        )
+
+        self.helper.layout = Layout(
+            "column",
+            "function",
+            ColumnFormatting(
+                "formatting_unfolded",
+                "name",
+                [
+                    "rounding",
+                    "currency",
+                    "is_percentage",
+                    "conditional_formatting",
+                    "positive_threshold",
+                    "negative_threshold",
+                ],
+            ),
+        )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        disable_struct_and_array_columns(
+            self.fields, self.fields["column"], self.schema
+        )
 
 
 def _show_function_field(field):
