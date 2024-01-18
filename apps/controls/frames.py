@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.utils.functional import cached_property
 from django_htmx.http import retarget, trigger_client_event
 
-from apps.base.views import HttpResponseSeeOther, UpdateView
+from apps.base.views import UpdateView
 from apps.dashboards.mixins import DashboardMixin
 
 from .forms import ControlForm
@@ -49,8 +49,6 @@ class ControlUpdate(DashboardMixin, UpdateView):
 
     def form_valid(self, form):
         r = super().form_valid(form)
-        if form.is_live:
-            return r
         return self.get_stream_response(form)
 
     def get_success_url(self) -> str:
@@ -81,8 +79,6 @@ class ControlPublicUpdate(ControlUpdate):
         )
 
     def form_valid(self, form):
-        if form.is_live:
-            return HttpResponseSeeOther(self.get_success_url())
         return self.get_stream_response(form)
 
     @cached_property
