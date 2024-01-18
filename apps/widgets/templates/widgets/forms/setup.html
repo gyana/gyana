@@ -12,16 +12,16 @@
 >
   {% comment %}
   The pressed button is outside the form this is just to trigger the submit
+  TODO: decide whether we need this
   {% endcomment %}
-  {% comment %} TODO: remove this? {% endcomment %}
-  {% comment %} <button
+  <button
     type="submit"
     formnovalidate
     name="close"
     value="close"
     hidden
-  ></button> {% endcomment %}
-  
+  ></button>
+
   {% csrf_token %}
 
   <div class="widget-update__body">
