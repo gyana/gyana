@@ -207,16 +207,6 @@ class WidgetUpdate(DashboardMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["tab"] = self.tab
-
-        # if self.tab == "data" and self.object.kind not in [
-        #     Widget.Kind.TEXT,
-        #     Widget.Kind.IFRAME,
-        #     Widget.Kind.IMAGE,
-        # ]:
-        #     context["show_date_column"] = bool(
-        #         context["form"].get_live_field("date_column")
-        #     )
-
         return context
 
     def form_valid(self, form):
