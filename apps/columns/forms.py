@@ -68,9 +68,6 @@ class ColumnForm(SchemaFormMixin, LiveAlpineModelForm):
 
 
 class ColumnFormWithFormatting(SchemaFormMixin, LiveAlpineModelForm):
-    formatting_unfolded = forms.BooleanField(initial=False, required=False)
-    formatting_unfolded.widget.attrs.update({"x-model": "open", "class": "hidden"})
-
     class Meta:
         model = Column
         fields = (
@@ -80,19 +77,18 @@ class ColumnFormWithFormatting(SchemaFormMixin, LiveAlpineModelForm):
             "rounding",
             "currency",
             "is_percentage",
-            "sort_index",
+            # TODO: support sort implementation for all formsets
+            # "sort_index",
             "conditional_formatting",
             "positive_threshold",
             "negative_threshold",
         )
         widgets = {
             "currency": Datalist(),
-            "sort_index": forms.HiddenInput(),
+            # "sort_index": forms.HiddenInput(),
         }
         show = {
             "part": "['Date', 'Timestamp'].includes(schema[column])",
-            "name": "column !== null",
-            "formatting_unfolded": "column !== null",
             "rounding": "['Int8', 'Int16', 'Int32', 'Int64', 'Float64'].includes(schema[column])",
             "currency": "['Int8', 'Int16', 'Int32', 'Int64', 'Float64'].includes(schema[column])",
             "is_percentage": "['Int8', 'Int16', 'Int32', 'Int64', 'Float64'].includes(schema[column])",
@@ -112,7 +108,6 @@ class ColumnFormWithFormatting(SchemaFormMixin, LiveAlpineModelForm):
             "column",
             "part",
             ColumnFormatting(
-                "formatting_unfolded",
                 "name",
                 [
                     "rounding",
@@ -151,9 +146,6 @@ class AggregationColumnForm(SchemaFormMixin, LiveAlpineModelForm):
 
 
 class AggregationFormWithFormatting(SchemaFormMixin, LiveAlpineModelForm):
-    formatting_unfolded = forms.BooleanField(initial=False, required=False)
-    formatting_unfolded.widget.attrs.update({"x-model": "open", "class": "hidden"})
-
     class Meta:
         fields = (
             "column",
@@ -162,7 +154,7 @@ class AggregationFormWithFormatting(SchemaFormMixin, LiveAlpineModelForm):
             "rounding",
             "currency",
             "is_percentage",
-            "sort_index",
+            # "sort_index",
             "conditional_formatting",
             "positive_threshold",
             "negative_threshold",
@@ -174,19 +166,13 @@ class AggregationFormWithFormatting(SchemaFormMixin, LiveAlpineModelForm):
         model = AggregationColumn
         widgets = {
             "currency": Datalist(),
-            "sort_index": forms.HiddenInput(),
+            # "sort_index": forms.HiddenInput(),
         }
         show = {
             "function": "column !== null",
-            "name": f"column !== null && kind !== {Widget.Kind.METRIC}",
+            # TODO: make a decision on how to support this
+            # "name": f"kind !== {Widget.Kind.METRIC}",
             # For aggregation column the numeric type of the output is guaranteed
-            "formatting_unfolded": "column !== null",
-            "rounding": "column !== null",
-            "currency": "column !== null",
-            "is_percentage": "column !== null",
-            "conditional_formatting": "column !== null",
-            "positive_threshold": "column !== null",
-            "negative_threshold": "column !== null",
         }
         effect = {
             "column": f"choices.function = $store.ibis.aggregations[schema[column]]",
@@ -202,7 +188,6 @@ class AggregationFormWithFormatting(SchemaFormMixin, LiveAlpineModelForm):
             "column",
             "function",
             ColumnFormatting(
-                "formatting_unfolded",
                 "name",
                 [
                     "rounding",
@@ -213,12 +198,6 @@ class AggregationFormWithFormatting(SchemaFormMixin, LiveAlpineModelForm):
                     "negative_threshold",
                 ],
             ),
-        )
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        disable_struct_and_array_columns(
-            self.fields, self.fields["column"], self.schema
         )
 
 

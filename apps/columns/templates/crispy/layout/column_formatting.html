@@ -1,5 +1,4 @@
-<div class='formatting'
-  x-data="{ open: {{ enabled.value|yesno:"true,false" }} }">
+<div class='formatting' x-data="{ open: false }">
   <button
     type='button'
     class="small link link--foldable ml-auto"
@@ -9,20 +8,17 @@
     Formatting
   </button>
 
-  {% include field_template with field=enabled %}
+  <template x-if="open">
+    <div  class="input-group">
+      {% include field_template with field=name %}
 
-  <div
-    x-show="open"
-    class="input-group"
-  >
-    {% include field_template with field=name %}
-
-    {% for column in columns %}
-      <div class='flex flex-row w-full gap-2'>
-        {% for field in column %}
-          {% include field_template %}
-        {% endfor %}
-      </div>
-    {% endfor %}
-  </div>
+      {% for column in columns %}
+        <div class='flex flex-row w-full gap-2'>
+          {% for field in column %}
+            {% include field_template %}
+          {% endfor %}
+        </div>
+      {% endfor %}
+    </div>
+  </template>
 </div>

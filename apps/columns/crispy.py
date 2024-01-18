@@ -5,8 +5,7 @@ from django.template.loader import render_to_string
 class ColumnFormatting(TemplateNameMixin):
     template = "%s/layout/column_formatting.html"
 
-    def __init__(self, enabled, name, fields):
-        self.enabled = enabled
+    def __init__(self, name, fields):
         self.name = name
         self.fields = fields
 
@@ -14,7 +13,6 @@ class ColumnFormatting(TemplateNameMixin):
         template = self.get_template_name(template_pack)
         context.update(
             {
-                "enabled": form[self.enabled],
                 "name": form[self.name],
                 "columns": [
                     (form[x], form[y])
