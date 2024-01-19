@@ -30,21 +30,15 @@ def mock_bq_client_with_schema(bigquery, schema_list):
 
 def mock_bq_client_with_records(bigquery, records, return_count=False):
     def mock_query(stmt, *args, **kwargs):
-        query = MagicMock()
-
-        def mock_result(self):
-            r = MagicMock()
-            if "`count`" in stmt:
-                r.to_arrow = MagicMock(
-                    return_value=pa.Table.from_pydict(
-                        {"count": [len(list(records.values())[0])]}
-                    )
+        r = MagicMock()
+        if "`count`" in stmt:
+            r.to_arrow = MagicMock(
+                return_value=pa.Table.from_pydict(
+                    {"count": [len(list(records.values())[0])]}
                 )
-            else:
-                r.to_arrow = MagicMock(return_value=pa.Table.from_pydict(records))
-            return r
+            )
+        else:
+            r.to_arrow = MagicMock(return_value=pa.Table.from_pydict(records))
+        return r
 
-        bind(query, "result", mock_result)
-        return query
-
-    bigquery.query.side_effect = mock_query
+    bigquery.query_and_wait.side_effect = mock_query
