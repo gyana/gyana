@@ -1,11 +1,10 @@
 import hashlib
 from unittest.mock import MagicMock, Mock
 
+import pandas as pd
 import pyarrow as pa
 from google.cloud.bigquery.schema import SchemaField
 from google.cloud.bigquery.table import Table as BqTable
-
-from apps.base.tests.fixtures import bind
 
 
 def md5(content):
@@ -32,15 +31,14 @@ def mock_bq_client_with_records(bigquery, records, return_count=False):
     def mock_query(stmt, *args, **kwargs):
         r = MagicMock()
         if "`count`" in stmt:
-            r.to_arrow = MagicMock(
-                return_value=pa.Table.from_pydict(
-                    {"count": [len(list(records.values())[0])]}
-                )
+            r.to_dataframe = MagicMock(
+                return_value=pd.DataFrame({"count": [len(list(records.values())[0])]})
             )
             r.total_rows = 1
         else:
-            r.to_arrow = MagicMock(return_value=pa.Table.from_pydict(records))
-            r.total_rows = len(records)
+            df = pd.DataFrame(records)
+            r.to_dataframe = MagicMock(return_value=df)
+            r.total_rows = len(df)
         return r
 
     bigquery.query_and_wait.side_effect = mock_query

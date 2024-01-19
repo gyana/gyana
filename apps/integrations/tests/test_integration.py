@@ -115,11 +115,9 @@ def test_integration_schema_and_preview(
     assertContains(r, "Neera")
     assertContains(r, "4")
 
-    # WARN: Because the number of rows is a second database request right now
-    # Querying is called twice
-    assert bigquery.query_and_wait.call_count == 2
+    assert bigquery.query_and_wait.call_count == 1
     assert bigquery.query_and_wait.call_args.args == (
-        "SELECT t0.*\nFROM `project.dataset.table` t0\nLIMIT 50",
+        "SELECT t0.*\nFROM `project.dataset.table` t0",
     )
 
     # preview page 2
@@ -133,7 +131,7 @@ def test_integration_schema_and_preview(
     assertContains(r, "Vayu")
     assertContains(r, "2")
 
-    assert bigquery.query_and_wait.call_count == 3
+    assert bigquery.query_and_wait.call_count == 2
     assert bigquery.query_and_wait.call_args.args == (
         "SELECT t0.*\nFROM `project.dataset.table` t0\nLIMIT 5 OFFSET 15",
     )
@@ -150,7 +148,7 @@ def test_integration_schema_and_preview(
     assertContains(r, "Vayu")
     assertContains(r, "2")
 
-    assert bigquery.query_and_wait.call_count == 4
+    assert bigquery.query_and_wait.call_count == 3
     assert bigquery.query_and_wait.call_args.args == (
         "SELECT t0.*\nFROM `project.dataset.table` t0\nORDER BY t0.`name` DESC\nLIMIT 5 OFFSET 15",
     )
