@@ -49,11 +49,9 @@ class GyanaTableData(TableData):
     def _get_query_results(self, start=0, stop=None):
         data = self.data
         if start > 0:
-            limit = stop - start
-            data = data.limit(limit, offset=start)
-        else:
-            limit = self.rows_per_page
-        df = data.execute(limit=limit)
+            data = data.limit(stop - start, offset=start)
+        df = data.execute(limit=self.rows_per_page)
+        # automatically added by custom bigquery execute
         if not hasattr(df, "total_rows"):
             df.total_rows = self.data.count().execute()
         return df
