@@ -1,4 +1,16 @@
-<div x-data>
+<div x-data="{
+  min_num: {{ formset.min_num }},
+  max_num: {{ formset.max_num }},
+  initial: {{ formset.initial_form_count }},
+  total: {{ formset.total_form_count }}, // total number of forms (for Django)
+  marked_for_delete: 0,
+  index: {{ formset.total_form_count }} // unique index for each new form
+  }"
+  x-init="$watch('total', value => {
+    const TOTAL_FORMS = $root.querySelector('#id_{{ formset.prefix }}-TOTAL_FORMS')
+    TOTAL_FORMS.value = total + marked_for_delete
+    })"
+>
   {% with formset.management_form as form %}
     {% include 'crispy/uni_form.html' %}
   {% endwith %}
@@ -14,17 +26,15 @@
   </div>
 
   <button
-    id="{{ formset.get_default_prefix }}-add"
+    id="{{ formset.prefix }}-add"
     type="submit"
     class="button button--sm button--rounded"
-    @click.prevent="const TOTAL_FORMS = $root.querySelector('#id_{{ formset.get_default_prefix }}-TOTAL_FORMS')
-      const total = parseInt(TOTAL_FORMS.value)
-
-      const content = $refs.template.innerHTML.replace(/__prefix__/g, total)
+    :disabled="total >= max_num"
+    @click.prevent="const content = $refs.template.innerHTML.replace(/__prefix__/g, index)
       $refs.forms.insertAdjacentHTML('beforeend', content)
-
-      // Increment the total forms index, for consistency with live update form
-      TOTAL_FORMS.value = parseInt(total) + 1"
+      index += 1
+      total += 1"
+    data-pw="formset-{{ formset.prefix }}-add"
   >
     <i class="far fa-fw fa-plus"></i> Add new
   </button>

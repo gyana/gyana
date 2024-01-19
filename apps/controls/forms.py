@@ -1,10 +1,10 @@
-from apps.base.forms import BaseLiveSchemaForm
+from apps.base.forms import LiveAlpineModelForm, SchemaFormMixin
 from apps.base.widgets import DatetimeInput
 
 from .models import Control, CustomChoice
 
 
-class ControlForm(BaseLiveSchemaForm):
+class ControlForm(SchemaFormMixin, LiveAlpineModelForm):
     class Meta:
         model = Control
         fields = ["date_range", "start", "end"]
@@ -12,11 +12,7 @@ class ControlForm(BaseLiveSchemaForm):
             "start": DatetimeInput(attrs={"class": "input--sm"}),
             "end": DatetimeInput(attrs={"class": "input--sm"}),
         }
-
-    ignore_live_update_fields = ["start", "end"]
-
-    def get_live_fields(self):
-        fields = ["date_range"]
-        if self.get_live_field("date_range") == CustomChoice.CUSTOM:
-            fields += ["start", "end"]
-        return fields
+        show = {
+            "start": f"date_range === '{CustomChoice.CUSTOM}'",
+            "end": f"date_range === '{CustomChoice.CUSTOM}'",
+        }

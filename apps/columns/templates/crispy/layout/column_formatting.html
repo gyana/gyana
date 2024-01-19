@@ -1,0 +1,24 @@
+<div class='formatting' x-data="{ open: false }">
+  <button
+    type='button'
+    class="small link link--foldable ml-auto"
+    :class="{ 'link--unfolded': open }"
+    @click="open = !open"
+  >
+    Formatting
+  </button>
+
+  <template x-if="open">
+    <div  class="input-group">
+      {% include field_template with field=name %}
+
+      {% for column in columns %}
+        <div class='flex flex-row w-full gap-2'>
+          {% for field in column %}
+            {% include field_template %}
+          {% endfor %}
+        </div>
+      {% endfor %}
+    </div>
+  </template>
+</div>

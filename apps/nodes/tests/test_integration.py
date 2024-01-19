@@ -347,16 +347,8 @@ def test_filter_node(client, node_factory, setup, pwf):
     )
 
     pwf.render(r.content)
-    pwf.assert_fields(
-        {
-            "name",
-            *filter_base.keys(),
-            "filters-0-node",
-            "filters-0-id",
-            "filters-0-column",
-            "filters-0-DELETE",
-        }
-    )
+    pwf.assert_fields({"name"})
+    pwf.assert_formsets({"filters"})
 
     r = update_node(
         client,
@@ -383,16 +375,8 @@ def test_edit_node(client, node_factory, setup, pwf):
         client, Node.Kind.EDIT, node_factory, table, workflow
     )
     pwf.render(r.content)
-    pwf.assert_fields(
-        {
-            *edit_base.keys(),
-            "name",
-            "edit_columns-0-DELETE",
-            "edit_columns-0-node",
-            "edit_columns-0-id",
-            "edit_columns-0-column",
-        }
-    )
+    pwf.assert_fields({"name"})
+    pwf.assert_formsets({"edit_columns"})
 
     r = update_node(
         client,
@@ -418,16 +402,8 @@ def test_add_node(client, node_factory, setup, pwf):
         client, Node.Kind.ADD, node_factory, table, workflow
     )
     pwf.render(r.content)
-    pwf.assert_fields(
-        {
-            *add_base.keys(),
-            "name",
-            "add_columns-0-DELETE",
-            "add_columns-0-node",
-            "add_columns-0-id",
-            "add_columns-0-column",
-        }
-    )
+    pwf.assert_fields({"name"})
+    pwf.assert_formsets({"add_columns"})
 
     r = update_node(
         client,
@@ -542,16 +518,8 @@ def test_window_node(client, node_factory, setup, pwf):
         client, Node.Kind.WINDOW, node_factory, table, workflow
     )
     pwf.render(r.content)
-    pwf.assert_fields(
-        {
-            *window_base.keys(),
-            "name",
-            "window_columns-0-column",
-            "window_columns-0-node",
-            "window_columns-0-id",
-            "window_columns-0-DELETE",
-        }
-    )
+    pwf.assert_fields({"name"})
+    pwf.assert_formsets({"window_columns"})
 
     r = update_node(
         client,

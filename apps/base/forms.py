@@ -1,4 +1,5 @@
 import json
+from contextlib import contextmanager
 from functools import cache
 
 from crispy_forms import utils
@@ -27,6 +28,7 @@ ModelFormOptions__init__ = ModelFormOptions.__init__
 
 def __init__(self, options=None):
     ModelFormOptions__init__(self, options=options)
+    self.formsets = getattr(options, "formsets", {})
     self.show = getattr(options, "show", None)
     self.effect = getattr(options, "effect", {})
 
@@ -105,6 +107,7 @@ class BaseModelForm(forms.ModelForm, metaclass=PostInitCaller):
         super().__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_tag = False
+        self.helper.render_hidden_fields = True
 
     def __post_init__(self):
         for k, v in self.effect.items():
@@ -147,20 +150,41 @@ class BaseModelForm(forms.ModelForm, metaclass=PostInitCaller):
     def effect(self):
         return self._meta.effect
 
+    @property
+    def formsets(self):
+        return self._meta.formsets
+
 
 class LiveAlpineModelForm(BaseModelForm):
     def __init__(self, *args, **kwargs):
         self.parent_instance = kwargs.pop("parent_instance", None)
         super().__init__(*args, **kwargs)
 
-        # filter to data populated by POST request in update
-        # excluded fields are not rendered in the form
-        if self.data:
-            self.fields = {
-                k: v
-                for k, v in self.fields.items()
-                if (f"{self.prefix}-{k}" if self.prefix else k) in self.data
-            }
+    # only clean/validate/save fields rendered in the form
+    # but keep track of all fields if form is invalid and is re-rendered
+    @contextmanager
+    def alpine_fields(self):
+        all_fields = self.fields
+        self.fields = {
+            k: v
+            for k, v in self.fields.items()
+            if (f"{self.prefix}-{k}" if self.prefix else k) in self.data
+        }
+        yield
+        self.fields = all_fields
+
+    @property
+    def errors(self):
+        with self.alpine_fields():
+            return super().errors
+
+    def save(self, commit=True):
+        with self.alpine_fields():
+            return super().save(commit)
+
+    def save_m2m(self, commit=True):
+        with self.alpine_fields():
+            return super().save_m2m(commit)
 
 
 class LiveModelForm(BaseModelForm):
@@ -270,7 +294,7 @@ class LiveFormsetMixin:
     def get_formset_form_kwargs(self, formset):
         return {}
 
-    def get_formset(self, formset):
+    def get_formset(self, prefix, formset):
         forms_kwargs = self.get_formset_form_kwargs(formset)
 
         # provide a reference to parent instance in live update forms
@@ -290,14 +314,16 @@ class LiveFormsetMixin:
                 instance=self.instance,
                 **self.get_formset_kwargs(formset),
                 form_kwargs=forms_kwargs,
+                prefix=prefix,
             )
             # form is only bound if formset is in previous render, otherwise load from database
-            if self.data and f"{formset.get_default_prefix()}-TOTAL_FORMS" in self.data
+            if self.data and f"{prefix}-TOTAL_FORMS" in self.data
             # initial render
             else formset(
                 instance=self.instance,
                 **self.get_formset_kwargs(formset),
                 form_kwargs=forms_kwargs,
+                prefix=prefix,
             )
         )
         # When the post contains the wrong total forms number new forms aren't
@@ -312,10 +338,7 @@ class LiveFormsetMixin:
 
     @cache
     def get_formsets(self):
-        return {
-            _get_formset_label(formset): self.get_formset(formset)
-            for formset in self.get_live_formsets()
-        }
+        return {k: self.get_formset(k, v) for k, v in self.formsets.items()}
 
 
 class LiveFormsetForm(LiveFormsetMixin, BaseLiveSchemaForm):

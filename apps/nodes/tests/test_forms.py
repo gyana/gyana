@@ -160,3 +160,6 @@ def test_default_form(kind, setup, node_factory):
     node = create_and_connect(kind, node_factory, table, workflow)
     form = KIND_TO_FORM[node.kind](instance=node)
     assert set(form.fields.keys()) == set()
+
+
+# TODO: write tests for min and max # formsets

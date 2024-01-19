@@ -1,33 +1,32 @@
-{% load crispy_forms_utils %}
+{% load crispy_forms_tags %}
 
-<div x-data="{ ...{{ form.fields_json }} }" class="formset-wrapper">
-  {% specialspaceless %}
-    {% if include_media %}{{ form.media }}{% endif %}
-    {% if form_show_errors %}
-      {% include "crispy/errors.html" %}
-    {% endif %}
-    {% for field in form %}
-      {% include field_template %}
-    {% endfor %}
+<div class="formset-wrapper">
+  {% crispy form %}
 
-    <button
-      class="button button--sm button--circle button--tertiary ml-4"
-      @click.prevent="const wrapper = $el.parentElement
+  <button
+    class="button button--sm button--circle button--tertiary ml-4"
+    :disabled="total <= min_num"
+    @click.prevent="const wrapper = $el.parentElement
 
-        // If the field has `data-new-record` set, then it was added dynamically. Otherwise we
-        // need to 'check' the hidden delete input. Django will then delete it on the post request.
+      // If the field has `data-new-record` set, then it was added dynamically. Otherwise we
+      // need to 'check' the hidden delete input. Django will then delete it on the post request.
 
-        if (wrapper.dataset.newRecord === 'true') {
-        wrapper.remove()
-        } else {
-        wrapper.style.display = 'none'
+      total -= 1
 
-        const input = wrapper.querySelector(`input[name*='-DELETE']`)
-        input.value = 'on'
-        input.setAttribute('checked', '')
-        }"
-    >
-      <i class="far fa-fw fa-times"></i>
-    </button>
-  {% endspecialspaceless %}
+      if (wrapper.dataset.newRecord === 'true') {
+      wrapper.remove()
+      } else {
+      marked_for_delete += 1
+      wrapper.style.display = 'none'
+
+      const input = wrapper.querySelector(`input[name*='-DELETE']`)
+      input.value = 'on'
+      input.setAttribute('checked', '')
+
+      // TODO: need to handle case where hidden field is invalid
+      }"
+    data-pw="formset-{{ formset.prefix }}-remove"
+  >
+    <i class="far fa-fw fa-times"></i>
+  </button>
 </div>

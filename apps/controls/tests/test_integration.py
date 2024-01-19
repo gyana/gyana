@@ -64,7 +64,7 @@ def test_control_crudl(
     # update
     r = client.get(control_url + f"{control.id}/update-widget")
     assertOK(r)
-    assertFormRenders(r, ["date_range"])
+    assertFormRenders(r, ["date_range", "start", "end"])
 
     r = client.post(
         control_url + f"{control.id}/update-widget",

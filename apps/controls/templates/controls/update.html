@@ -1,6 +1,7 @@
+{% load crispy_forms_tags %}
+
 <form
   id="control-update-form"
-  data-controller="live-update"
   data-tf-modal-target="form"
   data-tf-modal-submit-on-close
   data-action="change->tf-modal#change"
@@ -14,11 +15,7 @@
 >
   {% csrf_token %}
 
-  <span data-live-update-target="loading" hidden>
-    <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-fw fa-2x"></i>
-  </span>
-
-  {{ form }}
+  {% crispy form %}
 
   <button
     class="button button--success button--sm mt-3 w-full"

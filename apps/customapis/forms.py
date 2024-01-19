@@ -157,6 +157,12 @@ class CustomApiUpdateForm(LiveFormsetMixin, LiveAlpineModelForm):
             "body_raw",
             "body_binary",
         ]
+        formsets = {
+            "queryparams": QueryParamFormset,
+            "httpheaders": HttpHeaderFormset,
+            "formdataentries": FormDataEntryFormset,
+            "formurlencodedentries": FormURLEncodedEntryFormset,
+        }
         show = {
             "api_key_key": f"authorization == '{CustomApi.Authorization.API_KEY}'",
             "api_key_value": f"authorization == '{CustomApi.Authorization.API_KEY}'",
@@ -210,23 +216,19 @@ class CustomApiUpdateForm(LiveFormsetMixin, LiveAlpineModelForm):
                 ),
                 Tab(
                     "Params",
-                    CrispyFormset("query_params", "Query Params", QueryParamFormset),
+                    CrispyFormset("queryparams", "Query Params"),
                 ),
                 Tab(
                     "Headers",
-                    CrispyFormset("httpheaders", "HTTP Headers", HttpHeaderFormset),
+                    CrispyFormset("httpheaders", "HTTP Headers"),
                 ),
                 Tab(
                     "Body",
                     "body",
                     "body_raw",
                     "body_binary",
-                    CrispyFormset("formdataentries", "Form Data", FormDataEntryFormset),
-                    CrispyFormset(
-                        "formurlencodedentries",
-                        "Form URL Encoded",
-                        FormURLEncodedEntryFormset,
-                    ),
+                    CrispyFormset("formdataentries", "Form Data"),
+                    CrispyFormset("formurlencodedentries", "Form URL Encoded"),
                 ),
             )
         )
@@ -242,11 +244,3 @@ class CustomApiUpdateForm(LiveFormsetMixin, LiveAlpineModelForm):
             field.help_text = mark_safe(
                 f'You can authorize services with OAuth2 in your project <a href="{settings_url}" class="link">settings</a>'
             )
-
-    def get_live_formsets(self):
-        return [
-            FormDataEntryFormset,
-            FormURLEncodedEntryFormset,
-            QueryParamFormset,
-            HttpHeaderFormset,
-        ]

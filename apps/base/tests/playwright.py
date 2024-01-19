@@ -30,8 +30,16 @@ class PlaywrightForm:
             for el in self.page.locator(
                 "form input,select,textarea,gy-select-autocomplete"
             ).all()
+            if "-" not in el.get_attribute("name")  # exclude formsets
         } - {"csrfmiddlewaretoken"}
         assert field_names == set(expected), f"{field_names} != {set(expected)}"
+
+    def assert_formsets(self, expected):
+        prefixes = {
+            el.get_attribute("name").split("-")[0]
+            for el in self.page.locator("form input[name$=-TOTAL_FORMS]").all()
+        }
+        assert prefixes == set(expected), f"{prefixes} != {set(expected)}"
 
     def assert_select_options_length(self, name, expected):
         options = self.page.locator(f"select[name={name}] option").all()

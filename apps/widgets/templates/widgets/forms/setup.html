@@ -1,0 +1,50 @@
+{% load crispy_forms_tags %}
+
+<form
+  id="widget-update-form"
+  class="widget-update-sidebar__form"
+  hx-post="{% url 'dashboard_widgets:update' project.id dashboard.id object.id %}"
+  data-action="
+    change->tf-modal#change
+  "
+  data-tf-modal-target="form"
+  data-tf-modal-submit-on-close
+>
+  {% comment %}
+  The pressed button is outside the form this is just to trigger the submit
+  TODO: decide whether we need this
+  {% endcomment %}
+  <button
+    type="submit"
+    formnovalidate
+    name="close"
+    value="close"
+    hidden
+  ></button>
+
+  {% csrf_token %}
+
+  <div class="widget-update__body">
+    {% crispy form %}
+  </div>
+
+  <div class="widget-update__footer">
+    <button
+      type="submit"
+      name="submit"
+      value="Save & Close"
+      class="button button--success flex-1"
+    >
+      Save & Close
+    </button>
+
+    <button
+      type="submit"
+      name="submit"
+      value="Save & Preview"
+      class="button button--outline button--success flex-1"
+    >
+      Save & Preview
+    </button>
+  </div>
+</form>

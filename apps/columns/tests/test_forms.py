@@ -24,37 +24,31 @@ pytestmark = pytest.mark.django_db
 COLUMNS_LENGTH = 10
 
 
-def test_column_form_with_formatting(column_factory, node_factory):
-    column = column_factory(node=node_factory())
-    form = ColumnFormWithFormatting(instance=column, schema=TABLE.schema())
+def test_column_form_with_formattin(pwf):
+    pwf.render(ColumnFormWithFormatting(schema=TABLE.schema()))
 
-    assert set(form.fields.keys()) == {"column", "sort_index"}
-    assertFormChoicesLength(form, "column", COLUMNS_LENGTH)
+    pwf.assert_fields({"column"})
+    pwf.assert_select_options_length("column", COLUMNS_LENGTH)
 
-    data = QueryDict(mutable=True)
-    data["column"] = "id"
-    form = ColumnFormWithFormatting(instance=column, schema=TABLE.schema(), data=data)
-    assert set(form.fields.keys()) == {
-        "column",
-        "sort_index",
-        "currency",
-        "name",
-        "rounding",
-        "formatting_unfolded",
-        "is_percentage",
-        "conditional_formatting",
-        "positive_threshold",
-        "negative_threshold",
-    }
+    pwf.page.locator("form .formatting button").click()
+    pwf.assert_fields({"column", "name"})
 
-    data["column"] = "athlete"
-    form = ColumnFormWithFormatting(instance=column, schema=TABLE.schema(), data=data)
-    assert set(form.fields.keys()) == {
-        "column",
-        "sort_index",
-        "name",
-        "formatting_unfolded",
-    }
+    pwf.select_value("column", "athlete")  # string
+    pwf.assert_fields({"column", "name"})
+
+    pwf.select_value("column", "id")  # integer
+    pwf.assert_fields(
+        {
+            "column",
+            "name",
+            "rounding",
+            "currency",
+            "is_percentage",
+            "conditional_formatting",
+            "positive_threshold",
+            "negative_threshold",
+        }
+    )
 
 
 def test_aggregation_form(pwf):
@@ -71,50 +65,33 @@ def test_aggregation_form(pwf):
     )
 
 
-def test_aggregation_form_with_formatting(aggregation_column_factory, node_factory):
-    column = aggregation_column_factory(node=node_factory())
-    form = AggregationFormWithFormatting(instance=column, schema=TABLE.schema())
+def test_aggregation_form_with_formatting(pwf):
+    pwf.render(AggregationFormWithFormatting(schema=TABLE.schema()))
 
-    assert set(form.fields.keys()) == {"column", "sort_index"}
-    assertFormChoicesLength(form, "column", COLUMNS_LENGTH)
+    pwf.assert_fields({"column"})
+    pwf.assert_select_options_length("column", COLUMNS_LENGTH)
 
-    data = QueryDict(mutable=True)
-    data["column"] = "id"
-    form = AggregationFormWithFormatting(
-        instance=column, schema=TABLE.schema(), data=data
+    pwf.select_value("column", "id")
+    pwf.assert_fields({"column", "function"})
+
+    pwf.assert_select_options(
+        "function", {choice.value for choice in AggregationFunctions}
     )
-    assert set(form.fields.keys()) == {
-        "column",
-        "sort_index",
-        "function",
-        "currency",
-        "name",
-        "rounding",
-        "formatting_unfolded",
-        "is_percentage",
-        "conditional_formatting",
-        "positive_threshold",
-        "negative_threshold",
-    }
 
-    data["column"] = "athlete"
-    form = AggregationFormWithFormatting(
-        instance=column, schema=TABLE.schema(), data=data
+    pwf.page.locator("form .formatting button").click()
+    pwf.assert_fields(
+        {
+            "column",
+            "function",
+            "name",
+            "rounding",
+            "currency",
+            "is_percentage",
+            "conditional_formatting",
+            "positive_threshold",
+            "negative_threshold",
+        }
     )
-    assert set(form.fields.keys()) == {
-        "column",
-        "sort_index",
-        "function",
-        "name",
-        "formatting_unfolded",
-        "currency",
-        "rounding",
-        "formatting_unfolded",
-        "is_percentage",
-        "conditional_formatting",
-        "positive_threshold",
-        "negative_threshold",
-    }
 
 
 def test_operation_column_form(pwf):

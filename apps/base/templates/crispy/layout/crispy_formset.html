@@ -1,8 +1,9 @@
 {% load crispy_forms_tags %}
-  
-<fieldset {% if form.show %}{% if form.show|get_item:name %}x-show="{{ form.show|get_item:name }}"{% endif %}{% endif %}>
+
+{% if form.show and form.show|get_item:name %}<template x-if="{{ form.show|get_item:name }}">{% endif %}
+<fieldset>
   <label>{{ label }}</label>
 
   {% crispy formset %}
 </fieldset>
-
+{% if form.show and form.show|get_item:name %}</template>{% endif %}

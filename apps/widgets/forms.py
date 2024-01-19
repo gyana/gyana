@@ -1,31 +1,37 @@
 import math
-import re
 
+from crispy_forms.layout import Layout
 from django import forms
 from ibis.expr.datatypes import Date, Time, Timestamp
 
 from apps.base.core.utils import create_column_choices
+from apps.base.crispy import CrispyFormset
 from apps.base.fields import ColorField
 from apps.base.forms import (
     BaseModelForm,
     IntegrationSearchMixin,
-    LiveFormsetForm,
+    LiveAlpineModelForm,
     LiveFormsetMixin,
+    SchemaFormMixin,
 )
 from apps.base.widgets import Datalist, SelectWithDisable, SourceSelect
-from apps.columns.bigquery import resolve_colname
 from apps.dashboards.widgets import PaletteColorsField
 
-from .formsets import FORMSETS, AggregationColumnFormset, ControlFormset, FilterFormset
-from .models import CATEGORIES, COUNT_COLUMN_NAME, DEFAULT_HEIGHT, DEFAULT_WIDTH, Widget
-
-
-def get_not_deleted_entries(data, regex):
-    return [
-        value
-        for key, value in data.items()
-        if re.match(re.compile(regex), key) and data.get(key[:-6] + "DELETE") != "on"
-    ]
+from .formsets import (
+    AggregationColumnFormset,
+    AggregationWithFormattingFormset,
+    ColumnFormset,
+    CombinationChartFormset,
+    ControlFormset,
+    FilterFormset,
+    Min2Formset,
+    Min3Formset,
+    OptionalMetricFormset,
+    SingleMetricFormset,
+    XYMetricFormset,
+    XYZMetricFormset,
+)
+from .models import CATEGORIES, DEFAULT_HEIGHT, DEFAULT_WIDTH, Widget
 
 
 class WidgetCreateForm(BaseModelForm):
@@ -98,7 +104,15 @@ class WidgetSourceForm(IntegrationSearchMixin, BaseModelForm):
             )
 
 
-class GenericWidgetForm(LiveFormsetForm):
+def disable_non_time(schema):
+    return {
+        name: "You can only select datetime, time or date columns for timeseries charts."
+        for name, type_ in schema.items()
+        if not isinstance(type_, (Time, Timestamp, Date))
+    }
+
+
+class GenericWidgetForm(LiveFormsetMixin, SchemaFormMixin, LiveAlpineModelForm):
     dimension = forms.ChoiceField(choices=())
     second_dimension = forms.ChoiceField(choices=())
     sort_column = forms.ChoiceField(choices=(), required=False)
@@ -118,40 +132,64 @@ class GenericWidgetForm(LiveFormsetForm):
             "compare_previous_period",
             "positive_decrease",
         ]
+        formsets = {
+            "default_metrics": AggregationColumnFormset,
+            "optional_metrics": OptionalMetricFormset,
+            "xy": XYMetricFormset,
+            "xyz": XYZMetricFormset,
+            "min3": Min3Formset,
+            "min2": Min2Formset,
+            "single_metric": SingleMetricFormset,
+            "combo": CombinationChartFormset,
+            "dimensions": ColumnFormset,
+            "metrics": AggregationWithFormattingFormset,
+            "controls": ControlFormset,
+            "filters": FilterFormset,
+        }
 
-    def get_aggregations(self):
-        formsets = self.get_formsets()
-        if self.data:
-            aggregations = [
-                (
-                    form.data[f"{form.prefix}-column"],
-                    form.data[f"{form.prefix}-function"],
-                )
-                for form in formsets["Aggregations"].forms
-                if not form.deleted and form.data.get(f"{form.prefix}-column")
-            ]
-            names = [aggregation[0] for aggregation in aggregations]
-            return [
-                resolve_colname(column, function, names)
-                for column, function in aggregations
-            ]
-        aggregations = self.instance.aggregations.all()
-        names = [column.column for column in aggregations]
-        return [
-            resolve_colname(column.column, column.function, names)
-            for column in aggregations
-        ]
+        K = Widget.Kind
 
-    def get_groups(self):
-        formsets = self.get_formsets()
-        if self.data:
-            return [
-                form.data[f"{form.prefix}-column"]
-                for form in formsets["Group columns"].forms
-                if not form.deleted and form.data.get(f"{form.prefix}-column")
-            ]
+        def is_kind(*args):
+            if len(args) == 1:
+                return f"kind === '{args[0]}'"
+            return f"{[str(k) for k in args]}.includes(kind)"
 
-        return [column.column for column in self.instance.columns.all()]
+        def is_not_kind(*args):
+            if len(args) == 1:
+                return f"kind !== '{args[0]}'"
+            return f"!{[str(k) for k in args]}.includes(kind)"
+
+        show = {
+            "dimension": is_not_kind(K.METRIC, K.TABLE, K.COMBO),
+            # TODO: custom form for datetime parts, possibly with a multi-widget
+            "part": "dimension !== null && ['Date', 'Timestamp'].includes(schema[dimension])",
+            "second_dimension": is_kind(
+                K.STACKED_COLUMN, K.STACKED_BAR, K.STACKED_LINE, K.HEATMAP
+            ),
+            "sort_column": is_not_kind(K.METRIC, K.COMBO, K.HEATMAP),
+            "sort_ascending": is_not_kind(K.METRIC, K.COMBO, K.HEATMAP),
+            "stack_100_percent": is_kind(
+                K.STACKED_COLUMN, K.STACKED_BAR, K.STACKED_LINE
+            ),
+            "show_summary_row": is_kind(K.TABLE),
+            # TODO: need to check for existence of control on page OR add a note to say this is required
+            "compare_previous_period": f"kind === '{K.METRIC}' && date_column !== null",
+            "positive_decrease": f"kind === '{K.METRIC}' && date_column !== null",
+            # formsets
+            "default_metrics": is_kind(K.COLUMN, K.BAR, K.LINE, K.AREA, K.DONUT),
+            "optional_metrics": is_kind(
+                K.PIE, K.STACKED_BAR, K.STACKED_COLUMN, K.STACKED_LINE, K.HEATMAP
+            ),
+            "xy": is_kind(K.SCATTER),
+            "xyz": is_kind(K.BUBBLE),
+            "min3": is_kind(K.RADAR),
+            "min2": is_kind(K.FUNNEL),
+            "single_metric": is_kind(K.METRIC, K.GAUGE),
+            "combo": is_kind(K.COMBO),
+            "dimensions": is_kind(K.TABLE),
+            "metrics": is_kind(K.TABLE),
+            "controls": "date_column !== null",
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -163,185 +201,69 @@ class GenericWidgetForm(LiveFormsetForm):
         ]
 
         schema = self.instance.table.schema
-        if "date_column" in self.fields:
-            self.fields["date_column"] = forms.ChoiceField(
-                required=False,
-                widget=SelectWithDisable(
-                    disabled=disable_non_time(schema),
-                ),
-                choices=create_column_choices(schema),
-                help_text=self.base_fields["date_column"].help_text,
-            )
-
-        if self.get_live_field("kind") == Widget.Kind.TABLE:
-            if columns := self.get_groups() + self.get_aggregations():
-                self.fields["sort_column"].choices = [("", "No column selected")] + [
-                    (name, name) for name in columns
-                ]
-            else:
-                self.fields["sort_column"].choices = create_column_choices(schema)
-
-    def get_live_fields(self):
-        fields = ["kind", "date_column"]
-
-        if self.get_live_field("kind") == Widget.Kind.TABLE:
-            fields += ["sort_column", "sort_ascending", "show_summary_row"]
-
-        if (
-            self.get_live_field("kind") == Widget.Kind.METRIC
-            and self.get_live_field("date_column")
-            and (
-                self.instance.page.has_control
-                or (
-                    (controls := self.get_formsets().get("control"))
-                    and len([form for form in controls.forms if not form.deleted]) == 1
-                )
-            )
-        ):
-            fields += ["compare_previous_period", "positive_decrease"]
-        return fields
-
-    def get_live_formsets(self):
-        formsets = [FilterFormset]
-
-        if self.get_live_field("date_column"):
-            # Inserting at the beginning because we want it to be before the filter
-            formsets.insert(0, ControlFormset)
-        kind = self.get_live_field("kind")
-        if chart_formsets := FORMSETS.get(kind):
-            formsets += chart_formsets
-        else:
-            formsets += [AggregationColumnFormset]
-
-        return formsets
-
-    def get_formset_kwargs(self, formset):
-        kind = self.get_live_field("kind")
-        if kind == Widget.Kind.SCATTER:
-            return {"names": ["X", "Y"]}
-        if kind == Widget.Kind.BUBBLE:
-            return {"names": ["X", "Y", "Z"]}
-        return {}
-
-
-def disable_non_time(schema):
-    return {
-        name: "You can only select datetime, time or date columns for timeseries charts."
-        for name, type_ in schema.items()
-        if not isinstance(type_, (Time, Timestamp, Date))
-    }
-
-
-class OneDimensionForm(GenericWidgetForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        schema = self.instance.table.schema
-
-        if "dimension" in self.fields:
-            self.fields["dimension"].choices = create_column_choices(schema)
-
-        if "sort_column" in self.fields:
-            columns = [self.get_live_field("dimension")] + (
-                self.get_aggregations() or [COUNT_COLUMN_NAME]
-            )
-            self.fields["sort_column"].choices = [("", "No column selected")] + [
-                (name, name) for name in columns
-            ]
-
-    def get_live_fields(self):
-        fields = super().get_live_fields()
-        fields += ["dimension"]
-        if self.get_live_field("kind") != Widget.Kind.COMBO and self.get_live_field(
-            "dimension"
-        ):
-            fields += ["sort_column", "sort_ascending"]
-
-        schema = self.instance.table.schema
-
-        if (
-            (dimension := self.get_live_field("dimension"))
-            and dimension in schema
-            and isinstance(schema[dimension], (Date, Timestamp))
-        ):
-            fields += ["part"]
-        return fields
-
-
-class TwoDimensionForm(GenericWidgetForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        schema = self.instance.table.schema
-
-        columns = create_column_choices(schema)
-
-        self.fields["dimension"].choices = columns
-        self.fields["dimension"].label = "X"
-        self.fields["second_dimension"].choices = columns
-        self.fields["second_dimension"].label = "Y"
-
-    def get_live_fields(self):
-        fields = super().get_live_fields()
-        fields += ["dimension", "second_dimension"]
-
-        schema = self.instance.table.schema
-
-        if (
-            (dimension := self.get_live_field("dimension"))
-            and dimension in schema
-            and isinstance(schema[dimension], (Date, Timestamp))
-        ):
-            fields += ["part"]
-        return fields
-
-
-class StackedChartForm(GenericWidgetForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        schema = self.instance.table.schema
 
         choices = create_column_choices(schema)
+        if "dimension" in self.fields:
+            self.fields["dimension"].choices = choices
+        if "second_dimension" in self.fields:
+            self.fields["second_dimension"].choices = choices
 
-        self.fields["dimension"].choices = choices
-        self.fields["second_dimension"].choices = choices
-        # Can't overwrite label in Meta because we would have to overwrite the whole thing
-        self.fields["second_dimension"].label = "Stack dimension"
-        self.fields["second_dimension"].required = False
-
+        # TODO: implement sort as a formset of WidgetSortColumn (new model)
+        # generated name is implementation detail for BigQuery
+        # write a migration for existing column name
+        # include COUNT_COLUMN_NAME as a default option
         if "sort_column" in self.fields:
-            columns = [self.get_live_field("dimension")] + (
-                self.get_aggregations() or [COUNT_COLUMN_NAME]
-            )
-            self.fields["sort_column"].choices = [("", "No column selected")] + [
-                (name, name) for name in columns
-            ]
+            self.fields["sort_column"].choices = choices
 
-    def get_live_fields(self):
-        fields = super().get_live_fields()
+        # TODO with Alpine for heatmap
+        # self.fields["dimension"].label = "X"
+        # self.fields["second_dimension"].label = "Y"
 
-        fields += [
+        # TODO with Alpine for stacked chart
+        # self.fields["second_dimension"].label = "Stack dimension"
+        # self.fields["second_dimension"].required = False
+
+        self.fields["date_column"] = forms.ChoiceField(
+            required=False,
+            widget=SelectWithDisable(
+                disabled=disable_non_time(schema),
+            ),
+            choices=create_column_choices(schema),
+            help_text=self.base_fields["date_column"].help_text,
+        )
+
+        self.helper.layout = Layout(
+            "kind",
             "dimension",
+            "part",
             "second_dimension",
-        ]
-        if self.get_live_field("kind") != Widget.Kind.STACKED_LINE:
-            fields += [
-                "stack_100_percent",
-            ]
+            CrispyFormset("default_metrics", "Metrics"),
+            CrispyFormset("optional_metrics", "Optional metrics"),
+            CrispyFormset("xy", "Metrics"),
+            CrispyFormset("xyz", "Metrics"),
+            CrispyFormset("min3", "Metrics (minimum 3)"),
+            CrispyFormset("min2", "Metrics (minimum 2)"),
+            CrispyFormset("single_metric", "Metric"),
+            CrispyFormset("combo", "Metrics"),
+            CrispyFormset("dimensions", "Dimensions"),
+            CrispyFormset("metrics", "Metrics"),
+            "sort_column",
+            "sort_ascending",
+            "stack_100_percent",
+            "date_column",
+            "show_summary_row",
+            "compare_previous_period",
+            "positive_decrease",
+            CrispyFormset("controls", "Controls"),
+            CrispyFormset("filters", "Filters"),
+        )
 
-        schema = self.instance.table.schema
-
-        if (
-            (dimension := self.get_live_field("dimension"))
-            and dimension in schema
-            and isinstance(schema[dimension], (Date, Timestamp))
-        ):
-            fields += ["part"]
-
-        if dimension:
-            fields += ["sort_column", "sort_ascending"]
-        return fields
+    def get_formset_kwargs(self, formset):
+        if formset == XYMetricFormset:
+            return {"names": ["X", "Y"]}
+        if formset == XYZMetricFormset:
+            return {"names": ["X", "Y", "Z"]}
+        return {}
 
 
 class TextWidgetForm(LiveFormsetMixin, BaseModelForm):
@@ -396,23 +318,6 @@ class ImageWidgetForm(LiveFormsetMixin, BaseModelForm):
 
 
 FORMS = {
-    Widget.Kind.TABLE: GenericWidgetForm,
-    Widget.Kind.BAR: OneDimensionForm,
-    Widget.Kind.STACKED_COLUMN: StackedChartForm,
-    Widget.Kind.COLUMN: OneDimensionForm,
-    Widget.Kind.STACKED_BAR: StackedChartForm,
-    Widget.Kind.LINE: OneDimensionForm,
-    Widget.Kind.STACKED_LINE: StackedChartForm,
-    Widget.Kind.PIE: OneDimensionForm,
-    Widget.Kind.AREA: OneDimensionForm,
-    Widget.Kind.DONUT: OneDimensionForm,
-    Widget.Kind.SCATTER: OneDimensionForm,
-    Widget.Kind.FUNNEL: GenericWidgetForm,
-    Widget.Kind.RADAR: GenericWidgetForm,
-    Widget.Kind.HEATMAP: TwoDimensionForm,
-    Widget.Kind.BUBBLE: OneDimensionForm,
-    Widget.Kind.METRIC: GenericWidgetForm,
-    Widget.Kind.COMBO: OneDimensionForm,
     Widget.Kind.IFRAME: IframeWidgetForm,
     Widget.Kind.IMAGE: ImageWidgetForm,
     Widget.Kind.GAUGE: GenericWidgetForm,
