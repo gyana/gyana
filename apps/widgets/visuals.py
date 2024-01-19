@@ -32,8 +32,7 @@ def chart_to_output(widget: Widget, control) -> Dict[str, Any]:
     query = pre_filter(widget, control)
     query = get_query_from_widget(widget, query)
 
-    # We limit to 1001 rows to check if the chart is too big would be too
-    # big and too avoid tow queries
+    # limit to 1001 rows to check if chart exceeds max rows
     df = query.limit(CHART_MAX_ROWS + 1).execute()
     if len(df) > CHART_MAX_ROWS:
         raise MaxRowsExceeded

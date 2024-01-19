@@ -16,13 +16,13 @@ from .models import Export
 def export_to_gcs(export_id, user_id):
     export = Export.objects.get(pk=export_id)
     user = CustomUser.objects.get(pk=user_id)
-    client = get_engine()
+    engine = get_engine()
     if export.node:
         query = get_query_from_node(export.node)
     else:
-        query = client.get_table(export.integration_table)
+        query = engine.get_table(export.integration_table)
 
-    client.export_to_csv(query, f"gs://{settings.GS_BUCKET_NAME}/{export.path}")
+    engine.export_to_csv(query, f"gs://{settings.GS_BUCKET_NAME}/{export.path}")
 
     send_export_email(export.path, user)
 
