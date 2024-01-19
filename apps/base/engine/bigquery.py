@@ -157,29 +157,6 @@ def _get_cache_key_for_table(table):
     return f"cache-ibis-table-{md5_kwargs(id=table.id, data_updated=str(table.data_updated))}"
 
 
-def get_query_from_table(conn, table, project):
-    """
-    Queries a bigquery table through Ibis client.
-    """
-
-    key = _get_cache_key_for_table(table)
-    schema = cache.get(key)
-
-    if schema is None:
-        tbl = conn.table(table.bq_table, database=table.bq_dataset)
-        cache.set(key, tbl.schema(), 24 * 3600)
-    else:
-        tbl = TableExpr(
-            BigQueryTable(
-                name=f"{project}.{table.bq_dataset}.{table.bq_table}",
-                schema=schema,
-                source=conn,
-            )
-        )
-
-    return tbl
-
-
 class BigQueryClient(BaseClient):
     def __init__(self, engine_url):
         super().__init__(engine_url)
@@ -196,8 +173,26 @@ class BigQueryClient(BaseClient):
         )
 
     def get_table(self, table: "Table"):
-        return get_query_from_table(self.client, table, self.gcp_project)
-        return self.client.table(table.bq_id, database=table.bq_dataset)
+        """
+        Queries a bigquery table through Ibis client with caching.
+        """
+
+        key = _get_cache_key_for_table(table)
+        schema = cache.get(key)
+
+        if schema is None:
+            tbl = self.client.table(table.bq_table, database=table.bq_dataset)
+            cache.set(key, tbl.schema(), 24 * 3600)
+        else:
+            tbl = TableExpr(
+                BigQueryTable(
+                    name=f"{self.gcp_project}.{table.bq_dataset}.{table.bq_table}",
+                    schema=schema,
+                    source=self.client,
+                )
+            )
+
+        return tbl
 
     def _get_bigquery_object(self, bq_id):
         return bigquery().get_table(bq_id)

@@ -19,11 +19,14 @@ def google_client():
 def create_dataframe_from_sheet(sheet: "Sheet"):
     gc = google_client()
     spreadsheet = gc.open_by_url(sheet.url)
+
     if sheet.sheet_name:
         worksheet = spreadsheet.worksheet(sheet.sheet_name)
     else:
         worksheet = spreadsheet.get_worksheet(0)
+
     if sheet.cell_range:
         data = worksheet.get(sheet.cell_range)
         return pd.DataFrame(data[1:], columns=data[0])
+
     return pd.DataFrame(worksheet.get_all_records())

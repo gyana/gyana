@@ -24,7 +24,7 @@ def test_integration_upload_clone(upload_factory, integration_table_factory, big
     clone_table = clone.table_set.first()
     assert clone_table.bq_table == clone.source_obj.table_id
 
-    assert bigquery.query.call_args.args[0] == COPY_QUERY.format(
+    assert bigquery.query_and_wait.call_args.args[0] == COPY_QUERY.format(
         clone_table.bq_id, table.bq_id
     )
 
@@ -41,6 +41,6 @@ def test_integration_sheet_clone(sheet_factory, integration_table_factory, bigqu
     clone_table = clone.table_set.first()
     assert clone_table.bq_table == clone.source_obj.table_id
     assert clone_table.bq_dataset == table.bq_dataset
-    assert bigquery.query.call_args.args[0] == COPY_QUERY.format(
+    assert bigquery.query_and_wait.call_args.args[0] == COPY_QUERY.format(
         clone_table.bq_id, table.bq_id
     )

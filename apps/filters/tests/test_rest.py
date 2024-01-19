@@ -37,8 +37,8 @@ def test_filter_autocomplete(
     r = client.get(AUTOCOMPLETE_URL.format(q="", p=filter_node.id))
     assertOK(r)
     assert r.data == SOURCE_DATA
-    assert bigquery.query.call_args[0][0] == FILTER_SQL.format("''")
+    assert bigquery.query_and_wait.call_args[0][0] == FILTER_SQL.format("''")
 
     r = client.get(AUTOCOMPLETE_URL.format(q="3", p=filter_node.id))
     assertOK(r)
-    assert bigquery.query.call_args[0][0] == FILTER_SQL.format("'3'")
+    assert bigquery.query_and_wait.call_args[0][0] == FILTER_SQL.format("'3'")
