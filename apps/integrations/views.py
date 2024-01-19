@@ -111,8 +111,12 @@ class IntegrationSettings(ProjectMixin, UpdateView):
             for formset in form.get_formsets().values():
                 if formset.is_valid():
                     formset.save()
-        # Ibis caches the fetched schemas of a table that could have changed.
+
+        # Ibis caches the fetched schemas of a table that could have changed
+        # e.g. if cell range for sheet source has changed
+        # TODO: disable cache for Ibis schema, since we've implemented caching
         get_engine().client.reconnect()
+
         # Do not run the integration if the only change is scheduling
         if not form.has_changed() or form.changed_data == ["is_scheduled"]:
             return redirect(
