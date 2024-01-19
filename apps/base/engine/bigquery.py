@@ -2,13 +2,12 @@ import re
 from functools import lru_cache
 from typing import TYPE_CHECKING
 
-import beeline
 import ibis
 from django.conf import settings
 from django.core.cache import cache
 from google.cloud import bigquery as bq
 from ibis.backends import bigquery
-from ibis.backends.bigquery.client import BigQueryCursor, BigQueryTable
+from ibis.backends.bigquery.client import BigQueryTable
 from ibis.expr.types import TableExpr
 
 from apps.base.core.bigquery import (
@@ -132,27 +131,6 @@ def bigquery():
     )
 
 
-class DummyQuery(bq.QueryJob):
-    def __init__(self, row_iterator):
-        self.row_iterator = row_iterator
-
-    def result(self):
-        return self.row_iterator
-
-
-# Function to monkeypatch the bigquery ibis client _execute method
-# To use the synchronous bigquery endpoint
-@beeline.traced(name="bigquery_query_results_fast")
-def _execute(self, stmt, results=True, query_parameters=None):
-    # run a synchronous query and retrieve results in one API call
-    # https://github.com/googleapis/python-bigquery/pull/1722
-    job_config = bq.QueryJobConfig(query_parameters=query_parameters or [])
-    query_results = self.client.query_and_wait(
-        stmt, job_config=job_config, project=self.billing_project
-    )
-    return BigQueryCursor(DummyQuery(query_results))
-
-
 def _get_cache_key_for_table(table):
     return f"cache-ibis-table-{md5_kwargs(id=table.id, data_updated=str(table.data_updated))}"
 
@@ -164,12 +142,6 @@ class BigQueryClient(BaseClient):
         self.gcp_project = self.engine_url.split("://")[1]
         self.client = ibis.bigquery.connect(
             project_id=self.gcp_project, auth_external_data=True
-        )
-        # Just replacing the function doesnt add the the self class instance
-        setattr(
-            self.client,
-            "_execute",
-            _execute.__get__(self.client, self.client.__class__),
         )
 
     def get_table(self, table: "Table"):

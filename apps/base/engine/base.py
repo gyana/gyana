@@ -17,33 +17,6 @@ if TYPE_CHECKING:
     from apps.teams.models import Team
     from apps.uploads.models import Upload
 
-COLUMN_NAME_REGEX = re.compile("^[a-zA-Z_][0-9a-zA-Z_]*$")
-
-
-def replace_symbols(symbols, text):
-    for symbol in symbols:
-        text = text.replace(symbol, "_")
-    return text
-
-
-def rename_columns(df: DataFrame):
-    """Renames columns to be valid BigQuery column names.
-
-    BigQuery column names must start with a letter or underscore and contain only
-    alphanumeric characters and underscores. Names cannot exceed 128 characters.
-    """
-    columns_to_rename = {
-        col: col for col in df.columns if not COLUMN_NAME_REGEX.match(col)
-    }
-    for col in columns_to_rename:
-        if not re.match("^[a-zA-Z_]", col):
-            columns_to_rename[col] = f"_{col}"
-        columns_to_rename[col] = replace_symbols(
-            "!@£$%^&*()+-'\"\\[]{}/:;", columns_to_rename[col]
-        )[:128]
-
-    return df.rename(columns=columns_to_rename)
-
 
 class BaseClient(ABC):
     client: ibis.BaseBackend
@@ -123,7 +96,8 @@ class BaseClient(ABC):
             with self.raw_client.connect() as conn:
                 conn.execute(sa.schema.CreateSchema(schema))
                 conn.commit()
-        rename_columns(df).to_sql(
+
+        df.to_sql(
             table_name,
             con=self.raw_client,
             schema=schema,

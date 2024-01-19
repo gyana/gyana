@@ -16,6 +16,10 @@ from apps.base.core.utils import md5
 from apps.columns.currency_symbols import CURRENCY_SYMBOLS_MAP
 
 
+def rows_dict_by_md5(df):
+    return [{md5(k): v for k, v in row.items()} for row in df.to_dict(orient="records")]
+
+
 class GyanaTableData(TableData):
     """Django table data class that queries data from BigQuery
 
@@ -49,22 +53,25 @@ class GyanaTableData(TableData):
             data = data.limit(limit, offset=start)
         else:
             limit = self.rows_per_page
-        return [
-            {md5(k): v for k, v in row.items()}
-            for row in data.execute(limit=limit).to_dict(orient="records")
-        ]
+        df = data.execute(limit=limit)
+        if not hasattr(df, "total_rows"):
+            df.total_rows = self.data.count().execute()
+        return df
 
     def __getitem__(self, page: slice):
         """Fetches the data for the current page"""
-        data = self._get_query_results(page.start, page.stop)
-        return data if self._page_selected else data[: page.stop - page.start]
+        return (
+            rows_dict_by_md5(self._get_query_results(page.start, page.stop))
+            if self._page_selected
+            else rows_dict_by_md5(self._get_query_results())[: page.stop - page.start]
+        )
 
     def __len__(self):
         """Fetches the total size from the database"""
         total_rows = cache.get(self._len_key)
 
         if not self._page_selected or total_rows is None:
-            total_rows = self.data.count().execute()
+            total_rows = self._get_query_results().total_rows
             cache.set(self._len_key, total_rows, 24 * 3600)
 
         return total_rows
