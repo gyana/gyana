@@ -149,6 +149,9 @@ class BigQueryClient(BaseClient):
         Queries a bigquery table through Ibis client with caching.
         """
 
+        # TODO: abstract this for other engines, with a generic wrapper and
+        # custom engine method for deserializing the table from schema
+
         key = _get_cache_key_for_table(table)
         schema = cache.get(key)
 
