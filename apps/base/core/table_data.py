@@ -52,8 +52,9 @@ class GyanaTableData(TableData):
             data = data.limit(stop - start, offset=start)
         df = data.execute(limit=self.rows_per_page)
         # automatically added by custom bigquery execute
-        if not hasattr(df, "total_rows"):
-            df.total_rows = self.data.count().execute()
+        # bypass the default `__getattr__`, `__setattr__` of `pd.DataFrame`
+        if not "total_rows" in df.__dict__:
+            df.__dict__["total_rows"] = self.data.count().execute()
         return df
 
     def __getitem__(self, page: slice):
@@ -69,7 +70,7 @@ class GyanaTableData(TableData):
         total_rows = cache.get(self._len_key)
 
         if not self._page_selected or total_rows is None:
-            total_rows = self._get_query_results().total_rows
+            total_rows = self._get_query_results().__dict__["total_rows"]
             cache.set(self._len_key, total_rows, 24 * 3600)
 
         return total_rows

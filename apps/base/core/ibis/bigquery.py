@@ -29,7 +29,6 @@ def _execute(self, stmt, results=True, query_parameters=None):
 
 @beeline.traced(name="bigquery_query_results_fast")
 def execute(self, expr, params=None, limit="default", **kwargs):
-    # TODO: upstream needs to pass params to raw_sql, I think.
     kwargs.pop("timecontext", None)
     query_ast = self.compiler.to_ast_ensure_limit(expr, limit, params=params)
     sql = query_ast.compile()
@@ -42,7 +41,9 @@ def execute(self, expr, params=None, limit="default", **kwargs):
         result = query_ast.dml.result_handler(result)
 
     if isinstance(result, pd.DataFrame):
-        result.total_rows = cursor.query.result().total_rows
+        # TODO: find a more elegant solution
+        # bypass the default `__setattr__` of `pd.DataFrame`
+        result.__dict__["total_rows"] = cursor.query.result().total_rows
 
     return result
 
