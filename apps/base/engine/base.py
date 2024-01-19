@@ -50,6 +50,10 @@ class BaseClient(ABC):
     raw_client: sa.Engine
     excluded_nodes = []
 
+    def __init__(self, engine_url) -> None:
+        super().__init__()
+        self.engine_url = engine_url
+
     def get_table(self, table: "Table"):
         return self.client.table(
             table.bq_table,

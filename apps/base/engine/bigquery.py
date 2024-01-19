@@ -181,8 +181,10 @@ def get_query_from_table(conn, table, project):
 
 
 class BigQueryClient(BaseClient):
-    def __init__(self):
-        self.gcp_project = settings.ENGINE_URL.split("://")[1]
+    def __init__(self, engine_url):
+        super().__init__(engine_url)
+
+        self.gcp_project = self.engine_url.split("://")[1]
         self.client = ibis.bigquery.connect(
             project_id=self.gcp_project, auth_external_data=True
         )

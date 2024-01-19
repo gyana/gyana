@@ -20,12 +20,15 @@ SLUG = (
 
 @lru_cache
 def get_engine():
-    url = settings.ENGINE_URL
-    if url.startswith("postgresql://"):
-        return PostgresClient()
-    if url.startswith("bigquery://"):
-        return BigQueryClient()
-    raise ValueError(f"Gyana doesnt not support this engine URL {url}")
+    engine_url = settings.ENGINE_URL
+
+    if engine_url.startswith("postgresql://"):
+        return PostgresClient(engine_url)
+
+    if engine_url.startswith("bigquery://"):
+        return BigQueryClient(engine_url)
+
+    raise ValueError(f"Gyana doesnt not support this engine URL {engine_url}")
 
 
 @lru_cache
