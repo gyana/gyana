@@ -36,7 +36,7 @@ def run_upload_sync_task(self, run_id: int):
         with catchtime() as get_time_to_sync:
             get_engine().import_table_from_upload(table=table, upload=upload)
 
-        table.update_modified_and_num_rows()
+        table.sync_metadata_from_source()
 
     if created:
         send_integration_ready_email(integration, int(get_time_to_sync()))

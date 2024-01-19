@@ -86,8 +86,12 @@ class BaseClient(ABC):
     def get_table_size(self, table: "Table"):
         return self.get_table(table).count().execute()
 
-    def get_modified_and_num_rows(self, table: "Table"):
+    def get_source_metadata(self, table: "Table"):
+        # by default, Postgres does not support last modified time on tables
+        # so we just take the current timestamp to be safe
         modified = timezone.now()
+        # requires an extra query on the table, may be slow for large tables
+        # TODO: possibly add option to disable num_row tracking
         num_rows = self.get_table_size(table)
         return modified, num_rows
 

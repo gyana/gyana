@@ -127,7 +127,7 @@ def run_customapi_sync_task(self, run_id):
         with catchtime() as get_time_to_sync:
             get_engine().import_table_from_customapi(table=table, customapi=customapi)
 
-        table.update_modified_and_num_rows()
+        table.sync_metadata_from_source()
 
     if created:
         send_integration_ready_email(integration, int(get_time_to_sync()))

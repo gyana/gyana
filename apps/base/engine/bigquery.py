@@ -283,7 +283,7 @@ class BigQueryClient(BaseClient):
     def get_table_size(self, table: "Table"):
         return self._get_bigquery_object(table.bq_id).num_rows
 
-    def get_modified_and_num_rows(self, table: "Table"):
+    def get_source_metadata(self, table: "Table"):
         bq_obj = self._get_bigquery_object(table.bq_id)
         return bq_obj.modified, bq_obj.num_rows
 

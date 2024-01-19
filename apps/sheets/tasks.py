@@ -39,7 +39,7 @@ def run_sheet_sync_task(self, run_id, skip_up_to_date=False):
             with catchtime() as get_time_to_sync:
                 get_engine().import_table_from_sheet(table=table, sheet=sheet)
 
-            table.update_modified_and_num_rows()
+            table.sync_metadata_from_source()
             sheet.drive_file_last_modified_at_sync = sheet.drive_modified_date
             sheet.save()
 
