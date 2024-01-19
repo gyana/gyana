@@ -9,5 +9,5 @@ Once you have signed up follow these steps:
   - BigQuery Admin
   - Storage Admin
 - [Download service account credentials JSON](https://cloud.google.com/iam/docs/creating-managing-service-account-keys#creating)
-- Point `GCP_PROJECT`, `GOOGLE_APPLICATION_CREDENTIALS`, `GCP_BQ_SVC_ACCOUNT`,
+- Point `ENGINE_URL`, `GOOGLE_APPLICATION_CREDENTIALS`, `GCP_BQ_SVC_ACCOUNT`,
   `GS_BUCKET_NAME`, `GS_PUBLIC_BUCKET_NAME` to right variables

@@ -101,10 +101,10 @@ Heroku config variables, with production examples:
 
 ```bash
 DJANGO_SETTINGS_MODULE = gyana.settings.heroku
+ENGINE_URL = bigquery://gyana-app-314217
 ENVIRONMENT = production
 EXTERNAL_URL = https://app.gyana.com
 GCP_BQ_SVC_ACCOUNT = gyana-app@gyana-app-314217.iam.gserviceaccount.com
-GCP_PROJECT = gyana-app-314217
 GOOGLE_APPLICATION_CREDENTIALS = google-credentials.json
 GOOGLE_CREDENTIALS = {{ credential_json_from_svc_account }}
 GS_BUCKET_NAME = gyana-app

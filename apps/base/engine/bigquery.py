@@ -157,7 +157,7 @@ def _get_cache_key_for_table(table):
     return f"cache-ibis-table-{md5_kwargs(id=table.id, data_updated=str(table.data_updated))}"
 
 
-def get_query_from_table(conn, table):
+def get_query_from_table(conn, table, project):
     """
     Queries a bigquery table through Ibis client.
     """
@@ -171,7 +171,7 @@ def get_query_from_table(conn, table):
     else:
         tbl = TableExpr(
             BigQueryTable(
-                name=f"{settings.GCP_PROJECT}.{table.bq_dataset}.{table.bq_table}",
+                name=f"{project}.{table.bq_dataset}.{table.bq_table}",
                 schema=schema,
                 source=conn,
             )
@@ -182,8 +182,9 @@ def get_query_from_table(conn, table):
 
 class BigQueryClient(BaseClient):
     def __init__(self):
+        self.gcp_project = settings.ENGINE_URL.split("://")[1]
         self.client = ibis.bigquery.connect(
-            project_id=settings.GCP_PROJECT, auth_external_data=True
+            project_id=self.gcp_project, auth_external_data=True
         )
         # Just replacing the function doesnt add the the self class instance
         setattr(
@@ -193,7 +194,7 @@ class BigQueryClient(BaseClient):
         )
 
     def get_table(self, table: "Table"):
-        return get_query_from_table(self.client, table)
+        return get_query_from_table(self.client, table, self.gcp_project)
         return self.client.table(table.bq_id, database=table.bq_dataset)
 
     def _get_bigquery_object(self, bq_id):
@@ -346,3 +347,6 @@ class BigQueryClient(BaseClient):
         # Use temporary table and export to GCS
         extract_job = client.extract_table(job.destination, gcs_path)
         extract_job.result()
+
+    def get_dashboard_url(self, dataset, table):
+        return f"https://console.cloud.google.com/bigquery?project={self.gcp_project}&p={self.gcp_project}&d={dataset}&t={table}&page=table"

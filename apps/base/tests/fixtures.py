@@ -82,7 +82,7 @@ def bigquery(mocker, settings):
     client = MagicMock()
     # manually override the ibis client with a mock instead
     # set the project name to "project" in auto-generated SQL
-    settings.GCP_PROJECT = "project"
+    settings.ENGINE_URL = "bigquery://project"
     mocker.patch(
         "ibis.backends.bigquery.pydata_google_auth.default",
         return_value=(None, "project"),

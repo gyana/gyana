@@ -140,3 +140,7 @@ class BaseClient(ABC):
 
         df = query.execute()
         df.to_csv(gcs_path, index=False)
+
+    def get_dashboard_url(self):
+        # only implemented for BigQuery
+        return None

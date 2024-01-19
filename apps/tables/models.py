@@ -87,7 +87,7 @@ class Table(BaseModel):
 
     @property
     def bq_dashboard_url(self):
-        return f"https://console.cloud.google.com/bigquery?project={settings.GCP_PROJECT}&p={settings.GCP_PROJECT}&d={self.bq_dataset}&t={self.bq_table}&page=table"
+        return get_engine().get_dashboard_url(self.bq_dataset, self.bq_table)
 
     def sync_metadata_from_source(self):
         modified, num_rows = get_engine().get_source_metadata(self)
