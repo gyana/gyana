@@ -2,16 +2,20 @@ import re
 from functools import lru_cache
 from typing import TYPE_CHECKING
 
+import beeline
 import ibis
 from django.conf import settings
+from django.core.cache import cache
 from google.cloud import bigquery as bq
-from ibis.backends.bigquery.client import BigQueryCursor
+from ibis.backends import bigquery
+from ibis.backends.bigquery.client import BigQueryCursor, BigQueryTable
+from ibis.expr.types import TableExpr
 
 from apps.base.core.bigquery import (
     bq_table_schema_is_string_only,
     sanitize_bq_column_name,
 )
-from apps.base.core.utils import excel_colnum_string
+from apps.base.core.utils import excel_colnum_string, md5_kwargs
 from apps.base.engine.base import BaseClient
 
 from .credentials import get_credentials
@@ -128,15 +132,52 @@ def bigquery():
     )
 
 
+class DummyQuery(bq.QueryJob):
+    def __init__(self, row_iterator):
+        self.row_iterator = row_iterator
+
+    def result(self):
+        return self.row_iterator
+
+
 # Function to monkeypatch the bigquery ibis client _execute method
 # To use the synchronous bigquery endpoint
+@beeline.traced(name="bigquery_query_results_fast")
 def _execute(self, stmt, results=True, query_parameters=None):
+    # run a synchronous query and retrieve results in one API call
+    # https://github.com/googleapis/python-bigquery/pull/1722
     job_config = bq.QueryJobConfig(query_parameters=query_parameters or [])
-    query = self.client.query(
-        stmt, job_config=job_config, project=self.billing_project, api_method="INSERT"
+    query_results = self.client.query_and_wait(
+        stmt, job_config=job_config, project=self.billing_project
     )
-    query.result()  # blocks until finished
-    return BigQueryCursor(query)
+    return BigQueryCursor(DummyQuery(query_results))
+
+
+def _get_cache_key_for_table(table):
+    return f"cache-ibis-table-{md5_kwargs(id=table.id, data_updated=str(table.data_updated))}"
+
+
+def get_query_from_table(conn, table):
+    """
+    Queries a bigquery table through Ibis client.
+    """
+
+    key = _get_cache_key_for_table(table)
+    schema = cache.get(key)
+
+    if schema is None:
+        tbl = conn.table(table.bq_table, database=table.bq_dataset)
+        cache.set(key, tbl.schema(), 24 * 3600)
+    else:
+        tbl = TableExpr(
+            BigQueryTable(
+                name=f"{settings.GCP_PROJECT}.{table.bq_dataset}.{table.bq_table}",
+                schema=schema,
+                source=conn,
+            )
+        )
+
+    return tbl
 
 
 class BigQueryClient(BaseClient):
@@ -152,6 +193,7 @@ class BigQueryClient(BaseClient):
         )
 
     def get_table(self, table: "Table"):
+        return get_query_from_table(self.client, table)
         return self.client.table(table.bq_id, database=table.bq_dataset)
 
     def _get_bigquery_object(self, bq_id):
