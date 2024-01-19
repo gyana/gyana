@@ -37,8 +37,10 @@ def mock_bq_client_with_records(bigquery, records, return_count=False):
                     {"count": [len(list(records.values())[0])]}
                 )
             )
+            r.total_rows = 1
         else:
             r.to_arrow = MagicMock(return_value=pa.Table.from_pydict(records))
+            r.total_rows = len(records)
         return r
 
     bigquery.query_and_wait.side_effect = mock_query
