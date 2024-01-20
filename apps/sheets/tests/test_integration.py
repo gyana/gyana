@@ -77,7 +77,7 @@ def test_sheet_create(
 
     # validate the sql and external table configuration
     table = integration.table_set.first()
-    SQL = f"CREATE OR REPLACE TABLE {table.bq_id} AS SELECT * FROM {table.table_name}_external"
+    SQL = f"CREATE OR REPLACE TABLE {table.table_id} AS SELECT * FROM {table.table_name}_external"
     assert bigquery.query.call_args.args == (SQL,)
     job_config = bigquery.query.call_args.kwargs["job_config"]
     external_config = job_config.table_definitions[f"{table.table_name}_external"]

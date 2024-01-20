@@ -47,4 +47,6 @@ def create_attrs(attrs, original):
 
 # Make sure this is called inside a celery task, it could take a while
 def duplicate_table(original, clone):
-    transaction.on_commit(lambda: get_engine().copy_table(original.bq_id, clone.bq_id))
+    transaction.on_commit(
+        lambda: get_engine().copy_table(original.table_id, clone.table_id)
+    )
