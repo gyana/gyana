@@ -1,5 +1,5 @@
 from apps.base.core.aggregations import AGGREGATION_TYPE_MAP
-from apps.columns.bigquery import AllOperations, DatePeriod
+from apps.columns.engine import AllOperations, DatePeriod
 from apps.columns.forms import IBIS_TO_FUNCTION
 
 aggregations = {

@@ -7,7 +7,7 @@ from apps.base.models import SaveParentModel
 from apps.columns.currency_symbols import CurrencySymbols
 from apps.nodes.models import Node
 
-from .bigquery import (
+from .engine import (
     CommonOperations,
     DateOperations,
     DatePeriod,
@@ -195,7 +195,6 @@ class SecondaryColumn(SaveParentModel):
 
 
 class AggregationColumn(SortableColumn, ColumnSettings):
-
     column = models.CharField(max_length=settings.BIGQUERY_COLUMN_NAME_LENGTH)
     function = models.CharField(max_length=20, choices=AggregationFunctions.choices)
     node = models.ForeignKey(

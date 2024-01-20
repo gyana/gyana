@@ -7,8 +7,8 @@ from django.urls import reverse
 from apps.base.clients import SLUG
 from apps.base.core.aggregations import AggregationFunctions
 from apps.base.models import HistoryModel, SaveParentModel
-from apps.columns.bigquery import DatePeriod
 from apps.columns.currency_symbols import CurrencySymbols
+from apps.columns.engine import DatePeriod
 from apps.dashboards.models import Page
 from apps.tables.models import Table
 

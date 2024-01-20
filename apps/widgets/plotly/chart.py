@@ -6,7 +6,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
-from apps.columns.bigquery import resolve_colname
+from apps.columns.engine import resolve_colname
 from apps.widgets.models import COUNT_COLUMN_NAME, CombinationChart, Widget
 
 

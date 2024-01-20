@@ -16,7 +16,7 @@ from apps.base.core.table_data import RequestConfig, get_table
 from apps.base.views import UpdateView
 from apps.nodes.exceptions import handle_node_exception
 
-from .bigquery import NodeResultNone, get_query_from_node
+from .engine import NodeResultNone, get_query_from_node
 from .forms import KIND_TO_FORM
 from .models import Node
 from .tables import ReferencesTable
@@ -59,7 +59,7 @@ class NodeUpdate(UpdateView):
             if not is_input and self.object.has_enough_parents:
                 get_query_from_node(self.object.parents.first())
             self.parent_error_node = None
-        except (NodeResultNone) as e:
+        except NodeResultNone as e:
             self.parent_error_node = e.node
 
         if not self.parent_error_node and (is_input or self.object.has_enough_parents):
@@ -123,7 +123,6 @@ class NodeGrid(SingleTableMixin, DetailView):
         return Node.objects.get(pk=preview_id)
 
     def get_table(self, **kwargs):
-
         query = get_query_from_node(self.preview_node)
         schema = query.schema()
         table = get_table(schema, query, None, **kwargs)

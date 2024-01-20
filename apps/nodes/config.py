@@ -154,7 +154,7 @@ NODE_CONFIG = {
 
 
 def _add_max_parents(name):
-    from apps.nodes.bigquery import NODE_FROM_CONFIG, get_arity_from_node_func
+    from apps.nodes.engine import NODE_FROM_CONFIG, get_arity_from_node_func
 
     func = NODE_FROM_CONFIG.get(name, None)
     # 0, False for text node

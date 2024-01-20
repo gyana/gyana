@@ -2,7 +2,7 @@ import pytest
 from ibis import bigquery
 
 from apps.base.tests.mock_data import TABLE
-from apps.columns.bigquery import (
+from apps.columns.engine import (
     DatePeriod,
     aggregate_columns,
     compile_function,

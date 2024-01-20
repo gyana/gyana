@@ -8,7 +8,7 @@ from django.utils import timezone
 from apps.base.analytics import WORFKLOW_RUN_EVENT
 from apps.base.clients import get_engine
 from apps.base.core.utils import error_name_to_snake
-from apps.nodes.bigquery import NodeResultNone, get_query_from_node
+from apps.nodes.engine import NodeResultNone, get_query_from_node
 from apps.nodes.models import Node
 from apps.runs.models import JobRun
 from apps.tables.models import Table
