@@ -73,8 +73,8 @@ def bind(instance, name, func):
 
 
 def mock_backend_client_get_schema(self, name):
-    bq_table = self.client.get_table(name)
-    return sch.infer(bq_table)
+    table = self.client.get_table(name)
+    return sch.infer(table)
 
 
 @pytest.fixture(autouse=True)

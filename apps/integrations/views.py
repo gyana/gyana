@@ -67,7 +67,7 @@ class IntegrationDetail(ProjectMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
-        context_data["tables"] = self.object.table_set.order_by("bq_table").all()
+        context_data["tables"] = self.object.table_set.order_by("table_name").all()
         table = self.object.get_table_by_pk_safe(self.request.GET.get("table_id"))
         context_data["table_id"] = table.id if table else None
 
@@ -259,7 +259,7 @@ class IntegrationDone(ProjectMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
-        context_data["tables"] = self.object.table_set.order_by("bq_table").all()
+        context_data["tables"] = self.object.table_set.order_by("table_name").all()
 
         team = self.project.team
         team.update_row_count()

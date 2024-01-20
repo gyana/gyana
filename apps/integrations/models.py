@@ -204,11 +204,11 @@ class Integration(BaseModel):
 
         # none or empty string
         if not table_pk:
-            return self.table_set.order_by("bq_table").first()
+            return self.table_set.order_by("table_name").first()
         try:
             return self.table_set.get(pk=table_pk)
         except (Table.DoesNotExist, ValueError):
-            return self.table_set.order_by("bq_table").first()
+            return self.table_set.order_by("table_name").first()
 
     @property
     def bq_ids(self):
@@ -219,7 +219,6 @@ class Integration(BaseModel):
         return self.runs.order_by("-created").first()
 
     def update_state_from_latest_run(self):
-
         self.state = (
             self.State.UPDATE
             if not self.latest_run

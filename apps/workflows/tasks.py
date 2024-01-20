@@ -34,8 +34,8 @@ def run_workflow_task(self, run_id: int):
             with transaction.atomic():
                 table, _ = Table.objects.get_or_create(
                     source=Table.Source.WORKFLOW_NODE,
-                    bq_table=node.bq_output_table_id,
-                    bq_dataset=workflow.project.team.tables_dataset_id,
+                    table_name=node.bq_output_table_id,
+                    dataset_name=workflow.project.team.tables_dataset_id,
                     project=workflow.project,
                     workflow_node=node,
                 )
