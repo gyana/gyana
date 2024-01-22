@@ -3,7 +3,7 @@ from django import forms
 from ibis.expr.datatypes import Array, Floating, Struct
 
 from apps.base.core.utils import create_column_choices
-from apps.base.forms import BaseLiveSchemaForm, LiveAlpineModelForm, SchemaFormMixin
+from apps.base.forms import ModelForm
 from apps.base.widgets import Datalist, SelectWithDisable
 from apps.columns.crispy import ColumnFormatting
 from apps.columns.models import (
@@ -18,7 +18,6 @@ from apps.columns.models import (
     SortColumn,
     WindowColumn,
 )
-from apps.widgets.models import Widget
 
 from .widgets import CodeMirror
 
@@ -50,7 +49,7 @@ def disable_struct_and_array_columns(fields, column_field, schema):
     )
 
 
-class ColumnForm(SchemaFormMixin, LiveAlpineModelForm):
+class ColumnForm(ModelForm):
     class Meta:
         fields = ("column", "part")
         model = Column
@@ -67,7 +66,7 @@ class ColumnForm(SchemaFormMixin, LiveAlpineModelForm):
         )
 
 
-class ColumnFormWithFormatting(SchemaFormMixin, LiveAlpineModelForm):
+class ColumnFormWithFormatting(ModelForm):
     class Meta:
         model = Column
         fields = (
@@ -121,7 +120,7 @@ class ColumnFormWithFormatting(SchemaFormMixin, LiveAlpineModelForm):
         )
 
 
-class AggregationColumnForm(SchemaFormMixin, LiveAlpineModelForm):
+class AggregationColumnForm(ModelForm):
     class Meta:
         fields = (
             "column",
@@ -145,7 +144,7 @@ class AggregationColumnForm(SchemaFormMixin, LiveAlpineModelForm):
         )
 
 
-class AggregationFormWithFormatting(SchemaFormMixin, LiveAlpineModelForm):
+class AggregationFormWithFormatting(ModelForm):
     class Meta:
         fields = (
             "column",
@@ -209,7 +208,7 @@ def _show_value_field(field):
     return f"$store.ibis.operations['{field}'].includes($data[computed.function_field])"
 
 
-class OperationColumnForm(SchemaFormMixin, LiveAlpineModelForm):
+class OperationColumnForm(ModelForm):
     class Meta:
         model = EditColumn
         fields = (
@@ -250,7 +249,7 @@ class OperationColumnForm(SchemaFormMixin, LiveAlpineModelForm):
         return super().save(commit=commit)
 
 
-class AddColumnForm(SchemaFormMixin, LiveAlpineModelForm):
+class AddColumnForm(ModelForm):
     class Meta:
         model = AddColumn
         fields = (
@@ -284,7 +283,7 @@ class AddColumnForm(SchemaFormMixin, LiveAlpineModelForm):
         return column_naming_validation(self.cleaned_data["label"], self.schema.names)
 
 
-class FormulaColumnForm(BaseLiveSchemaForm):
+class FormulaColumnForm(ModelForm):
     class Meta:
         fields = ("formula", "label")
         model = FormulaColumn
@@ -298,7 +297,7 @@ class FormulaColumnForm(BaseLiveSchemaForm):
         return column_naming_validation(self.cleaned_data["label"], self.schema.names)
 
 
-class WindowColumnForm(SchemaFormMixin, LiveAlpineModelForm):
+class WindowColumnForm(ModelForm):
     class Meta:
         fields = ("column", "function", "group_by", "order_by", "ascending", "label")
         model = WindowColumn
@@ -343,7 +342,7 @@ class WindowColumnForm(SchemaFormMixin, LiveAlpineModelForm):
         return column_naming_validation(self.cleaned_data["label"], self.schema.names)
 
 
-class ConvertColumnForm(BaseLiveSchemaForm):
+class ConvertColumnForm(ModelForm):
     class Meta:
         fields = ("column", "target_type")
         model = ConvertColumn
@@ -370,7 +369,7 @@ def create_left_join_choices(parents, index):
     return [("", "No column selected"), *columns]
 
 
-class JoinColumnForm(BaseLiveSchemaForm):
+class JoinColumnForm(ModelForm):
     class Meta:
         model = JoinColumn
         fields = ["how", "left_column", "right_column"]
@@ -411,7 +410,7 @@ class JoinColumnForm(BaseLiveSchemaForm):
         return super().save(*args, **kwargs)
 
 
-class SortColumnForm(BaseLiveSchemaForm, LiveAlpineModelForm):
+class SortColumnForm(ModelForm):
     class Meta:
         model = SortColumn
         fields = ["column", "ascending", "sort_index"]
@@ -439,7 +438,7 @@ def extract_values_from_data(prefix, data, field_name, idx=None):
     )
 
 
-class RenameColumnForm(BaseLiveSchemaForm):
+class RenameColumnForm(ModelForm):
     class Meta:
         model = RenameColumn
         fields = ("column", "new_name")

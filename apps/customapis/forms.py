@@ -8,7 +8,7 @@ from django.utils.html import mark_safe
 
 from apps.base.account import is_scheduled_help_text
 from apps.base.crispy import CrispyFormset, Tab
-from apps.base.forms import BaseModelForm, LiveAlpineModelForm, LiveFormsetMixin
+from apps.base.forms import ModelForm
 from apps.base.formsets import RequiredInlineFormset
 from apps.base.widgets import DatalistInput
 
@@ -29,7 +29,7 @@ def get_headers():
         return f.read().split("\n")
 
 
-class QueryParamForm(BaseModelForm):
+class QueryParamForm(ModelForm):
     class Meta:
         model = QueryParam
         fields = ["key", "value"]
@@ -46,7 +46,7 @@ QueryParamFormset = forms.inlineformset_factory(
 )
 
 
-class HttpHeaderForm(BaseModelForm):
+class HttpHeaderForm(ModelForm):
     class Meta:
         model = HttpHeader
         fields = ["key", "value"]
@@ -64,7 +64,7 @@ HttpHeaderFormset = forms.inlineformset_factory(
 )
 
 
-class FormDataEntryForm(BaseModelForm):
+class FormDataEntryForm(ModelForm):
     class Meta:
         model = FormDataEntry
         fields = ["format", "key", "text", "file"]
@@ -87,7 +87,7 @@ FormDataEntryFormset = forms.inlineformset_factory(
 FormDataEntryFormset.show = f"body == '{CustomApi.Body.FORM_DATA}'"
 
 
-class FormURLEncodedEntryForm(BaseModelForm):
+class FormURLEncodedEntryForm(ModelForm):
     class Meta:
         model = FormURLEncodedEntry
         fields = ["key", "value"]
@@ -106,7 +106,7 @@ FormURLEncodedEntryFormset = forms.inlineformset_factory(
 FormURLEncodedEntryFormset.show = f"body == '{CustomApi.Body.X_WWW_FORM_URLENCODED}'"
 
 
-class CustomApiCreateForm(BaseModelForm):
+class CustomApiCreateForm(ModelForm):
     name = forms.CharField(
         max_length=255,
         help_text="E.g. the domain or website, to help you find it later",
@@ -138,7 +138,7 @@ class CustomApiCreateForm(BaseModelForm):
         instance.integration.project.update_schedule()
 
 
-class CustomApiUpdateForm(LiveFormsetMixin, LiveAlpineModelForm):
+class CustomApiUpdateForm(ModelForm):
     class Meta:
         model = CustomApi
         fields = [

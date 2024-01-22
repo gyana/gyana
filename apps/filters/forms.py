@@ -2,7 +2,7 @@ from django import forms
 from django.forms.widgets import Input, TextInput
 
 from apps.base.core.utils import create_column_choices
-from apps.base.forms import LiveAlpineModelForm, SchemaFormMixin
+from apps.base.forms import ModelForm
 from apps.base.widgets import DatetimeInput
 from apps.filters.models import NO_VALUE, PREDICATE_MAP, Filter
 
@@ -61,7 +61,7 @@ def _get_show_for_value(filter_type, multiple=False):
     return f"{is_ibis} && {is_predicate} && !{is_multiple}"
 
 
-class FilterForm(SchemaFormMixin, LiveAlpineModelForm):
+class FilterForm(ModelForm):
     column = forms.ChoiceField(choices=[])
 
     # We have to add the media here because otherwise the form fields

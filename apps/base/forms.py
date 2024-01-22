@@ -38,21 +38,6 @@ def get_formsets(self):
 forms.BaseForm.get_formsets = get_formsets
 
 
-class SchemaFormMixin:
-    def __init__(self, *args, **kwargs):
-        self.schema = kwargs.pop("schema", None)
-        if self.schema:
-            self.schema_json = json.dumps({c: self.schema[c].name for c in self.schema})
-
-        super().__init__(*args, **kwargs)
-
-        if self.fields.get("column"):
-            self.fields["column"] = forms.ChoiceField(
-                choices=create_column_choices(self.schema),
-                help_text=self.base_fields["column"].help_text,
-            )
-
-
 # guarantee that widget attrs are updated after any changes in subclass __init__
 class PostInitCaller(forms.models.ModelFormMetaclass):
     def __call__(cls, *args, **kwargs):
@@ -65,25 +50,25 @@ class BaseModelForm(forms.ModelForm, metaclass=PostInitCaller):
     template_name = "django/forms/default_form.html"
 
     def __init__(self, *args, **kwargs):
+        self.parent_instance = kwargs.pop("parent_instance", None)
+        self.schema = kwargs.pop("schema", None)
+
         super().__init__(*args, **kwargs)
+
         self.helper = FormHelper()
         self.helper.form_tag = False
         self.helper.render_hidden_fields = True
 
+        # TODO: add a custom field/widget for this if possible
+        if self.fields.get("column"):
+            self.fields["column"] = forms.ChoiceField(
+                choices=create_column_choices(self.schema),
+                help_text=self.base_fields["column"].help_text,
+            )
+
     def __post_init__(self):
         for k, v in self.effect.items():
             self.fields[k].widget.attrs.update({"x-effect": v})
-
-    @property
-    def fields_json(self):
-        return json.dumps(
-            {
-                field.name: field.value()
-                for field in self
-                if not isinstance(field.field, forms.FileField)
-            }
-            | {"computed": {}, "choices": {}}
-        )
 
     def pre_save(self, instance):
         # override in child to add behaviour on commit save
@@ -116,10 +101,21 @@ class BaseModelForm(forms.ModelForm, metaclass=PostInitCaller):
         return self._meta.formsets
 
 
-class LiveAlpineModelForm(BaseModelForm):
-    def __init__(self, *args, **kwargs):
-        self.parent_instance = kwargs.pop("parent_instance", None)
-        super().__init__(*args, **kwargs)
+class AlpineMixin:
+    @property
+    def fields_json(self):
+        return json.dumps(
+            {
+                field.name: field.value()
+                for field in self
+                if not isinstance(field.field, forms.FileField)
+            }
+            | {"computed": {}, "choices": {}}
+        )
+
+    def schema_json(self):
+        if self.schema:
+            return json.dumps({c: self.schema[c].name for c in self.schema})
 
     # only clean/validate/save fields rendered in the form
     # but keep track of all fields if form is invalid and is re-rendered
@@ -148,14 +144,7 @@ class LiveAlpineModelForm(BaseModelForm):
             return super().save_m2m(commit)
 
 
-class BaseSchemaForm(SchemaFormMixin, BaseModelForm):
-    pass
-
-
 class LiveFormsetMixin:
-    def get_live_formsets(self):
-        return []
-
     def get_formset_kwargs(self, formset):
         return {}
 
@@ -166,10 +155,9 @@ class LiveFormsetMixin:
         forms_kwargs = self.get_formset_form_kwargs(formset)
 
         # provide a reference to parent instance in live update forms
-        if issubclass(formset.form, LiveAlpineModelForm):
-            forms_kwargs["parent_instance"] = self.instance
+        forms_kwargs["parent_instance"] = self.instance
 
-        if issubclass(formset.form, SchemaFormMixin):
+        if self.schema:
             forms_kwargs["schema"] = self.schema
 
         formset = (
@@ -207,5 +195,5 @@ class LiveFormsetMixin:
         return {k: self.get_formset(k, v) for k, v in self.formsets.items()}
 
 
-class ModelForm(LiveFormsetMixin, SchemaFormMixin, LiveAlpineModelForm):
+class ModelForm(LiveFormsetMixin, AlpineMixin, BaseModelForm):
     pass

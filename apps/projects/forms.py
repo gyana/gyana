@@ -1,6 +1,6 @@
 from django import forms
 
-from apps.base.forms import BaseModelForm, LiveAlpineModelForm
+from apps.base.forms import ModelForm
 
 from .models import Project
 from .widgets import MemberSelect
@@ -17,7 +17,7 @@ class MemberSelectMixin:
             members_field.widget.current_user = current_user
 
 
-class ProjectCreateForm(MemberSelectMixin, LiveAlpineModelForm):
+class ProjectCreateForm(MemberSelectMixin, ModelForm):
     class Meta:
         model = Project
         fields = ["name", "description", "access", "members"]
@@ -28,7 +28,7 @@ class ProjectCreateForm(MemberSelectMixin, LiveAlpineModelForm):
         instance.team = self._team
 
 
-class ProjectUpdateForm(MemberSelectMixin, LiveAlpineModelForm):
+class ProjectUpdateForm(MemberSelectMixin, ModelForm):
     class Meta:
         model = Project
         fields = ["name", "description", "access", "members"]
@@ -36,7 +36,7 @@ class ProjectUpdateForm(MemberSelectMixin, LiveAlpineModelForm):
         widgets = {"members": MemberSelect()}
 
 
-class ProjectRunForm(BaseModelForm):
+class ProjectRunForm(ModelForm):
     class Meta:
         model = Project
         fields = [
