@@ -41,33 +41,6 @@ def get_formsets(self):
 
 forms.BaseForm.get_formsets = get_formsets
 
-# temporary overrides for formset labels
-FORMSET_LABELS = {
-    "columns": "Group columns",
-    "aggregations": "Aggregations",
-    "sort_columns": "Sort columns",
-    "edit_columns": "Edit columns",
-    "add_columns": "Add columns",
-    "rename_columns": "Rename columns",
-    "formula_columns": "Formula columns",
-    "join_columns": "Joins",
-    "filters": "Filters",
-    "secondary_columns": "Select specific columns",
-    "window_columns": "Window columns",
-    "convert_columns": "Select columns to convert",
-    "values": "Additional values",
-    "charts": "Charts",
-    "queryparams": "Query Params",
-    "httpheaders": "HTTP Headers",
-    "formdataentries": "Form Data",
-    "formurlencodedentries": "Form URL Encoded",
-}
-
-
-def _get_formset_label(formset):
-    prefix = formset.get_default_prefix()
-    return FORMSET_LABELS.get(prefix, prefix)
-
 
 class SchemaFormMixin:
     @property
