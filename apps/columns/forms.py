@@ -57,7 +57,7 @@ class ColumnForm(ModelForm):
         show = {
             "part": "['Date', 'Timestamp'].includes(schema[column])",
         }
-        effect = {"column": f"choices.part = $store.ibis.date_periods[schema[column]]"}
+        effect = f"choices.part = $store.ibis.date_periods[schema[column]]"
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -95,7 +95,7 @@ class ColumnFormWithFormatting(ModelForm):
             "positive_threshold": "['Int8', 'Int16', 'Int32', 'Int64', 'Float64'].includes(schema[column])",
             "negative_threshold": "['Int8', 'Int16', 'Int32', 'Int64', 'Float64'].includes(schema[column])",
         }
-        effect = {"column": f"choices.part = $store.ibis.date_periods[schema[column]]"}
+        effect = f"choices.part = $store.ibis.date_periods[schema[column]]"
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -132,10 +132,7 @@ class AggregationColumnForm(ModelForm):
         }
         model = AggregationColumn
         show = {"function": "column !== null"}
-        # TODO: effect should be a list of expressions added as attrs to root component
-        effect = {
-            "column": f"choices.function = $store.ibis.aggregations[schema[column]]",
-        }
+        effect = f"choices.function = $store.ibis.aggregations[schema[column]]"
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -173,9 +170,7 @@ class AggregationFormWithFormatting(ModelForm):
             # "name": f"kind !== {Widget.Kind.METRIC}",
             # For aggregation column the numeric type of the output is guaranteed
         }
-        effect = {
-            "column": f"choices.function = $store.ibis.aggregations[schema[column]]",
-        }
+        effect = f"choices.function = $store.ibis.aggregations[schema[column]]"
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -231,9 +226,7 @@ class OperationColumnForm(ModelForm):
         show = {
             k: _show_function_field(k) for k in fields if k.endswith("_function")
         } | {k: _show_value_field(k) for k in fields if k.endswith("_value")}
-        effect = {
-            "column": f"computed.function_field = $store.ibis.functions[schema[column]]"
-        }
+        effect = f"computed.function_field = $store.ibis.functions[schema[column]]"
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -275,9 +268,7 @@ class AddColumnForm(ModelForm):
             | {k: _show_value_field(k) for k in fields if k.endswith("_value")}
             | {"label": "!!$data[computed.function_field]"}
         )
-        effect = {
-            "column": f"computed.function_field = $store.ibis.functions[schema[column]]"
-        }
+        effect = f"computed.function_field = $store.ibis.functions[schema[column]]"
 
     def clean_label(self):
         return column_naming_validation(self.cleaned_data["label"], self.schema.names)
@@ -308,9 +299,7 @@ class WindowColumnForm(ModelForm):
             "ascending": "column !== null",
             "label": "column !== null",
         }
-        effect = {
-            "column": f"choices.function = $store.ibis.aggregations[schema[column]]"
-        }
+        effect = f"choices.function = $store.ibis.aggregations[schema[column]]"
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

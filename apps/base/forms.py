@@ -31,15 +31,7 @@ def __init__(self, options=None):
 ModelFormOptions.__init__ = __init__
 
 
-# guarantee that widget attrs are updated after any changes in subclass __init__
-class PostInitCaller(forms.models.ModelFormMetaclass):
-    def __call__(cls, *args, **kwargs):
-        obj = type.__call__(cls, *args, **kwargs)
-        obj.__post_init__()
-        return obj
-
-
-class ModelForm(forms.ModelForm, metaclass=PostInitCaller):
+class BaseModelForm(forms.ModelForm):
     template_name = "django/forms/default_form.html"
 
     def __init__(self, *args, **kwargs):
@@ -58,10 +50,6 @@ class ModelForm(forms.ModelForm, metaclass=PostInitCaller):
                 choices=create_column_choices(self.schema),
                 help_text=self.base_fields["column"].help_text,
             )
-
-    def __post_init__(self):
-        for k, v in self.effect.items():
-            self.fields[k].widget.attrs.update({"x-effect": v})
 
     def pre_save(self, instance):
         # override in child to add behaviour on commit save
@@ -95,6 +83,10 @@ class ModelForm(forms.ModelForm, metaclass=PostInitCaller):
 
 
 class AlpineMixin:
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper.attrs["x-effect"] = self.effect
+
     @property
     def fields_json(self):
         return json.dumps(
@@ -188,5 +180,5 @@ class LiveFormsetMixin:
         return {k: self.get_formset(k, v) for k, v in self.formsets.items()}
 
 
-class ModelForm(LiveFormsetMixin, AlpineMixin, ModelForm):
+class ModelForm(LiveFormsetMixin, AlpineMixin, BaseModelForm):
     pass

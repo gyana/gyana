@@ -174,9 +174,9 @@ class PivotNodeForm(NodeForm):
         show = {
             "pivot_aggregation": "pivot_value !== null",
         }
-        effect = {
-            "pivot_value": f"choices.pivot_aggregation = $store.ibis.aggregations[schema[pivot_value]]"
-        }
+        effect = (
+            f"choices.pivot_aggregation = $store.ibis.aggregations[schema[pivot_value]]"
+        )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
