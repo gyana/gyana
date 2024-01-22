@@ -10,7 +10,6 @@ from django.db import transaction
 from django.db.models import Case, Q, When
 from django.db.models.functions import Greatest
 from django.forms.models import ModelFormOptions
-from django.utils.datastructures import MultiValueDict
 
 from apps.base.core.utils import create_column_choices
 from apps.tables.models import Table
@@ -187,99 +186,6 @@ class LiveAlpineModelForm(BaseModelForm):
             return super().save_m2m(commit)
 
 
-class LiveModelForm(BaseModelForm):
-    ignore_live_update_fields = []
-
-    def __init__(self, *args, **kwargs):
-        self.parent_instance = kwargs.pop("parent_instance", None)
-        super().__init__(*args, **kwargs)
-
-        for field in self.ignore_live_update_fields:
-            self.fields[field].widget.attrs.update({"data-live-update-ignore": ""})
-
-        self.prefix = kwargs.get("prefix", None)
-
-        # the rendered fields are determined by the values of the other fields
-        # implementation designed to be overriden by subclass
-        fields = self.get_live_fields()
-
-        if self.is_live:
-            self._errors = {}  # disable form validation
-            self.data.update(self._get_live_data(fields))
-
-        self.fields = {k: v for k, v in self.fields.items() if k in fields}
-
-    def _get_field_data_key(self, field):
-        # formset data is prefixed
-        return f"{self.prefix}-{field}" if self.prefix else field
-
-    def _get_live_data(self, fields):
-        """Get the form data, falling back to initial or default values where
-        the field was not displayed in the previous live form render."""
-
-        data = MultiValueDict()
-
-        for field in fields:
-            key = self._get_field_data_key(field)
-            value = self.get_live_field(field)
-
-            # For HTML checkboxes, we need to distinguish two possibilities:
-            # - the value of the checkbox is false (unchecked)
-            # - the field was not displayed
-            # Under the default HTML form implementation, these are indistinguishable.
-            # Solution: we manually add the unchecked checkbox with "false" value
-
-            if isinstance(self.fields[field], forms.BooleanField) and value == "false":
-                continue
-
-            # e.g. for an ArrayField, each item should be a separate value (rather than one value as a list)
-            if isinstance(value, list):
-                data.setlist(key, value)
-            else:
-                data[key] = value
-
-        return data
-
-    @property
-    def is_live(self):
-        # the "hidden_live" value is populated by the stimulus controller
-        return "hidden_live" in self.data
-
-    def get_live_field(self, field):
-        """Return the current value of a field in a live form."""
-
-        key = self._get_field_data_key(field)
-
-        # data populated by POST request in update
-        if key in self.data:
-            return self.data[key]
-
-        # fallback 1: initial value for form
-        if field in self.initial:
-            return self.initial[field]
-
-        # fallback 2: default value for model field
-        # used for formset placeholder rows where self.initial is empty
-        initial = self.fields[field].initial
-        return initial() if callable(initial) else initial
-
-    def get_live_fields(self):
-        """Return list of rendered fields derived from current form state.
-
-        Designed to be overwritten by live form implementation. Default behaviour
-        is a normal form (i.e. all fields)."""
-
-        return list(self.fields.keys())
-
-    @property
-    def deleted(self):
-        return self.data.get(f"{self.prefix}-DELETE") == "on"
-
-
-class BaseLiveSchemaForm(SchemaFormMixin, LiveModelForm):
-    pass
-
-
 class BaseSchemaForm(SchemaFormMixin, BaseModelForm):
     pass
 
@@ -298,9 +204,7 @@ class LiveFormsetMixin:
         forms_kwargs = self.get_formset_form_kwargs(formset)
 
         # provide a reference to parent instance in live update forms
-        if issubclass(formset.form, LiveModelForm) or issubclass(
-            formset.form, LiveAlpineModelForm
-        ):
+        if issubclass(formset.form, LiveAlpineModelForm):
             forms_kwargs["parent_instance"] = self.instance
 
         if issubclass(formset.form, SchemaFormMixin):
