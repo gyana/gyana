@@ -31,13 +31,6 @@ def __init__(self, options=None):
 ModelFormOptions.__init__ = __init__
 
 
-def get_formsets(self):
-    return {}
-
-
-forms.BaseForm.get_formsets = get_formsets
-
-
 # guarantee that widget attrs are updated after any changes in subclass __init__
 class PostInitCaller(forms.models.ModelFormMetaclass):
     def __call__(cls, *args, **kwargs):
@@ -46,7 +39,7 @@ class PostInitCaller(forms.models.ModelFormMetaclass):
         return obj
 
 
-class BaseModelForm(forms.ModelForm, metaclass=PostInitCaller):
+class ModelForm(forms.ModelForm, metaclass=PostInitCaller):
     template_name = "django/forms/default_form.html"
 
     def __init__(self, *args, **kwargs):
@@ -195,5 +188,5 @@ class LiveFormsetMixin:
         return {k: self.get_formset(k, v) for k, v in self.formsets.items()}
 
 
-class ModelForm(LiveFormsetMixin, AlpineMixin, BaseModelForm):
+class ModelForm(LiveFormsetMixin, AlpineMixin, ModelForm):
     pass

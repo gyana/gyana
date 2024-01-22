@@ -1,10 +1,10 @@
-from apps.base.forms import BaseModelForm, LiveFormsetMixin
+from apps.base.forms import ModelForm
 from apps.uploads.widgets import GCSFileUpload
 
 from .models import Upload
 
 
-class UploadCreateForm(BaseModelForm):
+class UploadCreateForm(ModelForm):
     class Meta:
         model = Upload
         fields = ["file_gcs_path"]
@@ -24,7 +24,7 @@ class UploadCreateForm(BaseModelForm):
         )
 
 
-class UploadUpdateForm(LiveFormsetMixin, BaseModelForm):
+class UploadUpdateForm(ModelForm):
     class Meta:
         model = Upload
         fields = ["file_gcs_path", "field_delimiter"]

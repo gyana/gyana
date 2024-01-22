@@ -1,25 +1,25 @@
 from django.forms.widgets import HiddenInput
 
 from apps.base.account import is_scheduled_help_text
-from apps.base.forms import BaseModelForm
+from apps.base.forms import ModelForm
 
 from .models import Workflow
 
 
-class WorkflowFormCreate(BaseModelForm):
+class WorkflowFormCreate(ModelForm):
     class Meta:
         model = Workflow
         fields = ["project"]
         widgets = {"project": HiddenInput()}
 
 
-class WorkflowNameForm(BaseModelForm):
+class WorkflowNameForm(ModelForm):
     class Meta:
         model = Workflow
         fields = ["name"]
 
 
-class WorkflowSettingsForm(BaseModelForm):
+class WorkflowSettingsForm(ModelForm):
     class Meta:
         model = Workflow
         fields = ["is_scheduled"]

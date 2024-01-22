@@ -2,13 +2,13 @@ from django.contrib.postgres.search import TrigramSimilarity
 from django.db.models import Case, Q, When
 from django.db.models.functions import Greatest
 
-from apps.base.forms import BaseModelForm
+from apps.base.forms import ModelForm
 from apps.tables.models import Table
 
 from .models import Table
 
 
-class TableForm(BaseModelForm):
+class TableForm(ModelForm):
     class Meta:
         model = Table
         fields = []
