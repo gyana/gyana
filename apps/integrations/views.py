@@ -108,9 +108,8 @@ class IntegrationSettings(ProjectMixin, UpdateView):
     def form_valid(self, form):
         with transaction.atomic():
             form.save()
-            for formset in form.get_formsets().values():
-                if formset.is_valid():
-                    formset.save()
+            for formset in self.formsets:
+                formset.save()
 
         # Ibis caches the fetched schemas of a table that could have changed
         # e.g. if cell range for sheet source has changed
@@ -179,9 +178,8 @@ class IntegrationConfigure(ProjectMixin, UpdateView):
         # don't assign the result to self.object
         with transaction.atomic():
             form.save()
-            for formset in form.get_formsets().values():
-                if formset.is_valid():
-                    formset.save()
+            for formset in self.formsets:
+                formset.save()
 
         run_integration(self.object.kind, self.object.source_obj, self.request.user)
         analytics.track(
