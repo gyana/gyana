@@ -39,7 +39,7 @@ def run_workflow_task(self, run_id: int):
                     project=workflow.project,
                     workflow_node=node,
                 )
-                get_engine().create_or_replace_table(table.table_id, query.compile())
+                get_engine().create_or_replace_table(table.bq_id, query.compile())
 
                 table.data_updated = timezone.now()
                 table.save()
