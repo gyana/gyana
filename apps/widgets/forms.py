@@ -9,13 +9,13 @@ from apps.base.crispy import CrispyFormset
 from apps.base.fields import ColorField
 from apps.base.forms import (
     BaseModelForm,
-    IntegrationSearchMixin,
     LiveAlpineModelForm,
     LiveFormsetMixin,
     SchemaFormMixin,
 )
 from apps.base.widgets import Datalist, SelectWithDisable, SourceSelect
 from apps.dashboards.widgets import PaletteColorsField
+from apps.tables.forms import IntegrationSearchMixin
 
 from .formsets import (
     AggregationColumnFormset,
