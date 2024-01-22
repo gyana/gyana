@@ -32,7 +32,7 @@ class RequiredInlineFormset(BaseInlineFormset):
         return super().initial_form_count()
 
     def save_new_objects(self, commit=True):
-        """Overwrites Django's BaseModelFormSet that doesnt save an instance of
+        """Overwrites Django's ModelFormSet that doesnt save an instance of
         a formset form if the initial values haven't changed."""
         self.new_objects = []
         for form in self.extra_forms:

@@ -274,7 +274,9 @@ def test_dashboard_history(
     dashboard.pages.create()
     project_dashboard_url = f"/projects/{project.id}/dashboards/{dashboard.id}"
 
-    r = client.post(f"{project_dashboard_url}/history", data={"name": ""})
+    r = client.post(
+        f"{project_dashboard_url}/history", data={"name": "", "version_name": ""}
+    )
     assert r.status_code == 303
 
     version_1 = dashboard.versions.first()
@@ -288,7 +290,7 @@ def test_dashboard_history(
 
     r = client.post(
         f"/dashboards/version/{dashboard.versions.first().id}/rename",
-        data={"name": "Empty dashboard"},
+        data={"name": "Empty dashboard", "version_name": ""},
     )
     assert r.status_code == 303
     version_1.refresh_from_db()

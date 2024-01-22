@@ -4,14 +4,10 @@ from django.utils.functional import cached_property
 
 from apps.base.core.utils import create_column_choices
 from apps.base.crispy import CrispyFormset
-from apps.base.forms import (
-    IntegrationSearchMixin,
-    LiveAlpineModelForm,
-    LiveFormsetMixin,
-    SchemaFormMixin,
-)
+from apps.base.forms import ModelForm
 from apps.base.widgets import MultiSelect, SourceSelect
 from apps.columns.models import Column
+from apps.tables.forms import IntegrationSearchMixin
 
 from .formsets import (
     AddColumnFormSet,
@@ -31,7 +27,7 @@ from .formsets import (
 from .models import Node
 
 
-class NodeForm(LiveFormsetMixin, SchemaFormMixin, LiveAlpineModelForm):
+class NodeForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field in getattr(self.Meta, "required", []):
@@ -178,9 +174,9 @@ class PivotNodeForm(NodeForm):
         show = {
             "pivot_aggregation": "pivot_value !== null",
         }
-        effect = {
-            "pivot_value": f"choices.pivot_aggregation = $store.ibis.aggregations[schema[pivot_value]]"
-        }
+        effect = (
+            f"choices.pivot_aggregation = $store.ibis.aggregations[schema[pivot_value]]"
+        )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -204,7 +200,10 @@ class UnpivotNodeForm(NodeForm):
     class Meta:
         model = Node
         fields = ["unpivot_value", "unpivot_column"]
-        formsets = {"columns": UnpivotColumnFormSet, "secondary_columns": SelectColumnFormSet}
+        formsets = {
+            "columns": UnpivotColumnFormSet,
+            "secondary_columns": SelectColumnFormSet,
+        }
         required = ["unpivot_value", "unpivot_column"]
         labels = {
             "unpivot_value": "Value column name",

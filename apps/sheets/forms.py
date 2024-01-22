@@ -5,7 +5,7 @@ from django.db import transaction
 
 from apps.base import clients
 from apps.base.account import is_scheduled_help_text
-from apps.base.forms import BaseModelForm, LiveFormsetMixin
+from apps.base.forms import ModelForm, BaseModelForm
 
 from .models import Sheet
 from .sheets import get_cell_range, get_sheets_id_from_url
@@ -19,7 +19,7 @@ class FormExtraMixin:
         super().__init__(*args, **kwargs)
 
 
-class SheetCreateForm(FormExtraMixin, BaseModelForm):
+class SheetCreateForm(FormExtraMixin, ModelForm):
     extra_fields = ["sheet_name", "cell_range"]
 
     is_scheduled = forms.BooleanField(
@@ -90,7 +90,7 @@ class SheetCreateForm(FormExtraMixin, BaseModelForm):
         instance.integration.project.update_schedule()
 
 
-class SheetUpdateForm(LiveFormsetMixin, BaseModelForm):
+class SheetUpdateForm(ModelForm):
     is_scheduled = forms.BooleanField(
         required=False, label="Automatically sync new data"
     )

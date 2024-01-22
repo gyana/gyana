@@ -1,5 +1,5 @@
 from apps.base.account import is_scheduled_help_text
-from apps.base.forms import BaseModelForm
+from apps.base.forms import ModelForm
 from apps.customapis.forms import CustomApiUpdateForm
 from apps.sheets.forms import SheetUpdateForm
 from apps.uploads.forms import UploadUpdateForm
@@ -13,13 +13,13 @@ KIND_TO_FORM_CLASS = {
 }
 
 
-class IntegrationNameForm(BaseModelForm):
+class IntegrationNameForm(ModelForm):
     class Meta:
         model = Integration
         fields = ["name"]
 
 
-class IntegrationUpdateForm(BaseModelForm):
+class IntegrationUpdateForm(ModelForm):
     class Meta:
         model = Integration
         fields = ["is_scheduled"]

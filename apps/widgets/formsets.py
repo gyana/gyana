@@ -136,9 +136,7 @@ class CombinationChartForm(AggregationColumnForm):
             "function": "Select the aggregation function",
         }
         show = {"function": "column !== null"}
-        effect = {
-            "column": f"choices.function = $store.ibis.aggregations[schema[column]]",
-        }
+        effect = f"choices.function = $store.ibis.aggregations[schema[column]]"
 
 
 CombinationChartFormset = forms.inlineformset_factory(

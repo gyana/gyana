@@ -1,12 +1,12 @@
 from django.core.exceptions import ValidationError
 
-from apps.base.forms import BaseModelForm
+from apps.base.forms import ModelForm
 from apps.users.models import CustomUser
 
 from .models import Invite
 
 
-class InviteForm(BaseModelForm):
+class InviteForm(ModelForm):
     class Meta:
         model = Invite
         fields = ["email", "role"]
@@ -34,7 +34,7 @@ class InviteForm(BaseModelForm):
         return cleaned_data
 
 
-class InviteUpdateForm(BaseModelForm):
+class InviteUpdateForm(ModelForm):
     class Meta:
         model = Invite
         fields = ["email", "role"]

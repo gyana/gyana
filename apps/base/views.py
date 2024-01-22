@@ -2,7 +2,6 @@ import http
 
 from django.db import transaction
 from django.http import HttpResponseRedirect
-from django.utils.datastructures import MultiValueDict
 from django.views.generic.edit import CreateView as BaseCreateView
 from django.views.generic.edit import UpdateView as BaseUpdateView
 
@@ -28,31 +27,13 @@ class FormMixin:
         return HttpResponseSeeOther(self.get_success_url())
 
 
-class AlpineMixin:
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        # When a node has no parents or parents break the form can't be constructed
-
-        if context.get("form"):
-            context["formsets"] = context["form"].get_formsets()
-        return context
-
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        if "data" in kwargs:
-            kwargs["data"] = MultiValueDict({**kwargs["data"]})  # make it mutable
-        return kwargs
-
+class AlpineFormsetMixin:
     def post(self, request, *args: str, **kwargs):
-        # override BaseCreateView/BaseUpdateView and ProcessFormView for live
+        # override BaseCreateView/BaseUpdateView and ProcessFormView for alpine
         # form logic and formset validation
 
         form = self.get_form()
-        self.formsets = [
-            f
-            for f in form.get_formsets().values()
-            if f"{f.prefix}-TOTAL_FORMS" in form.data
-        ]
+        self.formsets = form.get_formsets() if hasattr(form, "get_formsets") else []
 
         if form.is_valid() and all(formset.is_valid() for formset in self.formsets):
             return self.form_valid(form)
@@ -69,13 +50,13 @@ class AlpineMixin:
         return response
 
 
-class CreateView(AlpineMixin, FormMixin, BaseCreateView):
+class CreateView(AlpineFormsetMixin, FormMixin, BaseCreateView):
     def post(self, request, *args, **kwargs):
         self.object = None
         return super().post(request, *args, **kwargs)
 
 
-class UpdateView(AlpineMixin, FormMixin, BaseUpdateView):
+class UpdateView(AlpineFormsetMixin, FormMixin, BaseUpdateView):
     @property
     def is_preview_request(self):
         return self.request.POST.get("submit") == "Save & Preview"

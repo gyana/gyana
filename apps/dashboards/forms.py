@@ -7,26 +7,26 @@ from django.forms.widgets import HiddenInput, PasswordInput
 from django.utils import timezone
 
 from apps.base.fields import ColorField
-from apps.base.forms import BaseModelForm, LiveAlpineModelForm
+from apps.base.forms import ModelForm
 
 from .models import DASHBOARD_SETTING_TO_CATEGORY, Dashboard
 from .widgets import PaletteColorsField, TextareaCode
 
 
-class DashboardCreateForm(BaseModelForm):
+class DashboardCreateForm(ModelForm):
     class Meta:
         model = Dashboard
         fields = ["project"]
         widgets = {"project": HiddenInput()}
 
 
-class DashboardNameForm(BaseModelForm):
+class DashboardNameForm(ModelForm):
     class Meta:
         model = Dashboard
         fields = ["name"]
 
 
-class DashboardForm(BaseModelForm):
+class DashboardForm(ModelForm):
     extra_html_head = forms.CharField(
         label="HTML <head>",
         required=False,
@@ -138,7 +138,7 @@ class DashboardForm(BaseModelForm):
                     field.widget = forms.HiddenInput()
 
 
-class DashboardShareForm(LiveAlpineModelForm):
+class DashboardShareForm(ModelForm):
     class Meta:
         model = Dashboard
         fields = ["shared_status", "password"]
@@ -183,7 +183,7 @@ class DashboardLoginForm(forms.Form):
         return password
 
 
-class DashboardVersionSaveForm(BaseModelForm):
+class DashboardVersionSaveForm(ModelForm):
     version_name = forms.CharField(required=False)
 
     class Meta:

@@ -1,11 +1,11 @@
 from django import forms
 
-from apps.base.forms import BaseModelForm
+from apps.base.forms import ModelForm
 
 from .models import OAuth2
 
 
-class OAuth2CreateForm(BaseModelForm):
+class OAuth2CreateForm(ModelForm):
     class Meta:
         model = OAuth2
         fields = ["name"]
@@ -19,7 +19,7 @@ class OAuth2CreateForm(BaseModelForm):
         instance.project = self._project
 
 
-class OAuth2UpdateForm(BaseModelForm):
+class OAuth2UpdateForm(ModelForm):
     class Meta:
         model = OAuth2
         fields = [

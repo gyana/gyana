@@ -3,7 +3,7 @@ from django import forms
 from ibis.expr.datatypes import Array, Floating, Struct
 
 from apps.base.core.utils import create_column_choices
-from apps.base.forms import BaseLiveSchemaForm, LiveAlpineModelForm, SchemaFormMixin
+from apps.base.forms import ModelForm
 from apps.base.widgets import Datalist, SelectWithDisable
 from apps.columns.crispy import ColumnFormatting
 from apps.columns.models import (
@@ -18,7 +18,6 @@ from apps.columns.models import (
     SortColumn,
     WindowColumn,
 )
-from apps.widgets.models import Widget
 
 from .widgets import CodeMirror
 
@@ -50,7 +49,7 @@ def disable_struct_and_array_columns(fields, column_field, schema):
     )
 
 
-class ColumnForm(SchemaFormMixin, LiveAlpineModelForm):
+class ColumnForm(ModelForm):
     class Meta:
         fields = ("column", "part")
         model = Column
@@ -58,7 +57,7 @@ class ColumnForm(SchemaFormMixin, LiveAlpineModelForm):
         show = {
             "part": "['Date', 'Timestamp'].includes(schema[column])",
         }
-        effect = {"column": f"choices.part = $store.ibis.date_periods[schema[column]]"}
+        effect = f"choices.part = $store.ibis.date_periods[schema[column]]"
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -67,7 +66,7 @@ class ColumnForm(SchemaFormMixin, LiveAlpineModelForm):
         )
 
 
-class ColumnFormWithFormatting(SchemaFormMixin, LiveAlpineModelForm):
+class ColumnFormWithFormatting(ModelForm):
     class Meta:
         model = Column
         fields = (
@@ -96,7 +95,7 @@ class ColumnFormWithFormatting(SchemaFormMixin, LiveAlpineModelForm):
             "positive_threshold": "['Int8', 'Int16', 'Int32', 'Int64', 'Float64'].includes(schema[column])",
             "negative_threshold": "['Int8', 'Int16', 'Int32', 'Int64', 'Float64'].includes(schema[column])",
         }
-        effect = {"column": f"choices.part = $store.ibis.date_periods[schema[column]]"}
+        effect = f"choices.part = $store.ibis.date_periods[schema[column]]"
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -121,7 +120,7 @@ class ColumnFormWithFormatting(SchemaFormMixin, LiveAlpineModelForm):
         )
 
 
-class AggregationColumnForm(SchemaFormMixin, LiveAlpineModelForm):
+class AggregationColumnForm(ModelForm):
     class Meta:
         fields = (
             "column",
@@ -133,10 +132,7 @@ class AggregationColumnForm(SchemaFormMixin, LiveAlpineModelForm):
         }
         model = AggregationColumn
         show = {"function": "column !== null"}
-        # TODO: effect should be a list of expressions added as attrs to root component
-        effect = {
-            "column": f"choices.function = $store.ibis.aggregations[schema[column]]",
-        }
+        effect = f"choices.function = $store.ibis.aggregations[schema[column]]"
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -145,7 +141,7 @@ class AggregationColumnForm(SchemaFormMixin, LiveAlpineModelForm):
         )
 
 
-class AggregationFormWithFormatting(SchemaFormMixin, LiveAlpineModelForm):
+class AggregationFormWithFormatting(ModelForm):
     class Meta:
         fields = (
             "column",
@@ -174,9 +170,7 @@ class AggregationFormWithFormatting(SchemaFormMixin, LiveAlpineModelForm):
             # "name": f"kind !== {Widget.Kind.METRIC}",
             # For aggregation column the numeric type of the output is guaranteed
         }
-        effect = {
-            "column": f"choices.function = $store.ibis.aggregations[schema[column]]",
-        }
+        effect = f"choices.function = $store.ibis.aggregations[schema[column]]"
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -209,7 +203,7 @@ def _show_value_field(field):
     return f"$store.ibis.operations['{field}'].includes($data[computed.function_field])"
 
 
-class OperationColumnForm(SchemaFormMixin, LiveAlpineModelForm):
+class OperationColumnForm(ModelForm):
     class Meta:
         model = EditColumn
         fields = (
@@ -232,9 +226,7 @@ class OperationColumnForm(SchemaFormMixin, LiveAlpineModelForm):
         show = {
             k: _show_function_field(k) for k in fields if k.endswith("_function")
         } | {k: _show_value_field(k) for k in fields if k.endswith("_value")}
-        effect = {
-            "column": f"computed.function_field = $store.ibis.functions[schema[column]]"
-        }
+        effect = f"computed.function_field = $store.ibis.functions[schema[column]]"
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -250,7 +242,7 @@ class OperationColumnForm(SchemaFormMixin, LiveAlpineModelForm):
         return super().save(commit=commit)
 
 
-class AddColumnForm(SchemaFormMixin, LiveAlpineModelForm):
+class AddColumnForm(ModelForm):
     class Meta:
         model = AddColumn
         fields = (
@@ -276,15 +268,13 @@ class AddColumnForm(SchemaFormMixin, LiveAlpineModelForm):
             | {k: _show_value_field(k) for k in fields if k.endswith("_value")}
             | {"label": "!!$data[computed.function_field]"}
         )
-        effect = {
-            "column": f"computed.function_field = $store.ibis.functions[schema[column]]"
-        }
+        effect = f"computed.function_field = $store.ibis.functions[schema[column]]"
 
     def clean_label(self):
         return column_naming_validation(self.cleaned_data["label"], self.schema.names)
 
 
-class FormulaColumnForm(BaseLiveSchemaForm):
+class FormulaColumnForm(ModelForm):
     class Meta:
         fields = ("formula", "label")
         model = FormulaColumn
@@ -298,7 +288,7 @@ class FormulaColumnForm(BaseLiveSchemaForm):
         return column_naming_validation(self.cleaned_data["label"], self.schema.names)
 
 
-class WindowColumnForm(SchemaFormMixin, LiveAlpineModelForm):
+class WindowColumnForm(ModelForm):
     class Meta:
         fields = ("column", "function", "group_by", "order_by", "ascending", "label")
         model = WindowColumn
@@ -309,9 +299,7 @@ class WindowColumnForm(SchemaFormMixin, LiveAlpineModelForm):
             "ascending": "column !== null",
             "label": "column !== null",
         }
-        effect = {
-            "column": f"choices.function = $store.ibis.aggregations[schema[column]]"
-        }
+        effect = f"choices.function = $store.ibis.aggregations[schema[column]]"
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -343,7 +331,7 @@ class WindowColumnForm(SchemaFormMixin, LiveAlpineModelForm):
         return column_naming_validation(self.cleaned_data["label"], self.schema.names)
 
 
-class ConvertColumnForm(BaseLiveSchemaForm):
+class ConvertColumnForm(ModelForm):
     class Meta:
         fields = ("column", "target_type")
         model = ConvertColumn
@@ -370,7 +358,7 @@ def create_left_join_choices(parents, index):
     return [("", "No column selected"), *columns]
 
 
-class JoinColumnForm(BaseLiveSchemaForm):
+class JoinColumnForm(ModelForm):
     class Meta:
         model = JoinColumn
         fields = ["how", "left_column", "right_column"]
@@ -411,7 +399,7 @@ class JoinColumnForm(BaseLiveSchemaForm):
         return super().save(*args, **kwargs)
 
 
-class SortColumnForm(BaseLiveSchemaForm, LiveAlpineModelForm):
+class SortColumnForm(ModelForm):
     class Meta:
         model = SortColumn
         fields = ["column", "ascending", "sort_index"]
@@ -439,7 +427,7 @@ def extract_values_from_data(prefix, data, field_name, idx=None):
     )
 
 
-class RenameColumnForm(BaseLiveSchemaForm):
+class RenameColumnForm(ModelForm):
     class Meta:
         model = RenameColumn
         fields = ("column", "new_name")
