@@ -54,7 +54,7 @@ def test_upload_create(client, logged_in_user, project, bigquery):
     table = integration.table_set.first()
     assert bigquery.load_table_from_uri.call_args.args == (
         f"gs://gyana-test/{GCS_URL}",
-        table.bq_id,
+        table.fqn,
     )
     job_config = bigquery.load_table_from_uri.call_args.kwargs["job_config"]
     assert job_config.source_format == "CSV"

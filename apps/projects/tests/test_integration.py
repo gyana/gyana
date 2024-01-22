@@ -210,11 +210,11 @@ def test_duplicate_simple_project(
     assert bigquery.query.call_count == 2
     call_queries = [arg.args[0] for arg in bigquery.query.call_args_list]
     assert (
-        f"CREATE OR REPLACE TABLE {duplicate_table.bq_id} as (SELECT * FROM {table.bq_id})"
+        f"CREATE OR REPLACE TABLE {duplicate_table.fqn} as (SELECT * FROM {table.fqn})"
         in call_queries
     )
     assert (
-        f"CREATE OR REPLACE TABLE {duplicate_output_node.table.bq_id} as (SELECT * FROM {output_node.table.bq_id})"
+        f"CREATE OR REPLACE TABLE {duplicate_output_node.table.fqn} as (SELECT * FROM {output_node.table.fqn})"
         in call_queries
     )
 

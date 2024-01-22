@@ -13,8 +13,8 @@ def delete_engine_table(sender, instance, *args, **kwargs):
         return
 
     # hotfix for cloned templates where bq dataset name is invalid
-    if " copy " in instance.bq_id:
+    if " copy " in instance.fqn:
         return
 
     # TODO: Make sure it works for postgres backend
-    get_engine().drop_table(instance.bq_id)
+    get_engine().drop_table(instance.fqn)

@@ -29,7 +29,7 @@ def create_or_replace_intermediate_table(node, query):
             intermediate_node=node,
         )
 
-        get_engine().create_or_replace_table(table.bq_id, query.compile())
+        get_engine().create_or_replace_table(table.fqn, query.compile())
 
         table.data_updated = timezone.now()
         table.save()

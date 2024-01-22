@@ -68,7 +68,7 @@ class Table(BaseModel):
         return getattr(self, self.source).get_table_name()
 
     @property
-    def bq_id(self):
+    def fqn(self):
         return f"{self.namespace}.{self.name}"
 
     @property

@@ -211,10 +211,6 @@ class Integration(BaseModel):
             return self.table_set.order_by("name").first()
 
     @property
-    def bq_ids(self):
-        return {table.bq_id for table in self.table_set.all()}
-
-    @property
     def latest_run(self):
         return self.runs.order_by("-created").first()
 
