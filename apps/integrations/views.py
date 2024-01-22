@@ -117,7 +117,7 @@ class IntegrationSettings(ProjectMixin, UpdateView):
         get_engine().client.reconnect()
 
         # Do not run the integration if the only change is scheduling
-        if not form.has_changed() or form.changed_data == ["is_scheduled"]:
+        if not form.has_changed() or not self.object.is_scheduled:
             return redirect(
                 reverse(
                     "project_integrations:settings",

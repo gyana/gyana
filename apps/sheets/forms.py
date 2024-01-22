@@ -5,7 +5,7 @@ from django.db import transaction
 
 from apps.base import clients
 from apps.base.account import is_scheduled_help_text
-from apps.base.forms import ModelForm
+from apps.base.forms import ModelForm, BaseModelForm
 
 from .models import Sheet
 from .sheets import get_cell_range, get_sheets_id_from_url

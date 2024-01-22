@@ -179,6 +179,10 @@ class AlpineMixin:
         with self.alpine_fields():
             return super().save_m2m(commit)
 
+    def has_changed(self):
+        with self.alpine_fields():
+            return super().has_changed()
+
     def get_formsets(self):
         formsets = super().get_formsets()
 

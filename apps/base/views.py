@@ -2,7 +2,6 @@ import http
 
 from django.db import transaction
 from django.http import HttpResponseRedirect
-from django.utils.datastructures import MultiValueDict
 from django.views.generic.edit import CreateView as BaseCreateView
 from django.views.generic.edit import UpdateView as BaseUpdateView
 

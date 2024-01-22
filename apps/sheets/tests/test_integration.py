@@ -53,7 +53,13 @@ def test_sheet_create(
     assertFormRenders(r, ["url", "is_scheduled", "cell_range", "sheet_name"])
 
     r = client.post(
-        f"{LIST}/sheets/new", data={"url": SHEETS_URL, "is_scheduled": True}
+        f"{LIST}/sheets/new",
+        data={
+            "url": SHEETS_URL,
+            "sheet_name": "",
+            "cell_range": "",
+            "is_scheduled": True,
+        },
     )
 
     integration = project.integration_set.first()
@@ -73,7 +79,14 @@ def test_sheet_create(
 
     # complete the sync
     # it will happen immediately as celery is run in eager mode
-    r = client.post(f"{DETAIL}/configure", data={"cell_range": CELL_RANGE})
+    r = client.post(
+        f"{DETAIL}/configure",
+        data={
+            "sheet_name": "",
+            "cell_range": CELL_RANGE,
+            "is_scheduled": False,
+        },
+    )
 
     # validate the sql and external table configuration
     table = integration.table_set.first()
@@ -116,7 +129,12 @@ def test_validation_failures(client, logged_in_user, sheet_factory, sheets):
     # not a valid url
     r = client.post(
         f"{LIST}/sheets/new",
-        data={"url": "https://www.google.com", "is_scheduled": True},
+        data={
+            "url": "https://www.google.com",
+            "sheet_name": "",
+            "cell_range": "",
+            "is_scheduled": True,
+        },
     )
     assertFormError(r, "form", "url", "The URL to the sheet seems to be invalid.")
 
@@ -127,7 +145,15 @@ def test_validation_failures(client, logged_in_user, sheet_factory, sheets):
     sheets.spreadsheets().get().execute = lambda: raise_(
         googleapiclient.errors.HttpError(Mock(), b"")
     )
-    r = client.post(f"{LIST}/sheets/new", data={"url": SHEET_URL, "is_scheduled": True})
+    r = client.post(
+        f"{LIST}/sheets/new",
+        data={
+            "url": SHEET_URL,
+            "sheet_name": "",
+            "cell_range": "",
+            "is_scheduled": True,
+        },
+    )
     ERROR = "We couldn't access the sheet using the URL provided! Did you give access to the right email?"
     assertFormError(r, "form", "url", ERROR)
 
@@ -142,7 +168,10 @@ def test_validation_failures(client, logged_in_user, sheet_factory, sheets):
     error.reason = "Unable to parse range: does_not_exist!A1:D11"
     sheets.spreadsheets().get().execute = lambda: raise_(error)
 
-    r = client.post(f"{DETAIL}/configure", data={"cell_range": "does_not_exist!A1:D11"})
+    r = client.post(
+        f"{DETAIL}/configure",
+        data={"sheet_name": "", "cell_range": "does_not_exist!A1:D11"},
+    )
     assertFormError(r, "form", "cell_range", error.reason)
 
 
@@ -167,7 +196,11 @@ def test_runtime_error(client, logged_in_user, sheet_factory, bigquery, drive_v2
     with pytest.raises(Exception):
         client.post(
             f"{DETAIL}/configure",
-            data={"cell_range": "store_info!A20:D21"},
+            data={
+                "sheet_name": "",
+                "cell_range": "store_info!A20:D21",
+                "is_scheduled": False,
+            },
         )
 
     assert sheet.integration.runs.count() == 1
