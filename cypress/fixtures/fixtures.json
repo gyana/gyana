@@ -858,8 +858,8 @@
     "fields": {
       "created": "2021-07-27T13:17:23.768Z",
       "updated": "2021-08-22T00:34:00.463Z",
-      "bq_table": "upload_000000001",
-      "bq_dataset": "cypress_team_000001_tables",
+      "name": "upload_000000001",
+      "namespace": "cypress_team_000001_tables",
       "project": 1,
       "source": "integration",
       "integration": 1,
@@ -877,8 +877,8 @@
     "fields": {
       "created": "2021-08-08T20:28:24.385Z",
       "updated": "2021-08-22T00:34:00.293Z",
-      "bq_table": "sheet_000000001",
-      "bq_dataset": "cypress_team_000001_tables",
+      "name": "sheet_000000001",
+      "namespace": "cypress_team_000001_tables",
       "project": 1,
       "source": "integration",
       "integration": 2,
@@ -896,8 +896,8 @@
     "fields": {
       "created": "2021-08-10T07:30:01.880Z",
       "updated": "2021-08-22T00:34:00.106Z",
-      "bq_table": "upload_000000002",
-      "bq_dataset": "cypress_team_000001_tables",
+      "name": "upload_000000002",
+      "namespace": "cypress_team_000001_tables",
       "project": 2,
       "source": "integration",
       "integration": 3,
@@ -915,8 +915,8 @@
     "fields": {
       "created": "2021-08-10T07:32:05.091Z",
       "updated": "2021-08-22T00:33:59.900Z",
-      "bq_table": "upload_000000003",
-      "bq_dataset": "cypress_team_000001_tables",
+      "name": "upload_000000003",
+      "namespace": "cypress_team_000001_tables",
       "project": 2,
       "source": "integration",
       "integration": 4,
@@ -934,8 +934,8 @@
     "fields": {
       "created": "2021-08-11T14:07:41.598Z",
       "updated": "2021-08-22T00:33:59.624Z",
-      "bq_table": "upload_000000004",
-      "bq_dataset": "cypress_team_000001_tables",
+      "name": "upload_000000004",
+      "namespace": "cypress_team_000001_tables",
       "project": 2,
       "source": "integration",
       "integration": 5,
@@ -953,8 +953,8 @@
     "fields": {
       "created": "2021-08-30T19:29:18.765Z",
       "updated": "2021-08-30T19:29:18.765Z",
-      "bq_table": "adwords_campaigns",
-      "bq_dataset": "team_1_google_analytics_a95f8dcedfcc48e0b125bc6212291f78",
+      "name": "adwords_campaigns",
+      "namespace": "team_1_google_analytics_a95f8dcedfcc48e0b125bc6212291f78",
       "project": 6,
       "source": "integration",
       "integration": 13,
@@ -972,8 +972,8 @@
     "fields": {
       "created": "2021-08-30T19:29:18.883Z",
       "updated": "2021-08-30T19:29:18.883Z",
-      "bq_table": "adwords_hourly_stats",
-      "bq_dataset": "team_1_google_analytics_a95f8dcedfcc48e0b125bc6212291f78",
+      "name": "adwords_hourly_stats",
+      "namespace": "team_1_google_analytics_a95f8dcedfcc48e0b125bc6212291f78",
       "project": 6,
       "source": "integration",
       "integration": 13,
@@ -991,8 +991,8 @@
     "fields": {
       "created": "2021-08-30T19:29:18.996Z",
       "updated": "2021-08-30T19:29:18.996Z",
-      "bq_table": "adwords_keyword",
-      "bq_dataset": "team_1_google_analytics_a95f8dcedfcc48e0b125bc6212291f78",
+      "name": "adwords_keyword",
+      "namespace": "team_1_google_analytics_a95f8dcedfcc48e0b125bc6212291f78",
       "project": 6,
       "source": "integration",
       "integration": 13,
@@ -1010,8 +1010,8 @@
     "fields": {
       "created": "2021-08-30T19:29:19.102Z",
       "updated": "2021-08-30T19:29:19.102Z",
-      "bq_table": "audience_overview",
-      "bq_dataset": "team_1_google_analytics_a95f8dcedfcc48e0b125bc6212291f78",
+      "name": "audience_overview",
+      "namespace": "team_1_google_analytics_a95f8dcedfcc48e0b125bc6212291f78",
       "project": 6,
       "source": "integration",
       "integration": 13,
@@ -1029,8 +1029,8 @@
     "fields": {
       "created": "2021-08-30T19:29:19.199Z",
       "updated": "2021-08-30T19:29:19.199Z",
-      "bq_table": "browser_and_operating_system_overview",
-      "bq_dataset": "team_1_google_analytics_a95f8dcedfcc48e0b125bc6212291f78",
+      "name": "browser_and_operating_system_overview",
+      "namespace": "team_1_google_analytics_a95f8dcedfcc48e0b125bc6212291f78",
       "project": 6,
       "source": "integration",
       "integration": 13,
@@ -1048,8 +1048,8 @@
     "fields": {
       "created": "2021-08-30T19:29:19.317Z",
       "updated": "2021-08-30T19:29:19.317Z",
-      "bq_table": "campaign_performance",
-      "bq_dataset": "team_1_google_analytics_a95f8dcedfcc48e0b125bc6212291f78",
+      "name": "campaign_performance",
+      "namespace": "team_1_google_analytics_a95f8dcedfcc48e0b125bc6212291f78",
       "project": 6,
       "source": "integration",
       "integration": 13,
@@ -1067,8 +1067,8 @@
     "fields": {
       "created": "2021-08-30T19:29:19.414Z",
       "updated": "2021-08-30T19:29:19.414Z",
-      "bq_table": "channel_traffic",
-      "bq_dataset": "team_1_google_analytics_a95f8dcedfcc48e0b125bc6212291f78",
+      "name": "channel_traffic",
+      "namespace": "team_1_google_analytics_a95f8dcedfcc48e0b125bc6212291f78",
       "project": 6,
       "source": "integration",
       "integration": 13,
@@ -1086,8 +1086,8 @@
     "fields": {
       "created": "2021-08-30T19:29:19.512Z",
       "updated": "2021-08-30T19:29:19.512Z",
-      "bq_table": "events_overview",
-      "bq_dataset": "team_1_google_analytics_a95f8dcedfcc48e0b125bc6212291f78",
+      "name": "events_overview",
+      "namespace": "team_1_google_analytics_a95f8dcedfcc48e0b125bc6212291f78",
       "project": 6,
       "source": "integration",
       "integration": 13,
@@ -1105,8 +1105,8 @@
     "fields": {
       "created": "2021-08-30T19:29:19.579Z",
       "updated": "2021-08-30T19:29:19.579Z",
-      "bq_table": "social_media_acquisitions",
-      "bq_dataset": "team_1_google_analytics_a95f8dcedfcc48e0b125bc6212291f78",
+      "name": "social_media_acquisitions",
+      "namespace": "team_1_google_analytics_a95f8dcedfcc48e0b125bc6212291f78",
       "project": 6,
       "source": "integration",
       "integration": 13,
@@ -1124,8 +1124,8 @@
     "fields": {
       "created": "2021-08-30T19:29:19.676Z",
       "updated": "2021-08-30T19:29:19.676Z",
-      "bq_table": "traffic",
-      "bq_dataset": "team_1_google_analytics_a95f8dcedfcc48e0b125bc6212291f78",
+      "name": "traffic",
+      "namespace": "team_1_google_analytics_a95f8dcedfcc48e0b125bc6212291f78",
       "project": 6,
       "source": "integration",
       "integration": 13,
@@ -1143,8 +1143,8 @@
     "fields": {
       "created": "2021-08-31T00:58:20.605Z",
       "updated": "2021-08-31T00:58:23.826Z",
-      "bq_table": "upload_000000006",
-      "bq_dataset": "cypress_team_000005_tables",
+      "name": "upload_000000006",
+      "namespace": "cypress_team_000005_tables",
       "project": 6,
       "source": "integration",
       "integration": 14,
@@ -1162,8 +1162,8 @@
     "fields": {
       "created": "2021-12-03T23:51:57.193Z",
       "updated": "2021-12-03T23:51:58.995Z",
-      "bq_table": "intermediate_node_000000031",
-      "bq_dataset": "cypress_team_000001_tables",
+      "name": "intermediate_node_000000031",
+      "namespace": "cypress_team_000001_tables",
       "project": 1,
       "source": "intermediate_node",
       "integration": null,
@@ -1181,8 +1181,8 @@
     "fields": {
       "created": "2021-12-03T23:52:56.929Z",
       "updated": "2021-12-03T23:52:58.711Z",
-      "bq_table": "output_node_000000029",
-      "bq_dataset": "cypress_team_000001_tables",
+      "name": "output_node_000000029",
+      "namespace": "cypress_team_000001_tables",
       "project": 1,
       "source": "workflow_node",
       "integration": null,
@@ -1200,8 +1200,8 @@
     "fields": {
       "created": "2021-12-03T23:55:09.737Z",
       "updated": "2021-12-03T23:55:11.723Z",
-      "bq_table": "output_node_000000035",
-      "bq_dataset": "cypress_team_000001_tables",
+      "name": "output_node_000000035",
+      "namespace": "cypress_team_000001_tables",
       "project": 1,
       "source": "workflow_node",
       "integration": null,
@@ -1219,8 +1219,8 @@
     "fields": {
       "created": "2021-12-16T01:46:43.181Z",
       "updated": "2021-12-16T01:46:45.982Z",
-      "bq_table": "customapi_000000001",
-      "bq_dataset": "cypress_team_000001_tables",
+      "name": "customapi_000000001",
+      "namespace": "cypress_team_000001_tables",
       "project": 1,
       "source": "integration",
       "integration": 15,
@@ -2867,9 +2867,7 @@
       "client_id": "766404612569-gn5hok52al6q1ob04rfmha8k4bns09me.apps.googleusercontent.com",
       "secret": "l9xbaHAi5xf4WuRji3PiTq-z",
       "key": "",
-      "sites": [
-        1
-      ]
+      "sites": [1]
     }
   },
   {
