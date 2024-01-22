@@ -78,7 +78,9 @@ def test_customapi_create(client, logged_in_user, project, bigquery, request_saf
     assertOK(r)
     assertFormRenders(r, ["name", "is_scheduled"])
 
-    r = client.post(f"{LIST}/customapis/new", data={"name": "JSON todos"})
+    r = client.post(
+        f"{LIST}/customapis/new", data={"name": "JSON todos", "is_scheduled": False}
+    )
 
     integration = project.integration_set.first()
     assert integration is not None
