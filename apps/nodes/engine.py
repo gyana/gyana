@@ -79,12 +79,12 @@ def use_intermediate_table(func):
 
         # if the table doesn't need updating we can simply return the previous computed pivot table
         if table and table.data_updated > max(tuple(get_parent_updated(node))):
-            return conn.table(table.table_name, database=table.dataset_name)
+            return conn.table(table.name, database=table.namespace)
 
         query = func(node, parent)
         table = create_or_replace_intermediate_table(node, query)
 
-        return conn.table(table.table_name, database=table.dataset_name)
+        return conn.table(table.name, database=table.namespace)
 
     return wrapper
 

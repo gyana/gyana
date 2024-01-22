@@ -204,11 +204,11 @@ class Integration(BaseModel):
 
         # none or empty string
         if not table_pk:
-            return self.table_set.order_by("table_name").first()
+            return self.table_set.order_by("name").first()
         try:
             return self.table_set.get(pk=table_pk)
         except (Table.DoesNotExist, ValueError):
-            return self.table_set.order_by("table_name").first()
+            return self.table_set.order_by("name").first()
 
     @property
     def latest_run(self):

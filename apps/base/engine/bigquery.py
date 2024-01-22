@@ -101,7 +101,7 @@ CONVERSION_ERROR = re.compile(
 def _load_table_sheet(sheet: "Sheet", table: "Table", **job_kwargs):
     client = bigquery()
 
-    external_table_id = f"{table.table_name}_external"
+    external_table_id = f"{table.name}_external"
 
     query_job = client.query(
         f"CREATE OR REPLACE TABLE {table.table_id} AS SELECT * FROM {external_table_id}",
@@ -156,12 +156,12 @@ class BigQueryClient(BaseClient):
         schema = cache.get(key)
 
         if schema is None:
-            tbl = self.client.table(table.table_name, database=table.dataset_name)
+            tbl = self.client.table(table.name, database=table.namespace)
             cache.set(key, tbl.schema(), 24 * 3600)
         else:
             tbl = TableExpr(
                 BigQueryTable(
-                    name=f"{self.gcp_project}.{table.dataset_name}.{table.table_name}",
+                    name=f"{self.gcp_project}.{table.namespace}.{table.name}",
                     schema=schema,
                     source=self.client,
                 )
@@ -184,7 +184,7 @@ class BigQueryClient(BaseClient):
         if bq_table_schema_is_string_only(self._get_bigquery_object(table.table_id)):
             # create temporary table without skipping the header row, so we can get the header names
 
-            temp_table_id = f"{table.table_name}_temp"
+            temp_table_id = f"{table.name}_temp"
 
             job_config = _create_external_table(
                 upload, temp_table_id, autodetect=True, skip_leading_rows=0
@@ -277,7 +277,7 @@ class BigQueryClient(BaseClient):
         if bq_table_schema_is_string_only(self._get_bigquery_object(table.table_id)):
             # create temporary table but skipping the header rows
 
-            temp_table_id = f"{table.table_name}_temp"
+            temp_table_id = f"{table.name}_temp"
 
             job_config = _create_external_table_sheet(
                 sheet, temp_table_id, autodetect=True, skip_leading_rows=1

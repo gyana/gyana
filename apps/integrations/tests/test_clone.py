@@ -22,7 +22,7 @@ def test_integration_upload_clone(upload_factory, integration_table_factory, big
     assert Table.objects.count() == 2
 
     clone_table = clone.table_set.first()
-    assert clone_table.table_name == clone.source_obj.table_id
+    assert clone_table.name == clone.source_obj.table_id
 
     assert bigquery.query.call_args.args[0] == COPY_QUERY.format(
         clone_table.table_id, table.table_id
@@ -39,8 +39,8 @@ def test_integration_sheet_clone(sheet_factory, integration_table_factory, bigqu
     assert Table.objects.count() == 2
 
     clone_table = clone.table_set.first()
-    assert clone_table.table_name == clone.source_obj.table_id
-    assert clone_table.dataset_name == table.dataset_name
+    assert clone_table.name == clone.source_obj.table_id
+    assert clone_table.namespace == table.namespace
     assert bigquery.query.call_args.args[0] == COPY_QUERY.format(
         clone_table.table_id, table.table_id
     )

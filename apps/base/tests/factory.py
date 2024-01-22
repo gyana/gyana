@@ -90,8 +90,8 @@ class IntegrationTableFactory(factory.django.DjangoModelFactory):
     project = factory.SubFactory(ProjectFactory)
     integration = factory.SubFactory(IntegrationFactory)
     source = Table.Source.INTEGRATION
-    table_name = "table"
-    dataset_name = "dataset"
+    name = "table"
+    namespace = "dataset"
     num_rows = 10
 
 
@@ -130,8 +130,8 @@ class WorkflowTableFactory(factory.django.DjangoModelFactory):
     project = factory.SubFactory(ProjectFactory)
     workflow_node = factory.SubFactory(NodeFactory, kind=Node.Kind.OUTPUT)
     source = Table.Source.WORKFLOW_NODE
-    table_name = "table"
-    dataset_name = "dataset"
+    name = "table"
+    namespace = "dataset"
     num_rows = 10
 
 

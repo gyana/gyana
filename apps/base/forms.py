@@ -369,7 +369,7 @@ class IntegrationSearchMixin:
                     similarity=Greatest(
                         TrigramSimilarity("integration__name", search),
                         TrigramSimilarity("workflow_node__workflow__name", search),
-                        TrigramSimilarity("table_name", search),
+                        TrigramSimilarity("name", search),
                     )
                 )
                 .filter(

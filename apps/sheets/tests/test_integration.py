@@ -77,10 +77,10 @@ def test_sheet_create(
 
     # validate the sql and external table configuration
     table = integration.table_set.first()
-    SQL = f"CREATE OR REPLACE TABLE {table.table_id} AS SELECT * FROM {table.table_name}_external"
+    SQL = f"CREATE OR REPLACE TABLE {table.table_id} AS SELECT * FROM {table.name}_external"
     assert bigquery.query.call_args.args == (SQL,)
     job_config = bigquery.query.call_args.kwargs["job_config"]
-    external_config = job_config.table_definitions[f"{table.table_name}_external"]
+    external_config = job_config.table_definitions[f"{table.name}_external"]
     assert external_config.source_uris == [SHEETS_URL]
     assert external_config.autodetect
     assert external_config.options.range == CELL_RANGE

@@ -19,7 +19,7 @@ class AvailableManager(models.Manager):
 
 class Table(BaseModel):
     class Meta:
-        unique_together = ["table_name", "dataset_name"]
+        unique_together = ["name", "namespace"]
         ordering = ("-created",)
 
     class Source(models.TextChoices):
@@ -31,8 +31,8 @@ class Table(BaseModel):
     _clone_excluded_o2o_fields = ["workflow_node", "cache_node", "intermediate_node"]
     _clone_excluded_m2o_or_o2m_fields = ["input_nodes", "exports", "widget_set"]
 
-    table_name = models.CharField(max_length=settings.BIGQUERY_TABLE_NAME_LENGTH)
-    dataset_name = models.CharField(max_length=settings.BIGQUERY_TABLE_NAME_LENGTH)
+    name = models.CharField(max_length=settings.BIGQUERY_TABLE_NAME_LENGTH)
+    namespace = models.CharField(max_length=settings.BIGQUERY_TABLE_NAME_LENGTH)
 
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
 
@@ -69,11 +69,11 @@ class Table(BaseModel):
 
     @property
     def bq_id(self):
-        return f"{self.dataset_name}.{self.table_name}"
+        return f"{self.namespace}.{self.name}"
 
     @property
     def humanize(self):
-        return self.table_name.replace("_", " ").title()
+        return self.name.replace("_", " ").title()
 
     @cached_property
     def schema(self):
@@ -87,7 +87,7 @@ class Table(BaseModel):
 
     @property
     def bq_dashboard_url(self):
-        return get_engine().get_dashboard_url(self.dataset_name, self.table_name)
+        return get_engine().get_dashboard_url(self.namespace, self.name)
 
     def sync_metadata_from_source(self):
         modified, num_rows = get_engine().get_source_metadata(self)

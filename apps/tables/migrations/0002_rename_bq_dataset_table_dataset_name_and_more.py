@@ -4,24 +4,23 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('tables', '0001_initial'),
+        ("tables", "0001_initial"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='table',
-            old_name='bq_dataset',
-            new_name='dataset_name',
+            model_name="table",
+            old_name="bq_dataset",
+            new_name="namespace",
         ),
         migrations.RenameField(
-            model_name='table',
-            old_name='bq_table',
-            new_name='table_name',
+            model_name="table",
+            old_name="bq_table",
+            new_name="name",
         ),
         migrations.AlterUniqueTogether(
-            name='table',
-            unique_together={('table_name', 'dataset_name')},
+            name="table",
+            unique_together={("name", "namespace")},
         ),
     ]
