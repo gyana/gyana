@@ -245,10 +245,6 @@ class LiveFormsetMixin:
         return {k: self.get_formset(k, v) for k, v in self.formsets.items()}
 
 
-class LiveFormsetForm(LiveFormsetMixin, BaseLiveSchemaForm):
-    pass
-
-
 INPUT_SEARCH_THRESHOLD = 0.3
 
 
