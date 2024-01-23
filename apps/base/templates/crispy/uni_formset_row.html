@@ -24,6 +24,14 @@
       input.setAttribute('checked', '')
 
       // TODO: need to handle case where hidden field is invalid
+      // in previous live_update_controller, used this logic:
+      // gya-351: deleted rows have required attributes set to false
+      // validate this works as intended
+
+      wrapper.querySelectorAll('[required]').forEach((el) => {
+        el.removeAttribute('required')
+      })
+      
       }"
     data-pw="formset-{{ formset.prefix }}-remove"
   >
