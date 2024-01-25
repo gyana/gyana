@@ -13,7 +13,6 @@ pytestmark = pytest.mark.django_db
 
 
 def test_sheet_schedule(client, logged_in_user, sheet_factory, mocker):
-
     team = logged_in_user.teams.first()
     sheet = sheet_factory(integration__project__team=team)
     project = sheet.integration.project
@@ -51,7 +50,7 @@ def test_sheet_schedule(client, logged_in_user, sheet_factory, mocker):
     # Update the timezone
     r = client.post(
         f"/teams/{team.id}/update",
-        data={"name": "Team", "timezone": "Asia/Shanghai"},
+        data={"name": "Team", "timezone": "Asia/Shanghai", "beta": False},
     )
     assertRedirects(r, f"/teams/{team.id}/update", status_code=303)
 
@@ -69,7 +68,6 @@ def test_sheet_schedule(client, logged_in_user, sheet_factory, mocker):
 
 
 def test_run_schedule_for_periodic(project_factory, sheet_factory, mocker):
-
     mocker.patch("apps.projects.tasks.run_project_task")
 
     project = project_factory()

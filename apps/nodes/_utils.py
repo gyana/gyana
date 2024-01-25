@@ -23,13 +23,13 @@ def create_or_replace_intermediate_table(node, query):
     with transaction.atomic():
         table, _ = Table.objects.get_or_create(
             source=Table.Source.INTERMEDIATE_NODE,
-            bq_table=node.bq_intermediate_table_id,
-            bq_dataset=node.workflow.project.team.tables_dataset_id,
+            name=node.bq_intermediate_table_id,
+            namespace=node.workflow.project.team.tables_dataset_id,
             project=node.workflow.project,
             intermediate_node=node,
         )
 
-        get_engine().create_or_replace_table(table.bq_id, query.compile())
+        get_engine().create_or_replace_table(table.fqn, query.compile())
 
         table.data_updated = timezone.now()
         table.save()

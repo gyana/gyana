@@ -28,8 +28,8 @@ def run_sheet_sync_task(self, run_id, skip_up_to_date=False):
         table, created = Table.objects.get_or_create(
             integration=integration,
             source=Table.Source.INTEGRATION,
-            bq_table=sheet.table_id,
-            bq_dataset=integration.project.team.tables_dataset_id,
+            name=sheet.table_id,
+            namespace=integration.project.team.tables_dataset_id,
             project=integration.project,
         )
 

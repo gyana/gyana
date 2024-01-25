@@ -6,8 +6,8 @@ from .models import Table
 
 class TableInline(admin.TabularInline):
     model = Table
-    fields = ["id", "bq_table", "bq_dataset", "bq_dashboard_url"]
-    readonly_fields = ["id", "bq_table", "bq_dataset", "bq_dashboard_url"]
+    fields = ["id", "name", "namespace", "bq_dashboard_url"]
+    readonly_fields = ["id", "name", "namespace", "bq_dashboard_url"]
     extra = 0
 
     def bq_dashboard_url(self, instance):

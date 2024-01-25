@@ -138,7 +138,7 @@ def raise_error():
 def test_default(client, setup, node_factory, mocker):
     table, workflow = setup
 
-    mocker.patch("apps.nodes.bigquery.get_query_from_node", side_effect=raise_error)
+    mocker.patch("apps.nodes.engine.get_query_from_node", side_effect=raise_error)
     select_node = create_node(table, workflow, Node.Kind.SELECT, node_factory)
     r = client.get(f"/nodes/{select_node.id}/grid")
     assertOK(r)

@@ -28,8 +28,8 @@ def run_upload_sync_task(self, run_id: int):
         table, created = Table.objects.get_or_create(
             integration=integration,
             source=Table.Source.INTEGRATION,
-            bq_table=upload.table_id,
-            bq_dataset=integration.project.team.tables_dataset_id,
+            name=upload.table_id,
+            namespace=integration.project.team.tables_dataset_id,
             project=integration.project,
         )
 

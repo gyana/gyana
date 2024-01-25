@@ -5,7 +5,7 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
 from apps.base.clients import get_engine
-from apps.nodes.bigquery import get_query_from_node
+from apps.nodes.engine import get_query_from_node
 from apps.nodes.models import Node
 from apps.projects.access import user_can_access_project
 from apps.widgets.models import Widget

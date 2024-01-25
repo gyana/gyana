@@ -30,7 +30,7 @@ def test_run_project(
     integration_table = integration_table_factory(
         project=project,
         integration__project=project,
-        bq_table="integration_table",
+        name="integration_table",
         integration__kind=Integration.Kind.SHEET,
     )
     integration = integration_table.integration
@@ -39,7 +39,7 @@ def test_run_project(
     workflow_table_1 = workflow_table_factory(
         project=project,
         workflow_node__workflow__project=project,
-        bq_table="workflow_table_1",
+        name="workflow_table_1",
     )
     workflow_1 = workflow_table_1.workflow_node.workflow
     node_factory(
@@ -49,7 +49,7 @@ def test_run_project(
     workflow_table_2 = workflow_table_factory(
         project=project,
         workflow_node__workflow__project=project,
-        bq_table="workflow_table_2",
+        name="workflow_table_2",
     )
     workflow_2 = workflow_table_2.workflow_node.workflow
     node_factory(

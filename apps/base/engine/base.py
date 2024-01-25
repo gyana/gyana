@@ -29,8 +29,8 @@ class BaseClient(ABC):
 
     def get_table(self, table: "Table"):
         return self.client.table(
-            table.bq_table,
-            schema=table.bq_dataset,
+            table.name,
+            schema=table.namespace,
         )
 
     def create_team_dataset(self, team: "Team"):
@@ -76,18 +76,18 @@ class BaseClient(ABC):
         # TODO: Potentially can use ibis client read_csv when updating ibis
         df = read_csv(upload.gcs_uri)
 
-        self._df_to_sql(df, table.bq_table, table.bq_dataset)
+        self._df_to_sql(df, table.name, table.namespace)
 
     def import_table_from_customapi(self, table: "Table", customapi: "CustomApi"):
         # TODO: Potentially can use ibis client read_json when updating ibis
         df = read_json(customapi.gcs_uri, lines=True)
 
-        self._df_to_sql(df, table.bq_table, table.bq_dataset)
+        self._df_to_sql(df, table.name, table.namespace)
 
     def import_table_from_sheet(self, table: "Table", sheet: "Sheet"):
         df = create_dataframe_from_sheet(sheet)
 
-        self._df_to_sql(df, table.bq_table, table.bq_dataset)
+        self._df_to_sql(df, table.name, table.namespace)
 
     def _df_to_sql(self, df: DataFrame, table_name: str, schema: str):
         inspector = inspect(self.raw_client)

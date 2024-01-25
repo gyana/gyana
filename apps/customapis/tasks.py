@@ -119,8 +119,8 @@ def run_customapi_sync_task(self, run_id):
         table, created = Table.objects.get_or_create(
             integration=integration,
             source=Table.Source.INTEGRATION,
-            bq_table=customapi.table_id,
-            bq_dataset=integration.project.team.tables_dataset_id,
+            name=customapi.table_id,
+            namespace=integration.project.team.tables_dataset_id,
             project=integration.project,
         )
 

@@ -32,7 +32,7 @@ def test_upload_all_string(
 
     # initial call has result with strings
     initial_call = bigquery.load_table_from_uri.call_args_list[0]
-    assert initial_call.args == (upload.gcs_uri, table.bq_id)
+    assert initial_call.args == (upload.gcs_uri, table.fqn)
     job_config = initial_call.kwargs["job_config"]
     assert job_config.source_format == "CSV"
     assert job_config.write_disposition == "WRITE_TRUNCATE"
@@ -57,7 +57,7 @@ def test_upload_all_string(
 
     # final call with explicit schema
     final_call = bigquery.load_table_from_uri.call_args_list[1]
-    assert final_call.args == (upload.gcs_uri, table.bq_id)
+    assert final_call.args == (upload.gcs_uri, table.fqn)
     job_config = final_call.kwargs["job_config"]
     assert job_config.source_format == "CSV"
     assert job_config.write_disposition == "WRITE_TRUNCATE"

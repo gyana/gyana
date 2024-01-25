@@ -8,7 +8,7 @@ from django.utils import timezone
 from apps.base.analytics import WORFKLOW_RUN_EVENT
 from apps.base.clients import get_engine
 from apps.base.core.utils import error_name_to_snake
-from apps.nodes.bigquery import NodeResultNone, get_query_from_node
+from apps.nodes.engine import NodeResultNone, get_query_from_node
 from apps.nodes.models import Node
 from apps.runs.models import JobRun
 from apps.tables.models import Table
@@ -34,12 +34,12 @@ def run_workflow_task(self, run_id: int):
             with transaction.atomic():
                 table, _ = Table.objects.get_or_create(
                     source=Table.Source.WORKFLOW_NODE,
-                    bq_table=node.bq_output_table_id,
-                    bq_dataset=workflow.project.team.tables_dataset_id,
+                    name=node.bq_output_table_id,
+                    namespace=workflow.project.team.tables_dataset_id,
                     project=workflow.project,
                     workflow_node=node,
                 )
-                get_engine().create_or_replace_table(table.bq_id, query.compile())
+                get_engine().create_or_replace_table(table.fqn, query.compile())
 
                 table.data_updated = timezone.now()
                 table.save()

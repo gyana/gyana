@@ -5,7 +5,7 @@ from dateutil.relativedelta import relativedelta
 from ibis import bigquery
 
 from apps.base.tests.mock_data import TABLE
-from apps.controls.bigquery import get_quarter, slice_query
+from apps.controls.engine import get_quarter, slice_query
 from apps.controls.models import Control, CustomChoice, DateRange
 
 QUERY = "SELECT t0.*\nFROM olympians t0\nWHERE {}"

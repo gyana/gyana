@@ -3,7 +3,7 @@ from functools import partial
 
 from django import forms
 
-from apps.base.forms import BaseSchemaForm
+from apps.base.forms import ModelForm
 from apps.base.formsets import BaseInlineFormset, RequiredInlineFormset
 from apps.columns.forms import (
     AddColumnForm,
@@ -80,11 +80,11 @@ FilterFormSet = node_formset_factory(model=Filter, form=FilterForm, min_num=1)
 SelectColumnFormSet = node_formset_factory(
     model=SecondaryColumn,
     fields=("column",),
-    form=BaseSchemaForm,
+    form=ModelForm,
 )
 
 UnpivotColumnFormSet = node_formset_factory(
-    model=Column, fields=("column",), form=BaseSchemaForm, min_num=1
+    model=Column, fields=("column",), form=ModelForm, min_num=1
 )
 
 WindowColumnFormSet = forms.inlineformset_factory(

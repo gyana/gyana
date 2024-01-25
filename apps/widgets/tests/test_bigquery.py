@@ -2,7 +2,7 @@ import pytest
 
 from apps.base.tests.mock_data import TABLE
 from apps.base.tests.mocks import mock_bq_client_with_schema
-from apps.widgets.bigquery import get_query_from_widget
+from apps.widgets.engine import get_query_from_widget
 from apps.widgets.models import NO_DIMENSION_WIDGETS, Widget
 from apps.widgets.visuals import pre_filter
 

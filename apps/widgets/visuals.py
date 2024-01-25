@@ -2,11 +2,11 @@ from typing import Any, Dict
 
 from apps.base.clients import get_engine
 from apps.base.core.table_data import get_table
-from apps.columns.bigquery import aggregate_columns, get_groups
-from apps.controls.bigquery import slice_query
-from apps.filters.bigquery import get_query_from_filters
+from apps.columns.engine import aggregate_columns, get_groups
+from apps.controls.engine import slice_query
+from apps.filters.engine import get_query_from_filters
 
-from .bigquery import get_query_from_widget
+from .engine import get_query_from_widget
 from .models import Widget
 from .plotly.chart import to_chart
 

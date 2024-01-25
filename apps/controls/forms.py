@@ -1,10 +1,10 @@
-from apps.base.forms import LiveAlpineModelForm, SchemaFormMixin
+from apps.base.forms import ModelForm
 from apps.base.widgets import DatetimeInput
 
 from .models import Control, CustomChoice
 
 
-class ControlForm(SchemaFormMixin, LiveAlpineModelForm):
+class ControlForm(ModelForm):
     class Meta:
         model = Control
         fields = ["date_range", "start", "end"]

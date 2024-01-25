@@ -2,12 +2,12 @@ from allauth.account.forms import LoginForm
 from django import forms
 from django.contrib.auth.forms import UserChangeForm
 
-from apps.base.forms import BaseModelForm
+from apps.base.forms import ModelForm
 
 from .models import CustomUser
 
 
-class UserNameForm(BaseModelForm):
+class UserNameForm(ModelForm):
     first_name = forms.CharField(
         required=True, widget=forms.TextInput(attrs={"class": "label--half"})
     )
@@ -29,7 +29,7 @@ class UserNameForm(BaseModelForm):
         instance.onboarded = True
 
 
-class UserOnboardingForm(BaseModelForm):
+class UserOnboardingForm(ModelForm):
     class Meta:
         model = CustomUser
         fields = [
@@ -67,7 +67,7 @@ class UserLoginForm(LoginForm):
         del self.fields["password"].widget.attrs["placeholder"]
 
 
-class CustomUserChangeForm(BaseModelForm, UserChangeForm):
+class CustomUserChangeForm(ModelForm, UserChangeForm):
     email = forms.EmailField(required=True, label="Email Address")
     password = forms.CharField(widget=forms.HiddenInput(), required=False)
     marketing_allowed = forms.TypedChoiceField(

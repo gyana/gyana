@@ -67,7 +67,7 @@ class IntegrationDetail(ProjectMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
-        context_data["tables"] = self.object.table_set.order_by("bq_table").all()
+        context_data["tables"] = self.object.table_set.order_by("name").all()
         table = self.object.get_table_by_pk_safe(self.request.GET.get("table_id"))
         context_data["table_id"] = table.id if table else None
 
@@ -108,9 +108,8 @@ class IntegrationSettings(ProjectMixin, UpdateView):
     def form_valid(self, form):
         with transaction.atomic():
             form.save()
-            for formset in form.get_formsets().values():
-                if formset.is_valid():
-                    formset.save()
+            for formset in self.formsets:
+                formset.save()
 
         # Ibis caches the fetched schemas of a table that could have changed
         # e.g. if cell range for sheet source has changed
@@ -118,7 +117,7 @@ class IntegrationSettings(ProjectMixin, UpdateView):
         get_engine().client.reconnect()
 
         # Do not run the integration if the only change is scheduling
-        if not form.has_changed() or form.changed_data == ["is_scheduled"]:
+        if not form.has_changed() or not self.object.is_scheduled:
             return redirect(
                 reverse(
                     "project_integrations:settings",
@@ -179,9 +178,8 @@ class IntegrationConfigure(ProjectMixin, UpdateView):
         # don't assign the result to self.object
         with transaction.atomic():
             form.save()
-            for formset in form.get_formsets().values():
-                if formset.is_valid():
-                    formset.save()
+            for formset in self.formsets:
+                formset.save()
 
         run_integration(self.object.kind, self.object.source_obj, self.request.user)
         analytics.track(
@@ -259,7 +257,7 @@ class IntegrationDone(ProjectMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)
-        context_data["tables"] = self.object.table_set.order_by("bq_table").all()
+        context_data["tables"] = self.object.table_set.order_by("name").all()
 
         team = self.project.team
         team.update_row_count()

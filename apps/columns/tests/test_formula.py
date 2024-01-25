@@ -2,7 +2,7 @@ import pytest
 from ibis import bigquery
 
 from apps.base.tests.mock_data import TABLE
-from apps.columns.bigquery import compile_formula
+from apps.columns.engine import compile_formula
 from apps.columns.transformer import FUNCTIONS
 
 UNNAMED_QUERY = "SELECT {} AS `tmp`\nFROM olympians t0"

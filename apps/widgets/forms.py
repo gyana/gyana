@@ -7,15 +7,10 @@ from ibis.expr.datatypes import Date, Time, Timestamp
 from apps.base.core.utils import create_column_choices
 from apps.base.crispy import CrispyFormset
 from apps.base.fields import ColorField
-from apps.base.forms import (
-    BaseModelForm,
-    IntegrationSearchMixin,
-    LiveAlpineModelForm,
-    LiveFormsetMixin,
-    SchemaFormMixin,
-)
+from apps.base.forms import ModelForm
 from apps.base.widgets import Datalist, SelectWithDisable, SourceSelect
 from apps.dashboards.widgets import PaletteColorsField
+from apps.tables.forms import IntegrationSearchMixin
 
 from .formsets import (
     AggregationColumnFormset,
@@ -34,7 +29,7 @@ from .formsets import (
 from .models import CATEGORIES, DEFAULT_HEIGHT, DEFAULT_WIDTH, Widget
 
 
-class WidgetCreateForm(BaseModelForm):
+class WidgetCreateForm(ModelForm):
     class Meta:
         model = Widget
         fields = ["kind", "x", "y", "page"]
@@ -76,7 +71,7 @@ class WidgetCreateForm(BaseModelForm):
         return value
 
 
-class WidgetSourceForm(IntegrationSearchMixin, BaseModelForm):
+class WidgetSourceForm(IntegrationSearchMixin, ModelForm):
     search = forms.CharField(required=False)
 
     class Meta:
@@ -112,7 +107,7 @@ def disable_non_time(schema):
     }
 
 
-class GenericWidgetForm(LiveFormsetMixin, SchemaFormMixin, LiveAlpineModelForm):
+class GenericWidgetForm(ModelForm):
     dimension = forms.ChoiceField(choices=())
     second_dimension = forms.ChoiceField(choices=())
     sort_column = forms.ChoiceField(choices=(), required=False)
@@ -266,7 +261,7 @@ class GenericWidgetForm(LiveFormsetMixin, SchemaFormMixin, LiveAlpineModelForm):
         return {}
 
 
-class TextWidgetForm(LiveFormsetMixin, BaseModelForm):
+class TextWidgetForm(ModelForm):
     class Meta:
         model = Widget
         fields = ["text_content"]
@@ -279,7 +274,7 @@ class TextWidgetForm(LiveFormsetMixin, BaseModelForm):
         super().__init__(*args, **kwargs)
 
 
-class IframeWidgetForm(LiveFormsetMixin, BaseModelForm):
+class IframeWidgetForm(ModelForm):
     url = forms.URLField(
         label="Embed URL",
         widget=forms.URLInput(
@@ -301,7 +296,7 @@ class IframeWidgetForm(LiveFormsetMixin, BaseModelForm):
         super().__init__(*args, **kwargs)
 
 
-class ImageWidgetForm(LiveFormsetMixin, BaseModelForm):
+class ImageWidgetForm(ModelForm):
     class Meta:
         model = Widget
         fields = [
@@ -324,7 +319,7 @@ FORMS = {
 }
 
 
-class WidgetDuplicateForm(BaseModelForm):
+class WidgetDuplicateForm(ModelForm):
     class Meta:
         model = Widget
         fields = ()
@@ -348,7 +343,7 @@ class StyleMixin:
         return super().get_initial_for_field(field, field_name)
 
 
-class DefaultStyleForm(StyleMixin, BaseModelForm):
+class DefaultStyleForm(StyleMixin, ModelForm):
     palette_colors = PaletteColorsField(required=False)
     background_color = ColorField(required=False, initial="#ffffff")
 
@@ -368,7 +363,7 @@ class DefaultStyleForm(StyleMixin, BaseModelForm):
     ignore_live_update_fields = ["currency"]
 
 
-class TableStyleForm(StyleMixin, BaseModelForm):
+class TableStyleForm(StyleMixin, ModelForm):
     background_color = ColorField(required=False, initial="#ffffff")
 
     class Meta:
@@ -381,7 +376,7 @@ class TableStyleForm(StyleMixin, BaseModelForm):
         ]
 
 
-class MetricStyleForm(StyleMixin, BaseModelForm):
+class MetricStyleForm(StyleMixin, ModelForm):
     background_color = ColorField(required=False, initial="#ffffff")
 
     metric_header_font_size = forms.IntegerField(
@@ -434,7 +429,7 @@ class MetricStyleForm(StyleMixin, BaseModelForm):
         ]
 
 
-class GaugeStyleForm(StyleMixin, BaseModelForm):
+class GaugeStyleForm(StyleMixin, ModelForm):
     background_color = ColorField(required=False, initial="#ffffff")
     first_segment_color = ColorField(required=False, initial="#e30303")
     second_segment_color = ColorField(required=False, initial="#f38e4f")

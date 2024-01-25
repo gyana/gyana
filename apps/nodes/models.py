@@ -189,8 +189,7 @@ class Node(DirtyFieldsMixin, BaseModel):
 
     @cached_property
     def schema(self):
-
-        from .bigquery import get_query_from_node
+        from .engine import get_query_from_node
 
         query = get_query_from_node(self)
         return query.schema()
@@ -205,7 +204,7 @@ class Node(DirtyFieldsMixin, BaseModel):
 
     @property
     def has_enough_parents(self):
-        from apps.nodes.bigquery import NODE_FROM_CONFIG, get_arity_from_node_func
+        from apps.nodes.engine import NODE_FROM_CONFIG, get_arity_from_node_func
 
         func = NODE_FROM_CONFIG[self.kind]
         min_arity, _ = get_arity_from_node_func(func)

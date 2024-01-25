@@ -157,8 +157,8 @@ def test_duplicate_simple_project(
     integration = integration_factory(project=project, kind="upload")
     upload = upload_factory(integration=integration)
     table = integration.table_set.create(
-        bq_dataset="project.dataset",
-        bq_table=upload.table_id,
+        namespace="project.dataset",
+        name=upload.table_id,
         project=project,
         source=Table.Source.INTEGRATION,
     )
@@ -170,9 +170,9 @@ def test_duplicate_simple_project(
     output_table = Table(
         workflow_node=output_node,
         source=Table.Source.WORKFLOW_NODE,
-        bq_dataset="project.dataset",
+        namespace="project.dataset",
         project=project,
-        bq_table=output_node.bq_output_table_id,
+        name=output_node.bq_output_table_id,
     )
     output_table.save()
 
@@ -193,8 +193,8 @@ def test_duplicate_simple_project(
     assert duplicate.dashboard_set.first().pages.first().widgets.count() == 1
 
     duplicate_table = duplicate.integration_set.first().table_set.first()
-    assert duplicate_table.bq_dataset == table.bq_dataset
-    assert duplicate_table.bq_table == duplicate_table.integration.upload.table_id
+    assert duplicate_table.namespace == table.namespace
+    assert duplicate_table.name == duplicate_table.integration.upload.table_id
 
     # Test dependencies have been replaced correctly
     duplicate_nodes = Node.objects.filter(workflow__project=duplicate)
@@ -210,11 +210,11 @@ def test_duplicate_simple_project(
     assert bigquery.query.call_count == 2
     call_queries = [arg.args[0] for arg in bigquery.query.call_args_list]
     assert (
-        f"CREATE OR REPLACE TABLE {duplicate_table.bq_id} as (SELECT * FROM {table.bq_id})"
+        f"CREATE OR REPLACE TABLE {duplicate_table.fqn} as (SELECT * FROM {table.fqn})"
         in call_queries
     )
     assert (
-        f"CREATE OR REPLACE TABLE {duplicate_output_node.table.bq_id} as (SELECT * FROM {output_node.table.bq_id})"
+        f"CREATE OR REPLACE TABLE {duplicate_output_node.table.fqn} as (SELECT * FROM {output_node.table.fqn})"
         in call_queries
     )
 

@@ -55,7 +55,7 @@ def _load_table(upload: "Upload", table: "Table", client, **job_kwargs):
     )
 
     load_job = client.load_table_from_uri(
-        upload.gcs_uri, table.bq_id, job_config=job_config
+        upload.gcs_uri, table.fqn, job_config=job_config
     )
 
     if load_job.exception():
@@ -101,10 +101,10 @@ CONVERSION_ERROR = re.compile(
 def _load_table_sheet(sheet: "Sheet", table: "Table", **job_kwargs):
     client = bigquery()
 
-    external_table_id = f"{table.bq_table}_external"
+    external_table_id = f"{table.name}_external"
 
     query_job = client.query(
-        f"CREATE OR REPLACE TABLE {table.bq_id} AS SELECT * FROM {external_table_id}",
+        f"CREATE OR REPLACE TABLE {table.fqn} AS SELECT * FROM {external_table_id}",
         job_config=_create_external_table_sheet(sheet, external_table_id, **job_kwargs),
     )
 
@@ -156,12 +156,12 @@ class BigQueryClient(BaseClient):
         schema = cache.get(key)
 
         if schema is None:
-            tbl = self.client.table(table.bq_table, database=table.bq_dataset)
+            tbl = self.client.table(table.name, database=table.namespace)
             cache.set(key, tbl.schema(), 24 * 3600)
         else:
             tbl = TableExpr(
                 BigQueryTable(
-                    name=f"{self.gcp_project}.{table.bq_dataset}.{table.bq_table}",
+                    name=f"{self.gcp_project}.{table.namespace}.{table.name}",
                     schema=schema,
                     source=self.client,
                 )
@@ -169,8 +169,8 @@ class BigQueryClient(BaseClient):
 
         return tbl
 
-    def _get_bigquery_object(self, bq_id):
-        return bigquery().get_table(bq_id)
+    def _get_bigquery_object(self, fqn):
+        return bigquery().get_table(fqn)
 
     def import_table_from_upload(self, table: "Table", upload: "Upload"):
         client = bigquery()
@@ -181,10 +181,10 @@ class BigQueryClient(BaseClient):
         # the recommended approach for cost is to reload into bigquery rather than updating names
         # https://cloud.google.com/bigquery/docs/manually-changing-schemas#option_2_exporting_your_data_and_loading_it_into_a_new_table
 
-        if bq_table_schema_is_string_only(self._get_bigquery_object(table.bq_id)):
+        if bq_table_schema_is_string_only(self._get_bigquery_object(table.fqn)):
             # create temporary table without skipping the header row, so we can get the header names
 
-            temp_table_id = f"{table.bq_table}_temp"
+            temp_table_id = f"{table.name}_temp"
 
             job_config = _create_external_table(
                 upload, temp_table_id, autodetect=True, skip_leading_rows=0
@@ -192,7 +192,7 @@ class BigQueryClient(BaseClient):
 
             # bigquery does not guarantee the order of rows
             header_query = client.query(
-                f"select * from (select * from {temp_table_id} except distinct select * from {table.bq_id}) limit 1",
+                f"select * from (select * from {temp_table_id} except distinct select * from {table.fqn}) limit 1",
                 job_config=job_config,
             )
 
@@ -244,7 +244,7 @@ class BigQueryClient(BaseClient):
         )
 
         load_job = client.load_table_from_uri(
-            customapi.gcs_uri, table.bq_id, job_config=job_config
+            customapi.gcs_uri, table.fqn, job_config=job_config
         )
 
         if load_job.exception():
@@ -254,10 +254,10 @@ class BigQueryClient(BaseClient):
         return bigquery().delete_table(table_id, not_found_ok=True)
 
     def get_table_size(self, table: "Table"):
-        return self._get_bigquery_object(table.bq_id).num_rows
+        return self._get_bigquery_object(table.fqn).num_rows
 
     def get_source_metadata(self, table: "Table"):
-        bq_obj = self._get_bigquery_object(table.bq_id)
+        bq_obj = self._get_bigquery_object(table.fqn)
         return bq_obj.modified, bq_obj.num_rows
 
     def import_table_from_sheet(self, table: "Table", sheet: "Sheet"):
@@ -274,10 +274,10 @@ class BigQueryClient(BaseClient):
 
         # see apps/uploads/bigquery.py for motivation
 
-        if bq_table_schema_is_string_only(self._get_bigquery_object(table.bq_id)):
+        if bq_table_schema_is_string_only(self._get_bigquery_object(table.fqn)):
             # create temporary table but skipping the header rows
 
-            temp_table_id = f"{table.bq_table}_temp"
+            temp_table_id = f"{table.name}_temp"
 
             job_config = _create_external_table_sheet(
                 sheet, temp_table_id, autodetect=True, skip_leading_rows=1
@@ -286,7 +286,7 @@ class BigQueryClient(BaseClient):
             # bigquery does not guarantee the order of rows
 
             header_query = client.query(
-                f"select * from (select * from {table.bq_id} except distinct select * from {temp_table_id}) limit 1",
+                f"select * from (select * from {table.fqn} except distinct select * from {temp_table_id}) limit 1",
                 job_config=job_config,
             )
 

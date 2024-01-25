@@ -1,7 +1,7 @@
 import ibis
 from ibis.expr import datatypes as idt
 
-from apps.columns.bigquery import PART_MAP, aggregate_columns
+from apps.columns.engine import PART_MAP, aggregate_columns
 from apps.widgets.models import NO_DIMENSION_WIDGETS, Widget
 
 
@@ -24,7 +24,6 @@ def _sort(query, widget):
 
 
 def get_query_from_widget(widget: Widget, query):
-
     aggregations = widget.aggregations.all()
 
     if widget.category == Widget.Category.COMBO:

@@ -6,7 +6,7 @@ from typing import List
 from dateutil.relativedelta import relativedelta
 from ibis.expr.types import TimestampValue
 
-from apps.controls.bigquery import DATETIME_FILTERS
+from apps.controls.engine import DATETIME_FILTERS
 from apps.filters.models import PREDICATE_MAP, Filter
 
 

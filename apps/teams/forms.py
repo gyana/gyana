@@ -6,7 +6,7 @@ from django.utils.safestring import mark_safe
 
 from apps.base.analytics import TEAM_CREATED_EVENT, identify_user_group
 from apps.base.fields import ColorField, ColorInput
-from apps.base.forms import BaseModelForm
+from apps.base.forms import ModelForm
 from apps.base.templatetags.help_utils import INTERCOM_ROOT, get_intercom
 from apps.teams import roles
 
@@ -26,7 +26,7 @@ class TeamSignupForm(SignupForm):
         self.fields["password1"].help_text = "Must have at least 6 characters"
 
 
-class TeamCreateForm(BaseModelForm):
+class TeamCreateForm(ModelForm):
     class Meta:
         model = Team
         fields = ("name",)
@@ -44,7 +44,7 @@ class TeamCreateForm(BaseModelForm):
         identify_user_group(self._user, instance)
 
 
-class TeamUpdateForm(BaseModelForm):
+class TeamUpdateForm(ModelForm):
     class Meta:
         model = Team
         fields = ("icon", "name", "color", "timezone")
@@ -84,7 +84,7 @@ class TeamUpdateForm(BaseModelForm):
         Flag.set_beta_program_for_team(instance, self.cleaned_data["beta"])
 
 
-class MembershipUpdateForm(BaseModelForm):
+class MembershipUpdateForm(ModelForm):
     class Meta:
         model = Membership
         fields = ("role",)

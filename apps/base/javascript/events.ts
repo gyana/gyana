@@ -3,5 +3,4 @@ export const GyanaEvents = {
   UPDATE_WORKFLOW: 'gyana:update-workflow',
   UPDATE_NODE: 'gyana:update-node',
   UPDATE_NODE_NAME: 'gyana:update-node-name',
-  UPDATE_FORM_COUNT: 'gyana:update-form-count',
 }

@@ -13,7 +13,7 @@ from apps.base import engine
 from apps.base.clients import get_engine
 from apps.base.core.utils import error_name_to_snake
 from apps.base.engine import bigquery as bq
-from apps.columns.bigquery import (
+from apps.columns.engine import (
     aggregate_columns,
     compile_formula,
     compile_function,
@@ -21,7 +21,7 @@ from apps.columns.bigquery import (
     get_aggregate_expr,
     get_groups,
 )
-from apps.filters.bigquery import get_query_from_filters
+from apps.filters.engine import get_query_from_filters
 from apps.nodes.exceptions import ColumnNamesDontMatch, JoinTypeError, NodeResultNone
 from apps.nodes.models import Node
 
@@ -79,12 +79,12 @@ def use_intermediate_table(func):
 
         # if the table doesn't need updating we can simply return the previous computed pivot table
         if table and table.data_updated > max(tuple(get_parent_updated(node))):
-            return conn.table(table.bq_table, database=table.bq_dataset)
+            return conn.table(table.name, database=table.namespace)
 
         query = func(node, parent)
         table = create_or_replace_intermediate_table(node, query)
 
-        return conn.table(table.bq_table, database=table.bq_dataset)
+        return conn.table(table.name, database=table.namespace)
 
     return wrapper
 

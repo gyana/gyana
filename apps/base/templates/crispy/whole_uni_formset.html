@@ -39,3 +39,52 @@
     <i class="far fa-fw fa-plus"></i> Add new
   </button>
 </div>
+
+{% comment %} 
+TODO: sorting implementation, taken from original formset_controller.js
+
+// In the backend, include a sort_index field on formset model
+
+// Everytime a form is moved all forms a renumbered in the new order
+// Elements are sorted by big integers, in reverse numeric order, with the final element
+// at "0". This enables the backend to add new elements without knowing about
+// the other elements.
+
+// Dynamically add and remove formset in Django
+// Inspired by https://github.com/stimulus-components/stimulus-rails-nested-form
+
+import Sortable from 'sortablejs'
+
+// Init code to add grab and handle Sortable re-ordering callback
+
+this.wrapperSelector = this.wrapperSelectorValue || '.formset-wrapper'
+
+if (this.element.querySelectorAll('input[name*=sort_index]').length) {
+  Array.from(this.element.querySelectorAll(this.wrapperSelector)).forEach(
+    (el) => el.classList.add('formset-wrapper--grab')
+  )
+}
+
+this.sortable = Sortable.create(this.targetTarget, {
+  filter: '.CodeMirror',
+  preventOnFilter: false,
+  onEnd: (event) => {
+    const sortIndexInputs = Array.from(
+      this.element.querySelectorAll('input[name*=sort_index]')
+    )
+
+    const numInputs = sortIndexInputs.length
+
+    for (const [idx, el] of sortIndexInputs.entries()) {
+      el.value = numInputs - idx
+    }
+  },
+})
+
+// Add
+
+for (const el of this.element.querySelectorAll('input[name*=sort_index]')) {
+  el.value = (BigInt(el.value) + 1n).toString()
+}
+
+{% endcomment %}
