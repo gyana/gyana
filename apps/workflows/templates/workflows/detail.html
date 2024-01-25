@@ -41,6 +41,16 @@
       </template>
     </div>
 
+    {% comment %} {% include "components/modal.html" %} {% endcomment %}
+
+    <button
+      class="button button--sm button--tertiary"
+      x-tooltip="View historical runs and enable scheduling"
+      x-modal="{% url "project_workflows:settings" project.id object.id %}"
+    >
+      <i class="fas fa-fw fa-cog"></i> Settings & History (x-modal)
+    </button>
+
     <button
       class="button button--sm button--tertiary"
       x-tooltip="View historical runs and enable scheduling"
