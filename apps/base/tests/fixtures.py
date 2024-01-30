@@ -144,6 +144,31 @@ def project(project_factory, logged_in_user):
     return project_factory(team=logged_in_user.teams.first())
 
 
+import pytest
+from django.http import HttpResponse
+from django.urls import get_resolver, path
+
+
 @pytest.fixture
-def pwf(page):
-    return PlaywrightForm(page)
+def dynamic_view(client, settings):
+    original_urlconf = get_resolver(settings.ROOT_URLCONF).url_patterns
+
+    def _dynamic_view(html_content):
+        def view_func(request):
+            return HttpResponse(html_content)
+
+        temporary_urls = [
+            path("test-dynamic-view/", view_func, name="test-dynamic-view"),
+        ]
+
+        get_resolver(settings.ROOT_URLCONF).url_patterns = temporary_urls
+        return "test-dynamic-view/"
+
+    yield _dynamic_view
+
+    get_resolver(settings.ROOT_URLCONF).url_patterns = original_urlconf
+
+
+@pytest.fixture
+def pwf(page, dynamic_view, live_server):
+    return PlaywrightForm(page, dynamic_view, live_server)
