@@ -1,38 +1,9 @@
-const modal_t = /*html*/ `<div class="tf-modal">
-  <div class="card card--none card--modal">
-    <div class="overflow-hidden flex-1"
-      hx-get="__expression__"
-      hx-trigger="load"
-      hx-target="this"
-    >
-      <div class="placeholder-scr placeholder-scr--fillscreen">
-        <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-2x"></i>
-      </div>
-    </div>
-  </div>
-</div>`
-
-const warning_t = /*html*/ `<div class="tf-modal flex items-center justify-center">
-  <div class="card card--sm card--inline flex flex-col">
-    <h3>Be careful!</h3>
-    <p class="mb-7">You have unsaved changes that will be lost on closing!</p>
-    <div class="flex flex-row gap-7">
-      <button class="button button--success button--sm flex-1" @click="$dispatch('modal:stay')">
-        Stay
-      </button>
-      <button class="button button--danger button--outline button--sm flex-1" @click="$dispatch('modal:close')">
-        Close Anyway
-      </button>
-    </div>
-  </div>
-</div>`
-
-const html_to_element = (html) => {
-  const template = document.createElement('template')
-  template.innerHTML = html.trim()
-  return template.content.firstChild as HTMLElement
-}
-
+/**
+ * Modal for rendering HTMX partials including forms.
+ *
+ * @example
+ * <button x-modal="{% url '__url__' % }">Settings</button>
+ */
 export default (el, { modifiers, expression }, { cleanup }) => {
   let changed = false
 
@@ -110,65 +81,41 @@ export default (el, { modifiers, expression }, { cleanup }) => {
   cleanup(() => {
     // TODO: remove event listener, if necessary
   })
+}
 
-  // const modal = document.querySelector('#modal')
-  // const hx_modal = modal?.querySelector('#hx-modal')
+const modal_t = /*html*/ `<div class="tf-modal">
+  <div class="card card--none card--modal">
+    <div class="overflow-hidden flex-1"
+      hx-get="__expression__"
+      hx-trigger="load"
+      hx-target="this"
+    >
+      <div class="placeholder-scr placeholder-scr--fillscreen">
+        <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-2x"></i>
+      </div>
+    </div>
+  </div>
+</div>`
 
-  // if (modal && hx_modal) {
-  //   // HTMX removes the placeholder every time, we need to add it to indicate
-  //   // a loading state.
-  //   hx_modal.innerHTML = `
-  //     <div class='placeholder-scr placeholder-scr--fillscreen'>
-  //       <i class='placeholder-scr__icon fad fa-spinner-third fa-spin fa-2x'></i>
-  //     </div>
-  //   `
+const warning_t = /*html*/ `<div class="tf-modal flex items-center justify-center">
+  <div class="card card--sm card--inline flex flex-col">
+    <h3>Be careful!</h3>
+    <p class="mb-7">You have unsaved changes that will be lost on closing!</p>
+    <div class="flex flex-row gap-7">
+      <button class="button button--success button--sm flex-1" @click="$dispatch('modal:stay')">
+        Stay
+      </button>
+      <button class="button button--danger button--outline button--sm flex-1" @click="$dispatch('modal:close')">
+        Close Anyway
+      </button>
+    </div>
+  </div>
+</div>`
 
-  //   const modal = `<div class="tf-modal">
-  //     <div class="card card--none card--modal">
-  //       <div class="overflow-hidden flex-1"
-  //         hx-get="${expression}"
-  //         hx-target="this"
-  //       >
-  //         <div class="placeholder-scr placeholder-scr--fillscreen">
-  //           <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-2x"></i>
-  //         </div>
-  //       </div>
-  //     </div>
-  //   </div>`
-
-  //   hx_modal.setAttribute('hx-get', expression)
-
-  //   // // TODO: decide whether we need this option
-  //   // if (event.currentTarget.dataset.modalTarget) {
-  //   //   hx_modal.setAttribute('target', event.currentTarget.dataset.modalTarget)
-  //   // }
-
-  //   // // TODO: move the modal classes into the fetched template
-
-  //   // modal.className = 'tf-modal'
-  //   // if (event.currentTarget.dataset.modalClasses) {
-  //   //   modal.classList.add(
-  //   //     ...event.currentTarget.dataset.modalClasses.split(' ')
-  //   //   )
-  //   // }
-
-  //   // // TODO: add modal persistence by parsing expression via regex for int
-  //   // if (event.currentTarget.dataset.modalItem) {
-  //   //   const params = new URLSearchParams(location.search)
-  //   //   params.set('modal_item', event.currentTarget.dataset.modalItem)
-  //   //   history.replaceState(
-  //   //     {},
-  //   //     '',
-  //   //     `${location.pathname}?${params.toString()}`
-  //   //   )
-  //   // }
-
-  //   modal.removeAttribute('hidden')
-
-  //   // TODO: do we need both of these
-  //   htmx.process(hx_modal)
-  //   hx_modal.dispatchEvent(new CustomEvent('hx-modal-load'))
-  // }
+const html_to_element = (html) => {
+  const template = document.createElement('template')
+  template.innerHTML = html.trim()
+  return template.content.firstChild as HTMLElement
 }
 
 function parseLastIntegerFromURL(url) {
