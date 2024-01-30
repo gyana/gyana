@@ -1,77 +1,71 @@
-/**
- * Simple Tippy.js stimulus wrapper.
- *
- * @example
- * <p x-modal="{% ...url... %}"/>
- *
- * @example
- * <p x-modal.persist="{% ...url... %}"/>
- */
+const modal_t = /*html*/ `<div class="tf-modal">
+  <div class="card card--none card--modal">
+    <div class="overflow-hidden flex-1"
+      hx-get="__expression__"
+      hx-trigger="load"
+      hx-target="this"
+    >
+      <div class="placeholder-scr placeholder-scr--fillscreen">
+        <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-2x"></i>
+      </div>
+    </div>
+  </div>
+</div>`
+
+const warning_t = /*html*/ `<div class="tf-modal flex items-center justify-center">
+  <div class="card card--sm card--inline flex flex-col">
+    <h3>Be careful!</h3>
+    <p class="mb-7">You have unsaved changes that will be lost on closing!</p>
+    <div class="flex flex-row gap-7">
+      <button class="button button--success button--sm flex-1" @click="$dispatch('modal:stay')">
+        Stay
+      </button>
+      <button class="button button--danger button--outline button--sm flex-1" @click="$dispatch('modal:close')">
+        Close Anyway
+      </button>
+    </div>
+  </div>
+</div>`
+
+const html_to_element = (html) => {
+  const template = document.createElement('template')
+  template.innerHTML = html.trim()
+  return template.content.firstChild as HTMLElement
+}
+
 export default (el, { modifiers, expression }, { cleanup }) => {
   let changed = false
 
-  el.addEventListener('click', (event) => {
-    const modal = document.createElement('div')
-    modal.setAttribute('class', 'tf-modal')
-
-    modal.innerHTML = `<div class="card card--none card--modal">
-        <div class="overflow-hidden flex-1"
-          hx-get="${expression}"
-          hx-trigger="load"
-          hx-target="this"
-        >
-          <div class="placeholder-scr placeholder-scr--fillscreen">
-            <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-2x"></i>
-          </div>
-        </div>
-      </div>`
+  const open = () => {
+    const modal = html_to_element(modal_t.replace('__expression__', expression))
 
     el.insertAdjacentElement('afterend', modal)
     // register HTMX attributes on the modal
     htmx.process(modal)
 
-    const close = () => {
-      if (changed) {
-        const warning = document.createElement('div')
-        warning.setAttribute(
-          'class',
-          'tf-modal flex items-center justify-center'
-        )
-        warning.innerHTML = `<div class="card card--sm card--inline flex flex-col">
-          <h3>Be careful!</h3>
-          <p class="mb-7">You have unsaved changes that will be lost on closing!</p>
-          <div class="flex flex-row gap-7">
-            <button class="button button--success button--sm flex-1">
-              Stay
-            </button>
-            <button class="button button--danger button--outline button--sm flex-1">
-              Close Anyway
-            </button>
-          </div>
-        </div>`
-
-        warning.addEventListener('click', (event) => {
-          if (event.target.classList.contains('button--success')) {
-            warning.remove()
-          }
-          if (event.target.classList.contains('button--danger')) {
-            warning.remove()
-            modal.remove()
-          }
-        })
-
-        modal.insertAdjacentElement('afterend', warning)
-      } else {
-        modal.remove()
-      }
-    }
-
+    // handle clicks outside of the modal or cross button
     modal?.addEventListener('click', (event) => {
       if (
         event.target === event.currentTarget ||
         event.target.closest('button').classList.contains('tf-modal__close')
       ) {
-        close()
+        // modal closing warning if content has changed
+        if (changed) {
+          const warning = html_to_element(warning_t)
+
+          warning.addEventListener('modal:close', () => {
+            warning.remove()
+            modal.remove()
+          })
+
+          warning.addEventListener('modal:stay', () => {
+            warning.remove()
+          })
+
+          modal.insertAdjacentElement('afterend', warning)
+        } else {
+          modal.remove()
+        }
       }
     })
 
@@ -79,6 +73,7 @@ export default (el, { modifiers, expression }, { cleanup }) => {
       changed = true
     })
 
+    // close the modal if there is a successful POST request to the x-modal URL
     modal.addEventListener('htmx:afterRequest', (event) => {
       const { requestConfig, xhr } = event.detail
 
@@ -87,9 +82,29 @@ export default (el, { modifiers, expression }, { cleanup }) => {
         requestConfig.path === expression &&
         requestConfig.verb === 'post'
       ) {
-        close()
+        modal.remove()
       }
     })
+
+    // handle persistence
+    if (modifiers.includes('persist')) {
+      const params = new URLSearchParams(location.search)
+      const modalItem = parseLastIntegerFromURL(expression)
+      params.set('modal_item', modalItem)
+      history.replaceState({}, '', `${location.pathname}?${params.toString()}`)
+    }
+  }
+
+  if (modifiers.includes('persist')) {
+    const params = new URLSearchParams(location.search)
+    const modalItem = parseInt(params.get('modal_item'))
+    if (parseLastIntegerFromURL(expression) == modalItem) {
+      open()
+    }
+  }
+
+  el.addEventListener('click', (event) => {
+    open()
   })
 
   cleanup(() => {
@@ -154,4 +169,15 @@ export default (el, { modifiers, expression }, { cleanup }) => {
   //   htmx.process(hx_modal)
   //   hx_modal.dispatchEvent(new CustomEvent('hx-modal-load'))
   // }
+}
+
+function parseLastIntegerFromURL(url) {
+  const numbers = url.match(/\d+/g)
+
+  if (numbers && numbers.length > 0) {
+    const lastNumber = numbers[numbers.length - 1]
+    return parseInt(lastNumber, 10)
+  }
+
+  return null
 }
