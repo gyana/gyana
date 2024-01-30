@@ -8,7 +8,7 @@ export default (el, { modifiers, expression }, { cleanup }) => {
   let changed = false
 
   const open = () => {
-    const modal = html_to_element(modal_t.replace('__expression__', expression))
+    const modal = htmlToElement(modal_t.replace('__expression__', expression))
 
     el.insertAdjacentElement('afterend', modal)
     // register HTMX attributes on the modal
@@ -22,16 +22,14 @@ export default (el, { modifiers, expression }, { cleanup }) => {
       ) {
         // modal closing warning if content has changed
         if (changed) {
-          const warning = html_to_element(warning_t)
+          const warning = htmlToElement(warning_t)
 
           warning.addEventListener('modal:close', () => {
             warning.remove()
             modal.remove()
           })
 
-          warning.addEventListener('modal:stay', () => {
-            warning.remove()
-          })
+          warning.addEventListener('modal:stay', () => warning.remove())
 
           modal.insertAdjacentElement('afterend', warning)
         } else {
@@ -57,26 +55,23 @@ export default (el, { modifiers, expression }, { cleanup }) => {
       }
     })
 
-    // handle persistence
+    // persistence - update URL with modal id
     if (modifiers.includes('persist')) {
       const params = new URLSearchParams(location.search)
-      const modalItem = parseLastIntegerFromURL(expression)
-      params.set('modal_item', modalItem)
+      params.set('modal_item', parseModalId(expression))
       history.replaceState({}, '', `${location.pathname}?${params.toString()}`)
     }
   }
 
+  // persistence - open modal if URL contains modal id
   if (modifiers.includes('persist')) {
     const params = new URLSearchParams(location.search)
-    const modalItem = parseInt(params.get('modal_item'))
-    if (parseLastIntegerFromURL(expression) == modalItem) {
+    if (parseModalId(expression) == parseInt(params.get('modal_item'))) {
       open()
     }
   }
 
-  el.addEventListener('click', (event) => {
-    open()
-  })
+  el.addEventListener('click', () => open())
 
   cleanup(() => {
     // TODO: remove event listener, if necessary
@@ -112,13 +107,13 @@ const warning_t = /*html*/ `<div class="tf-modal flex items-center justify-cente
   </div>
 </div>`
 
-const html_to_element = (html) => {
+const htmlToElement = (html) => {
   const template = document.createElement('template')
   template.innerHTML = html.trim()
   return template.content.firstChild as HTMLElement
 }
 
-function parseLastIntegerFromURL(url) {
+function parseModalId(url) {
   const numbers = url.match(/\d+/g)
 
   if (numbers && numbers.length > 0) {
