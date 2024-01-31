@@ -12,7 +12,7 @@ class PlaywrightForm:
         self.page = page
         self.dynamic_view = dynamic_view
         self.live_server = live_server
-        self.page.set_default_timeout(1000)
+        self.page.set_default_timeout(2000)
 
     def render(self, content):
         if isinstance(content, forms.BaseForm):

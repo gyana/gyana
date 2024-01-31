@@ -1,4 +1,8 @@
+import pytest
+
 from apps.controls.forms import ControlForm
+
+pytestmark = pytest.mark.django_db
 
 
 def test_control_form(pwf):

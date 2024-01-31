@@ -151,7 +151,8 @@ from django.urls import get_resolver, path
 
 @pytest.fixture
 def dynamic_view(client, settings):
-    original_urlconf = get_resolver(settings.ROOT_URLCONF).url_patterns
+    url_patterns = get_resolver(settings.ROOT_URLCONF).url_patterns
+    original_urlconf_len = len(url_patterns)
 
     def _dynamic_view(html_content):
         def view_func(request):
@@ -161,14 +162,33 @@ def dynamic_view(client, settings):
             path("test-dynamic-view/", view_func, name="test-dynamic-view"),
         ]
 
-        get_resolver(settings.ROOT_URLCONF).url_patterns = temporary_urls
+        get_resolver(settings.ROOT_URLCONF).url_patterns += temporary_urls
         return "test-dynamic-view/"
 
     yield _dynamic_view
 
-    get_resolver(settings.ROOT_URLCONF).url_patterns = original_urlconf
+    get_resolver(settings.ROOT_URLCONF).url_patterns = url_patterns[
+        :original_urlconf_len
+    ]
+
+
+import os
+from pytest_django import live_server_helper
+
+
+@pytest.fixture(scope="session")
+def live_server_js(request: pytest.FixtureRequest):
+    addr = (
+        request.config.getvalue("liveserver")
+        or os.getenv("DJANGO_LIVE_TEST_SERVER_ADDRESS")
+        or "localhost"
+    )
+
+    server = live_server_helper.LiveServer(addr)
+    yield server
+    server.stop()
 
 
 @pytest.fixture
-def pwf(page, dynamic_view, live_server):
-    return PlaywrightForm(page, dynamic_view, live_server)
+def pwf(page, dynamic_view, live_server_js):
+    return PlaywrightForm(page, dynamic_view, live_server_js)
