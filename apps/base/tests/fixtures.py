@@ -150,17 +150,21 @@ from django.urls import get_resolver, path
 
 
 @pytest.fixture
-def dynamic_view(client, settings):
+def dynamic_view(settings):
     url_patterns = get_resolver(settings.ROOT_URLCONF).url_patterns
     original_urlconf_len = len(url_patterns)
 
-    def _dynamic_view(html_content):
-        def view_func(request):
-            return HttpResponse(html_content)
+    def _dynamic_view(content):
+        if isinstance(content, str):
 
-        temporary_urls = [
-            path("test-dynamic-view/", view_func, name="test-dynamic-view"),
-        ]
+            def view_func(request):
+                return HttpResponse(content)
+
+            temporary_urls = [
+                path("test-dynamic-view", view_func, name="test-dynamic-view"),
+            ]
+        else:
+            temporary_urls = content
 
         get_resolver(settings.ROOT_URLCONF).url_patterns += temporary_urls
         return "test-dynamic-view/"
