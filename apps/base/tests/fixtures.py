@@ -175,6 +175,8 @@ def dynamic_view(settings):
     ]
 
 
+# duplicate of pytest_django live_server but using SimpleTestCase instead of TransactionTestCase
+# search for "live_server" (with quotes) in pytest_django to understand why this works
 @pytest.fixture(scope="session")
 def live_server_js(request: pytest.FixtureRequest):
     addr = (
