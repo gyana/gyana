@@ -1,10 +1,14 @@
+import os
 from unittest.mock import MagicMock
 
 import ibis.expr.schema as sch
 import pytest
 import waffle
 from django.db import connection
+from django.http import HttpResponse
+from django.urls import get_resolver, path
 from django.utils import timezone
+from pytest_django import live_server_helper
 from waffle.templatetags import waffle_tags
 
 from apps.base import clients
@@ -144,11 +148,6 @@ def project(project_factory, logged_in_user):
     return project_factory(team=logged_in_user.teams.first())
 
 
-import pytest
-from django.http import HttpResponse
-from django.urls import get_resolver, path
-
-
 @pytest.fixture
 def dynamic_view(settings):
     url_patterns = get_resolver(settings.ROOT_URLCONF).url_patterns
@@ -174,10 +173,6 @@ def dynamic_view(settings):
     get_resolver(settings.ROOT_URLCONF).url_patterns = url_patterns[
         :original_urlconf_len
     ]
-
-
-import os
-from pytest_django import live_server_helper
 
 
 @pytest.fixture(scope="session")
