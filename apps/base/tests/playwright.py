@@ -25,7 +25,7 @@ class PlaywrightForm:
                 {"content": content.decode("utf-8"), "ibis_store": ibis_store},
             )
         dynamic_url = self.dynamic_view(html)
-        self.page.goto(self.live_server.url + dynamic_url)
+        self.page.goto(self.live_server.url + "/" + dynamic_url)
 
     def select_value(self, name, value):
         self.page.select_option(f"select[name={name}]", value)
