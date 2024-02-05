@@ -16,11 +16,11 @@ class FormMixin:
     """Mixin for handling form validation. Ensures response
     has 422 status on invalid and 303 on success"""
 
-    def form_invalid(self, form):
-        return self.render_to_response(
-            self.get_context_data(form=form),
-            status=http.HTTPStatus.UNPROCESSABLE_ENTITY,
-        )
+    # def form_invalid(self, form):
+    #     return self.render_to_response(
+    #         self.get_context_data(form=form),
+    #         status=http.HTTPStatus.UNPROCESSABLE_ENTITY,
+    #     )
 
     def form_valid(self, form):
         super().form_valid(form)  # type: ignore

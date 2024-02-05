@@ -6,6 +6,7 @@
  */
 export default (el, { modifiers, expression }, { cleanup }) => {
   let changed = false
+  let is_preview = false
 
   const sizes = ['tall', 'wide', 'full']
   const classes = modifiers.filter((m) => sizes.includes(m)).map(m => `tf-modal--${m}`).join(' ')
@@ -14,8 +15,6 @@ export default (el, { modifiers, expression }, { cleanup }) => {
     const modal = htmlToElement(
       modal_t.replace('__hx_get__', expression).replace('__class__', classes)
       )
-
-    console.log(modal)
 
     document.body.insertAdjacentElement('beforeend', modal)
     // register HTMX attributes on the modal
@@ -56,7 +55,8 @@ export default (el, { modifiers, expression }, { cleanup }) => {
       if (
         [200, 201].includes(xhr.status) &&
         requestConfig.path === expression &&
-        requestConfig.verb === 'post'
+        requestConfig.verb === 'post' &&
+        !is_preview
       ) {
         modal.remove()
 
@@ -64,6 +64,10 @@ export default (el, { modifiers, expression }, { cleanup }) => {
           location.reload()
         }
       }
+    })
+
+    modal.addEventListener('submit', (event) => {
+      is_preview = event.submitter.value === 'Save & Preview'
     })
 
     // persistence - update URL with modal id

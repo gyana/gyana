@@ -5,6 +5,8 @@ from django.urls import path
 from playwright.sync_api import expect
 from django.template import Template, RequestContext
 
+from apps.base.views import HttpResponseSeeOther
+
 pytestmark = pytest.mark.django_db
 
 
@@ -26,13 +28,17 @@ def _template_view(template, name):
             form = TestForm(request.POST)
 
             if form.is_valid():
-                return HttpResponse("OK")
+                return HttpResponseSeeOther("/modal")
 
-        else:
-            form = TestForm()
+            return HttpResponse(
+                Template(template).render(RequestContext(request, {"form": form})),
+                status=422,
+            )
+
+        form = TestForm()
 
         return HttpResponse(
-            Template(template).render(RequestContext(request, {"form": form}))
+            Template(template).render(RequestContext(request, {"form": form})),
         )
 
     return path(name, _view, name=name)
@@ -48,11 +54,12 @@ _modal_template = """{% extends "web/base.html" %}{% block body %}
         <form hx-post="/modal">
             {% csrf_token %}
             {{ form }}
-            <button id="modal-submit" type="submit">Submit</button>
+            <button id="modal-submit" value="Save" type="submit">Save</button>
+            <button id="modal-preview" value="Save & Preview" type="submit">Save & Preview</button>
         </div>
         <form hx-post="/misc">
             {% csrf_token %}
-            <button id="misc-submit" type="submit">Submit</button>
+            <button id="misc-submit" type="submit">Misc</button>
         </div>
     </div>
 {% endblock %}
@@ -124,13 +131,20 @@ def test_modal_post(dynamic_view, live_server_js, page):
     expect(page.locator("#modal")).to_be_attached()
 
     # do not close if form is invalid
-    page.locator("#modal-submit").click()
     page.locator("input[name=name]").fill("invalid")
+    page.locator("#modal-submit").click()
+    expect(page.get_by_text("Invalid name")).to_be_attached()
+    expect(page.locator("#modal")).to_be_attached()
+
+    # do not close if preview
+    page.locator("input[name=name]").fill("valid")
+    page.locator("#modal-preview").click()
+    expect(page.get_by_text("Invalid name")).not_to_be_attached()
     expect(page.locator("#modal")).to_be_attached()
 
     # close on POST to x-modal URL
-    page.locator("#modal-submit").click()
     page.locator("input[name=name]").fill("valid")
+    page.locator("#modal-submit").click()
     expect(page.locator("#modal")).not_to_be_attached()
 
 

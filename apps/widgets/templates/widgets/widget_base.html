@@ -125,19 +125,20 @@ preview mode.
                 <button
                   class="widget-card__button"
                   x-tooltip="Edit"
-                  data-action="click->tf-modal#open"
+                  x-modal.persist{% if object.kind not in "iframe,image" %}.full{% endif %}="{% url "dashboard_widgets:update" project.id dashboard.id object.pk %}"
+                  {% comment %} data-action="click->tf-modal#open" {% endcomment %}
                   id="widget-update-{{ object.id }}"
-                  data-modal-item="{{ object.id }}"
-                  data-modal-src="{% url "dashboard_widgets:update" project.id dashboard.id object.pk %}"
-                  data-modal-id="widget-modal"
-                  {% if request.GET.modal_item == object.id|stringformat:"i" %}
+                  {% comment %} data-modal-item="{{ object.id }}" {% endcomment %}
+                  {% comment %} data-modal-src="{% url "dashboard_widgets:update" project.id dashboard.id object.pk %}" {% endcomment %}
+                  {% comment %} data-modal-id="widget-modal" {% endcomment %}
+                  {% comment %} {% if request.GET.modal_item == object.id|stringformat:"i" %}
                     data-tf-modal-target="onParam"
                   {% endif %}
                   {% if object.kind in "iframe,image" %}
                     data-modal-classes="tf-modal--auto"
                   {% else %}
                     data-modal-classes="tf-modal--full"
-                  {% endif %}
+                  {% endif %} {% endcomment %}
                 >
                   <i class="fas fa-fw fa-edit"></i>
                 </button>
