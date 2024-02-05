@@ -59,6 +59,10 @@ export default (el, { modifiers, expression }, { cleanup }) => {
         requestConfig.verb === 'post'
       ) {
         modal.remove()
+
+        if (modifiers.includes('reload')) {
+          location.reload()
+        }
       }
     })
 
