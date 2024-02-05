@@ -1,51 +1,126 @@
+from django import forms
 import pytest
 from django.http import HttpResponse
 from django.urls import path
 from playwright.sync_api import expect
+from django.template import Template, RequestContext
 
 pytestmark = pytest.mark.django_db
 
-from django.template import Template, RequestContext
+
+class TestForm(forms.Form):
+    name = forms.CharField(required=True)
+
+    def clean_name(self):
+        name = self.cleaned_data["name"]
+
+        if name == "invalid":
+            raise forms.ValidationError("Invalid name")
+
+        return name
 
 
 def _template_view(template, name):
     def _view(request):
-        return HttpResponse(Template(template).render(RequestContext(request, {})))
+        if request.method == "POST":
+            form = TestForm(request.POST)
+
+            if form.is_valid():
+                return HttpResponse("OK")
+
+        else:
+            form = TestForm()
+
+        return HttpResponse(
+            Template(template).render(RequestContext(request, {"form": form}))
+        )
 
     return path(name, _view, name=name)
 
 
 _base_template = """{% extends "web/base.html" %}{% block body %}
-    <button x-data x-modal="/get">Click me</button>
+    <button x-data x-modal="/modal">Click me</button>
 {% endblock %}"""
 
-_get_template = """{% extends "web/base.html" %}{% block body %}
-    <div id="get">
+_modal_template = """{% extends "web/base.html" %}{% block body %}
+    <div id="modal">
         <button class="tf-modal__close"/><i class="fal fa-times fa-lg"></i></button>
-        <form method="post" action="/post">
-            <button type="submit">Submit</button>
+        <form hx-post="/modal">
+            {% csrf_token %}
+            {{ form }}
+            <button id="modal-submit" type="submit">Submit</button>
+        </div>
+        <form hx-post="/misc">
+            {% csrf_token %}
+            <button id="misc-submit" type="submit">Submit</button>
         </div>
     </div>
 {% endblock %}
 """
 
-_post_template = """{% extends "web/base.html" %}{% block body %}
-    TBD
-{% endblock %}
-"""
+_persist_template = """{% extends "web/base.html" %}{% block body %}
+    <button x-data x-modal.persist="/modal/10">Click me</button>
+{% endblock %}"""
+
+_misc_template = """Ignore me"""
 
 
 def test_modal_basic(dynamic_view, live_server_js, page):
     temporary_urls = [
         _template_view(_base_template, "base"),
-        _template_view(_get_template, "get"),
+        _template_view(_modal_template, "modal"),
+        _template_view(_misc_template, "misc"),
     ]
     dynamic_view(temporary_urls)
 
     page.goto(live_server_js.url + "/base")
 
+    # open the modal
     page.locator("button").click()
-    expect(page.locator("#get")).to_be_attached()
+    expect(page.locator("#modal")).to_be_attached()
 
+    # close with cross
     page.locator(".tf-modal__close").click()
-    expect(page.locator("#get")).not_to_be_attached()
+    expect(page.locator("#modal")).not_to_be_attached()
+
+    # close by clicking outside
+    page.locator("button").click()
+    page.locator(".tf-modal").click(position={"x": 5, "y": 5})
+    expect(page.locator("#modal")).not_to_be_attached()
+
+    # do not close on POST to another URL
+    page.locator("button").click()
+    page.locator("#misc-submit").click()
+    expect(page.locator("#modal")).to_be_attached()
+
+    # do not close if form is invalid
+    page.locator("#modal-submit").click()
+    page.locator("input[name=name]").fill("invalid")
+    expect(page.locator("#modal")).to_be_attached()
+
+    # close on POST to x-modal URL
+    page.locator("#modal-submit").click()
+    page.locator("input[name=name]").fill("valid")
+    expect(page.locator("#modal")).not_to_be_attached()
+
+
+def test_modal_persist(dynamic_view, live_server_js, page):
+    temporary_urls = [
+        _template_view(_persist_template, "persist"),
+        _template_view(_modal_template, "modal/10"),
+    ]
+
+    dynamic_view(temporary_urls)
+
+    page.goto(live_server_js.url + "/persist")
+
+    # open the modal
+    page.locator("button").click()
+    expect(page.locator("#modal")).to_be_attached()
+
+    # check that URL is updated
+    assert page.url == live_server_js.url + "/persist?modal_item=10"
+
+    # refresh the page and check modal is still open
+    page.reload()
+    expect(page.locator("#modal")).to_be_attached()
