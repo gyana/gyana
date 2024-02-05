@@ -126,19 +126,6 @@ preview mode.
                   class="widget-card__button"
                   x-tooltip="Edit"
                   x-modal.persist{% if object.kind not in "iframe,image" %}.full{% endif %}="{% url "dashboard_widgets:update" project.id dashboard.id object.pk %}"
-                  {% comment %} data-action="click->tf-modal#open" {% endcomment %}
-                  id="widget-update-{{ object.id }}"
-                  {% comment %} data-modal-item="{{ object.id }}" {% endcomment %}
-                  {% comment %} data-modal-src="{% url "dashboard_widgets:update" project.id dashboard.id object.pk %}" {% endcomment %}
-                  {% comment %} data-modal-id="widget-modal" {% endcomment %}
-                  {% comment %} {% if request.GET.modal_item == object.id|stringformat:"i" %}
-                    data-tf-modal-target="onParam"
-                  {% endif %}
-                  {% if object.kind in "iframe,image" %}
-                    data-modal-classes="tf-modal--auto"
-                  {% else %}
-                    data-modal-classes="tf-modal--full"
-                  {% endif %} {% endcomment %}
                 >
                   <i class="fas fa-fw fa-edit"></i>
                 </button>
@@ -147,13 +134,8 @@ preview mode.
               {% if object.kind != "text" and object.kind != "iframe" and object.kind != "image" %}
                 <button
                   class="widget-card__button"
-                  data-action="click->tf-modal#open"
-                  id="widget-update-{{ object.id }}"
-                  data-modal-item="{{ object.id }}"
-                  data-modal-src="{% url "dashboard_widgets:update" project.id dashboard.id object.pk %}?tab=style"
-                  data-modal-id="widget-modal"
-                  data-modal-classes="tf-modal--full"
                   x-tooltip="Change style"
+                  x-modal.persist.full="{% url "dashboard_widgets:update" project.id dashboard.id object.pk %}?tab=style"
                 >
                   <i class="fas fa-fw fa-paint-brush"></i>
                 </button>
