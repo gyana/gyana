@@ -16,7 +16,10 @@ export default (el, { modifiers, expression }, { cleanup }) => {
       modal_t.replace('__hx_get__', expression).replace('__class__', classes)
       )
 
-    document.body.insertAdjacentElement('beforeend', modal)
+    // todo: decide how to handle persistance logic for tabs (i.e. widgets)
+    // for now, this is a constraint to avoid duplicate modals
+    document.getElementById('modal').replaceChildren(modal)
+    
     // register HTMX attributes on the modal
     htmx.process(modal)
 
