@@ -7,10 +7,17 @@
 export default (el, { modifiers, expression }, { cleanup }) => {
   let changed = false
 
-  const open = () => {
-    const modal = htmlToElement(modal_t.replace('__expression__', expression))
+  const sizes = ['tall', 'wide', 'full']
+  const classes = modifiers.filter((m) => sizes.includes(m)).map(m => `tf-modal--${m}`).join(' ')
 
-    el.insertAdjacentElement('afterend', modal)
+  const open = () => {
+    const modal = htmlToElement(
+      modal_t.replace('__hx_get__', expression).replace('__class__', classes)
+      )
+
+    console.log(modal)
+
+    document.body.insertAdjacentElement('beforeend', modal)
     // register HTMX attributes on the modal
     htmx.process(modal)
 
@@ -71,17 +78,18 @@ export default (el, { modifiers, expression }, { cleanup }) => {
     }
   }
 
-  el.addEventListener('click', () => open())
+  el.addEventListener('click', open)
 
   cleanup(() => {
     // TODO: remove event listener, if necessary
+    el.removeEventListener('click', open)
   })
 }
 
-const modal_t = /*html*/ `<div class="tf-modal">
+const modal_t = /*html*/ `<div class="tf-modal __class__">
   <div class="card card--none card--modal">
     <div class="overflow-hidden flex-1"
-      hx-get="__expression__"
+      hx-get="__hx_get__"
       hx-trigger="load"
       hx-target="this"
     >

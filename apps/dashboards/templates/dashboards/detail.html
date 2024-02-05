@@ -91,10 +91,7 @@
 
           {% flag 'beta' %}
             <button
-              data-action="click->tf-modal#open"
-              data-modal-id="dashboard:history"
-              data-modal-classes="tf-modal--auto tf-modal--wide tf-modal--tall"
-              data-modal-src="{% url "project_dashboards:history" project.id object.id %}?category=general"
+              x-modal.wide.tall="{% url "project_dashboards:history" project.id object.id %}?category=general"
               class="list__item list__item--interactive w-full"
             >
               <span class='beta mr-4'>History</span>
