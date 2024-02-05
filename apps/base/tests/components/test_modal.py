@@ -65,11 +65,10 @@ _persist_template = """{% extends "web/base.html" %}{% block body %}
 _misc_template = """Ignore me"""
 
 
-def test_modal_basic(dynamic_view, live_server_js, page):
+def test_modal_open_close(dynamic_view, live_server_js, page):
     temporary_urls = [
         _template_view(_base_template, "base"),
         _template_view(_modal_template, "modal"),
-        _template_view(_misc_template, "misc"),
     ]
     dynamic_view(temporary_urls)
 
@@ -87,6 +86,37 @@ def test_modal_basic(dynamic_view, live_server_js, page):
     page.locator("button").click()
     page.locator(".tf-modal").click(position={"x": 5, "y": 5})
     expect(page.locator("#modal")).not_to_be_attached()
+
+    warning = page.get_by_text("You have unsaved changes that will be lost on closing")
+
+    # warning modal
+    page.locator("button").click()
+    page.locator("input[name=name]").fill("valid")
+    page.locator(".tf-modal__close").click()
+    expect(warning).to_be_attached()
+
+    # stay
+    page.get_by_text("Stay").click()
+    expect(warning).not_to_be_attached()
+    expect(page.locator("#modal")).to_be_attached()
+
+    # close anyway
+    page.locator(".tf-modal__close").click()
+    expect(warning).to_be_attached()
+    page.get_by_text("Close Anyway").click()
+    expect(warning).not_to_be_attached()
+    expect(page.locator("#modal")).not_to_be_attached()
+
+
+def test_modal_post(dynamic_view, live_server_js, page):
+    temporary_urls = [
+        _template_view(_base_template, "base"),
+        _template_view(_modal_template, "modal"),
+        _template_view(_misc_template, "misc"),
+    ]
+    dynamic_view(temporary_urls)
+
+    page.goto(live_server_js.url + "/base")
 
     # do not close on POST to another URL
     page.locator("button").click()
