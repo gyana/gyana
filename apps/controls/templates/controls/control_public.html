@@ -45,20 +45,11 @@
       <button
         class="widget-card__button"
         x-tooltip="Edit"
-        data-action="click->tf-modal#open"
-        id="widget-update-{{ control.id }}"
-        data-modal-item="{{ control.id }}"
-        data-modal-src="
-          {% if is_public %}
-            {% url 'dashboard_controls:update-public' project.id dashboard.id control.id %}
-          {% else %}
-            {% url 'dashboard_controls:update-widget' project.id dashboard.id control.id %}?mode={{ request.GET.mode }}
-          {% endif %}"
-        data-modal-id="controls:update-widget"
-        {% if request.GET.modal_item == control.id|stringformat:"i" %}
-          data-tf-modal-target="onParam"
+        {% if is_public %}
+          x-modal="{% url 'dashboard_controls:update-public' project.id dashboard.id control.id %}"
+        {% else %}
+          x-modal="{% url 'dashboard_controls:update-widget' project.id dashboard.id control.id %}?mode={{ request.GET.mode }}"
         {% endif %}
-        data-modal-classes="tf-modal--auto"
       >
         <i class="fas fa-fw fa-edit"></i>
       </button>

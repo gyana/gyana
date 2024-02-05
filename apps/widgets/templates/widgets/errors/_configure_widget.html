@@ -5,10 +5,7 @@
     data-cy="widget-configure"
     data-action="click->tf-modal#open"
     class='link'
-    data-modal-id="widget-modal"
-    data-modal-src="{% url "dashboard_widgets:update" project.id dashboard.id widget.id %}"
-    data-modal-item="{{ widget.id }}"
-    data-modal-classes="tf-modal--full"
+    x-modal.full.persist="{% url "dashboard_widgets:update" project.id dashboard.id widget.id %}"
   >
     configured
   </button>
