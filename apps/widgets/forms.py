@@ -9,7 +9,7 @@ from apps.base.core.utils import create_column_choices
 from apps.base.crispy import CrispyFormset, Tab
 from apps.base.fields import ColorField
 from apps.base.forms import ModelForm
-from apps.base.widgets import Datalist, SelectWithDisable, SourceSelect
+from apps.base.widgets import Datalist, SelectWithDisable, SourceSelectv2
 from apps.dashboards.widgets import PaletteColorsField
 from apps.tables.forms import IntegrationSearchMixin
 
@@ -78,7 +78,7 @@ class WidgetSourceForm(IntegrationSearchMixin, ModelForm):
     class Meta:
         model = Widget
         fields = ["table"]
-        widgets = {"table": SourceSelect(parent="dashboard")}
+        widgets = {"table": SourceSelectv2(parent="dashboard")}
 
     def __init__(self, *args, **kwargs):
         project = kwargs.pop("project", None)
@@ -143,7 +143,7 @@ class GenericWidgetForm(IntegrationSearchMixin, ModelForm):
             "controls": ControlFormset,
             "filters": FilterFormset,
         }
-        widgets = {"table": SourceSelect(parent="dashboard")}
+        widgets = {"table": SourceSelectv2(parent="dashboard")}
 
         K = Widget.Kind
 
@@ -189,8 +189,7 @@ class GenericWidgetForm(IntegrationSearchMixin, ModelForm):
             "controls": "date_column !== null",
         }
 
-        effect = """//js
-const schema_json = JSON.parse((await SiteJS.base.Api.getApiClient().action(window.schema, ['tables', 'api', 'tables', 'read'], { id: table })).schema_json)
+        effect = """const schema_json = JSON.parse((await SiteJS.base.Api.getApiClient().action(window.schema, ['tables', 'api', 'tables', 'read'], { id: table })).schema_json)
 const columns = Object.keys(schema_json).map(k => ({label: k, value: k}))
 schema = schema_json; choices.dimension = columns; choices.second_dimension = columns; choices.sort_column = columns;
 """

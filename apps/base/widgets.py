@@ -16,7 +16,6 @@ class SelectWithDisable(Select):
         self.disabled = disabled
 
     def get_context(self, name, value, attrs):
-
         context = super().get_context(name, value, attrs)
         for _, optgroup, __ in context["widget"]["optgroups"]:
             for option in optgroup:
@@ -91,6 +90,34 @@ class MultiSelect(ChoiceWidget):
 
 class SourceSelect(ChoiceWidget):
     template_name = "django/forms/widgets/source_select.html"
+
+    def __init__(self, attrs=None, choices=(), parent="workflow") -> None:
+        super().__init__(attrs, choices)
+        self.parent = parent
+
+    def get_context(self, name, value, attrs):
+        context = super().get_context(name, value, attrs)
+
+        context["widget"]["options"] = [
+            {
+                "icon": ICONS[option.source],
+                "id": option.id,
+                "image": option.integration.icon if option.integration else None,
+                "outOfDate": option.out_of_date,
+                "label": option.owner_name,
+                "usedIn": option.is_used_in,
+            }
+            for option in self.choices.queryset
+        ]
+
+        context["widget"]["selected"] = value
+        context["widget"]["name"] = name
+        context["parent"] = self.parent
+        return context
+
+
+class SourceSelectv2(ChoiceWidget):
+    template_name = "django/forms/widgets/source_select_v2.html"
 
     def __init__(self, attrs=None, choices=(), parent="workflow") -> None:
         super().__init__(attrs, choices)

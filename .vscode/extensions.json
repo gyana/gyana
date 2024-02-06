@@ -10,7 +10,6 @@
     "batisteo.vscode-django",
     "bradlc.vscode-tailwindcss",
     "pcbowers.alpine-intellisense",
-    "jkillian.custom-local-formatters",
-    "stevenallenking.python-string-syntax-highlight"
+    "jkillian.custom-local-formatters"
   ]
 }
