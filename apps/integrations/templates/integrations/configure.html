@@ -23,7 +23,9 @@
 
             {% csrf_token %}
 
-            {% crispy form %}
+            <div class="card card--none w-full">
+              {% crispy form %}
+            </div>
 
             <button type="submit" name="submit" value="submit" class="button button--success">
               Import

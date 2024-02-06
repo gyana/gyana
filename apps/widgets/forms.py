@@ -72,32 +72,50 @@ class WidgetCreateForm(ModelForm):
         return value
 
 
-class WidgetSourceForm(IntegrationSearchMixin, ModelForm):
-    search = forms.CharField(required=False)
+# class WidgetSourceForm(IntegrationSearchMixin, ModelForm):
+#     search = forms.CharField(required=False)
 
-    class Meta:
-        model = Widget
-        fields = ["table"]
-        widgets = {"table": SourceSelectv2(parent="dashboard")}
+#     class Meta:
+#         model = Widget
+#         fields = ["table"]
+#         widgets = {"table": SourceSelectv2(parent="dashboard")}
 
-    def __init__(self, *args, **kwargs):
-        project = kwargs.pop("project", None)
+#     def __init__(self, *args, **kwargs):
+#         project = kwargs.pop("project", None)
 
-        super().__init__(*args, **kwargs)
-        self.order_fields(["search", "table"])
-        self.fields["search"].widget.attrs["data-action"] = "input->tf-modal#search"
+#         super().__init__(*args, **kwargs)
+#         self.order_fields(["search", "table"])
+#         self.fields["search"].widget.attrs["data-action"] = "input->tf-modal#search"
 
-        # Re-focus the search bar when there is a value
-        if self.data.get("search"):
-            self.fields["search"].widget.attrs["autofocus"] = ""
+#         # Re-focus the search bar when there is a value
+#         if self.data.get("search"):
+#             self.fields["search"].widget.attrs["autofocus"] = ""
 
-        if project:
-            self.search_queryset(
-                self.fields["table"],
-                project,
-                self.instance.table,
-                self.instance.page.dashboard.input_tables_fk,
-            )
+#         if project:
+#             self.search_queryset(
+#                 self.fields["table"],
+#                 project,
+#                 self.instance.table,
+#                 self.instance.page.dashboard.input_tables_fk,
+#             )
+
+
+class StyleMixin:
+    def get_initial_for_field(self, field, field_name):
+        if self.initial.get(field_name) != None and hasattr(self.instance, field_name):
+            return self.initial.get(field_name)
+
+        # Field has no value but dashboard has set a value.
+        if hasattr(self.instance.page.dashboard, f"widget_{field_name}"):
+            return getattr(self.instance.page.dashboard, f"widget_{field_name}")
+
+        if hasattr(self.instance.page.dashboard, field_name):
+            return getattr(self.instance.page.dashboard, field_name)
+
+        if field.initial:
+            return field.initial
+
+        return super().get_initial_for_field(field, field_name)
 
 
 def disable_non_time(schema):
@@ -108,15 +126,77 @@ def disable_non_time(schema):
     }
 
 
-class GenericWidgetForm(IntegrationSearchMixin, ModelForm):
+K = Widget.Kind
+
+
+def is_kind(*args):
+    if len(args) == 1:
+        return f"kind === '{args[0]}'"
+    return f"{[str(k) for k in args]}.includes(kind)"
+
+
+def is_not_kind(*args):
+    if len(args) == 1:
+        return f"kind !== '{args[0]}'"
+    return f"!{[str(k) for k in args]}.includes(kind)"
+
+
+class GenericWidgetForm(StyleMixin, IntegrationSearchMixin, ModelForm):
     dimension = forms.ChoiceField(choices=())
     second_dimension = forms.ChoiceField(choices=())
     sort_column = forms.ChoiceField(choices=(), required=False)
 
+    palette_colors = PaletteColorsField(required=False)
+    background_color = ColorField(required=False, initial="#ffffff")
+
+    metric_header_font_size = forms.IntegerField(
+        required=False,
+        initial=16,
+        widget=forms.NumberInput(
+            attrs={"class": "label--half", "unit_suffix": "pixels"}
+        ),
+    )
+    metric_header_font_color = forms.CharField(
+        required=False,
+        initial="#6a6b77",
+        widget=forms.TextInput(attrs={"class": "label--half", "type": "color"}),
+    )
+    metric_font_size = forms.IntegerField(
+        required=False,
+        initial=60,
+        widget=forms.NumberInput(
+            attrs={"class": "label--half", "unit_suffix": "pixels"}
+        ),
+    )
+    metric_font_color = forms.CharField(
+        required=False,
+        initial="#242733",
+        widget=forms.TextInput(attrs={"class": "label--half", "type": "color"}),
+    )
+    metric_comparison_font_size = forms.IntegerField(
+        required=False,
+        initial=30,
+        widget=forms.NumberInput(
+            attrs={"class": "label--half", "unit_suffix": "pixels"}
+        ),
+    )
+    metric_comparison_font_color = forms.CharField(
+        required=False,
+        initial="#6a6b77",
+        widget=forms.TextInput(attrs={"class": "label--half", "type": "color"}),
+    )
+
+    first_segment_color = ColorField(required=False, initial="#e30303")
+    second_segment_color = ColorField(required=False, initial="#f38e4f")
+    third_segment_color = ColorField(required=False, initial="#facc15")
+    fourth_segment_color = ColorField(required=False, initial="#0db145")
+
     class Meta:
         model = Widget
         fields = [
+            # source
             "table",
+            # setup
             "kind",
             "dimension",
             "part",
@@ -128,6 +208,27 @@ class GenericWidgetForm(IntegrationSearchMixin, ModelForm):
             "show_summary_row",
             "compare_previous_period",
             "positive_decrease",
+            # style
+            "palette_colors",
+            "background_color",
+            "show_tooltips",
+            "font_size",
+            "currency",
+            "table_show_header",
+            "table_hide_data_type",
+            "table_paginate_by",
+            "metric_header_font_size",
+            "metric_header_font_color",
+            "metric_font_size",
+            "metric_font_color",
+            "metric_comparison_font_size",
+            "metric_comparison_font_color",
+            "lower_limit",
+            "upper_limit",
+            "first_segment_color",
+            "second_segment_color",
+            "third_segment_color",
+            "fourth_segment_color",
         ]
         formsets = {
             "default_metrics": AggregationColumnFormset,
@@ -143,21 +244,13 @@ class GenericWidgetForm(IntegrationSearchMixin, ModelForm):
             "controls": ControlFormset,
             "filters": FilterFormset,
         }
-        widgets = {"table": SourceSelectv2(parent="dashboard")}
-
-        K = Widget.Kind
-
-        def is_kind(*args):
-            if len(args) == 1:
-                return f"kind === '{args[0]}'"
-            return f"{[str(k) for k in args]}.includes(kind)"
-
-        def is_not_kind(*args):
-            if len(args) == 1:
-                return f"kind !== '{args[0]}'"
-            return f"!{[str(k) for k in args]}.includes(kind)"
+        widgets = {
+            "table": SourceSelectv2(parent="dashboard"),
+            "currency": Datalist(),
+        }
 
         show = {
+            # setup
             "dimension": is_not_kind(K.METRIC, K.TABLE, K.COMBO),
             # TODO: custom form for datetime parts, possibly with a multi-widget
             "part": "dimension !== null && ['Date', 'Timestamp'].includes(schema[dimension])",
@@ -187,6 +280,26 @@ class GenericWidgetForm(IntegrationSearchMixin, ModelForm):
             "dimensions": is_kind(K.TABLE),
             "metrics": is_kind(K.TABLE),
             "controls": "date_column !== null",
+            # syle
+            "palette_colors": is_not_kind(K.TABLE, K.METRIC, K.GAUGE),
+            "show_tooltips": is_not_kind(K.TABLE, K.METRIC),
+            "font_size": is_not_kind(K.TABLE, K.METRIC, K.GAUGE),
+            "currency": is_kind(K.TABLE, K.METRIC),
+            "table_show_header": is_kind(K.TABLE),
+            "table_hide_data_type": is_kind(K.TABLE),
+            "table_paginate_by": is_kind(K.TABLE),
+            "metric_header_font_size": is_kind(K.METRIC),
+            "metric_header_font_color": is_kind(K.METRIC),
+            "metric_font_size": is_kind(K.METRIC),
+            "metric_font_color": is_kind(K.METRIC),
+            "metric_comparison_font_size": is_kind(K.METRIC),
+            "metric_comparison_font_color": is_kind(K.METRIC),
+            "lower_limit": is_kind(K.GAUGE),
+            "upper_limit": is_kind(K.GAUGE),
+            "first_segment_color": is_kind(K.GAUGE),
+            "second_segment_color": is_kind(K.GAUGE),
+            "third_segment_color": is_kind(K.GAUGE),
+            "fourth_segment_color": is_kind(K.GAUGE),
         }
 
         effect = """const schema_json = JSON.parse((await SiteJS.base.Api.getApiClient().action(window.schema, ['tables', 'api', 'tables', 'read'], { id: table })).schema_json)
@@ -273,6 +386,29 @@ schema = schema_json; choices.dimension = columns; choices.second_dimension = co
                     CrispyFormset("controls", "Controls"),
                     CrispyFormset("filters", "Filters"),
                 ),
+                Tab(
+                    "Style",
+                    "palette_colors",
+                    "background_color",
+                    "show_tooltips",
+                    "font_size",
+                    "currency",
+                    "table_show_header",
+                    "table_hide_data_type",
+                    "table_paginate_by",
+                    "metric_header_font_size",
+                    "metric_header_font_color",
+                    "metric_font_size",
+                    "metric_font_color",
+                    "metric_comparison_font_size",
+                    "metric_comparison_font_color",
+                    "lower_limit",
+                    "upper_limit",
+                    "first_segment_color",
+                    "second_segment_color",
+                    "third_segment_color",
+                    "fourth_segment_color",
+                ),
             )
         )
 
@@ -346,136 +482,3 @@ class WidgetDuplicateForm(ModelForm):
     class Meta:
         model = Widget
         fields = ()
-
-
-class StyleMixin:
-    def get_initial_for_field(self, field, field_name):
-        if self.initial.get(field_name) != None and hasattr(self.instance, field_name):
-            return self.initial.get(field_name)
-
-        # Field has no value but dashboard has set a value.
-        if hasattr(self.instance.page.dashboard, f"widget_{field_name}"):
-            return getattr(self.instance.page.dashboard, f"widget_{field_name}")
-
-        if hasattr(self.instance.page.dashboard, field_name):
-            return getattr(self.instance.page.dashboard, field_name)
-
-        if field.initial:
-            return field.initial
-
-        return super().get_initial_for_field(field, field_name)
-
-
-class DefaultStyleForm(StyleMixin, ModelForm):
-    palette_colors = PaletteColorsField(required=False)
-    background_color = ColorField(required=False, initial="#ffffff")
-
-    class Meta:
-        model = Widget
-        fields = [
-            "palette_colors",
-            "background_color",
-            "show_tooltips",
-            "font_size",
-            "currency",
-        ]
-        widgets = {
-            "currency": Datalist(),
-        }
-
-    ignore_live_update_fields = ["currency"]
-
-
-class TableStyleForm(StyleMixin, ModelForm):
-    background_color = ColorField(required=False, initial="#ffffff")
-
-    class Meta:
-        model = Widget
-        fields = [
-            "table_show_header",
-            "table_hide_data_type",
-            "table_paginate_by",
-            "background_color",
-        ]
-
-
-class MetricStyleForm(StyleMixin, ModelForm):
-    background_color = ColorField(required=False, initial="#ffffff")
-
-    metric_header_font_size = forms.IntegerField(
-        required=False,
-        initial=16,
-        widget=forms.NumberInput(
-            attrs={"class": "label--half", "unit_suffix": "pixels"}
-        ),
-    )
-    metric_header_font_color = forms.CharField(
-        required=False,
-        initial="#6a6b77",
-        widget=forms.TextInput(attrs={"class": "label--half", "type": "color"}),
-    )
-    metric_font_size = forms.IntegerField(
-        required=False,
-        initial=60,
-        widget=forms.NumberInput(
-            attrs={"class": "label--half", "unit_suffix": "pixels"}
-        ),
-    )
-    metric_font_color = forms.CharField(
-        required=False,
-        initial="#242733",
-        widget=forms.TextInput(attrs={"class": "label--half", "type": "color"}),
-    )
-    metric_comparison_font_size = forms.IntegerField(
-        required=False,
-        initial=30,
-        widget=forms.NumberInput(
-            attrs={"class": "label--half", "unit_suffix": "pixels"}
-        ),
-    )
-    metric_comparison_font_color = forms.CharField(
-        required=False,
-        initial="#6a6b77",
-        widget=forms.TextInput(attrs={"class": "label--half", "type": "color"}),
-    )
-
-    class Meta:
-        model = Widget
-        fields = [
-            "background_color",
-            "metric_header_font_size",
-            "metric_header_font_color",
-            "metric_font_size",
-            "metric_font_color",
-            "metric_comparison_font_size",
-            "metric_comparison_font_color",
-        ]
-
-
-class GaugeStyleForm(StyleMixin, ModelForm):
-    background_color = ColorField(required=False, initial="#ffffff")
-    first_segment_color = ColorField(required=False, initial="#e30303")
-    second_segment_color = ColorField(required=False, initial="#f38e4f")
-    third_segment_color = ColorField(required=False, initial="#facc15")
-    fourth_segment_color = ColorField(required=False, initial="#0db145")
-
-    class Meta:
-        model = Widget
-        fields = [
-            "background_color",
-            "lower_limit",
-            "upper_limit",
-            "show_tooltips",
-            "currency",
-            "first_segment_color",
-            "second_segment_color",
-            "third_segment_color",
-            "fourth_segment_color",
-        ]
-
-
-STYLE_FORMS = {
-    Widget.Kind.METRIC: MetricStyleForm,
-    Widget.Kind.TABLE: TableStyleForm,
-    Widget.Kind.GAUGE: GaugeStyleForm,
-}

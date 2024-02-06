@@ -28,11 +28,11 @@ from apps.widgets.visuals import chart_to_output, metric_to_output, table_to_out
 
 from .forms import (
     FORMS,
-    STYLE_FORMS,
-    DefaultStyleForm,
+    # STYLE_FORMS,
+    # DefaultStyleForm,
     GenericWidgetForm,
     TextWidgetForm,
-    WidgetSourceForm,
+    # WidgetSourceForm,
 )
 from .models import Widget
 
@@ -158,14 +158,14 @@ class WidgetUpdate(DashboardMixin, UpdateView):
         return "widgets/update.html"
 
     def get_form_class(self):
-        if self.tab == "style":
-            return STYLE_FORMS.get(self.object.kind, DefaultStyleForm)
+        # if self.tab == "style":
+        #     return STYLE_FORMS.get(self.object.kind, DefaultStyleForm)
 
-        if self.tab == "source" and self.object.kind not in [
-            Widget.Kind.IFRAME,
-            Widget.Kind.IMAGE,
-        ]:
-            return WidgetSourceForm
+        # if self.tab == "source" and self.object.kind not in [
+        #     Widget.Kind.IFRAME,
+        #     Widget.Kind.IMAGE,
+        # ]:
+        #     return WidgetSourceForm
 
         return (
             FORMS.get(self.request.POST.get("kind", self.object.kind))
