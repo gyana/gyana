@@ -32,7 +32,7 @@ from .forms import (
     # DefaultStyleForm,
     GenericWidgetForm,
     TextWidgetForm,
-    # WidgetSourceForm,
+    WidgetSourceForm,
 )
 from .models import Widget
 
@@ -161,11 +161,11 @@ class WidgetUpdate(DashboardMixin, UpdateView):
         # if self.tab == "style":
         #     return STYLE_FORMS.get(self.object.kind, DefaultStyleForm)
 
-        # if self.tab == "source" and self.object.kind not in [
-        #     Widget.Kind.IFRAME,
-        #     Widget.Kind.IMAGE,
-        # ]:
-        #     return WidgetSourceForm
+        if self.object.table is None and self.object.kind not in [
+            Widget.Kind.IFRAME,
+            Widget.Kind.IMAGE,
+        ]:
+            return WidgetSourceForm
 
         return (
             FORMS.get(self.request.POST.get("kind", self.object.kind))

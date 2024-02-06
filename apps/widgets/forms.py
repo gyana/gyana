@@ -72,32 +72,32 @@ class WidgetCreateForm(ModelForm):
         return value
 
 
-# class WidgetSourceForm(IntegrationSearchMixin, ModelForm):
-#     search = forms.CharField(required=False)
+class WidgetSourceForm(IntegrationSearchMixin, ModelForm):
+    search = forms.CharField(required=False)
 
-#     class Meta:
-#         model = Widget
-#         fields = ["table"]
-#         widgets = {"table": SourceSelectv2(parent="dashboard")}
+    class Meta:
+        model = Widget
+        fields = ["table"]
+        widgets = {"table": SourceSelectv2(parent="dashboard")}
 
-#     def __init__(self, *args, **kwargs):
-#         project = kwargs.pop("project", None)
+    def __init__(self, *args, **kwargs):
+        project = kwargs.pop("project", None)
 
-#         super().__init__(*args, **kwargs)
-#         self.order_fields(["search", "table"])
-#         self.fields["search"].widget.attrs["data-action"] = "input->tf-modal#search"
+        super().__init__(*args, **kwargs)
+        self.order_fields(["search", "table"])
+        self.fields["search"].widget.attrs["data-action"] = "input->tf-modal#search"
 
-#         # Re-focus the search bar when there is a value
-#         if self.data.get("search"):
-#             self.fields["search"].widget.attrs["autofocus"] = ""
+        # Re-focus the search bar when there is a value
+        if self.data.get("search"):
+            self.fields["search"].widget.attrs["autofocus"] = ""
 
-#         if project:
-#             self.search_queryset(
-#                 self.fields["table"],
-#                 project,
-#                 self.instance.table,
-#                 self.instance.page.dashboard.input_tables_fk,
-#             )
+        if project:
+            self.search_queryset(
+                self.fields["table"],
+                project,
+                self.instance.table,
+                self.instance.page.dashboard.input_tables_fk,
+            )
 
 
 class StyleMixin:
