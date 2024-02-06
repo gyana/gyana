@@ -5,11 +5,10 @@ from crispy_forms.layout import Layout
 from django import forms
 from ibis.expr.datatypes import Date, Time, Timestamp
 
-from apps.base.core.utils import create_column_choices
 from apps.base.crispy import CrispyFormset, Tab
-from apps.base.fields import ColorField
+from apps.base.fields import ColorField, ColumnField
 from apps.base.forms import ModelForm
-from apps.base.widgets import Datalist, SelectWithDisable, SourceSelectv2
+from apps.base.widgets import Datalist, SourceSelectv2
 from apps.dashboards.widgets import PaletteColorsField
 from apps.tables.forms import IntegrationSearchMixin
 
@@ -122,14 +121,6 @@ class StyleMixin:
         return super().get_initial_for_field(field, field_name)
 
 
-def disable_non_time(schema):
-    return {
-        name: "You can only select datetime, time or date columns for timeseries charts."
-        for name, type_ in schema.items()
-        if not isinstance(type_, (Time, Timestamp, Date))
-    }
-
-
 K = Widget.Kind
 
 
@@ -146,10 +137,14 @@ def is_not_kind(*args):
 
 
 class GenericWidgetForm(StyleMixin, IntegrationSearchMixin, ModelForm):
-    dimension = forms.ChoiceField(choices=())
-    second_dimension = forms.ChoiceField(choices=())
-    sort_column = forms.ChoiceField(choices=(), required=False)
-    date_column = forms.ChoiceField(choices=(), required=False)
+    dimension = ColumnField()
+    second_dimension = ColumnField()
+    sort_column = ColumnField(required=False)
+    date_column = ColumnField(
+        required=False,
+        allowed_types=(Date, Time, Timestamp),
+        message="You can only select datetime, time or date columns for timeseries charts.",
+    )
 
     palette_colors = PaletteColorsField(required=False)
     background_color = ColorField(required=False, initial="#ffffff")

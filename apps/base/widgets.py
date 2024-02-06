@@ -142,7 +142,3 @@ class SourceSelectv2(ChoiceWidget):
         context["widget"]["name"] = name
         context["parent"] = self.parent
         return context
-
-
-class ColumnSelect(Select):
-    template_name = "django/forms/widgets/select_column.html"

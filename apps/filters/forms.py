@@ -1,9 +1,8 @@
-from django import forms
 from django.forms.widgets import Input, TextInput
 
-from apps.base.core.utils import create_column_choices
+from apps.base.fields import ColumnField
 from apps.base.forms import ModelForm
-from apps.base.widgets import ColumnSelect, DatetimeInput
+from apps.base.widgets import DatetimeInput
 from apps.filters.models import NO_VALUE, PREDICATE_MAP, Filter
 
 from .widgets import SelectAutocomplete
@@ -62,7 +61,7 @@ def _get_show_for_value(filter_type, multiple=False):
 
 
 class FilterForm(ModelForm):
-    column = forms.ChoiceField(choices=[], widget=ColumnSelect())
+    column = ColumnField()
 
     # We have to add the media here because otherwise the form fields
     # Are added dynamically, and a script wouldn't be added if a widget
