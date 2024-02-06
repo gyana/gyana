@@ -181,6 +181,7 @@ class WidgetUpdate(DashboardMixin, UpdateView):
             return kwargs
         table = self.request.POST.get("table") or getattr(self.object, "table")
         if table is not None:
+            kwargs["project"] = self.dashboard.project
             kwargs["schema"] = (
                 table if isinstance(table, Table) else Table.objects.get(pk=table)
             ).schema

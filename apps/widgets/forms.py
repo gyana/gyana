@@ -1,11 +1,12 @@
 import math
 
+from crispy_forms.bootstrap import TabHolder
 from crispy_forms.layout import Layout
 from django import forms
 from ibis.expr.datatypes import Date, Time, Timestamp
 
 from apps.base.core.utils import create_column_choices
-from apps.base.crispy import CrispyFormset
+from apps.base.crispy import CrispyFormset, Tab
 from apps.base.fields import ColorField
 from apps.base.forms import ModelForm
 from apps.base.widgets import Datalist, SelectWithDisable, SourceSelect
@@ -107,7 +108,7 @@ def disable_non_time(schema):
     }
 
 
-class GenericWidgetForm(ModelForm):
+class GenericWidgetForm(IntegrationSearchMixin, ModelForm):
     dimension = forms.ChoiceField(choices=())
     second_dimension = forms.ChoiceField(choices=())
     sort_column = forms.ChoiceField(choices=(), required=False)
@@ -115,6 +116,7 @@ class GenericWidgetForm(ModelForm):
     class Meta:
         model = Widget
         fields = [
+            "table",
             "kind",
             "dimension",
             "part",
@@ -141,6 +143,7 @@ class GenericWidgetForm(ModelForm):
             "controls": ControlFormset,
             "filters": FilterFormset,
         }
+        widgets = {"table": SourceSelect(parent="dashboard")}
 
         K = Widget.Kind
 
@@ -186,8 +189,23 @@ class GenericWidgetForm(ModelForm):
             "controls": "date_column !== null",
         }
 
+        effect = """//js
+const schema_json = JSON.parse((await SiteJS.base.Api.getApiClient().action(window.schema, ['tables', 'api', 'tables', 'read'], { id: table })).schema_json)
+const columns = Object.keys(schema_json).map(k => ({label: k, value: k}))
+schema = schema_json; choices.dimension = columns; choices.second_dimension = columns; choices.sort_column = columns;
+"""
+
     def __init__(self, *args, **kwargs):
+        project = kwargs.pop("project", None)
         super().__init__(*args, **kwargs)
+
+        if project:
+            self.search_queryset(
+                self.fields["table"],
+                project,
+                self.instance.table,
+                self.instance.page.dashboard.input_tables_fk,
+            )
 
         self.fields["kind"].choices = [
             (key.label, values)
@@ -228,29 +246,35 @@ class GenericWidgetForm(ModelForm):
         )
 
         self.helper.layout = Layout(
-            "kind",
-            "dimension",
-            "part",
-            "second_dimension",
-            CrispyFormset("default_metrics", "Metrics"),
-            CrispyFormset("optional_metrics", "Optional metrics"),
-            CrispyFormset("xy", "Metrics"),
-            CrispyFormset("xyz", "Metrics"),
-            CrispyFormset("min3", "Metrics (minimum 3)"),
-            CrispyFormset("min2", "Metrics (minimum 2)"),
-            CrispyFormset("single_metric", "Metric"),
-            CrispyFormset("combo", "Metrics"),
-            CrispyFormset("dimensions", "Dimensions"),
-            CrispyFormset("metrics", "Metrics"),
-            "sort_column",
-            "sort_ascending",
-            "stack_100_percent",
-            "date_column",
-            "show_summary_row",
-            "compare_previous_period",
-            "positive_decrease",
-            CrispyFormset("controls", "Controls"),
-            CrispyFormset("filters", "Filters"),
+            TabHolder(
+                Tab("Source", "table"),
+                Tab(
+                    "Setup",
+                    "kind",
+                    "dimension",
+                    "part",
+                    "second_dimension",
+                    CrispyFormset("default_metrics", "Metrics"),
+                    CrispyFormset("optional_metrics", "Optional metrics"),
+                    CrispyFormset("xy", "Metrics"),
+                    CrispyFormset("xyz", "Metrics"),
+                    CrispyFormset("min3", "Metrics (minimum 3)"),
+                    CrispyFormset("min2", "Metrics (minimum 2)"),
+                    CrispyFormset("single_metric", "Metric"),
+                    CrispyFormset("combo", "Metrics"),
+                    CrispyFormset("dimensions", "Dimensions"),
+                    CrispyFormset("metrics", "Metrics"),
+                    "sort_column",
+                    "sort_ascending",
+                    "stack_100_percent",
+                    "date_column",
+                    "show_summary_row",
+                    "compare_previous_period",
+                    "positive_decrease",
+                    CrispyFormset("controls", "Controls"),
+                    CrispyFormset("filters", "Filters"),
+                ),
+            )
         )
 
     def get_formset_kwargs(self, formset):
