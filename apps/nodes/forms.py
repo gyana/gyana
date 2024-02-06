@@ -5,7 +5,7 @@ from django.utils.functional import cached_property
 from apps.base.core.utils import create_column_choices
 from apps.base.crispy import CrispyFormset
 from apps.base.forms import ModelForm
-from apps.base.widgets import MultiSelect, SourceSelect
+from apps.base.widgets import ColumnSelect, MultiSelect, SourceSelect
 from apps.columns.models import Column
 from apps.tables.forms import IntegrationSearchMixin
 
@@ -166,6 +166,12 @@ class PivotNodeForm(NodeForm):
     class Meta:
         model = Node
         fields = ["pivot_index", "pivot_column", "pivot_value", "pivot_aggregation"]
+        widgets = {
+            "pivot_index": ColumnSelect(),
+            "pivot_column": ColumnSelect(),
+            "pivot_value": ColumnSelect(),
+            "pivot_aggregation": ColumnSelect(),
+        }
         labels = {
             "pivot_index": "Index column",
             "pivot_value": "Value column",
@@ -180,20 +186,20 @@ class PivotNodeForm(NodeForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        schema = self.instance.parents.first().schema
-        column_choices = create_column_choices(schema)
+        # schema = self.instance.parents.first().schema
+        # column_choices = create_column_choices(schema)
 
-        self.fields["pivot_index"] = forms.ChoiceField(
-            choices=column_choices,
-            required=False,
-            help_text=self.fields["pivot_index"].help_text,
-        )
-        self.fields["pivot_column"] = forms.ChoiceField(
-            choices=column_choices, help_text=self.fields["pivot_column"].help_text
-        )
-        self.fields["pivot_value"] = forms.ChoiceField(
-            choices=column_choices, help_text=self.fields["pivot_value"].help_text
-        )
+        # self.fields["pivot_index"] = forms.ChoiceField(
+        #     choices=column_choices,
+        #     required=False,
+        #     help_text=self.fields["pivot_index"].help_text,
+        # )
+        # self.fields["pivot_column"] = forms.ChoiceField(
+        #     choices=column_choices, help_text=self.fields["pivot_column"].help_text
+        # )
+        # self.fields["pivot_value"] = forms.ChoiceField(
+        #     choices=column_choices, help_text=self.fields["pivot_value"].help_text
+        # )
 
 
 class UnpivotNodeForm(NodeForm):

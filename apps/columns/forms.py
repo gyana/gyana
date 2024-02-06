@@ -4,7 +4,7 @@ from ibis.expr.datatypes import Array, Floating, Struct
 
 from apps.base.core.utils import create_column_choices
 from apps.base.forms import ModelForm
-from apps.base.widgets import Datalist, SelectWithDisable
+from apps.base.widgets import ColumnSelect, Datalist, SelectWithDisable
 from apps.columns.crispy import ColumnFormatting
 from apps.columns.models import (
     AddColumn,
@@ -36,17 +36,19 @@ IBIS_TO_FUNCTION = {
 
 
 def disable_struct_and_array_columns(fields, column_field, schema):
-    fields["column"] = forms.ChoiceField(
-        choices=column_field.choices,
-        help_text=column_field.help_text,
-        widget=SelectWithDisable(
-            disabled={
-                name: "Currently, you cannot use this column type here."
-                for name, type_ in schema.items()
-                if isinstance(type_, (Struct, Array))
-            },
-        ),
-    )
+    pass
+    # if schema:
+    #     fields["column"] = forms.ChoiceField(
+    #         choices=column_field.choices,
+    #         help_text=column_field.help_text,
+    #         widget=SelectWithDisable(
+    #             disabled={
+    #                 name: "Currently, you cannot use this column type here."
+    #                 for name, type_ in schema.items()
+    #                 if isinstance(type_, (Struct, Array))
+    #             },
+    #         ),
+    #     )
 
 
 class ColumnForm(ModelForm):
@@ -292,6 +294,10 @@ class WindowColumnForm(ModelForm):
     class Meta:
         fields = ("column", "function", "group_by", "order_by", "ascending", "label")
         model = WindowColumn
+        widgets = {
+            "group_by": ColumnSelect(),
+            "order_by": ColumnSelect(),
+        }
         show = {
             "function": "column !== null",
             "group_by": "column !== null",
@@ -304,28 +310,28 @@ class WindowColumnForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        disable_struct_and_array_columns(
-            self.fields, self.fields["column"], self.schema
-        )
-        choices = create_column_choices(self.schema)
+        # disable_struct_and_array_columns(
+        #     self.fields, self.fields["column"], self.schema
+        # )
+        # choices = create_column_choices(self.schema)
 
-        self.fields["group_by"] = forms.ChoiceField(
-            choices=choices,
-            help_text=self.base_fields["group_by"].help_text,
-            required=False,
-            widget=SelectWithDisable(
-                disabled={
-                    name: f"You cannot group by a {type_} column"
-                    for name, type_ in self.schema.items()
-                    if isinstance(type_, Floating)
-                }
-            ),
-        )
-        self.fields["order_by"] = forms.ChoiceField(
-            choices=choices,
-            help_text=self.base_fields["order_by"].help_text,
-            required=False,
-        )
+        # self.fields["group_by"] = forms.ChoiceField(
+        #     choices=choices,
+        #     help_text=self.base_fields["group_by"].help_text,
+        #     required=False,
+        #     widget=SelectWithDisable(
+        #         disabled={
+        #             name: f"You cannot group by a {type_} column"
+        #             for name, type_ in self.schema.items()
+        #             if isinstance(type_, Floating)
+        #         }
+        #     ),
+        # )
+        # self.fields["order_by"] = forms.ChoiceField(
+        #     choices=choices,
+        #     help_text=self.base_fields["order_by"].help_text,
+        #     required=False,
+        # )
 
     def clean_label(self):
         return column_naming_validation(self.cleaned_data["label"], self.schema.names)
@@ -337,10 +343,10 @@ class ConvertColumnForm(ModelForm):
         model = ConvertColumn
         labels = {"target_type": "Type"}
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    # def __init__(self, *args, **kwargs):
+    #     super().__init__(*args, **kwargs)
 
-        self.fields["column"].choices = create_column_choices(self.schema)
+    #     self.fields["column"].choices = create_column_choices(self.schema)
 
 
 def create_left_join_choices(parents, index):

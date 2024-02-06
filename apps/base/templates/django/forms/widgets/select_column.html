@@ -1,0 +1,6 @@
+<select x-model="$data.{{ widget.name|form_name }}" name="{{ widget.name }}"{% include "django/forms/widgets/attrs.html" %}>
+  <template x-for="choice in columns">
+    <option :value="choice.value" x-text="choice.label"></option>
+  </template>
+</select>
+

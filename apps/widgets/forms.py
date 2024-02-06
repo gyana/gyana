@@ -30,6 +30,10 @@ from .formsets import (
 from .models import CATEGORIES, DEFAULT_HEIGHT, DEFAULT_WIDTH, Widget
 
 
+class WidgetTab(Tab):
+    link_template = "%s/layout/widget-tab-link.html"
+
+
 class WidgetCreateForm(ModelForm):
     class Meta:
         model = Widget
@@ -145,6 +149,7 @@ class GenericWidgetForm(StyleMixin, IntegrationSearchMixin, ModelForm):
     dimension = forms.ChoiceField(choices=())
     second_dimension = forms.ChoiceField(choices=())
     sort_column = forms.ChoiceField(choices=(), required=False)
+    date_column = forms.ChoiceField(choices=(), required=False)
 
     palette_colors = PaletteColorsField(required=False)
     background_color = ColorField(required=False, initial="#ffffff")
@@ -303,8 +308,8 @@ class GenericWidgetForm(StyleMixin, IntegrationSearchMixin, ModelForm):
         }
 
         effect = """const schema_json = JSON.parse((await SiteJS.base.Api.getApiClient().action(window.schema, ['tables', 'api', 'tables', 'read'], { id: table })).schema_json)
-const columns = Object.keys(schema_json).map(k => ({label: k, value: k}))
-schema = schema_json; choices.dimension = columns; choices.second_dimension = columns; choices.sort_column = columns;
+const c = Object.keys(schema_json).map(k => ({label: k, value: k}))
+columns = c; schema = schema_json; choices.dimension = c; choices.second_dimension = c; choices.sort_column = c;
 """
 
     def __init__(self, *args, **kwargs):
@@ -325,20 +330,20 @@ schema = schema_json; choices.dimension = columns; choices.second_dimension = co
             if key != Widget.Category.CONTENT
         ]
 
-        schema = self.instance.table.schema
+        # schema = self.instance.table.schema
 
-        choices = create_column_choices(schema)
-        if "dimension" in self.fields:
-            self.fields["dimension"].choices = choices
-        if "second_dimension" in self.fields:
-            self.fields["second_dimension"].choices = choices
+        # choices = create_column_choices(schema)
+        # if "dimension" in self.fields:
+        #     self.fields["dimension"].choices = choices
+        # if "second_dimension" in self.fields:
+        #     self.fields["second_dimension"].choices = choices
 
         # TODO: implement sort as a formset of WidgetSortColumn (new model)
         # generated name is implementation detail for BigQuery
         # write a migration for existing column name
         # include COUNT_COLUMN_NAME as a default option
-        if "sort_column" in self.fields:
-            self.fields["sort_column"].choices = choices
+        # if "sort_column" in self.fields:
+        #     self.fields["sort_column"].choices = choices
 
         # TODO with Alpine for heatmap
         # self.fields["dimension"].label = "X"
@@ -348,19 +353,19 @@ schema = schema_json; choices.dimension = columns; choices.second_dimension = co
         # self.fields["second_dimension"].label = "Stack dimension"
         # self.fields["second_dimension"].required = False
 
-        self.fields["date_column"] = forms.ChoiceField(
-            required=False,
-            widget=SelectWithDisable(
-                disabled=disable_non_time(schema),
-            ),
-            choices=create_column_choices(schema),
-            help_text=self.base_fields["date_column"].help_text,
-        )
+        # self.fields["date_column"] = forms.ChoiceField(
+        #     required=False,
+        #     widget=SelectWithDisable(
+        #         disabled=disable_non_time(schema),
+        #     ),
+        #     choices=create_column_choices(schema),
+        #     help_text=self.base_fields["date_column"].help_text,
+        # )
 
         self.helper.layout = Layout(
             TabHolder(
-                Tab("Source", "table"),
-                Tab(
+                WidgetTab("Source", "table"),
+                WidgetTab(
                     "Setup",
                     "kind",
                     "dimension",
@@ -386,7 +391,7 @@ schema = schema_json; choices.dimension = columns; choices.second_dimension = co
                     CrispyFormset("controls", "Controls"),
                     CrispyFormset("filters", "Filters"),
                 ),
-                Tab(
+                WidgetTab(
                     "Style",
                     "palette_colors",
                     "background_color",

@@ -8,7 +8,7 @@ from django import forms
 from django.db import transaction
 from django.forms.models import ModelFormOptions
 
-from apps.base.core.utils import create_column_choices
+from apps.base.widgets import ColumnSelect
 
 
 # By default, django-crispy-form caches the template, breaking hot-reloading in development
@@ -47,8 +47,8 @@ class BaseModelForm(forms.ModelForm):
         # TODO: add a custom field/widget for this if possible
         if self.fields.get("column"):
             self.fields["column"] = forms.ChoiceField(
-                choices=create_column_choices(self.schema),
                 help_text=self.base_fields["column"].help_text,
+                widget=ColumnSelect,
             )
 
     def pre_save(self, instance):
@@ -133,6 +133,12 @@ class FormsetMixin:
         return [self.get_formset(k, v) for k, v in self.formsets.items()]
 
 
+def create_column_choices_v2(schema):
+    return [{"value": "", "label": "No column selected"}] + [
+        {"value": col, "label": col} for col in schema
+    ]
+
+
 class AlpineMixin:
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -146,7 +152,16 @@ class AlpineMixin:
                 for field in self
                 if not isinstance(field.field, forms.FileField)
             }
-            | {"computed": {}, "choices": {}}
+            | {
+                "computed": {},
+                "choices": {},
+            }
+            | (
+                {"columns": create_column_choices_v2(self.schema)}
+                # only for parent form, not formsets, to make it easy to update in widget form
+                if self.schema and not self.prefix
+                else {}
+            )
         )
 
     def schema_json(self):
