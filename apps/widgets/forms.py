@@ -302,10 +302,8 @@ class GenericWidgetForm(StyleMixin, IntegrationSearchMixin, ModelForm):
             "fourth_segment_color": is_kind(K.GAUGE),
         }
 
-        effect = """const schema_json = JSON.parse((await SiteJS.base.Api.getApiClient().action(window.schema, ['tables', 'api', 'tables', 'read'], { id: table })).schema_json)
-const c = Object.keys(schema_json).map(k => ({label: k, value: k}))
-columns = c; schema = schema_json; choices.dimension = c; choices.second_dimension = c; choices.sort_column = c;
-"""
+        effect = """schema = JSON.parse((await SiteJS.base.Api.getApiClient().action(window.schema, ['tables', 'api', 'tables', 'read'], { id: table })).schema_json)
+columns = Object.keys(schema).map(k => ({label: k, value: k}))"""
 
     def __init__(self, *args, **kwargs):
         project = kwargs.pop("project", None)

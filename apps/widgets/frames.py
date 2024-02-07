@@ -158,15 +158,6 @@ class WidgetUpdate(DashboardMixin, UpdateView):
         return "widgets/update.html"
 
     def get_form_class(self):
-        # if self.tab == "style":
-        #     return STYLE_FORMS.get(self.object.kind, DefaultStyleForm)
-
-        # if self.object.table is None and self.object.kind not in [
-        #     Widget.Kind.IFRAME,
-        #     Widget.Kind.IMAGE,
-        # ]:
-        #     return WidgetSourceForm
-
         return (
             FORMS.get(self.request.POST.get("kind", self.object.kind))
             or GenericWidgetForm
@@ -175,14 +166,9 @@ class WidgetUpdate(DashboardMixin, UpdateView):
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs["tab"] = self.tab
-        if self.tab == "style":
-            return kwargs
-        if self.tab == "source":
-            kwargs["project"] = self.dashboard.project
-            return kwargs
+        kwargs["project"] = self.dashboard.project
         table = self.request.POST.get("table") or getattr(self.object, "table")
         if table is not None:
-            kwargs["project"] = self.dashboard.project
             kwargs["schema"] = (
                 table if isinstance(table, Table) else Table.objects.get(pk=table)
             ).schema
@@ -199,7 +185,7 @@ class WidgetUpdate(DashboardMixin, UpdateView):
                     self.object.id,
                 ),
             )
-            return f"{base_url}?tab={self.tab if self.tab!='source' else 'data'}"
+            return f"{base_url}?tab={self.tab}"
 
         return reverse(
             "project_dashboards:detail",

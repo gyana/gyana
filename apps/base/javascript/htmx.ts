@@ -7,9 +7,12 @@ document.addEventListener('htmx:beforeSwap', function(evt) {
   }
 })
 
-// Initialize Alpine on after HTMX request
+// Initialize Alpine on after HTMX POST request
+// TODO: understand why Alpine does not "see" swapping of DOM element
 document.addEventListener('htmx:afterSettle', function(event) {
-  Alpine.initTree(event.detail.elt)
+  if (event.detail.requestConfig.verb === 'post') {
+    Alpine.initTree(event.detail.elt);
+  }
 })
 
 export {}
