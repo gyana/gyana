@@ -427,7 +427,8 @@ label.checkbox {
   gap: 1.4rem;
   width: 100%;
 
-  & + & {
-    margin-top: 1.6rem;
-  }
+  // TODO: check if this breaks anything else
+  // & + & {
+  //   margin-top: 1.6rem;
+  // }
 }
