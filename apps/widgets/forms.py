@@ -1,11 +1,11 @@
 import math
 
-from crispy_forms.bootstrap import TabHolder
 from crispy_forms.layout import Layout
+from crispy_forms.utils import TEMPLATE_PACK
 from django import forms
 from ibis.expr.datatypes import Date, Time, Timestamp
 
-from apps.base.crispy import CrispyFormset, Tab
+from apps.base.crispy import CrispyFormset, Tab, TabHolder
 from apps.base.fields import ColorField, ColumnField
 from apps.base.forms import ModelForm
 from apps.base.widgets import Datalist, SourceSelectv2
@@ -309,6 +309,7 @@ columns = c; schema = schema_json; choices.dimension = c; choices.second_dimensi
 
     def __init__(self, *args, **kwargs):
         project = kwargs.pop("project", None)
+        tab = kwargs.pop("tab", None)
         super().__init__(*args, **kwargs)
 
         if project:
@@ -409,6 +410,7 @@ columns = c; schema = schema_json; choices.dimension = c; choices.second_dimensi
                     "third_segment_color",
                     "fourth_segment_color",
                 ),
+                tab=tab,
             )
         )
 

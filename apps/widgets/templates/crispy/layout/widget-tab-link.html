@@ -1,6 +1,13 @@
 <li class="tabbar__link cursor-pointer"
   :class="{ 'tabbar__link--active': tab === '{{ link.css_id }}', 'tabbar__link--disabled': table === null && '{{ link.css_id }}' !== 'source' }"
-  @click="if (table !== null) tab = '{{ link.css_id }}'"
+  @click="if (table !== null) {
+    tab = '{{ link.css_id }}'
+    const form = $el.closest('form')
+    const params = new URLSearchParams(form.getAttribute('hx-post').split('?')[1])
+    params.set('tab', tab)
+    form.setAttribute('hx-post', form.getAttribute('hx-post').split('?')[0] + '?' + params.toString())
+    htmx.process($el.closest('form'))
+    }"
   :disabled="table === null"
   {% if 'active' in link.css_class %}x-init="tab = '{{ link.css_id }}'" {% endif %}>
   {{ link.name|capfirst }}{% if tab.errors %}!{% endif %}

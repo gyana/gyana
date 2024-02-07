@@ -174,6 +174,7 @@ class WidgetUpdate(DashboardMixin, UpdateView):
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
+        kwargs["tab"] = self.tab
         if self.tab == "style":
             return kwargs
         if self.tab == "source":
