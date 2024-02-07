@@ -286,33 +286,6 @@ class WindowColumnForm(ModelForm):
         }
         effect = f"choices.function = $store.ibis.aggregations[schema[column]]"
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        # disable_struct_and_array_columns(
-        #     self.fields, self.fields["column"], self.schema
-        # )
-        # choices = create_column_choices(self.schema)
-
-        # TODO: implement this
-        # self.fields["group_by"] = forms.ChoiceField(
-        #     choices=choices,
-        #     help_text=self.base_fields["group_by"].help_text,
-        #     required=False,
-        #     widget=SelectWithDisable(
-        #         disabled={
-        #             name: f"You cannot group by a {type_} column"
-        #             for name, type_ in self.schema.items()
-        #             if isinstance(type_, Floating)
-        #         }
-        #     ),
-        # )
-        # self.fields["order_by"] = forms.ChoiceField(
-        #     choices=choices,
-        #     help_text=self.base_fields["order_by"].help_text,
-        #     required=False,
-        # )
-
     def clean_label(self):
         return column_naming_validation(self.cleaned_data["label"], self.schema.names)
 
