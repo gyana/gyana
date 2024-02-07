@@ -22,12 +22,13 @@ class TabHolder(BaseTabHolder):
         """
         target = self.first_container_with_errors(form.errors.keys())
         if target is None:
+            target = self.fields[0]
+
+            # custom implementation for tab
             if self.tab:
                 targets = [field for field in self.fields if field.css_id == self.tab]
-                if not targets:
-                    target = self.fields[0]
-            else:
-                target = targets[0]
+                if targets:
+                    target = targets[0]
 
             if not getattr(target, "_active_originally_included", None):
                 target.active = True
