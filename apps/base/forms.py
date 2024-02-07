@@ -44,9 +44,9 @@ class BaseModelForm(forms.ModelForm):
         self.helper.render_hidden_fields = True
 
         # TODO: make this logic work for fields
-        for field in self:
-            if not field.field.help_text:
-                field.field.help_text = self._meta.help_texts.get(field.name)
+        # for field in self:
+        #     if not field.field.help_text:
+        #         field.field.help_text = self._meta.help_texts.get(field.name)
 
     def pre_save(self, instance):
         # override in child to add behaviour on commit save

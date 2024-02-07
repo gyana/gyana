@@ -72,6 +72,8 @@ class ColumnField(forms.ChoiceField):
     def _set_column_choices(self, schema):
         self.choices = create_column_choices(schema)
 
+        # TODO: implement logic in template for alpine
+
         if self.disable_struct_array:
             self.disabled = {
                 name: "Currently, you cannot use this column type here."
