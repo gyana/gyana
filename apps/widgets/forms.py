@@ -9,7 +9,6 @@ from apps.base.fields import ColorField, ColumnField
 from apps.base.forms import ModelForm
 from apps.base.widgets import Datalist
 from apps.dashboards.widgets import PaletteColorsField
-from apps.tables.forms import IntegrationSearchMixin
 from apps.tables.widgets import TableSelect
 
 from .formsets import (
@@ -108,7 +107,7 @@ def is_not_kind(*args):
     return f"!{[str(k) for k in args]}.includes(kind)"
 
 
-class GenericWidgetForm(StyleMixin, IntegrationSearchMixin, ModelForm):
+class GenericWidgetForm(StyleMixin, ModelForm):
     dimension = ColumnField()
     second_dimension = ColumnField()
     sort_column = ColumnField(required=False)

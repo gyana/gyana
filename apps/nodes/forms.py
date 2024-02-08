@@ -7,7 +7,6 @@ from apps.base.fields import ColumnField
 from apps.base.forms import ModelForm
 from apps.base.widgets import MultiSelect
 from apps.columns.models import Column
-from apps.tables.forms import IntegrationSearchMixin
 from apps.tables.widgets import TableSelect
 
 from .formsets import (
@@ -52,7 +51,7 @@ class DefaultNodeForm(NodeForm):
         fields = []
 
 
-class InputNodeForm(IntegrationSearchMixin, NodeForm):
+class InputNodeForm(NodeForm):
     class Meta:
         model = Node
         fields = ["input_table"]
