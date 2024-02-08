@@ -12,6 +12,7 @@ INPUT_SEARCH_THRESHOLD = 0.3
 class TableFilter(drf_filters.FilterSet):
     search = django_filters.CharFilter(field_name="search", method="filter_search")
     project = django_filters.NumberFilter(field_name="widget__page__dashboard__project")
+    workflow = django_filters.NumberFilter(field_name="input_nodes__workflow")
     dashboard = django_filters.NumberFilter(field_name="widget__page__dashboard")
 
     class Meta:

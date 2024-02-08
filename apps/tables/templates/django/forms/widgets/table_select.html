@@ -5,7 +5,7 @@
   x-init="initial = (await SiteJS.base.Api.getApiClient().action(
     window.schema,
     ['tables', 'api', 'tables', 'list'],
-    { dashboard: 6 }
+    { {{ parent }}: {{ parent_entity.id }} }
   )).results"
   >
 
@@ -22,14 +22,21 @@
   <input x-model="search"
     type="text"
     placeholder="Search for tables in integrations or workflows..."
+    x-init="options = (await SiteJS.base.Api.getApiClient().action(
+      window.schema,
+      ['tables', 'api', 'tables', 'list'],
+      { project: {{ parent_entity.project.id }} }
+    )).results"
     @input.debounce="options = (await SiteJS.base.Api.getApiClient().action(
       window.schema,
       ['tables', 'api', 'tables', 'list'],
-      { project: 1, ...(search !== null && search !== '' ? {search}: {}) }
+      { project: {{ parent_entity.project.id }}, ...(search !== null && search !== '' ? {search}: {}) }
     )).results"
   >
 
   <template x-for="option in options" :key="option.id">
-    {% include 'django/forms/widgets/table_select_item.html' %}
+    <template x-if="!initial.some(i => i.id === option.id)">
+      {% include 'django/forms/widgets/table_select_item.html' %}
+    </template>
   </template>
 </fieldset>

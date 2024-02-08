@@ -281,13 +281,7 @@ columns = Object.keys(schema).map(k => ({label: k, value: k}))"""
         tab = kwargs.pop("tab", None)
         super().__init__(*args, **kwargs)
 
-        if project:
-            self.search_queryset(
-                self.fields["table"],
-                project,
-                self.instance.table,
-                self.instance.page.dashboard.input_tables_fk,
-            )
+        self.fields["table"].widget.parent_entity = self.instance.page.dashboard
 
         self.fields["kind"].choices = [
             (key.label, values)

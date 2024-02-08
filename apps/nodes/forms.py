@@ -56,7 +56,11 @@ class InputNodeForm(NodeForm):
         model = Node
         fields = ["input_table"]
         labels = {"input_table": "Table"}
-        widgets = {"input_table": TableSelect()}
+        widgets = {"input_table": TableSelect(parent="workflow")}
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["input_table"].widget.parent_entity = self.instance.workflow
 
 
 class OutputNodeForm(NodeForm):
