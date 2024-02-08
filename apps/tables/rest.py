@@ -1,5 +1,8 @@
+from django_filters import rest_framework as drf_filters
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
+
+from apps.tables.filters import TableFilter
 
 from .models import Table
 from .serializers import TableSerializer
@@ -8,8 +11,19 @@ from .serializers import TableSerializer
 class TableViewSet(viewsets.ModelViewSet):
     serializer_class = TableSerializer
     permission_classes = (IsAuthenticated,)
+    filter_backends = [drf_filters.DjangoFilterBackend]
+    filterset_fields = ["project", "dashboard", "workflow", "search"]
+    filterset_class = TableFilter
 
     def get_queryset(self):
         if self.request is None:
             return Table.objects.none()
-        return Table.objects.filter(project__team__members=self.request.user).all()
+
+        return (
+            Table.objects.filter(project__team__members=self.request.user)
+            .exclude(
+                source__in=[Table.Source.INTERMEDIATE_NODE, Table.Source.CACHE_NODE]
+            )
+            .distinct()
+            .order_by("updated")
+        )

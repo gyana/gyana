@@ -1,0 +1,39 @@
+<label
+  class="checkbox checkbox--radio checkbox--icon"
+  :class="{ 'checkbox--checked': $data.{{ widget.name|form_name }} == option.id }"
+  id="{{ option.id }}"
+  @click="$data.{{ widget.name|form_name }} = option.id"
+>
+  <input
+    type="radio"
+    :id="'id_{{ widget.name }}_' + option.id"
+    name="{{ widget.name }}"
+    :value="option.id"
+    class="checkbox__hidden"
+    x-model="$data.{{ widget.name|form_name }}"
+  />
+
+  <template x-if="option.image">
+    <img :src="option.image" style="width: 1.6rem;">
+  </template>
+  <template x-if="!option.image">
+    <i :class="option.icon" style="font-size: 1.6rem;"></i>
+  </template>
+
+  <div>
+    <span x-text="option.owner_name"></span>
+
+    {% comment %} <template x-if="option.is_used_in">
+      <br>
+      <p class="small text-black-50">Used in this {{ parent }}</p>
+    </template> {% endcomment %}
+  </div>
+
+  <template x-if="option.out_of_date">
+    <div class="opacity-50 ml-auto">
+      <i x-tooltip="Data is out of date"
+        class="fas fa-exclamation-triangle"
+      ></i>
+    </div>
+  </template>
+</label>
