@@ -26,14 +26,7 @@ from apps.dashboards.mixins import DashboardMixin
 from apps.tables.models import Table
 from apps.widgets.visuals import chart_to_output, metric_to_output, table_to_output
 
-from .forms import (
-    FORMS,
-    # STYLE_FORMS,
-    # DefaultStyleForm,
-    GenericWidgetForm,
-    TextWidgetForm,
-    WidgetSourceForm,
-)
+from .forms import FORMS, GenericWidgetForm, TextWidgetForm
 from .models import Widget
 
 

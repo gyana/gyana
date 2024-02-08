@@ -12,10 +12,12 @@
   <div>Used in this project</div>
 
   <template x-for="option in initial" :key="option.id">
-    {% include 'django/forms/widgets/source_select_item.html' %}
+    {% include 'django/forms/widgets/table_select_item.html' %}
   </template>
 
   <div>Search</div>
+
+  {% comment %} TODO: Re-focus the search bar when there is a value {% endcomment %}
 
   <input x-model="search"
     type="text"
@@ -28,6 +30,6 @@
   >
 
   <template x-for="option in options" :key="option.id">
-    {% include 'django/forms/widgets/source_select_item.html' %}
+    {% include 'django/forms/widgets/table_select_item.html' %}
   </template>
 </fieldset>

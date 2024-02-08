@@ -1,16 +1,16 @@
 import math
 
 from crispy_forms.layout import Layout
-from crispy_forms.utils import TEMPLATE_PACK
 from django import forms
 from ibis.expr.datatypes import Date, Time, Timestamp
 
 from apps.base.crispy import CrispyFormset, Tab, TabHolder
 from apps.base.fields import ColorField, ColumnField
 from apps.base.forms import ModelForm
-from apps.base.widgets import Datalist, SourceSelectv2
+from apps.base.widgets import Datalist
 from apps.dashboards.widgets import PaletteColorsField
 from apps.tables.forms import IntegrationSearchMixin
+from apps.tables.widgets import TableSelect
 
 from .formsets import (
     AggregationColumnFormset,
@@ -73,34 +73,6 @@ class WidgetCreateForm(ModelForm):
             )
 
         return value
-
-
-class WidgetSourceForm(IntegrationSearchMixin, ModelForm):
-    search = forms.CharField(required=False)
-
-    class Meta:
-        model = Widget
-        fields = ["table"]
-        widgets = {"table": SourceSelectv2(parent="dashboard")}
-
-    def __init__(self, *args, **kwargs):
-        project = kwargs.pop("project", None)
-
-        super().__init__(*args, **kwargs)
-        self.order_fields(["search", "table"])
-        self.fields["search"].widget.attrs["data-action"] = "input->tf-modal#search"
-
-        # Re-focus the search bar when there is a value
-        if self.data.get("search"):
-            self.fields["search"].widget.attrs["autofocus"] = ""
-
-        if project:
-            self.search_queryset(
-                self.fields["table"],
-                project,
-                self.instance.table,
-                self.instance.page.dashboard.input_tables_fk,
-            )
 
 
 class StyleMixin:
@@ -245,7 +217,7 @@ class GenericWidgetForm(StyleMixin, IntegrationSearchMixin, ModelForm):
             "filters": FilterFormset,
         }
         widgets = {
-            "table": SourceSelectv2(parent="dashboard"),
+            "table": TableSelect(parent="dashboard"),
             "currency": Datalist(),
         }
 
