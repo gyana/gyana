@@ -1,10 +1,19 @@
 import pytest
+from django.template import Context, RequestContext, Template
 from playwright.sync_api import expect
 
+from apps.base.alpine import ibis_store
 from apps.widgets.forms import WidgetSourceForm
 from apps.widgets.models import Widget
 
 pytestmark = pytest.mark.django_db
+
+_template = """{% extends "web/base.html" %}{% load crispy_forms_tags %}{% block body %}
+    <form>
+    {% csrf_token %}
+    {% crispy form %}
+    </form>
+{% endblock %}"""
 
 
 def test_table_select_basic(
@@ -12,7 +21,8 @@ def test_table_select_basic(
     dashboard_factory,
     integration_table_factory,
     widget_factory,
-    pwf,
+    page,
+    dynamic_view,
     live_server,
     with_pg_trgm_extension,
 ):
@@ -46,28 +56,30 @@ def test_table_select_basic(
 
     form = WidgetSourceForm(instance=widget)
 
-    pwf.render(form)
+    html = Template(_template).render(Context({"form": form, "ibis_store": ibis_store}))
+    dynamic_url = dynamic_view(html)
+    page.goto(live_server.url + "/" + dynamic_url)
     # required for search
-    pwf.page.force_login(live_server)
+    page.force_login(live_server)
 
     # initial load
 
     # 2x used in + 5x most recent
-    expect(pwf.page.locator("label.checkbox")).to_have_count(7)
+    expect(page.locator("label.checkbox")).to_have_count(7)
 
     for idx in range(2):
-        el = pwf.page.locator("label.checkbox").nth(idx)
+        el = page.locator("label.checkbox").nth(idx)
         expect(el).to_contain_text(f"Used in {idx}")
         expect(el).to_contain_text("Used in this dashboard")
 
     for idx in range(5):
-        el = pwf.page.locator("label.checkbox").nth(idx + 2)
+        el = page.locator("label.checkbox").nth(idx + 2)
         expect(el).to_contain_text(f"Other table {idx}")
         expect(el).not_to_contain_text("Used in this dashboard")
 
     # select option
 
-    option = pwf.page.locator("label.checkbox").nth(0)
+    option = page.locator("label.checkbox").nth(0)
     expect(option.locator("input")).not_to_be_checked()
     expect(option).not_to_have_class(
         "checkbox checkbox--radio checkbox--icon checkbox--checked"
@@ -82,14 +94,12 @@ def test_table_select_basic(
 
     # search
 
-    pwf.page.locator("input[type=text]").press_sequentially("Search")
-
-    pwf.page.pause()
+    page.locator("input[type=text]").press_sequentially("Search")
 
     # 1x selected + 5x search results
-    expect(pwf.page.locator("label.checkbox")).to_have_count(6)
+    expect(page.locator("label.checkbox")).to_have_count(6)
 
-    option = pwf.page.locator("label.checkbox").nth(0)
+    option = page.locator("label.checkbox").nth(0)
     expect(option).to_contain_text("Used in 0")
     expect(option.locator("input")).to_be_checked()
     expect(option).to_have_class(
@@ -97,12 +107,12 @@ def test_table_select_basic(
     )
 
     for idx in range(5):
-        el = pwf.page.locator("label.checkbox").nth(idx + 1)
+        el = page.locator("label.checkbox").nth(idx + 1)
         expect(el).to_contain_text(f"Search table {idx}")
 
     # select another option
 
-    option = pwf.page.locator("label.checkbox").nth(3)
+    option = page.locator("label.checkbox").nth(3)
 
     expect(option.locator("input")).not_to_be_checked()
     expect(option).not_to_have_class(
