@@ -11,6 +11,7 @@ from apps.base.forms import ModelForm
 from apps.base.widgets import Datalist, SelectWithDisable, SourceSelect
 from apps.dashboards.widgets import PaletteColorsField
 from apps.tables.forms import IntegrationSearchMixin
+from apps.tables.widgets import TableSelect
 
 from .formsets import (
     AggregationColumnFormset,
@@ -72,31 +73,35 @@ class WidgetCreateForm(ModelForm):
 
 
 class WidgetSourceForm(IntegrationSearchMixin, ModelForm):
-    search = forms.CharField(required=False)
+    # search = forms.CharField(required=False)
 
     class Meta:
         model = Widget
         fields = ["table"]
-        widgets = {"table": SourceSelect(parent="dashboard")}
+        # widgets = {"table": SourceSelect(parent="dashboard")}
+        widgets = {"table": TableSelect(parent="dashboard")}
 
     def __init__(self, *args, **kwargs):
         project = kwargs.pop("project", None)
 
         super().__init__(*args, **kwargs)
-        self.order_fields(["search", "table"])
-        self.fields["search"].widget.attrs["data-action"] = "input->tf-modal#search"
 
-        # Re-focus the search bar when there is a value
-        if self.data.get("search"):
-            self.fields["search"].widget.attrs["autofocus"] = ""
+        self.fields["table"].widget.parent_entity = self.instance.page.dashboard
 
-        if project:
-            self.search_queryset(
-                self.fields["table"],
-                project,
-                self.instance.table,
-                self.instance.page.dashboard.input_tables_fk,
-            )
+        # self.order_fields(["search", "table"])
+        # self.fields["search"].widget.attrs["data-action"] = "input->tf-modal#search"
+
+        # # Re-focus the search bar when there is a value
+        # if self.data.get("search"):
+        #     self.fields["search"].widget.attrs["autofocus"] = ""
+
+        # if project:
+        #     self.search_queryset(
+        #         self.fields["table"],
+        #         project,
+        #         self.instance.table,
+        #         self.instance.page.dashboard.input_tables_fk,
+        #     )
 
 
 def disable_non_time(schema):
