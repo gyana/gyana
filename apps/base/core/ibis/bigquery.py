@@ -2,7 +2,7 @@ import beeline
 import pandas as pd
 from google.cloud import bigquery as bq
 from ibis.backends.bigquery import Backend
-from ibis.backends.bigquery.client import BigQueryCursor
+from ibis.config import options
 
 # update the default execute implemention of Ibis BigQuery backend
 # - support the faster synchronous client.query_and_wait
@@ -17,7 +17,10 @@ def execute(self, expr, params=None, limit="default", **kwargs):
     # https://github.com/googleapis/python-bigquery/pull/1722
     job_config = bq.QueryJobConfig()
     query_results = self.client.query_and_wait(
-        sql, job_config=job_config, project=self.billing_project, max_results=limit
+        sql,
+        job_config=job_config,
+        project=self.billing_project,
+        max_results=options.sql.default_limit if limit == "default" else limit,
     )
 
     df = query_results.to_dataframe()
