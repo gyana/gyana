@@ -394,6 +394,7 @@ class TextWidgetForm(ModelForm):
     def __init__(self, *args, **kwargs):
         # https://stackoverflow.com/a/30766247/15425660
         project = kwargs.pop("project", None)
+        tab = kwargs.pop("tab", None)
 
         super().__init__(*args, **kwargs)
 
@@ -416,6 +417,7 @@ class IframeWidgetForm(ModelForm):
     def __init__(self, *args, **kwargs):
         # https://stackoverflow.com/a/30766247/15425660
         project = kwargs.pop("project", None)
+        tab = kwargs.pop("tab", None)
 
         super().__init__(*args, **kwargs)
 
@@ -432,6 +434,7 @@ class ImageWidgetForm(ModelForm):
     def __init__(self, *args, **kwargs):
         # https://stackoverflow.com/a/30766247/15425660
         project = kwargs.pop("project", None)
+        tab = kwargs.pop("tab", None)
 
         super().__init__(*args, **kwargs)
 
