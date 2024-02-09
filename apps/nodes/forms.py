@@ -159,12 +159,6 @@ class PivotNodeForm(NodeForm):
             "pivot_value": "Value column",
             "pivot_aggregation": "Aggregation function",
         }
-        help_texts = {
-            "pivot_index": "Select a column to be used as the index",
-            "pivot_column": "Select a column to be used as the columns",
-            "pivot_value": "Select a column to be used as the values",
-            "pivot_aggregation": "Select an aggregation to be applied to the new cells",
-        }
         show = {
             "pivot_aggregation": "pivot_value !== null",
         }
