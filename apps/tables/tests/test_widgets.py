@@ -1,31 +1,10 @@
 import pytest
 from playwright.sync_api import expect
 
-from apps.users.models import CustomUser
 from apps.widgets.forms import WidgetSourceForm
 from apps.widgets.models import Widget
 
 pytestmark = pytest.mark.django_db
-
-from django.conf import settings
-from django.contrib.auth import BACKEND_SESSION_KEY, HASH_SESSION_KEY, SESSION_KEY
-from django.contrib.sessions.backends.db import SessionStore
-
-
-def create_session_cookie(user, live_server):
-    session = SessionStore()
-    session[SESSION_KEY] = user.pk
-    session[BACKEND_SESSION_KEY] = settings.AUTHENTICATION_BACKENDS[0]
-    session[HASH_SESSION_KEY] = user.get_session_auth_hash()
-    session.save()
-
-    cookie = {
-        "name": settings.SESSION_COOKIE_NAME,
-        "value": session.session_key,
-        "secure": False,
-        "url": live_server.url,
-    }
-    return cookie
 
 
 def test_table_select_basic(
@@ -68,6 +47,8 @@ def test_table_select_basic(
     form = WidgetSourceForm(instance=widget)
 
     pwf.render(form)
+    # required for search
+    pwf.page.force_login(live_server)
 
     # initial load
 
@@ -99,12 +80,11 @@ def test_table_select_basic(
         "checkbox checkbox--radio checkbox--icon checkbox--checked"
     )
 
-    user = CustomUser.objects.first()
-    pwf.page.context.add_cookies([create_session_cookie(user, live_server)])
-
     # search
 
     pwf.page.locator("input[type=text]").press_sequentially("Search")
+
+    pwf.page.pause()
 
     # 1x selected + 5x search results
     expect(pwf.page.locator("label.checkbox")).to_have_count(6)

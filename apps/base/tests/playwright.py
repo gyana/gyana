@@ -1,10 +1,37 @@
 import pytest
 from django import forms
+from django.conf import settings
+from django.contrib.auth import BACKEND_SESSION_KEY, HASH_SESSION_KEY, SESSION_KEY
+from django.contrib.sessions.backends.db import SessionStore
 from django.template.loader import render_to_string
+from playwright.sync_api import Page
 
 from apps.base.alpine import ibis_store
+from apps.users.models import CustomUser
 
 pytestmark = pytest.mark.django_db
+
+
+def force_login(self, live_server):
+    user = CustomUser.objects.first()
+
+    session = SessionStore()
+    session[SESSION_KEY] = user.pk
+    session[BACKEND_SESSION_KEY] = settings.AUTHENTICATION_BACKENDS[0]
+    session[HASH_SESSION_KEY] = user.get_session_auth_hash()
+    session.save()
+
+    cookie = {
+        "name": settings.SESSION_COOKIE_NAME,
+        "value": session.session_key,
+        "secure": False,
+        "url": live_server.url,
+    }
+
+    self.context.add_cookies([cookie])
+
+
+Page.force_login = force_login
 
 
 class PlaywrightForm:
