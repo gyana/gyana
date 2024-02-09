@@ -8,12 +8,11 @@ ICONS = {"integration": "far fa-link", "workflow_node": "far fa-stream"}
 class SelectWithDisable(Select):
     def __init__(
         self,
-        disabled,
         attrs=None,
         choices=(),
     ) -> None:
         super().__init__(attrs=attrs, choices=choices)
-        self.disabled = disabled
+        self.disabled = {}
 
     def get_context(self, name, value, attrs):
         context = super().get_context(name, value, attrs)
