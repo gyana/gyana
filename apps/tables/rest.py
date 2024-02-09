@@ -5,15 +5,19 @@ from rest_framework.permissions import IsAuthenticated
 from apps.tables.filters import TableFilter
 
 from .models import Table
-from .serializers import TableSerializer
+from .serializers import TableSchemaSerializer, TableSerializer
 
 
 class TableViewSet(viewsets.ModelViewSet):
-    serializer_class = TableSerializer
     permission_classes = (IsAuthenticated,)
     filter_backends = [drf_filters.DjangoFilterBackend]
     filterset_fields = ["project", "search"]
     filterset_class = TableFilter
+
+    def get_serializer_class(self):
+        if self.action == "retrieve":
+            return TableSchemaSerializer
+        return TableSerializer
 
     def get_queryset(self):
         if self.request is None:
