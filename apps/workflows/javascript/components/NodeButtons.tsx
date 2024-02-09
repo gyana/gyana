@@ -12,7 +12,7 @@ const EditButton = ({ id }) => {
       data-modal-id='workflow-modal'
       data-modal-src={`/nodes/${id}`}
       data-modal-item={id}
-      data-modal-classes='tf-modal--full'
+      data-modal-classes='modal--full'
       data-tf-modal-target={model_item == id ? 'onParam' : ''}
     >
       <i className='fas fa-fw fa-edit fa-lg'></i>

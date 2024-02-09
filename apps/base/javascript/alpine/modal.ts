@@ -11,7 +11,7 @@ export default (el, { modifiers, expression }, { cleanup }) => {
   const sizes = ['tall', 'wide', 'full']
   const classes = modifiers
     .filter((m) => sizes.includes(m))
-    .map((m) => `tf-modal--${m}`)
+    .map((m) => `modal--${m}`)
     .join(' ')
 
   const open = () => {
@@ -30,7 +30,7 @@ export default (el, { modifiers, expression }, { cleanup }) => {
     modal?.addEventListener('click', (event) => {
       if (
         event.target === event.currentTarget ||
-        event.target.closest('button')?.classList?.contains('tf-modal__close')
+        event.target.closest('button')?.classList?.contains('modal__close')
       ) {
         // modal closing warning if content has changed
         if (changed) {
@@ -125,7 +125,7 @@ export default (el, { modifiers, expression }, { cleanup }) => {
   })
 }
 
-const modal_t = /*html*/ `<div class="tf-modal __class__">
+const modal_t = /*html*/ `<div class="modal __class__">
   <div class="card card--none card--modal">
     <div class="overflow-hidden flex-1"
       hx-get="__hx_get__"
@@ -139,7 +139,7 @@ const modal_t = /*html*/ `<div class="tf-modal __class__">
   </div>
 </div>`
 
-const warning_t = /*html*/ `<div class="tf-modal flex items-center justify-center">
+const warning_t = /*html*/ `<div class="modal flex items-center justify-center">
   <div class="card card--sm card--inline flex flex-col">
     <h3>Be careful!</h3>
     <p class="mb-7">You have unsaved changes that will be lost on closing!</p>

@@ -32,7 +32,7 @@ describe('workflows', () => {
     cy.get(`[data-id=${startId}]`).dblclick()
     cy.contains('store_info').click()
     cy.contains('Blackpool')
-    cy.get('.tf-modal__close').click()
+    cy.get('.modal__close').click()
     cy.reactFlowDrag(startId, { x: 150, y: 300 })
 
     cy.story('Drop, connect and configure select node')

@@ -48,7 +48,7 @@ const NodeContent: React.FC<Props> = ({ id, data, showFilledIcon = true }) => {
         data-action='dblclick->tf-modal#open'
         data-modal-item={id}
         data-modal-id='workflow-modal'
-        data-modal-classes='tf-modal--full'
+        data-modal-classes='modal--full'
       ></i>
       <div className={`p-2 ${!showContent && 'hidden'}`}>
         <NodeDescription id={id} data={data} />

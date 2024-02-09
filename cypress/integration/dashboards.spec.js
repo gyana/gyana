@@ -28,7 +28,7 @@ describe('dashboards', () => {
     createWidget('table', 0, 0)
     cy.contains('Edinburgh')
 
-    cy.get('button[class*=tf-modal__close]').click({
+    cy.get('button[class*=modal__close]').click({
       force: true,
     })
     cy.get('input[value="Save & Preview"]').should('not.exist')

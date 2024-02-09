@@ -1,9 +1,9 @@
-from django import forms
 import pytest
+from django import forms
 from django.http import HttpResponse
+from django.template import RequestContext, Template
 from django.urls import path
 from playwright.sync_api import expect
-from django.template import Template, RequestContext
 
 from apps.base.views import HttpResponseSeeOther
 
@@ -50,7 +50,7 @@ _base_template = """{% extends "web/base.html" %}{% block body %}
 
 _modal_template = """{% extends "web/base.html" %}{% block body %}
     <div id="modal">
-        <button class="tf-modal__close"/><i class="fal fa-times fa-lg"></i></button>
+        <button class="modal__close"/><i class="fal fa-times fa-lg"></i></button>
         <form hx-post="/modal">
             {% csrf_token %}
             {{ form }}
@@ -86,12 +86,12 @@ def test_modal_open_close(dynamic_view, live_server_js, page):
     expect(page.locator("#modal")).to_be_attached()
 
     # close with cross
-    page.locator(".tf-modal__close").click()
+    page.locator(".modal__close").click()
     expect(page.locator("#modal")).not_to_be_attached()
 
     # close by clicking outside
     page.locator("button").click()
-    page.locator(".tf-modal").click(position={"x": 5, "y": 5})
+    page.locator(".modal").click(position={"x": 5, "y": 5})
     expect(page.locator("#modal")).not_to_be_attached()
 
     warning = page.get_by_text("You have unsaved changes that will be lost on closing")
@@ -99,7 +99,7 @@ def test_modal_open_close(dynamic_view, live_server_js, page):
     # warning modal
     page.locator("button").click()
     page.locator("input[name=name]").fill("valid")
-    page.locator(".tf-modal__close").click()
+    page.locator(".modal__close").click()
     expect(warning).to_be_attached()
 
     # stay
@@ -108,7 +108,7 @@ def test_modal_open_close(dynamic_view, live_server_js, page):
     expect(page.locator("#modal")).to_be_attached()
 
     # close anyway
-    page.locator(".tf-modal__close").click()
+    page.locator(".modal__close").click()
     expect(warning).to_be_attached()
     page.get_by_text("Close Anyway").click()
     expect(warning).not_to_be_attached()
