@@ -12,7 +12,7 @@ class TableViewSet(viewsets.ModelViewSet):
     serializer_class = TableSerializer
     permission_classes = (IsAuthenticated,)
     filter_backends = [drf_filters.DjangoFilterBackend]
-    filterset_fields = ["project", "dashboard", "workflow", "search"]
+    filterset_fields = ["project", "search"]
     filterset_class = TableFilter
 
     def get_queryset(self):

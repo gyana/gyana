@@ -1,8 +1,3 @@
-import json
-
-from django.contrib.postgres.search import TrigramSimilarity
-from django.db.models import Case, Q, When
-from django.db.models.functions import Greatest
 from django.forms.widgets import ChoiceWidget
 from rest_framework.renderers import JSONRenderer
 
@@ -23,12 +18,25 @@ class TableSelect(ChoiceWidget):
         context["parent_entity"] = self.parent_entity
         context["parent"] = self.parent
 
-        tables = (
+        table_pks = self.parent_entity.input_tables_fk
+        context["used_in"] = table_pks
+
+        queryset = (
             Table.available.filter(project=self.parent_entity.project)
             .exclude(
                 source__in=[Table.Source.INTERMEDIATE_NODE, Table.Source.CACHE_NODE]
             )
             .order_by("updated")
         )
-        context["options"] = json.dumps(TableSerializer(tables, many=True).data)
+
+        tables = list(queryset.filter(pk__in=table_pks)) + list(
+            queryset.exclude(pk__in=table_pks)[:5]
+        )
+
+        context["options"] = (
+            JSONRenderer()
+            .render(TableSerializer(tables, many=True).data)
+            .decode("utf-8")
+        )
+
         return context
