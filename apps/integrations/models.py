@@ -196,6 +196,7 @@ class Integration(BaseModel):
 
         return reverse("project_integrations:detail", args=(self.project.id, self.id))
 
+    @property
     def icon(self):
         return f"images/integrations/{self.kind}.svg"
 

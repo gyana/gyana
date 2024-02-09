@@ -24,7 +24,7 @@ pytestmark = pytest.mark.django_db
 COLUMNS_LENGTH = 10
 
 
-def test_column_form_with_formattin(pwf):
+def test_column_form_with_formatting(pwf):
     pwf.render(ColumnFormWithFormatting(schema=TABLE.schema()))
 
     pwf.assert_fields({"column"})

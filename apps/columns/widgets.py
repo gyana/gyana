@@ -1,4 +1,4 @@
-from django.forms.widgets import Textarea
+from django.forms.widgets import Select, Textarea
 
 
 class CodeMirror(Textarea):

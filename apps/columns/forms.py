@@ -1,11 +1,12 @@
 from crispy_forms.layout import Layout
 from django import forms
-from ibis.expr.datatypes import Array, Floating, Struct
+from ibis.expr.datatypes import Floating
 
 from apps.base.core.utils import create_column_choices
 from apps.base.forms import ModelForm
-from apps.base.widgets import Datalist, SelectWithDisable
+from apps.base.widgets import Datalist
 from apps.columns.crispy import ColumnFormatting
+from apps.columns.fields import ColumnField
 from apps.columns.models import (
     AddColumn,
     AggregationColumn,
@@ -35,21 +36,9 @@ IBIS_TO_FUNCTION = {
 }
 
 
-def disable_struct_and_array_columns(fields, column_field, schema):
-    fields["column"] = forms.ChoiceField(
-        choices=column_field.choices,
-        help_text=column_field.help_text,
-        widget=SelectWithDisable(
-            disabled={
-                name: "Currently, you cannot use this column type here."
-                for name, type_ in schema.items()
-                if isinstance(type_, (Struct, Array))
-            },
-        ),
-    )
-
-
 class ColumnForm(ModelForm):
+    column = ColumnField(disable_struct_array=True)
+
     class Meta:
         fields = ("column", "part")
         model = Column
@@ -59,14 +48,10 @@ class ColumnForm(ModelForm):
         }
         effect = f"choices.part = $store.ibis.date_periods[schema[column]]"
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        disable_struct_and_array_columns(
-            self.fields, self.fields["column"], self.schema
-        )
-
 
 class ColumnFormWithFormatting(ModelForm):
+    column = ColumnField(disable_struct_array=True)
+
     class Meta:
         model = Column
         fields = (
@@ -99,9 +84,6 @@ class ColumnFormWithFormatting(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        disable_struct_and_array_columns(
-            self.fields, self.fields["column"], self.schema
-        )
 
         self.helper.layout = Layout(
             "column",
@@ -121,6 +103,8 @@ class ColumnFormWithFormatting(ModelForm):
 
 
 class AggregationColumnForm(ModelForm):
+    column = ColumnField(disable_struct_array=True)
+
     class Meta:
         fields = (
             "column",
@@ -134,14 +118,10 @@ class AggregationColumnForm(ModelForm):
         show = {"function": "column !== null"}
         effect = f"choices.function = $store.ibis.aggregations[schema[column]]"
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        disable_struct_and_array_columns(
-            self.fields, self.fields["column"], self.schema
-        )
-
 
 class AggregationFormWithFormatting(ModelForm):
+    column = ColumnField(disable_struct_array=True)
+
     class Meta:
         fields = (
             "column",
@@ -174,9 +154,6 @@ class AggregationFormWithFormatting(ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        disable_struct_and_array_columns(
-            self.fields, self.fields["column"], self.schema
-        )
 
         self.helper.layout = Layout(
             "column",
@@ -204,6 +181,8 @@ def _show_value_field(field):
 
 
 class OperationColumnForm(ModelForm):
+    column = ColumnField(disable_struct_array=True)
+
     class Meta:
         model = EditColumn
         fields = (
@@ -228,12 +207,6 @@ class OperationColumnForm(ModelForm):
         } | {k: _show_value_field(k) for k in fields if k.endswith("_value")}
         effect = f"computed.function_field = $store.ibis.functions[schema[column]]"
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        disable_struct_and_array_columns(
-            self.fields, self.fields["column"], self.schema
-        )
-
     def save(self, commit: bool):
         # Make sure only one function is set and turn the others to Null
         for field in self.base_fields:
@@ -243,6 +216,8 @@ class OperationColumnForm(ModelForm):
 
 
 class AddColumnForm(ModelForm):
+    column = ColumnField()
+
     class Meta:
         model = AddColumn
         fields = (
@@ -289,6 +264,14 @@ class FormulaColumnForm(ModelForm):
 
 
 class WindowColumnForm(ModelForm):
+    column = ColumnField(disable_struct_array=True)
+    group_by = ColumnField(
+        required=False,
+        disabled_types=(Floating,),
+        message="You cannot group by a floating column",
+    )
+    order_by = ColumnField(required=False)
+
     class Meta:
         fields = ("column", "function", "group_by", "order_by", "ascending", "label")
         model = WindowColumn
@@ -301,46 +284,17 @@ class WindowColumnForm(ModelForm):
         }
         effect = f"choices.function = $store.ibis.aggregations[schema[column]]"
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        disable_struct_and_array_columns(
-            self.fields, self.fields["column"], self.schema
-        )
-        choices = create_column_choices(self.schema)
-
-        self.fields["group_by"] = forms.ChoiceField(
-            choices=choices,
-            help_text=self.base_fields["group_by"].help_text,
-            required=False,
-            widget=SelectWithDisable(
-                disabled={
-                    name: f"You cannot group by a {type_} column"
-                    for name, type_ in self.schema.items()
-                    if isinstance(type_, Floating)
-                }
-            ),
-        )
-        self.fields["order_by"] = forms.ChoiceField(
-            choices=choices,
-            help_text=self.base_fields["order_by"].help_text,
-            required=False,
-        )
-
     def clean_label(self):
         return column_naming_validation(self.cleaned_data["label"], self.schema.names)
 
 
 class ConvertColumnForm(ModelForm):
+    column = ColumnField()
+
     class Meta:
         fields = ("column", "target_type")
         model = ConvertColumn
         labels = {"target_type": "Type"}
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        self.fields["column"].choices = create_column_choices(self.schema)
 
 
 def create_left_join_choices(parents, index):
@@ -400,6 +354,8 @@ class JoinColumnForm(ModelForm):
 
 
 class SortColumnForm(ModelForm):
+    column = ColumnField()
+
     class Meta:
         model = SortColumn
         fields = ["column", "ascending", "sort_index"]
@@ -428,6 +384,8 @@ def extract_values_from_data(prefix, data, field_name, idx=None):
 
 
 class RenameColumnForm(ModelForm):
+    column = ColumnField()
+
     class Meta:
         model = RenameColumn
         fields = ("column", "new_name")

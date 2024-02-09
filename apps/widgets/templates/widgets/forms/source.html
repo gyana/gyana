@@ -1,3 +1,5 @@
+{% load crispy_forms_tags %}
+
 <form
   id="widget-update-form"
   class="widget-update-sidebar__form"
@@ -10,7 +12,7 @@
   {% csrf_token %}
 
   <div class="widget-update__body">
-    {{ form }}
+    {% crispy form %}
   </div>
 
   <div class="widget-update__footer">

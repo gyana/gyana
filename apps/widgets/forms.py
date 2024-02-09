@@ -4,13 +4,13 @@ from crispy_forms.layout import Layout
 from django import forms
 from ibis.expr.datatypes import Date, Time, Timestamp
 
-from apps.base.core.utils import create_column_choices
 from apps.base.crispy import CrispyFormset
 from apps.base.fields import ColorField
 from apps.base.forms import ModelForm
-from apps.base.widgets import Datalist, SelectWithDisable, SourceSelect
+from apps.base.widgets import Datalist
+from apps.columns.fields import ColumnField
 from apps.dashboards.widgets import PaletteColorsField
-from apps.tables.forms import IntegrationSearchMixin
+from apps.tables.widgets import TableSelect
 
 from .formsets import (
     AggregationColumnFormset,
@@ -71,46 +71,30 @@ class WidgetCreateForm(ModelForm):
         return value
 
 
-class WidgetSourceForm(IntegrationSearchMixin, ModelForm):
-    search = forms.CharField(required=False)
-
+class WidgetSourceForm(ModelForm):
     class Meta:
         model = Widget
         fields = ["table"]
-        widgets = {"table": SourceSelect(parent="dashboard")}
+        widgets = {"table": TableSelect(parent="dashboard")}
 
     def __init__(self, *args, **kwargs):
         project = kwargs.pop("project", None)
-
         super().__init__(*args, **kwargs)
-        self.order_fields(["search", "table"])
-        self.fields["search"].widget.attrs["data-action"] = "input->tf-modal#search"
-
-        # Re-focus the search bar when there is a value
-        if self.data.get("search"):
-            self.fields["search"].widget.attrs["autofocus"] = ""
-
-        if project:
-            self.search_queryset(
-                self.fields["table"],
-                project,
-                self.instance.table,
-                self.instance.page.dashboard.input_tables_fk,
-            )
-
-
-def disable_non_time(schema):
-    return {
-        name: "You can only select datetime, time or date columns for timeseries charts."
-        for name, type_ in schema.items()
-        if not isinstance(type_, (Time, Timestamp, Date))
-    }
+        self.fields["table"].widget.parent_entity = self.instance.page.dashboard
 
 
 class GenericWidgetForm(ModelForm):
     dimension = forms.ChoiceField(choices=())
     second_dimension = forms.ChoiceField(choices=())
     sort_column = forms.ChoiceField(choices=(), required=False)
+    dimension = ColumnField()
+    second_dimension = ColumnField()
+    sort_column = ColumnField(required=False)
+    date_column = ColumnField(
+        required=False,
+        allowed_types=(Date, Time, Timestamp),
+        message="You can only select datetime, time or date columns for timeseries charts.",
+    )
 
     class Meta:
         model = Widget
@@ -195,20 +179,12 @@ class GenericWidgetForm(ModelForm):
             if key != Widget.Category.CONTENT
         ]
 
-        schema = self.instance.table.schema
-
-        choices = create_column_choices(schema)
-        if "dimension" in self.fields:
-            self.fields["dimension"].choices = choices
-        if "second_dimension" in self.fields:
-            self.fields["second_dimension"].choices = choices
-
         # TODO: implement sort as a formset of WidgetSortColumn (new model)
         # generated name is implementation detail for BigQuery
         # write a migration for existing column name
         # include COUNT_COLUMN_NAME as a default option
-        if "sort_column" in self.fields:
-            self.fields["sort_column"].choices = choices
+        # if "sort_column" in self.fields:
+        #     self.fields["sort_column"].choices = choices
 
         # TODO with Alpine for heatmap
         # self.fields["dimension"].label = "X"
@@ -217,15 +193,6 @@ class GenericWidgetForm(ModelForm):
         # TODO with Alpine for stacked chart
         # self.fields["second_dimension"].label = "Stack dimension"
         # self.fields["second_dimension"].required = False
-
-        self.fields["date_column"] = forms.ChoiceField(
-            required=False,
-            widget=SelectWithDisable(
-                disabled=disable_non_time(schema),
-            ),
-            choices=create_column_choices(schema),
-            help_text=self.base_fields["date_column"].help_text,
-        )
 
         self.helper.layout = Layout(
             "kind",

@@ -1,0 +1,66 @@
+{% load static %}
+
+<fieldset name="{{ widget.name }}"
+  x-data="{search: null, options: {{ options }}, usedIn: {{ used_in }} }">
+
+  <input x-model="search"
+    type="text"
+    placeholder="Search for tables in integrations or workflows..."
+    @input.debounce="const results = (await SiteJS.base.Api.getApiClient().action(
+      window.schema,
+      ['tables', 'api', 'tables', 'list'],
+      { project: {{ parent_entity.project.id }}, ...(search !== null && search !== '' ? {search}: {}) }
+    )).results
+
+    // table for widget, input_table for input node
+    const value = {{ widget.name|form_name }}
+
+    // keep the selected option at the top of the list
+    options = [
+      ...(value !== null ? [options.find(option => option.id === value)] : []),
+      ...results.filter(result => result.id !== value)
+    ]"
+  >
+
+  <template x-for="option in options" :key="option.id">
+    <label
+      class="checkbox checkbox--radio checkbox--icon"
+      :class="{ 'checkbox--checked': $data.{{ widget.name|form_name }} == option.id }"
+      id="{{ option.id }}"
+      @click="$data.{{ widget.name|form_name }} = option.id"
+    >
+      <input
+        type="radio"
+        :id="'id_{{ widget.name }}_' + option.id"
+        name="{{ widget.name }}"
+        :value="option.id"
+        class="checkbox__hidden"
+        x-model="$data.{{ widget.name|form_name }}"
+        data-action="click->tf-modal#preview"
+      />
+    
+      <template x-if="option.image">
+        <img :src="option.image" style="width: 1.6rem;">
+      </template>
+      <template x-if="!option.image">
+        <i :class="option.icon" style="font-size: 1.6rem;"></i>
+      </template>
+    
+      <div>
+        <span x-text="option.owner_name"></span>
+    
+        <template x-if="usedIn.includes(option.id)">
+          <p class="small text-black-50">Used in this {{ parent }}</p>
+        </template>
+      </div>
+    
+      <template x-if="option.out_of_date">
+        <div class="opacity-50 ml-auto">
+          <i x-tooltip="Data is out of date"
+            class="fas fa-exclamation-triangle"
+          ></i>
+        </div>
+      </template>
+    </label>
+  </template>
+</fieldset>
