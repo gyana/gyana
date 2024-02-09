@@ -19,7 +19,7 @@ export default (el, { modifiers, expression }, { cleanup }) => {
       modal_t.replace('__hx_get__', expression).replace('__class__', classes)
     )
 
-    // todo: decide how to handle persistance logic for tabs (i.e. widgets)
+    // TODO: decide how to handle persistance logic for tabs (i.e. widgets)
     // for now, this is a constraint to avoid duplicate modals
     document.getElementById('modal').replaceChildren(modal)
 
@@ -45,6 +45,7 @@ export default (el, { modifiers, expression }, { cleanup }) => {
 
           modal.insertAdjacentElement('afterend', warning)
         } else {
+          // TODO: decide whether to implement submit on close for widgets and controls
           modal.remove()
         }
       }
@@ -52,9 +53,10 @@ export default (el, { modifiers, expression }, { cleanup }) => {
 
     // handle tab changes
     modal?.addEventListener('htmx:beforeRequest', function (event) {
+      const { requestConfig, pathInfo } = event.detail
       if (
-        event.detail.pathInfo.requestPath.split('?')[0] ===
-        expression.split('?')[0]
+        pathInfo.requestPath.split('?')[0] === expression.split('?')[0] &&
+        requestConfig.verb === 'get'
       ) {
         if (changed) {
           event.preventDefault()
@@ -85,7 +87,7 @@ export default (el, { modifiers, expression }, { cleanup }) => {
 
       if (
         [200, 201].includes(xhr.status) &&
-        requestConfig.path === expression &&
+        requestConfig.path.split('?')[0] === expression.split('?')[0] &&
         requestConfig.verb === 'post' &&
         !is_preview
       ) {
