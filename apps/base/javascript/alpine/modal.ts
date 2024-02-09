@@ -9,17 +9,20 @@ export default (el, { modifiers, expression }, { cleanup }) => {
   let is_preview = false
 
   const sizes = ['tall', 'wide', 'full']
-  const classes = modifiers.filter((m) => sizes.includes(m)).map(m => `tf-modal--${m}`).join(' ')
+  const classes = modifiers
+    .filter((m) => sizes.includes(m))
+    .map((m) => `tf-modal--${m}`)
+    .join(' ')
 
   const open = () => {
     const modal = htmlToElement(
       modal_t.replace('__hx_get__', expression).replace('__class__', classes)
-      )
+    )
 
     // todo: decide how to handle persistance logic for tabs (i.e. widgets)
     // for now, this is a constraint to avoid duplicate modals
     document.getElementById('modal').replaceChildren(modal)
-    
+
     // register HTMX attributes on the modal
     htmx.process(modal)
 
@@ -27,7 +30,7 @@ export default (el, { modifiers, expression }, { cleanup }) => {
     modal?.addEventListener('click', (event) => {
       if (
         event.target === event.currentTarget ||
-        event.target.closest('button').classList.contains('tf-modal__close')
+        event.target.closest('button')?.classList?.contains('tf-modal__close')
       ) {
         // modal closing warning if content has changed
         if (changed) {
@@ -43,6 +46,31 @@ export default (el, { modifiers, expression }, { cleanup }) => {
           modal.insertAdjacentElement('afterend', warning)
         } else {
           modal.remove()
+        }
+      }
+    })
+
+    // handle tab changes
+    modal?.addEventListener('htmx:beforeRequest', function (event) {
+      if (
+        event.detail.pathInfo.requestPath.split('?')[0] ===
+        expression.split('?')[0]
+      ) {
+        if (changed) {
+          event.preventDefault()
+
+          const warning = htmlToElement(warning_t)
+
+          warning.addEventListener('modal:close', () => {
+            warning.remove()
+            changed = false
+            // re-trigger the click event on tab
+            event.target.click()
+          })
+
+          warning.addEventListener('modal:stay', () => warning.remove())
+
+          modal.insertAdjacentElement('afterend', warning)
         }
       }
     })
