@@ -19,11 +19,6 @@ class TableViewSet(viewsets.ModelViewSet):
         if self.request is None:
             return Table.objects.none()
 
-        return (
-            Table.objects.filter(project__team__members=self.request.user)
-            .exclude(
-                source__in=[Table.Source.INTERMEDIATE_NODE, Table.Source.CACHE_NODE]
-            )
-            .distinct()
-            .order_by("updated")
+        return Table.available.exclude(
+            source__in=[Table.Source.INTERMEDIATE_NODE, Table.Source.CACHE_NODE]
         )
