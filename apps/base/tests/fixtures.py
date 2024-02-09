@@ -1,10 +1,14 @@
+import os
 from unittest.mock import MagicMock
 
 import ibis.expr.schema as sch
 import pytest
 import waffle
 from django.db import connection
+from django.http import HttpResponse
+from django.urls import get_resolver, path
 from django.utils import timezone
+from pytest_django import live_server_helper
 from waffle.templatetags import waffle_tags
 
 from apps.base import clients
@@ -145,5 +149,47 @@ def project(project_factory, logged_in_user):
 
 
 @pytest.fixture
-def pwf(page):
-    return PlaywrightForm(page)
+def dynamic_view(settings):
+    url_patterns = get_resolver(settings.ROOT_URLCONF).url_patterns
+    original_urlconf_len = len(url_patterns)
+
+    def _dynamic_view(content):
+        if isinstance(content, str):
+
+            def view_func(request):
+                return HttpResponse(content)
+
+            temporary_urls = [
+                path("test-dynamic-view", view_func, name="test-dynamic-view"),
+            ]
+        else:
+            temporary_urls = content
+
+        get_resolver(settings.ROOT_URLCONF).url_patterns += temporary_urls
+        return "test-dynamic-view/"
+
+    yield _dynamic_view
+
+    get_resolver(settings.ROOT_URLCONF).url_patterns = url_patterns[
+        :original_urlconf_len
+    ]
+
+
+# duplicate of pytest_django live_server but using SimpleTestCase instead of TransactionTestCase
+# search for "live_server" (with quotes) in pytest_django to understand why this works
+@pytest.fixture(scope="session")
+def live_server_js(request: pytest.FixtureRequest):
+    addr = (
+        request.config.getvalue("liveserver")
+        or os.getenv("DJANGO_LIVE_TEST_SERVER_ADDRESS")
+        or "localhost"
+    )
+
+    server = live_server_helper.LiveServer(addr)
+    yield server
+    server.stop()
+
+
+@pytest.fixture
+def pwf(page, dynamic_view, live_server_js):
+    return PlaywrightForm(page, dynamic_view, live_server_js)
