@@ -166,7 +166,7 @@ def dynamic_view(settings):
             temporary_urls = content
 
         get_resolver(settings.ROOT_URLCONF).url_patterns += temporary_urls
-        return "test-dynamic-view/"
+        return "test-dynamic-view"
 
     yield _dynamic_view
 
