@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from functools import lru_cache
 
+import ibis
 from django.db.models import TextChoices
 from ibis.expr import datatypes as idt
 from lark import Lark
@@ -195,9 +196,10 @@ def aggregate_columns(query, aggregations, groups):
     if not groups and not aggregations:
         # query.count() returns a scalar
         # use aggregate to return TableExpr
-        return query.aggregate(query.count())
+        return query.agg(count=ibis._.count())
     if groups:
         query = query.group_by(groups)
     if aggregations:
         return query.aggregate(aggregations)
-    return query.count()
+
+    return query.agg(count=ibis._.count())

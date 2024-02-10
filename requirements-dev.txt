@@ -107,9 +107,7 @@ pexpect==4.8.0
 pickleshare==0.7.5
     # via ipython
 platformdirs==4.1.0
-    # via
-    #   -c requirements.txt
-    #   black
+    # via black
 playwright==1.40.0
     # via pytest-playwright
 pluggy==1.0.0

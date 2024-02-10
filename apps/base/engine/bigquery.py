@@ -6,9 +6,8 @@ import ibis
 from django.conf import settings
 from django.core.cache import cache
 from google.cloud import bigquery as bq
-from ibis.backends import bigquery
-from ibis.backends.bigquery.client import BigQueryTable
-from ibis.expr.types import TableExpr
+from ibis.expr.operations import DatabaseTable
+from ibis.expr.types import Expr
 
 from apps.base.core.bigquery import (
     bq_table_schema_is_string_only,
@@ -159,8 +158,8 @@ class BigQueryClient(BaseClient):
             tbl = self.client.table(table.name, database=table.namespace)
             cache.set(key, tbl.schema(), 24 * 3600)
         else:
-            tbl = TableExpr(
-                BigQueryTable(
+            tbl = Expr(
+                DatabaseTable(
                     name=f"{self.gcp_project}.{table.namespace}.{table.name}",
                     schema=schema,
                     source=self.client,
