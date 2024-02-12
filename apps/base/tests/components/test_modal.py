@@ -173,6 +173,12 @@ def test_modal_persist(dynamic_view, live_server_js, page):
     page.reload()
     expect(page.locator("#modal-root")).to_be_attached()
 
+    # check modal is not persisted after closed
+    page.locator(".modal__close").click()
+    expect(page.locator("#modal-root")).not_to_be_attached()
+
+    assert page.url == live_server_js.url + "/persist?"
+
 
 def test_modal_tabs(dynamic_view, live_server_js, page):
     temporary_urls = [
