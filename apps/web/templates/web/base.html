@@ -27,7 +27,6 @@
     {% if request.GET.iframe %}
       <base target="_parent">
     {% endif %}
-    <script src="{% static "js/stimulus-bundle.js" %}"></script>
     <script src="{% static "js/base-bundle.js" %}"></script>
 
     <script src="{% static 'js/htmx@1.8.5.min.js' %}" defer></script>
@@ -73,35 +72,6 @@
       <main>
         {% block body.content %}{% endblock body.content %}
       </main>
-
-      {% comment %}
-    For use with the `tf_modal_controller.js` controller.
-    {% endcomment %}
-      {% block body.modal %}
-        <div
-          data-tf-modal-target="modal"
-          class="modal"
-          hidden
-        >
-          <div class="card card--none card--modal">
-            {% block modal.body %}
-              <div
-                id="hx-modal"
-                class="overflow-hidden flex-1"
-                data-tf-modal-target="htmx"
-                hx-trigger="hx-modal-load"
-                hx-target="this"
-              >
-                <div class="placeholder-scr placeholder-scr--fillscreen">
-                  <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-2x"></i>
-                </div>
-              </div>
-            {% endblock modal.body %}
-          </div>
-        </div>
-
-        {% include "components/modal_closing_warning.html" %}
-      {% endblock body.modal %}
 
       {% block body.javascript %}{% endblock body.javascript %}
     {% endblock body %}
