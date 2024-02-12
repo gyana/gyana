@@ -45,7 +45,8 @@ export default (el, { modifiers, expression }, { cleanup }) => {
 
           modal.insertAdjacentElement('afterend', warning)
         } else {
-          // TODO: decide whether to implement submit on close for widgets and controls
+          // TODO: decide whether to implement autosave option for widgets and controls
+          // Check for form with hx-post=expression and request submit
           modal.remove()
         }
       }
