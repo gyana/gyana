@@ -74,6 +74,10 @@ _persist_template = """{% extends "web/base.html" %}{% block body %}
 
 _misc_template = """Ignore me"""
 
+_dblclick_template = """{% extends "web/base.html" %}{% block body %}
+    <button x-data x-modal:dblclick="/modal">Click me</button>
+{% endblock %}"""
+
 
 def test_modal_open_close(dynamic_view, live_server_js, page):
     temporary_urls = [
@@ -220,3 +224,21 @@ def test_modal_tabs(dynamic_view, live_server_js, page):
     page.locator("#tab-misc").click()
     expect(warning).not_to_be_attached()
     expect(page.get_by_text("Ignore me")).to_be_attached()
+
+
+def test_modal_dblclick(dynamic_view, live_server_js, page):
+    temporary_urls = [
+        _template_view(_dblclick_template, "dblclick"),
+        _template_view(_modal_template, "modal"),
+    ]
+    dynamic_view(temporary_urls)
+
+    page.goto(live_server_js.url + "/dblclick")
+
+    # does not open modal
+    page.locator("button").click()
+    expect(page.locator("#modal-root")).not_to_be_attached()
+
+    # open the modal
+    page.locator("button").dblclick()
+    expect(page.locator("#modal-root")).to_be_attached()

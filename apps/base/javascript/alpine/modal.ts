@@ -4,7 +4,7 @@
  * @example
  * <button x-modal="{% url '__url__' % }">Settings</button>
  */
-export default (el, { modifiers, expression }, { cleanup }) => {
+export default (el, { value, modifiers, expression }, { cleanup }) => {
   let changed = false
   let is_preview = false
 
@@ -134,7 +134,7 @@ export default (el, { modifiers, expression }, { cleanup }) => {
     }
   }
 
-  el.addEventListener('click', open)
+  el.addEventListener(value || 'click', open)
 
   cleanup(() => {
     // TODO: remove event listener, if necessary
