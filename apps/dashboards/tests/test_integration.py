@@ -85,9 +85,7 @@ def test_dashboard_share(
 
     # share a dashboard
     r = client.get(DETAIL)
-    assertSelectorLength(
-        r, f'button[data-modal-src="/dashboards/{dashboard.id}/share"]', 1
-    )
+    assertSelectorLength(r, f'button[x-modal="/dashboards/{dashboard.id}/share"]', 1)
     r = client.get(f"/dashboards/{dashboard.id}/share")
     assertOK(r)
     assertFormRenders(r, ["shared_status", "password"])
