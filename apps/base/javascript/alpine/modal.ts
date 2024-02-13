@@ -5,9 +5,6 @@
  * <button x-modal="{% url '__url__' % }">Settings</button>
  */
 export default (el, { value, modifiers, expression }, { cleanup }) => {
-  let changed = false
-  let is_preview = false
-
   const sizes = ['tall', 'wide', 'full']
   const classes = modifiers
     .filter((m) => sizes.includes(m))
@@ -17,6 +14,9 @@ export default (el, { value, modifiers, expression }, { cleanup }) => {
   const root = document.getElementById('modal')
 
   const open = () => {
+    let changed = false
+    let is_preview = false
+
     const modal = htmlToElement(
       modal_t.replace('__hx_get__', expression).replace('__class__', classes)
     )
@@ -89,7 +89,8 @@ export default (el, { value, modifiers, expression }, { cleanup }) => {
     })
 
     modal.addEventListener('change', (event) => {
-      changed = true
+      console.log(event.target, event.target.name, event.target.name === '')
+      if (event.target.name !== '') changed = true
     })
 
     // close the modal if there is a successful POST request to the x-modal URL

@@ -53,6 +53,7 @@ _modal_template = """{% extends "web/base.html" %}{% block body %}
         <button class="modal__close"/><i class="fal fa-times fa-lg"></i></button>
         <a id="tab-misc" hx-get="/misc">Tab misc</a>
         <a id="tab-modal" hx-get="/modal?tab=other">Tab {{ request.GET.tab }}</a>
+        <input id="modal-search" type="text" />
         <form hx-post="/modal">
             {% csrf_token %}
             {{ form }}
@@ -121,6 +122,14 @@ def test_modal_open_close(dynamic_view, live_server_js, page):
     expect(warning).not_to_be_attached()
     expect(page.locator("#modal-root")).not_to_be_attached()
 
+    # don't show warning if changed field has no name
+    # also tests for cleanup on changed state
+    page.locator("button").click()
+    expect(page.locator("#modal-root")).to_be_attached()
+    page.locator("#modal-search").fill("search")
+    page.locator(".modal__close").click()
+    expect(warning).not_to_be_attached()
+
 
 def test_modal_post(dynamic_view, live_server_js, page):
     temporary_urls = [
@@ -154,6 +163,8 @@ def test_modal_post(dynamic_view, live_server_js, page):
     page.locator("input[name=name]").fill("valid")
     page.locator("#modal-submit").click()
     expect(page.locator("#modal-root")).not_to_be_attached()
+
+    page.pause()
 
 
 def test_modal_persist(dynamic_view, live_server_js, page):
