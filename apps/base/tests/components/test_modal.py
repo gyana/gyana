@@ -123,7 +123,6 @@ def test_modal_open_close(dynamic_view, live_server_js, page):
     expect(page.locator("#modal-root")).not_to_be_attached()
 
     # don't show warning if changed field has no name
-    # also tests for cleanup on changed state
     page.locator("button").click()
     expect(page.locator("#modal-root")).to_be_attached()
     page.locator("#modal-search").fill("search")
@@ -159,12 +158,15 @@ def test_modal_post(dynamic_view, live_server_js, page):
     expect(page.get_by_text("Invalid name")).not_to_be_attached()
     expect(page.locator("#modal-root")).to_be_attached()
 
+    # explicit close after preview (changed is reset)
+    page.locator(".modal__close").click()
+    expect(page.locator("#modal-root")).not_to_be_attached()
+
     # close on POST to x-modal URL
+    page.locator("button").click()
     page.locator("input[name=name]").fill("valid")
     page.locator("#modal-submit").click()
     expect(page.locator("#modal-root")).not_to_be_attached()
-
-    page.pause()
 
 
 def test_modal_persist(dynamic_view, live_server_js, page):

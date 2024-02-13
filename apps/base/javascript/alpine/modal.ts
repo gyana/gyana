@@ -89,7 +89,7 @@ export default (el, { value, modifiers, expression }, { cleanup }) => {
     })
 
     modal.addEventListener('change', (event) => {
-      console.log(event.target, event.target.name, event.target.name === '')
+      // ignore fields without name (e.g. search in input node)
       if (event.target.name !== '') changed = true
     })
 
@@ -100,13 +100,16 @@ export default (el, { value, modifiers, expression }, { cleanup }) => {
       if (
         [200, 201].includes(xhr.status) &&
         requestConfig.path.split('?')[0] === expression.split('?')[0] &&
-        requestConfig.verb === 'post' &&
-        !is_preview
+        requestConfig.verb === 'post'
       ) {
-        modal.remove()
+        changed = false
 
-        if (modifiers.includes('reload')) {
-          location.reload()
+        if (!is_preview) {
+          modal.remove()
+
+          if (modifiers.includes('reload')) {
+            location.reload()
+          }
         }
       }
     })
