@@ -8,9 +8,13 @@ from django.urls import path
 from playwright.sync_api import expect
 from apps.base.forms import ModelForm
 from django.test.utils import isolate_apps
+from apps.base.formsets import RequiredInlineFormset
 from apps.base.views import CreateView
 from pytest import fixture
 from django.db import connection
+from crispy_forms.bootstrap import TabHolder
+from crispy_forms.layout import Layout
+from apps.base.crispy import CrispyFormset, Tab
 
 pytestmark = pytest.mark.django_db
 
@@ -27,7 +31,29 @@ def test_view():
             max_length=255, choices=SelectChoices.choices, default=SelectChoices.ONE
         )
         other_select = models.CharField(max_length=255, null=True, blank=True)
-        name = models.CharField(max_length=255, null=True)
+        name = models.CharField(max_length=255, null=True, blank=True)
+        tab_field = models.CharField(max_length=255, null=True, blank=True)
+
+    class TestChildModel(models.Model):
+        key = models.CharField(max_length=255)
+        value = models.CharField(max_length=255, null=True, blank=True)
+        parent = models.ForeignKey(
+            "TestModel", on_delete=models.CASCADE, related_name="test_formset"
+        )
+
+    class TestChildForm(ModelForm):
+        class Meta:
+            model = TestChildModel
+            fields = "__all__"
+
+    TestFormset = forms.inlineformset_factory(
+        parent_model=TestModel,
+        model=TestChildModel,
+        form=TestChildForm,
+        formset=RequiredInlineFormset,
+        can_delete=True,
+        extra=0,
+    )
 
     class TestForm(ModelForm):
         class Meta:
@@ -36,6 +62,28 @@ def test_view():
             widgets = {"other_select": forms.Select()}
             show = {"name": "select == 'one'"}
             effect = "choices.other_select = select.split('').map(c => ({value: c, label: c}))"
+            formsets = {
+                "test_formset": TestFormset,
+            }
+
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+
+            self.helper.layout = Layout(
+                TabHolder(
+                    Tab(
+                        "General",
+                        "select",
+                        "other_select",
+                        "name",
+                        CrispyFormset("test_formset", "Test Formset"),
+                    ),
+                    Tab(
+                        "Tab",
+                        "tab_field",
+                    ),
+                )
+            )
 
         def clean_name(self):
             name = self.cleaned_data["name"]
@@ -59,17 +107,19 @@ def test_view():
         <form method="post">
             {% csrf_token %}
             {% crispy form %}
-            <button type="submit">Submit</button>
+            <button id="submit-form" type="submit">Submit</button>
         </form>
     {% endblock %}"""
 
     with connection.schema_editor() as schema_editor:
         schema_editor.create_model(TestModel)
+        schema_editor.create_model(TestChildModel)
 
     yield TestView.as_view()
 
     with connection.schema_editor() as schema_editor:
         schema_editor.delete_model(TestModel)
+        schema_editor.delete_model(TestChildModel)
 
 
 def test_create(dynamic_view, live_server, page, test_view):
@@ -86,12 +136,12 @@ def test_create(dynamic_view, live_server, page, test_view):
 
     # invalid
     page.fill('input[name="name"]', "invalid")
-    page.locator("button").click()
+    page.locator("#submit-form").click()
     expect(page.get_by_text("Invalid name")).to_be_attached()
 
     # post
     page.fill('input[name="name"]', "valid")
-    page.locator("button").click()
+    page.locator("#submit-form").click()
 
     page.wait_for_url("/success")
     assert TestModel.objects.count() == 1
@@ -110,7 +160,7 @@ def test_show(dynamic_view, live_server, page, test_view):
     expect(page.locator("input[name=name]")).not_to_be_attached()
 
     # post
-    page.locator("button").click()
+    page.locator("#submit-form").click()
 
     assert TestModel.objects.count() == 1
 
@@ -139,3 +189,21 @@ def test_effect_choices(dynamic_view, live_server, page, test_view):
     }
 
     assert option_values == {"t", "w", "o"}
+
+
+def test_formset(dynamic_view, live_server, page, test_view):
+    TestModel = test_view.view_class.model
+
+    temporary_urls = [path("base", test_view, name="base")]
+    dynamic_view(temporary_urls)
+
+    page.goto(live_server.url + "/base")
+
+    page.get_by_text("Add new").click()
+    page.locator('input[name="test_formset-0-key"]').fill("key")
+
+    page.locator("#submit-form").click()
+
+    assert TestModel.objects.count() == 1
+    assert TestModel.objects.first().test_formset.count() == 1
+    assert TestModel.objects.first().test_formset.first().key == "key"
