@@ -9,7 +9,7 @@ from playwright.sync_api import expect
 from apps.base.forms import ModelForm
 from django.test.utils import isolate_apps
 from apps.base.formsets import RequiredInlineFormset
-from apps.base.views import CreateView
+from apps.base.views import CreateView, UpdateView
 from pytest import fixture
 from django.db import connection
 from crispy_forms.bootstrap import TabHolder
@@ -93,7 +93,17 @@ def test_view():
 
             return name
 
-    class TestView(CreateView):
+    class TestCreateView(CreateView):
+        model = TestModel
+        form_class = TestForm
+        success_url = "/success"
+
+        def render_to_response(self, context, **response_kwargs):
+            return HttpResponse(
+                Template(_base_template).render(RequestContext(self.request, context)),
+            )
+
+    class TestUpdateView(UpdateView):
         model = TestModel
         form_class = TestForm
         success_url = "/success"
@@ -115,7 +125,7 @@ def test_view():
         schema_editor.create_model(TestModel)
         schema_editor.create_model(TestChildModel)
 
-    yield TestView.as_view()
+    yield TestCreateView.as_view(), TestUpdateView.as_view()
 
     with connection.schema_editor() as schema_editor:
         schema_editor.delete_model(TestModel)
@@ -125,7 +135,7 @@ def test_view():
 def test_create(dynamic_view, live_server, page, test_view):
     TestModel = test_view.view_class.model
 
-    temporary_urls = [path("base", test_view, name="base")]
+    temporary_urls = [path("base", test_view[0], name="base")]
     dynamic_view(temporary_urls)
 
     assert TestModel.objects.count() == 0
@@ -150,7 +160,7 @@ def test_create(dynamic_view, live_server, page, test_view):
 def test_show(dynamic_view, live_server, page, test_view):
     TestModel = test_view.view_class.model
 
-    temporary_urls = [path("base", test_view, name="base")]
+    temporary_urls = [path("base", test_view[0], name="base")]
     dynamic_view(temporary_urls)
 
     page.goto(live_server.url + "/base")
@@ -173,7 +183,7 @@ def test_show(dynamic_view, live_server, page, test_view):
 def test_effect_choices(dynamic_view, live_server, page, test_view):
     TestModel = test_view.view_class.model
 
-    temporary_urls = [path("base", test_view, name="base")]
+    temporary_urls = [path("base", test_view[0], name="base")]
     dynamic_view(temporary_urls)
 
     page.goto(live_server.url + "/base")
@@ -192,13 +202,17 @@ def test_effect_choices(dynamic_view, live_server, page, test_view):
 
 
 def test_formset(dynamic_view, live_server, page, test_view):
-    TestModel = test_view.view_class.model
+    TestModel = test_view[0].view_class.model
 
-    temporary_urls = [path("base", test_view, name="base")]
+    temporary_urls = [
+        path("base", test_view[0], name="base"),
+        path("<int:pk>", test_view[1], name="update"),
+    ]
     dynamic_view(temporary_urls)
 
     page.goto(live_server.url + "/base")
 
+    # add
     page.get_by_text("Add new").click()
     page.locator('input[name="test_formset-0-key"]').fill("key")
 
@@ -207,3 +221,27 @@ def test_formset(dynamic_view, live_server, page, test_view):
     assert TestModel.objects.count() == 1
     assert TestModel.objects.first().test_formset.count() == 1
     assert TestModel.objects.first().test_formset.first().key == "key"
+
+    # delete (server and client side)
+    # including invalid fields in deleted elements
+
+    page.goto(live_server.url + "/1")
+
+    page.get_by_text("Add new").click()
+    page.get_by_text("Add new").click()
+
+    # requires server deletion, including empty required field
+    page.locator('input[name="test_formset-0-key"]').fill("")
+    page.locator('[data-pw="formset-test_formset-remove"]').first.click()
+    # client deletion
+    page.locator('[data-pw="formset-test_formset-remove"]').first.click()
+
+    page.locator('input[name="test_formset-0-key"]').fill("key2")
+
+    page.locator("#submit-form").click()
+
+    assert TestModel.objects.count() == 1
+    assert TestModel.objects.first().test_formset.count() == 1
+    assert TestModel.objects.first().test_formset.first().key == "key2"
+
+    # min and max
