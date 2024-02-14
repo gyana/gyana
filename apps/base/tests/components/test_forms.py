@@ -21,11 +21,12 @@ pytestmark = pytest.mark.django_db
 
 @isolate_apps("test")
 @fixture
-def test_view(dynamic_view):
+def test_view(dynamic_view, live_server):
     class TestModel(models.Model):
         class SelectChoices(models.TextChoices):
             ONE = "one", "One"
             TWO = "two", "Two"
+            FORMSET = "formset", "Formset"
 
         select = models.CharField(
             max_length=255, choices=SelectChoices.choices, default=SelectChoices.ONE
@@ -53,6 +54,8 @@ def test_view(dynamic_view):
         formset=RequiredInlineFormset,
         can_delete=True,
         extra=0,
+        min_num=1,
+        max_num=4,
     )
 
     class TestForm(ModelForm):
@@ -60,7 +63,7 @@ def test_view(dynamic_view):
             model = TestModel
             fields = "__all__"
             widgets = {"other_select": forms.Select()}
-            show = {"name": "select == 'one'"}
+            show = {"name": "select == 'one'", "test_formset": "select == 'formset'"}
             effect = "choices.other_select = select.split('').map(c => ({value: c, label: c}))"
             formsets = {
                 "test_formset": TestFormset,
@@ -79,7 +82,7 @@ def test_view(dynamic_view):
                         CrispyFormset("test_formset", "Test Formset"),
                     ),
                     Tab(
-                        "Tab",
+                        "Tab link",
                         "tab_field",
                     ),
                 )
@@ -138,16 +141,13 @@ def test_view(dynamic_view):
         schema_editor.delete_model(TestChildModel)
 
 
-def test_create(dynamic_view, live_server, page, test_view):
-    TestModel = test_view.view_class.model
-
-    temporary_urls = [path("base", test_view[0], name="base")]
-    dynamic_view(temporary_urls)
+def test_create(live_server, page, test_view):
+    TestModel = test_view
 
     assert TestModel.objects.count() == 0
 
     # get
-    r = page.goto(live_server.url + "/base")
+    r = page.goto(live_server.url + "/new")
     assert r.status == 200
 
     # invalid
@@ -163,13 +163,10 @@ def test_create(dynamic_view, live_server, page, test_view):
     assert TestModel.objects.count() == 1
 
 
-def test_show(dynamic_view, live_server, page, test_view):
-    TestModel = test_view.view_class.model
+def test_show(live_server, page, test_view):
+    TestModel = test_view
 
-    temporary_urls = [path("base", test_view[0], name="base")]
-    dynamic_view(temporary_urls)
-
-    page.goto(live_server.url + "/base")
+    page.goto(live_server.url + "/new")
 
     # hide
     page.select_option("select", "two")
@@ -186,13 +183,10 @@ def test_show(dynamic_view, live_server, page, test_view):
     assert test_model.name is None
 
 
-def test_effect_choices(dynamic_view, live_server, page, test_view):
-    TestModel = test_view.view_class.model
+def test_effect_choices(live_server, page, test_view):
+    TestModel = test_view
 
-    temporary_urls = [path("base", test_view[0], name="base")]
-    dynamic_view(temporary_urls)
-
-    page.goto(live_server.url + "/base")
+    page.goto(live_server.url + "/new")
 
     # effect
     page.select_option("select", "two")
@@ -207,20 +201,50 @@ def test_effect_choices(dynamic_view, live_server, page, test_view):
     assert option_values == {"t", "w", "o"}
 
 
-def test_formset(dynamic_view, live_server, page, test_view):
+def test_tab(live_server, page, test_view):
     TestModel = test_view
 
     page.goto(live_server.url + "/new")
 
+    expect(page.locator("input[name=tab_field]")).not_to_be_visible()
+
+    page.get_by_text("Tab link").click()
+    expect(page.locator("input[name=tab_field]")).to_be_visible()
+
+    # go to tab
+    page.fill('input[name="tab_field"]', "tab")
+    page.locator("#submit-form").click()
+
+    assert TestModel.objects.count() == 1
+    assert TestModel.objects.first().tab_field == "tab"
+
+
+def test_formset(live_server, page, test_view):
+    TestModel = test_view
+
+    page.goto(live_server.url + "/new")
+
+    # show for formset
+    page.select_option("select", "formset")
+
+    # min num
+    expect(
+        page.locator('[data-pw="formset-test_formset-remove"]').first
+    ).to_be_disabled()
+    expect(page.get_by_text("Add new")).not_to_be_disabled()
+
     # add
+    page.locator('input[name="test_formset-0-key"]').fill("key0")
+
     page.get_by_text("Add new").click()
-    page.locator('input[name="test_formset-0-key"]').fill("key")
+    page.locator('input[name="test_formset-1-key"]').fill("key1")
 
     page.locator("#submit-form").click()
 
     assert TestModel.objects.count() == 1
-    assert TestModel.objects.first().test_formset.count() == 1
-    assert TestModel.objects.first().test_formset.first().key == "key"
+    test_model = TestModel.objects.first()
+    assert test_model.test_formset.count() == 2
+    assert {t.key for t in test_model.test_formset.all()} == {"key0", "key1"}
 
     # delete (server and client side)
     # including invalid fields in deleted elements
@@ -230,6 +254,12 @@ def test_formset(dynamic_view, live_server, page, test_view):
     page.get_by_text("Add new").click()
     page.get_by_text("Add new").click()
 
+    # max_num
+    expect(page.get_by_text("Add new")).to_be_disabled()
+    expect(
+        page.locator('[data-pw="formset-test_formset-remove"]').first
+    ).not_to_be_disabled()
+
     # requires server deletion, including empty required field
     page.locator('input[name="test_formset-0-key"]').fill("")
     server_deletion = page.locator('[data-pw="formset-test_formset-remove"]').first
@@ -237,16 +267,15 @@ def test_formset(dynamic_view, live_server, page, test_view):
     expect(server_deletion).not_to_be_visible()
 
     # client deletion
-    client_deletion = page.locator('[data-pw="formset-test_formset-remove"]').nth(1)
+    client_deletion = page.locator('[data-pw="formset-test_formset-remove"]').nth(2)
     client_deletion.click()
     expect(client_deletion).not_to_be_visible()
 
-    page.locator('input[name="test_formset-2-key"]').fill("key2")
+    page.locator('input[name="test_formset-1-key"]').fill("key10")  # update
+    page.locator('input[name="test_formset-3-key"]').fill("key3")  # new
 
     page.locator("#submit-form").click()
 
     assert TestModel.objects.count() == 1
-    assert TestModel.objects.first().test_formset.count() == 1
-    assert TestModel.objects.first().test_formset.first().key == "key2"
-
-    # min and max
+    assert TestModel.objects.first().test_formset.count() == 2
+    assert {t.key for t in test_model.test_formset.all()} == {"key3", "key10"}
