@@ -21,7 +21,7 @@ pytestmark = pytest.mark.django_db
 
 @isolate_apps("test")
 @fixture
-def test_view():
+def test_view(dynamic_view):
     class TestModel(models.Model):
         class SelectChoices(models.TextChoices):
             ONE = "one", "One"
@@ -125,7 +125,13 @@ def test_view():
         schema_editor.create_model(TestModel)
         schema_editor.create_model(TestChildModel)
 
-    yield TestCreateView.as_view(), TestUpdateView.as_view()
+    temporary_urls = [
+        path("new", TestCreateView.as_view(), name="new"),
+        path("<int:pk>/update", TestUpdateView.as_view(), name="update"),
+    ]
+    dynamic_view(temporary_urls)
+
+    yield TestModel
 
     with connection.schema_editor() as schema_editor:
         schema_editor.delete_model(TestModel)
@@ -202,15 +208,9 @@ def test_effect_choices(dynamic_view, live_server, page, test_view):
 
 
 def test_formset(dynamic_view, live_server, page, test_view):
-    TestModel = test_view[0].view_class.model
+    TestModel = test_view
 
-    temporary_urls = [
-        path("base", test_view[0], name="base"),
-        path("<int:pk>", test_view[1], name="update"),
-    ]
-    dynamic_view(temporary_urls)
-
-    page.goto(live_server.url + "/base")
+    page.goto(live_server.url + "/new")
 
     # add
     page.get_by_text("Add new").click()
@@ -225,18 +225,23 @@ def test_formset(dynamic_view, live_server, page, test_view):
     # delete (server and client side)
     # including invalid fields in deleted elements
 
-    page.goto(live_server.url + "/1")
+    page.goto(live_server.url + "/1/update")
 
     page.get_by_text("Add new").click()
     page.get_by_text("Add new").click()
 
     # requires server deletion, including empty required field
     page.locator('input[name="test_formset-0-key"]').fill("")
-    page.locator('[data-pw="formset-test_formset-remove"]').first.click()
-    # client deletion
-    page.locator('[data-pw="formset-test_formset-remove"]').first.click()
+    server_deletion = page.locator('[data-pw="formset-test_formset-remove"]').first
+    server_deletion.click()
+    expect(server_deletion).not_to_be_visible()
 
-    page.locator('input[name="test_formset-0-key"]').fill("key2")
+    # client deletion
+    client_deletion = page.locator('[data-pw="formset-test_formset-remove"]').nth(1)
+    client_deletion.click()
+    expect(client_deletion).not_to_be_visible()
+
+    page.locator('input[name="test_formset-2-key"]').fill("key2")
 
     page.locator("#submit-form").click()
 
