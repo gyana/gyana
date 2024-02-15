@@ -1,27 +1,28 @@
 from typing import Any
-from django.http.response import HttpResponse as HttpResponse
-from django.template import Template, RequestContext
+
 import pytest
-from django import forms
-from django.db import models
-from django.urls import path
-from playwright.sync_api import expect
-from apps.base.forms import ModelForm
-from django.test.utils import isolate_apps
-from apps.base.formsets import RequiredInlineFormset
-from apps.base.views import CreateView, UpdateView
-from pytest import fixture
-from django.db import connection
 from crispy_forms.bootstrap import TabHolder
 from crispy_forms.layout import Layout
+from django import forms
+from django.db import connection, models
+from django.http.response import HttpResponse as HttpResponse
+from django.template import RequestContext, Template
+from django.test.utils import isolate_apps
+from django.urls import path
+from playwright.sync_api import expect
+from pytest import fixture
+
 from apps.base.crispy import CrispyFormset, Tab
+from apps.base.forms import ModelForm
+from apps.base.formsets import RequiredInlineFormset
+from apps.base.views import CreateView, UpdateView
 
 pytestmark = pytest.mark.django_db
 
 
 @isolate_apps("test")
 @fixture
-def test_view(dynamic_view, live_server):
+def test_view(dynamic_view):
     class TestModel(models.Model):
         class SelectChoices(models.TextChoices):
             ONE = "one", "One"
