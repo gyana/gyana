@@ -23,7 +23,7 @@ pytestmark = pytest.mark.django_db(transaction=True)
 
 @isolate_apps("test")
 @fixture
-def test_view(dynamic_view):
+def model(dynamic_view):
     class TestModel(models.Model):
         class SelectChoices(models.TextChoices):
             ONE = "one", "One"
@@ -143,12 +143,10 @@ def test_view(dynamic_view):
         schema_editor.delete_model(TestChildModel)
 
 
-def test_create(live_server, page, test_view):
-    TestModel = test_view
+def test_create_update(live_server, page, model):
+    assert model.objects.count() == 0
 
-    assert TestModel.objects.count() == 0
-
-    # get
+    # get /new
     r = page.goto(live_server.url + "/new")
     assert r.status == 200
 
@@ -157,17 +155,27 @@ def test_create(live_server, page, test_view):
     page.locator("#submit-form").click()
     expect(page.get_by_text("Invalid name")).to_be_attached()
 
-    # post
+    # post /new
     page.fill('input[name="name"]', "valid")
     page.locator("#submit-form").click()
 
     page.wait_for_url("/success")
-    assert TestModel.objects.count() == 1
+    assert model.objects.count() == 1
+    assert model.objects.first().name == "valid"
+
+    # get /1/update
+    page.goto(live_server.url + "/1/update")
+    assert r.status == 200
+
+    # post /1/update
+    page.fill('input[name="name"]', "updated")
+    page.locator("#submit-form").click()
+
+    page.wait_for_url("/success")
+    assert model.objects.first().name == "updated"
 
 
-def test_show(live_server, page, test_view):
-    TestModel = test_view
-
+def test_show(live_server, page, model):
     page.goto(live_server.url + "/new")
 
     # hide
@@ -177,17 +185,15 @@ def test_show(live_server, page, test_view):
     # post
     page.locator("#submit-form").click()
 
-    assert TestModel.objects.count() == 1
+    assert model.objects.count() == 1
 
-    test_model = TestModel.objects.first()
+    test_model = model.objects.first()
 
     assert test_model.select == "two"
     assert test_model.name is None
 
 
-def test_effect_choices(live_server, page, test_view):
-    TestModel = test_view
-
+def test_effect_choices(live_server, page, model):
     page.goto(live_server.url + "/new")
 
     # effect
@@ -203,9 +209,7 @@ def test_effect_choices(live_server, page, test_view):
     assert option_values == {"t", "w", "o"}
 
 
-def test_tab(live_server, page, test_view):
-    TestModel = test_view
-
+def test_tab(live_server, page, model):
     page.goto(live_server.url + "/new")
 
     expect(page.locator("input[name=tab_field]")).not_to_be_visible()
@@ -217,13 +221,11 @@ def test_tab(live_server, page, test_view):
     page.fill('input[name="tab_field"]', "tab")
     page.locator("#submit-form").click()
 
-    assert TestModel.objects.count() == 1
-    assert TestModel.objects.first().tab_field == "tab"
+    assert model.objects.count() == 1
+    assert model.objects.first().tab_field == "tab"
 
 
-def test_formset(live_server, page, test_view):
-    TestModel = test_view
-
+def test_formset(live_server, page, model):
     page.goto(live_server.url + "/new")
 
     # show for formset
@@ -243,8 +245,8 @@ def test_formset(live_server, page, test_view):
 
     page.locator("#submit-form").click()
 
-    assert TestModel.objects.count() == 1
-    test_model = TestModel.objects.first()
+    assert model.objects.count() == 1
+    test_model = model.objects.first()
     assert test_model.test_formset.count() == 2
     assert {t.key for t in test_model.test_formset.all()} == {"key0", "key1"}
 
@@ -278,6 +280,6 @@ def test_formset(live_server, page, test_view):
 
     page.locator("#submit-form").click()
 
-    assert TestModel.objects.count() == 1
-    assert TestModel.objects.first().test_formset.count() == 2
+    assert model.objects.count() == 1
+    assert model.objects.first().test_formset.count() == 2
     assert {t.key for t in test_model.test_formset.all()} == {"key3", "key10"}
