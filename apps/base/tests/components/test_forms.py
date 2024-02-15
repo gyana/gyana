@@ -17,7 +17,8 @@ from apps.base.forms import ModelForm
 from apps.base.formsets import RequiredInlineFormset
 from apps.base.views import CreateView, UpdateView
 
-pytestmark = pytest.mark.django_db
+# mark with transaction=True, otherwise flakiness due to deadlocks
+pytestmark = pytest.mark.django_db(transaction=True)
 
 
 @isolate_apps("test")
