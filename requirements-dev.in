@@ -12,6 +12,7 @@ mypy
 pytest
 pytest-cov
 pytest-django
+pytest-env
 pytest-factoryboy
 pytest-mock
 pytest-playwright

@@ -25,6 +25,9 @@ profile = "black"
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "gyana.settings.development"
 
+[tool.pytest_env]
+ENGINE_URL = "bigquery://project"
+
 [tool.coverage.run]
 branch = true
 omit = ["*/migrations/*", "apps/cookiecutter-app/*"]
