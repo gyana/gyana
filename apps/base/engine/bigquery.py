@@ -110,7 +110,8 @@ def _load_table_sheet(sheet: "Sheet", table: "Table", **job_kwargs):
 
     # capture external table creation errors
 
-    if query_job.exception():
+    # set explicit timeout to fix urllib3 compatibility issue with google_api.core PollingFuture
+    if query_job.exception(timeout=60):
         error_message = query_job.errors[0]["message"]
         if re.search(CONVERSION_ERROR, error_message):
             type_, row, col = re.search(CONVERSION_ERROR, error_message).groups()
