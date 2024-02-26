@@ -59,8 +59,8 @@ def test_create_sheet_integration_with_retry(
     page.fill('input[name="cell_range"]', "A1:D11")
     page.locator("button:text('Import')").click()
 
-    page.locator('text="Confirm"').click(timeout=BIGQUERY_TIMEOUT)
+    page.get_by_text("Confirm", exact=True).click(timeout=BIGQUERY_TIMEOUT)
     # only 10/15 rows imported
-    page.locator('text="10 rows"').wait_for()
+    page.get_by_text("10 rows").wait_for()
 
     # todo: next step in the flow
