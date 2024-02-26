@@ -1,5 +1,5 @@
 {% extends "users/landing_base.html" %}
-{% load static %}
+{% load static crispy_forms_tags %}
 
 {% block header %}
   <p>
@@ -12,7 +12,7 @@
   <form class="mb-auto" method="post">
     {% csrf_token %}
 
-    {{ form }}
+    {% crispy form %}
 
     <div class="flex flex-col w-full gap-2">
       <button type="submit" class="button button--primary button--filled w-full">
