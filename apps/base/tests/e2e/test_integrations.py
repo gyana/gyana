@@ -7,17 +7,27 @@ SHARED_SHEET = "https://docs.google.com/spreadsheets/d/1mfauospJlft0B304j7em1vcy
 
 
 @pytest.fixture
-def sheets(mocker):
+def sheets():
     pass
 
 
 @pytest.fixture
-def drive_v2(mocker):
+def drive_v2():
     pass
 
 
+@pytest.fixture
+def bigquery():
+    pass
+
+
+@pytest.fixture(scope="session")
+def celery_config():
+    return {"broker_url": "redis://localhost:6379/1", "result_backend": "django-db"}
+
+
 def test_create_sheet_integration_with_retry(
-    page, live_server, project, drive_v2, sheets
+    page, live_server, project, drive_v2, sheets, celery_worker, bigquery
 ):
     page.force_login(live_server)
     page.goto(live_server.url + "/projects/1")
@@ -40,17 +50,17 @@ def test_create_sheet_integration_with_retry(
         timeout=BIGQUERY_TIMEOUT
     )
 
-    # # try to retry it
-    # page.click('text="Retry"')
+    # try to retry it
+    page.get_by_text("Retry").click()
+    page.get_by_text("Validating and importing your sheet").wait_for()
 
-    # # edit the configuration
-    # with page.locator('#main').element_handle() as main:
-    #     main.click('text="Configure"')
-    # page.fill('input[name="cell_range"]', 'A1:D11')
-    # page.locator('button[type="submit"]:has-text("Import")').click()
+    # edit the configuration
+    page.get_by_text("Configure").click()
+    page.fill('input[name="cell_range"]', "A1:D11")
+    page.locator("button:text('Import')").click()
 
-    # page.locator('text="Confirm"').click(timeout=BIGQUERY_TIMEOUT)
-    # # only 10/15 rows imported
-    # page.locator('text="10 rows"').wait_for()
+    page.locator('text="Confirm"').click(timeout=BIGQUERY_TIMEOUT)
+    # only 10/15 rows imported
+    page.locator('text="10 rows"').wait_for()
 
-    # # todo: next step in the flow
+    # todo: next step in the flow
