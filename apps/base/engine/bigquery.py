@@ -7,7 +7,7 @@ from django.conf import settings
 from django.core.cache import cache
 from google.cloud import bigquery as bq
 from ibis.expr.operations import DatabaseTable
-from ibis.expr.types import Expr
+from ibis.expr.operations.relations import Namespace
 
 from apps.base.core.bigquery import (
     bq_table_schema_is_string_only,
@@ -155,16 +155,15 @@ class BigQueryClient(BaseClient):
         schema = cache.get(key)
 
         if schema is None:
-            tbl = self.client.table(table.name, database=table.namespace)
+            tbl = self.client.table(table.name, schema=table.namespace)
             cache.set(key, tbl.schema(), 24 * 3600)
         else:
-            tbl = Expr(
-                DatabaseTable(
-                    name=f"{self.gcp_project}.{table.namespace}.{table.name}",
-                    schema=schema,
-                    source=self.client,
-                )
-            )
+            tbl = DatabaseTable(
+                name=f"{table.name}",
+                schema=schema,
+                source=self.client,
+                namespace=Namespace(schema=f"{self.gcp_project}.{table.namespace}"),
+            ).to_expr()
 
         return tbl
 

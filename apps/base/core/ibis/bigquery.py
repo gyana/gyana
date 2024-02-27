@@ -2,7 +2,6 @@ import beeline
 import pandas as pd
 from google.cloud import bigquery as bq
 from ibis.backends.bigquery import Backend
-from ibis.backends.bigquery.client import BigQueryCursor
 
 # update the default execute implemention of Ibis BigQuery backend
 # - support the faster synchronous client.query_and_wait
