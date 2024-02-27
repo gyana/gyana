@@ -14,14 +14,12 @@ NUM_COLUMN_OPTIONS = len(TABLE.schema()) + 1
 
 @pytest.fixture
 def setup(
-    bigquery,
+    mock_bigquery,
     project,
     dashboard_factory,
     integration_table_factory,
 ):
-    mock_bq_client_with_schema(
-        bigquery, [(name, str(type_)) for name, type_ in TABLE.schema().items()]
-    )
+
     return dashboard_factory(project=project), integration_table_factory(
         project=project
     )

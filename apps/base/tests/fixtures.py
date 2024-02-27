@@ -4,10 +4,13 @@ import ibis.expr.schema as sch
 import pytest
 import waffle
 from django.db import connection
-from django.utils import timezone
+from ibis.backends.bigquery import Backend
+from ibis.expr.operations import DatabaseTable
+from ibis.expr.operations.relations import Namespace
 from waffle.templatetags import waffle_tags
 
-from apps.base import clients
+from apps.base.clients import get_engine
+from apps.base.tests.mock_data import MOCK_SCHEMA
 from apps.teams.models import Team
 from apps.users.models import CustomUser
 
@@ -78,30 +81,45 @@ def mock_backend_client_get_schema(self, name):
 
 
 @pytest.fixture(autouse=True)
-def bigquery(mocker, settings):
-    client = MagicMock()
-    # manually override the ibis client with a mock instead
-    # set the project name to "project" in auto-generated SQL
-    settings.ENGINE_URL = "bigquery://project"
-    mocker.patch(
-        "ibis.backends.bigquery.pydata_google_auth.default",
-        return_value=(None, "project"),
+def mock_bigquery(mocker):
+    mocker.patch.object(
+        Backend,
+        "table",
+        return_value=DatabaseTable(
+            name="table",
+            namespace=Namespace(schema="project.dataset"),
+            schema=MOCK_SCHEMA,
+            source=get_engine().client,
+        ).to_expr(),
     )
-    mocker.patch("apps.base.engine.bigquery.bigquery", return_value=client)
-    mocker.patch("ibis.backends.bigquery.client.bq.Client", return_value=client)
+    mocker.patch.object(Backend, "_make_session", return_value=None)
 
-    ibis_client = clients.get_engine().client
-    ibis_client.client = client
-    bind(
-        ibis_client,
-        "get_schema",
-        mock_backend_client_get_schema,
-    )
 
-    client.get_table().num_rows = 10
-    client.get_table().modified = timezone.now()
+# @pytest.fixture(autouse=True)
+# def bigquery(mocker, settings):
+#     client = MagicMock()
+#     # manually override the ibis client with a mock instead
+#     # set the project name to "project" in auto-generated SQL
+#     settings.ENGINE_URL = "bigquery://project"
+#     mocker.patch(
+#         "ibis.backends.bigquery.pydata_google_auth.default",
+#         return_value=(None, "project"),
+#     )
+#     mocker.patch("apps.base.engine.bigquery.bigquery", return_value=client)
+#     mocker.patch("ibis.backends.bigquery.client.bq.Client", return_value=client)
 
-    yield client
+#     ibis_client = clients.get_engine().client
+#     ibis_client.client = client
+#     bind(
+#         ibis_client,
+#         "get_schema",
+#         mock_backend_client_get_schema,
+#     )
+
+#     client.get_table().num_rows = 10
+#     client.get_table().modified = timezone.now()
+
+#     yield client
 
 
 @pytest.fixture(autouse=True)

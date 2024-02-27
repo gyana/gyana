@@ -18,7 +18,7 @@ SENTIMENT_LOOKUP = {
 }  # cache as creating mocks is expensive
 
 
-INPUT_QUERY = f"SELECT t0.*\nFROM `{TABLE_NAME}` t0"
+INPUT_QUERY = f"SELECT\n  t0.*\nFROM {TABLE_NAME} AS t0"
 DEFAULT_X_Y = {"x": 0, "y": 0}
 
 
@@ -35,7 +35,7 @@ INPUT_DATA = [
     },
 ]
 
-DISTINCT_QUERY = "SELECT t0.*\nFROM (\n  SELECT t1.`athlete` AS `text`\n  FROM (\n    SELECT DISTINCT t2.`athlete`\n    FROM `project.dataset.table` t2\n  ) t1\n) t0\nWHERE t0.`text` IS NOT NULL"
+DISTINCT_QUERY = "SELECT\n  t0.*\nFROM (\n  SELECT t1.`athlete` AS `text`\n  FROM (\n    SELECT DISTINCT t2.`athlete`\n    FROM `project.dataset.table` AS t2\n  ) t1\n) AS t0\nWHERE NOT t0.`text` IS NULL"
 
 
 def mock_bq_client_data(bigquery):
@@ -55,7 +55,8 @@ def mock_bq_client_data(bigquery):
 
     def result(query, **kwargs):
         mock = PickableMock()
-
+        mock.destination.project = "project"
+        mock.destination.dataset_id = "dataset"
         if query == DISTINCT_QUERY:
             mock.result = Mock(
                 return_value=[{"text": row["athlete"]} for row in INPUT_DATA]

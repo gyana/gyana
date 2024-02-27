@@ -1,6 +1,10 @@
-import ibis
+from ibis import schema
+from ibis.expr.operations import DatabaseTable
+from ibis.expr.operations.relations import Namespace
 
-TABLE = ibis.table(
+from apps.base.clients import get_engine
+
+MOCK_SCHEMA = schema(
     [
         ("id", "int32"),
         ("athlete", "string"),
@@ -11,6 +15,11 @@ TABLE = ibis.table(
         ("stars", "double"),
         ("is_nice", "boolean"),
         ("biography", "struct<a:int32>"),
-    ],
-    name="olympians",
+    ]
 )
+TABLE = DatabaseTable(
+    name="table",
+    namespace=Namespace(schema="project.dataset"),
+    schema=MOCK_SCHEMA,
+    source=get_engine().client,
+).to_expr()

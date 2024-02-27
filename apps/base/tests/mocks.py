@@ -16,7 +16,9 @@ class PickableMock(Mock):
         return (Mock, ())
 
 
-TABLE_NAME = "project.dataset.table"
+# TODO: Sometimes ibis removes the backticks
+# Need to figure out when that happens
+TABLE_NAME = "`project.dataset`.table"
 
 
 def mock_bq_client_with_schema(bigquery, schema_list):
