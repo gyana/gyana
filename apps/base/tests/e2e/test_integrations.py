@@ -2,28 +2,8 @@ import pytest
 
 pytestmark = pytest.mark.django_db(transaction=True)
 
-BIGQUERY_TIMEOUT = 30000  # Adjust according to your utils
+BIGQUERY_TIMEOUT = 10000
 SHARED_SHEET = "https://docs.google.com/spreadsheets/d/1mfauospJlft0B304j7em1vcyE1QKKVMhZjyLfIAnvmU/edit"
-
-
-@pytest.fixture
-def sheets():
-    pass
-
-
-@pytest.fixture
-def drive_v2():
-    pass
-
-
-@pytest.fixture
-def bigquery():
-    pass
-
-
-@pytest.fixture(scope="session")
-def celery_config():
-    return {"broker_url": "redis://localhost:6379/1", "result_backend": "django-db"}
 
 
 def test_create_sheet_integration_with_retry(
