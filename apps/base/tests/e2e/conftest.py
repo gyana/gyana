@@ -1,6 +1,11 @@
 import pytest
 
 
+@pytest.fixture(autouse=True)
+def patches():
+    pass
+
+
 @pytest.fixture
 def sheets():
     pass

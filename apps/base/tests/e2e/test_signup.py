@@ -1,4 +1,6 @@
+from django.core import mail
 import pytest
+import re
 
 pytestmark = pytest.mark.django_db(transaction=True)
 
@@ -10,8 +12,10 @@ def test_signup(page, live_server):
     page.fill('input[name="password1"]', "seewhatmatters")
     page.click('button[type="submit"]')
 
-    # todo: decide on email confirmation
-    # assert "/confirm-email/" in page.url
+    page.wait_for_url(live_server.url + "/confirm-email/")
+    assert len(mail.outbox) == 1
+    url = re.search(r"\bhttps?://\S+\b", mail.outbox[0].body).group(0)
+    page.goto(url)
 
     # onboarding
     page.fill('input[name="first_name"]', "Waitlist")
