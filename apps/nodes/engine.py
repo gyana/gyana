@@ -202,9 +202,10 @@ def get_intersect_query(node, query, *queries):
 
 def get_sort_query(node, query):
     sort_columns = [
-        (getattr(query, s.column), s.ascending) for s in node.sort_columns.all()
+        getattr(query, s.column) if s.ascending else ibis.desc(getattr(query, s.column))
+        for s in node.sort_columns.all()
     ]
-    return query.sort_by(sort_columns)
+    return query.order_by(sort_columns)
 
 
 def get_limit_query(node, query):
@@ -310,9 +311,11 @@ def get_window_query(node, query):
 
         w = ibis.window(
             group_by=window.group_by or None,
-            order_by=ops.SortKey(query[window.order_by], window.ascending).to_expr()
-            if window.order_by
-            else None,
+            order_by=(
+                ops.SortKey(query[window.order_by], window.ascending).to_expr()
+                if window.order_by
+                else None
+            ),
         )
         aggregation = aggregation.over(w)
         aggregations.append(aggregation)

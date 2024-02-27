@@ -85,9 +85,9 @@ class GyanaTableData(TableData):
         ]
         # If data has a ordering set we need to overwrite it
         if hasattr(self.data.op(), "sort_keys"):
-            self.data = self.data.projection([]).sort_by(sort_by)
+            self.data = self.data.projection([]).order_by(sort_by)
         else:
-            self.data = self.data.sort_by(sort_by)
+            self.data = self.data.order_by(sort_by)
 
     def set_table(self, table):
         """
@@ -177,11 +177,11 @@ class GyanaColumn(Column):
         if isinstance(value, Number) and self.conditional_formatting:
             self.attrs["td"] = {
                 **self.attrs.get("td", {}),
-                "class": "bg-green-50"
-                if value > self.positive_threshold
-                else "bg-red-50"
-                if value < self.negative_threshold
-                else None,
+                "class": (
+                    "bg-green-50"
+                    if value > self.positive_threshold
+                    else "bg-red-50" if value < self.negative_threshold else None
+                ),
             }
         if isinstance(value, Number) and self.currency:
             return get_template("columns/currency_cell.html").render(
@@ -197,9 +197,11 @@ class GyanaColumn(Column):
             return get_template("columns/float_cell.html").render(
                 {
                     "value": value,
-                    "clean_value": int(value)
-                    if self.rounding == 0
-                    else round(value, self.rounding),
+                    "clean_value": (
+                        int(value)
+                        if self.rounding == 0
+                        else round(value, self.rounding)
+                    ),
                     "is_percentage": self.is_percentage,
                 }
             )
@@ -243,22 +245,24 @@ def get_table(schema, query, footer=None, settings=None, **kwargs):
             empty_values=(),
             settings=settings.get(name),
             verbose_name=name,
-            attrs={
-                "th": {
-                    "class": get_type_class(type_),
-                    "x-tooltip": get_type_name(type_),
-                },
-                **(
-                    {
-                        "td": {"style": "text-align: right;"},
-                        "tf": {"style": "text-align: right;"},
-                    }
-                    if isinstance(type_, (dt.Floating, dt.Integer))
-                    else {}
-                ),
-            }
-            if not settings.get("hide_data_type")
-            else {},
+            attrs=(
+                {
+                    "th": {
+                        "class": get_type_class(type_),
+                        "x-tooltip": get_type_name(type_),
+                    },
+                    **(
+                        {
+                            "td": {"style": "text-align: right;"},
+                            "tf": {"style": "text-align: right;"},
+                        }
+                        if isinstance(type_, (dt.Floating, dt.Integer))
+                        else {}
+                    ),
+                }
+                if not settings.get("hide_data_type")
+                else {}
+            ),
             footer=footer.get(name) if footer else None,
         )
 
