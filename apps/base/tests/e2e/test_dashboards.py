@@ -4,9 +4,7 @@ from playwright.sync_api import expect
 pytestmark = pytest.mark.django_db(transaction=True)
 
 
-def test_dashboards(
-    page, live_server, project, integration_table_factory, celery_worker
-):
+def test_dashboards(page, live_server, project, integration_table_factory):
     table = integration_table_factory(
         project=project,
         name="upload_000000001",
