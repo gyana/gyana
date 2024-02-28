@@ -4,7 +4,7 @@ from apps.nodes.models import Node
 
 pytestmark = pytest.mark.django_db(transaction=True)
 
-BIGQUERY = 30000
+BIGQUERY_TIMEOUT = 30000
 SHARED_SHEET = "https://docs.google.com/spreadsheets/d/1mfauospJlft0B304j7em1vcyE1QKKVMhZjyLfIAnvmU/edit"
 
 
@@ -35,9 +35,9 @@ def test_automate(
     workflow = workflow_factory(project=project)
 
     input_node = node_factory(
-        workflow=workflow, kind=Node.Kind.INPUT, input_table=input_table, name="input"
+        workflow=workflow, kind=Node.Kind.INPUT, input_table=input_table
     )
-    output_node = node_factory(workflow=workflow, kind=Node.Kind.OUTPUT, name="output")
+    output_node = node_factory(workflow=workflow, kind=Node.Kind.OUTPUT)
     output_node.parents.add(input_node)
     output_node.save()
 
@@ -48,30 +48,27 @@ def test_automate(
         namespace="cypress_team_000001_tables",
     )
 
-    # todo: add second dependent workflow
+    dependent_workflow = workflow_factory(project=project)
+
+    input_node = node_factory(
+        workflow=dependent_workflow, kind=Node.Kind.INPUT, input_table=workflow_table
+    )
+    output_node = node_factory(workflow=dependent_workflow, kind=Node.Kind.OUTPUT)
+    output_node.parents.add(input_node)
+    output_node.save()
 
     page.force_login(live_server)
-    # todo: hack to generate csrf token
-    page.goto(live_server.url + "/projects/1/workflows")
-
-    page.get_by_text("Automate").click()
+    page.goto(live_server.url + "/projects/1/automate")
 
     page.locator('button[data-cy="project-run"]').click()
 
     expect(page.locator('[data-cy-status="running"]')).to_have_count(1)
-    expect(page.locator('[data-cy-status="pending"]')).to_have_count(1)
+    expect(page.locator('[data-cy-status="pending"]')).to_have_count(2)
 
-    expect(page.locator('[data-cy-status="success"]')).to_have_count(
-        0, timeout=BIGQUERY + 5
-    )
-
-    expect(page.locator('[data-cy-status="success"]')).to_have_count(
-        1, timeout=BIGQUERY + 5
-    )
-
-    expect(page.locator('[data-cy-status="success"]')).to_have_count(
-        2, timeout=BIGQUERY + 5
-    )
+    for idx in range(4):
+        expect(page.locator('[data-cy-status="success"]')).to_have_count(
+            idx, timeout=BIGQUERY_TIMEOUT + 5
+        )
 
     page.locator('button[data-cy="settings"]').click()
     expect(page.locator("table tbody tr")).to_have_count(1)

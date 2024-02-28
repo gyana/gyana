@@ -3,8 +3,10 @@ from django import forms
 from django.conf import settings
 from django.contrib.auth import BACKEND_SESSION_KEY, HASH_SESSION_KEY, SESSION_KEY
 from django.contrib.sessions.backends.db import SessionStore
+from django.middleware.csrf import get_token
 from django.template.loader import render_to_string
 from playwright.sync_api import Page
+from unittest.mock import MagicMock
 
 from apps.base.alpine import ibis_store
 from apps.users.models import CustomUser
@@ -19,16 +21,27 @@ def force_login(self, live_server):
     session[SESSION_KEY] = user.pk
     session[BACKEND_SESSION_KEY] = settings.AUTHENTICATION_BACKENDS[0]
     session[HASH_SESSION_KEY] = user.get_session_auth_hash()
+
+    # mock request object since we explicitly set cookies
+    csrf_token = get_token(MagicMock())
+    session["_csrftoken"] = csrf_token
     session.save()
 
-    cookie = {
+    session_cookie = {
         "name": settings.SESSION_COOKIE_NAME,
         "value": session.session_key,
         "secure": False,
         "url": live_server.url,
     }
 
-    self.context.add_cookies([cookie])
+    csrf_cookie = {
+        "name": "csrftoken",
+        "value": csrf_token,
+        "secure": False,
+        "url": live_server.url,
+    }
+
+    self.context.add_cookies([session_cookie, csrf_cookie])
 
 
 Page.force_login = force_login
