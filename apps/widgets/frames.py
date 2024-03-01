@@ -127,7 +127,16 @@ class WidgetUpdate(DashboardMixin, UpdateView):
                 self.object,
                 self.request,
                 self.object.page.control if self.object.page.has_control else None,
-                url=self.get_success_url(),
+                url=self.get_success_url()
+                if self.is_preview_request
+                else reverse(
+                    "dashboard_widgets:output",
+                    args=(
+                        self.project.id,
+                        self.dashboard.id,
+                        self.object.id,
+                    ),
+                ),
             )
             if self.object.error:
                 self.object.error = None
