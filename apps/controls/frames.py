@@ -41,9 +41,7 @@ class ControlUpdate(DashboardMixin, UpdateView):
         )
 
         return retarget(
-            trigger_client_event(
-                trigger_client_event(res, "gy-control", {}), "closeModal", {}
-            ),
+            trigger_client_event(res, "gy-control", {}),
             f"#control-widget-{control_widget.id}",
         )
 

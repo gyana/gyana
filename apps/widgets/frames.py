@@ -197,7 +197,7 @@ class WidgetUpdate(DashboardMixin, UpdateView):
                     self.object.id,
                 ),
             )
-            return f"{base_url}?tab={self.tab if self.tab!='source' else 'data'}"
+            return f"{base_url}?tab={self.tab}"
 
         return reverse(
             "project_dashboards:detail",
@@ -246,7 +246,7 @@ class WidgetUpdate(DashboardMixin, UpdateView):
         )
 
         return retarget(
-            trigger_client_event(self.get_htmx_response(context), "closeModal", {}),
+            self.get_htmx_response(context),
             f"#widget-{self.object.id}",
         )
 

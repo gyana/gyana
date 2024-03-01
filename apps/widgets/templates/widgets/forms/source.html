@@ -4,7 +4,8 @@
   id="widget-update-form"
   class="widget-update-sidebar__form"
   hx-post="{% url 'dashboard_widgets:update' project.id dashboard.id object.id %}?tab=source"
-  data-controller="live-update"
+  x-data="{ loading: false }"
+  @click="if ($event.target.name === 'table') $refs.preview.click(); loading=true"
 >
   {% csrf_token %}
 
@@ -12,14 +13,29 @@
     {% crispy form %}
   </div>
 
+  <template x-if="loading">
+    <div class="placeholder-scr--inline">
+      <i class="fad fa-spinner-third fa-spin"></i>
+    </div>
+  </template>
+
   <div class="widget-update__footer">
     <button
-      type="submit"
-      name="submit"
-      value="Save & Preview"
-      class="button button--success flex-1"
+      x-ref="preview"
+      type='submit'
+      class="hidden"
+      name='submit'
+      value='Save & Preview'
     >
       Continue
     </button>
+    <a
+      {% if not object.table %}disabled{% endif %}
+      href="#"
+      {% if object.table %}hx-get="{% url "dashboard_widgets:update" project.id dashboard.id object.pk %}"{% endif %}
+      class="button button--success flex-1"
+    >
+      Continue
+    </a>
   </div>
 </form>
