@@ -1,3 +1,5 @@
+from unittest.mock import MagicMock
+
 import pytest
 from django import forms
 from django.conf import settings
@@ -6,7 +8,6 @@ from django.contrib.sessions.backends.db import SessionStore
 from django.middleware.csrf import get_token
 from django.template.loader import render_to_string
 from playwright.sync_api import Page
-from unittest.mock import MagicMock
 
 from apps.base.alpine import ibis_store
 from apps.users.models import CustomUser

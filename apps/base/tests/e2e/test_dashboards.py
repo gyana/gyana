@@ -1,3 +1,5 @@
+import re
+
 import pytest
 from playwright.sync_api import expect
 
@@ -22,22 +24,20 @@ def test_dashboards(page, live_server, project, integration_table_factory):
     page.locator("#widget-table").drag_to(
         page.locator(".widgets"), target_position={"x": 100, "y": 100}
     )
-    page.locator('[data-cy="widget-configure"]').click()
+    page.locator('[data-cy="widget-configure-1"]').click()
     page.get_by_text("store_info").click()
 
-    # todo: fix auto-preview
-    # expect(page.locator("Edinburgh")).to_have_count(4)
+    expect(page.get_by_text("Edinburgh")).to_have_count(3)
 
     page.locator("button[class*=modal__close]").click()
 
-    # todo: fix show widget on close
-    # page.locator("#widget-1").get_by_text("London").wait_for()
+    expect(page.locator("#widget-1").get_by_text("London")).to_have_count(5)
 
     # chart with aggregations
     page.locator("#widget-msbar2d").drag_to(
-        page.locator(".widgets"), target_position={"x": 100, "y": 400}
+        page.locator(".widgets"), target_position={"x": 100, "y": 600}
     )
-    page.locator('[data-cy="widget-configure"]').click()
+    page.locator('[data-cy="widget-configure-2"]').click()
     page.get_by_text("store_info").click()
     page.get_by_text("Continue").click()
 
@@ -46,34 +46,28 @@ def test_dashboards(page, live_server, project, integration_table_factory):
     page.locator("select[name=default_metrics-0-column]").select_option("Employees")
     page.locator("select[name=default_metrics-0-function]").select_option("Sum")
     page.get_by_text("Save & Close").click()
-
-    # todo: fix auto-reopening modal behaviour
-
-    # todo: fix auto-preview
-    # cy.get(`#widget-${widgetStartId + 1}`).within((el) => {
-    #   // TODO: check for visibility
-    #   cy.wrap(el).contains('text', 'David')
-    # })
+    page.locator("#widget-2").get_by_text("David").wait_for()
 
     # delete a widget
-    # todo: fix element is not visible
-    # page.locator("#widget-delete-1").click()
-    # expect(page.locator("#widget-1")).not_to_be_attached()
+    # explicit hover on locator does not work
+    page.mouse.move(200, 200)
+    page.locator("#widget-1 #widget-card__more-button").click()
+    # .last is due to react-html-parser and template issue
+    page.locator("#widget-1").get_by_text("Delete").last.click()
+    expect(page.locator("#widget-1")).not_to_be_attached()
 
     # share
     page.locator("#dashboard-share-1").click()
     page.locator("select[name=shared_status]").select_option("public")
     page.locator("#dashboard-share-update").click()
 
-    # todo: fix share box disappears
-    # cy.contains(
-    #   /localhost:8000\/dashboards\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}/
-    # )
-    #   .invoke('text')
-    #   .then((text) => {
-    #     const sharedUrl = text.trim()
-    #     cy.logout()
+    regex = r"http:\/\/localhost:8000\/dashboards\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}"
+    locator = page.get_by_text(re.compile(regex)).first
+    locator.wait_for()
 
-    #     cy.visit(sharedUrl)
-    #     cy.contains('David')
-    #   })
+    shared_url = locator.text_content()
+
+    page.goto(live_server.url + "/logout")
+
+    page.goto(shared_url.replace("http://localhost:8000", live_server.url))
+    page.get_by_text("David").wait_for()

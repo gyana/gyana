@@ -20,15 +20,7 @@
   </template>
 
   <div class="widget-update__footer">
-    <button
-      x-ref="preview"
-      type='submit'
-      class="hidden"
-      name='submit'
-      value='Save & Preview'
-    >
-      Continue
-    </button>
+    <button x-ref="preview" type='submit' class="hidden" name='submit' value='Save & Preview'></button>
     <a
       {% if not object.table %}disabled{% endif %}
       href="#"

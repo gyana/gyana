@@ -13,6 +13,9 @@ export default (el, { value, modifiers, expression }, { cleanup }) => {
 
   const root = document.getElementById('modal')
 
+  // infer entity id from url
+  const modalId = parseModalId(expression)
+
   const open = () => {
     let changed = false
     let is_preview = false
@@ -20,6 +23,22 @@ export default (el, { value, modifiers, expression }, { cleanup }) => {
     const modal = htmlToElement(
       modal_t.replace('__hx_get__', expression).replace('__class__', classes)
     )
+
+    const removeModal = () => {
+      modal.remove()
+
+      if (modalId !== null) {
+        const params = new URLSearchParams(location.search)
+        params.delete('modal_item')
+        history.replaceState(
+          {},
+          '',
+          `${location.pathname}?${params.toString()}`
+        )
+
+        window.dispatchEvent(new CustomEvent(`gy-modal-${modalId}`))
+      }
+    }
 
     // TODO: decide how to handle persistance logic for tabs (i.e. widgets)
     // for now, this is a constraint to avoid duplicate modals
@@ -49,15 +68,7 @@ export default (el, { value, modifiers, expression }, { cleanup }) => {
         } else {
           // TODO: decide whether to implement autosave option for widgets and controls
           // Check for form with hx-post=expression and request submit
-          modal.remove()
-
-          const params = new URLSearchParams(location.search)
-          params.delete('modal_item')
-          history.replaceState(
-            {},
-            '',
-            `${location.pathname}?${params.toString()}`
-          )
+          removeModal()
         }
       }
     })
@@ -105,7 +116,7 @@ export default (el, { value, modifiers, expression }, { cleanup }) => {
         changed = false
 
         if (!is_preview) {
-          modal.remove()
+          removeModal()
 
           if (modifiers.includes('reload')) {
             location.reload()
@@ -121,7 +132,7 @@ export default (el, { value, modifiers, expression }, { cleanup }) => {
     // persistence - update URL with modal id
     if (modifiers.includes('persist')) {
       const params = new URLSearchParams(location.search)
-      params.set('modal_item', parseModalId(expression))
+      params.set('modal_item', modalId)
       history.replaceState({}, '', `${location.pathname}?${params.toString()}`)
     }
   }
@@ -130,7 +141,7 @@ export default (el, { value, modifiers, expression }, { cleanup }) => {
   if (modifiers.includes('persist')) {
     const params = new URLSearchParams(location.search)
     if (
-      parseModalId(expression) == parseInt(params.get('modal_item')) &&
+      modalId == parseInt(params.get('modal_item')) &&
       // check that the modal is not already open
       !root.hasChildNodes()
     ) {

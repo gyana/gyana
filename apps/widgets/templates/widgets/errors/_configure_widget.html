@@ -1,7 +1,7 @@
 <i class="fas fa-fw {% firstof widget.icon "fa-edit" %} text-black-50 fa-3x"></i>
 <p class="mt-4">
   This widget needs to be
-  <button data-cy="widget-configure"
+  <button data-cy="widget-configure-{{ widget.id }}"
     class='link'
     x-modal.full.persist="{% url "dashboard_widgets:update" project.id dashboard.id widget.id %}"
   >

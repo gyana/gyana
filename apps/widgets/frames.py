@@ -5,7 +5,7 @@ import analytics
 from django.shortcuts import render
 from django.urls import reverse
 from django.views.generic import DetailView
-from django_htmx.http import retarget, trigger_client_event
+from django_htmx.http import retarget
 from django_tables2.tables import Table as DjangoTable
 from django_tables2.views import SingleTableMixin
 from honeybadger import honeybadger
@@ -127,16 +127,7 @@ class WidgetUpdate(DashboardMixin, UpdateView):
                 self.object,
                 self.request,
                 self.object.page.control if self.object.page.has_control else None,
-                url=self.get_success_url()
-                if self.is_preview_request
-                else reverse(
-                    "dashboard_widgets:output",
-                    args=(
-                        self.project.id,
-                        self.dashboard.id,
-                        self.object.id,
-                    ),
-                ),
+                url=self.get_success_url(),
             )
             if self.object.error:
                 self.object.error = None
