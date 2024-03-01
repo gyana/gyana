@@ -65,58 +65,60 @@ preview mode.
                 </button>
 
                 <template x-ref="body">
-                  <form
-                    method="POST"
-                    action="{% url 'dashboard_widgets:detail' project.id dashboard.id object.pk %}"
-                    class="form--no-layout"
-                  >
-                    {% csrf_token %}
-
-                    <button
-                      id="widget-duplicate-{{ object.id }}"
-                      class="list__item list__item--interactive w-full"
-                      data-loading-false
+                  <div>
+                    <form
+                      method="POST"
+                      action="{% url 'dashboard_widgets:detail' project.id dashboard.id object.pk %}"
+                      class="form--no-layout"
                     >
-                      Duplicate
-                    </button>
-                  </form>
+                      {% csrf_token %}
 
-                  <form
-                    hx-post="{% url 'dashboard_widgets:delete' project.id dashboard.id object.id %}"
-                    hx-swap="delete" hx-target="#widget-{{ object.id }}"
-                    class="form--no-layout"
-                  >
-                    {% csrf_token %}
+                      <button
+                        id="widget-duplicate-{{ object.id }}"
+                        class="list__item list__item--interactive w-full"
+                        data-loading-false
+                      >
+                        Duplicate
+                      </button>
+                    </form>
 
-                    <button
-                      id="widget-delete-{{ object.id }}"
-                      class="list__item list__item--interactive w-full"
+                    <form
+                      hx-post="{% url 'dashboard_widgets:delete' project.id dashboard.id object.id %}"
+                      hx-swap="delete" hx-target="#widget-{{ object.id }}"
+                      class="form--no-layout"
                     >
-                      Delete
-                    </button>
-                  </form>
+                      {% csrf_token %}
 
-                  {% if object.table %}
-                    <a
-                      id="widget-source-{{ object.id }}"
-                      href="{{ object.table.get_source_url }}"
-                      class="list__item list__item--interactive w-full"
-                    >
-                      Go to source
-                    </a>
-                  {% endif %}
+                      <button
+                        id="widget-delete-{{ object.id }}"
+                        class="list__item list__item--interactive w-full"
+                      >
+                        Delete
+                      </button>
+                    </form>
 
-                  <div x-data="popover({ placement: 'right', theme: 'popover-menu' })">
-                    <button
-                      class="list__item list__item--interactive w-full"
-                      x-ref="trigger"
-                    >
-                      Move to page
-                    </button>
+                    {% if object.table %}
+                      <a
+                        id="widget-source-{{ object.id }}"
+                        href="{{ object.table.get_source_url }}"
+                        class="list__item list__item--interactive w-full"
+                      >
+                        Go to source
+                      </a>
+                    {% endif %}
 
-                    <template x-ref="body">
-                      {% include 'widgets/forms/move_page.html' %}
-                    </template>
+                    <div x-data="popover({ placement: 'right', theme: 'popover-menu' })">
+                      <button
+                        class="list__item list__item--interactive w-full"
+                        x-ref="trigger"
+                      >
+                        Move to page
+                      </button>
+
+                      <template x-ref="body">
+                        {% include 'widgets/forms/move_page.html' %}
+                      </template>
+                    </div>
                   </div>
                 </template>
               </div>
