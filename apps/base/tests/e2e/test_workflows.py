@@ -1,5 +1,6 @@
 import pytest
 from playwright.sync_api import expect
+from apps.nodes.models import Node
 
 pytestmark = pytest.mark.django_db(transaction=True)
 
@@ -16,7 +17,7 @@ def test_workflow_editor(
     )
 
     page.force_login(live_server)
-    page.goto(live_server.url + "/projects/1/workflows")
+    page.goto(live_server.url + f"/projects/{project.id}/workflows")
 
     page.get_by_text("Create a new workflow").click()
     page.locator('input[id="name"]').fill("Magical workflow")
@@ -27,7 +28,13 @@ def test_workflow_editor(
         target_position={"x": 150, "y": 300},
     )
 
-    page.locator('[data-id="1"]').dblclick()
+    # todo: remove timeout!
+    page.wait_for_timeout(500)
+
+    input = Node.objects.first().id
+    select, output = input + 1, input + 2
+
+    page.locator(f'[data-id="{input}"]').dblclick()
     page.get_by_text("store_info").click()
     page.get_by_text("Employees").wait_for()
     assert page.get_by_text("Blackpool").count() == 4
@@ -37,12 +44,12 @@ def test_workflow_editor(
     page.locator("#dnd-node-select").drag_to(
         page.locator(".react-flow"), target_position={"x": 300, "y": 100}
     )
-    page.locator('[data-id="2"]').wait_for()
-    page.locator('[data-id="1"] .react-flow__handle.source').drag_to(
-        page.locator('[data-id="2"] .react-flow__handle.target')
+    page.locator(f'[data-id="{select}"]').wait_for()
+    page.locator(f'[data-id="{input}"] .react-flow__handle.source').drag_to(
+        page.locator(f'[data-id="{select}"] .react-flow__handle.target')
     )
 
-    page.locator('[data-id="2"]').dblclick()
+    page.locator(f'[data-id="{select}"]').dblclick()
     page.get_by_text("Location").click()
     page.get_by_text("Employees").click()
     page.get_by_text("Owner").click()
@@ -55,12 +62,12 @@ def test_workflow_editor(
         page.locator(".react-flow"), target_position={"x": 450, "y": 300}
     )
 
-    page.locator('[data-id="3"]').wait_for()
-    page.locator('[data-id="2"] .react-flow__handle.source').drag_to(
-        page.locator('[data-id="3"] .react-flow__handle.target')
+    page.locator(f'[data-id="{output}"]').wait_for()
+    page.locator(f'[data-id="{select}"] .react-flow__handle.source').drag_to(
+        page.locator(f'[data-id="{output}"] .react-flow__handle.target')
     )
 
-    page.locator('[data-id="3"]').dblclick()
+    page.locator(f'[data-id="{output}"]').dblclick()
     page.locator('#node-update-form input[name="name"]').fill("Goblet of fire")
     page.get_by_text("Save & Close").click()
 

@@ -2,6 +2,8 @@ from django.core import mail
 import pytest
 import re
 
+from apps.teams.models import Team
+
 pytestmark = pytest.mark.django_db(transaction=True)
 
 
@@ -37,11 +39,13 @@ def test_signup(page, live_server):
     # todo: select plan and continue
     # assert f"/teams/1/pricing" in page.url
 
+    team = Team.objects.first()
+
     # new project
-    assert f"/teams/1" in page.url
+    assert f"/teams/{team.id}" in page.url
     page.click('text="Create a new project"')
 
-    page.wait_for_url(live_server.url + "/teams/1/projects/new")
+    page.wait_for_url(live_server.url + f"/teams/{team.id}/projects/new")
     page.fill('input[name="name"]', "Metrics")
     description = page.locator('textarea[name="description"]')
     assert description.is_enabled()

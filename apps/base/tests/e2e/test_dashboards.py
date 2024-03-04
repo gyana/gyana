@@ -3,6 +3,8 @@ import re
 import pytest
 from playwright.sync_api import expect
 
+from apps.widgets.models import Widget
+
 pytestmark = pytest.mark.django_db(transaction=True)
 
 
@@ -16,7 +18,7 @@ def test_dashboards(page, live_server, project, integration_table_factory):
     )
 
     page.force_login(live_server)
-    page.goto(live_server.url + f"/projects/1/dashboards/")
+    page.goto(live_server.url + f"/projects/{project.id}/dashboards/")
 
     page.locator('[data-cy="dashboard-create"]').click()
     page.locator("#dashboards-name input[id=name]").fill("Magical dashboard")
@@ -24,20 +26,27 @@ def test_dashboards(page, live_server, project, integration_table_factory):
     page.locator("#widget-table").drag_to(
         page.locator(".widgets"), target_position={"x": 100, "y": 100}
     )
-    page.locator('[data-cy="widget-configure-1"]').click()
+
+    # todo: remove!
+    page.wait_for_timeout(500)
+
+    table = Widget.objects.first().id
+    chart = table + 1
+
+    page.locator(f'[data-cy="widget-configure-{table}"]').click()
     page.get_by_text("store_info").click()
 
     expect(page.get_by_text("Edinburgh")).to_have_count(3)
 
     page.locator("button[class*=modal__close]").click()
 
-    expect(page.locator("#widget-1").get_by_text("London")).to_have_count(5)
+    expect(page.locator(f"#widget-{table}").get_by_text("London")).to_have_count(5)
 
     # chart with aggregations
     page.locator("#widget-msbar2d").drag_to(
         page.locator(".widgets"), target_position={"x": 100, "y": 600}
     )
-    page.locator('[data-cy="widget-configure-2"]').click()
+    page.locator(f'[data-cy="widget-configure-{chart}"]').click()
     page.get_by_text("store_info").click()
     page.get_by_text("Continue").click()
 
@@ -46,18 +55,18 @@ def test_dashboards(page, live_server, project, integration_table_factory):
     page.locator("select[name=default_metrics-0-column]").select_option("Employees")
     page.locator("select[name=default_metrics-0-function]").select_option("Sum")
     page.get_by_text("Save & Close").click()
-    page.locator("#widget-2").get_by_text("David").wait_for()
+    page.locator(f"#widget-{chart}").get_by_text("David").wait_for()
 
     # delete a widget
     # explicit hover on locator does not work
     page.mouse.move(200, 200)
-    page.locator("#widget-1 #widget-card__more-button").click()
+    page.locator(f"#widget-{table} #widget-card__more-button").click()
     # .last is due to react-html-parser and template issue
-    page.locator("#widget-1").get_by_text("Delete").last.click()
-    expect(page.locator("#widget-1")).not_to_be_attached()
+    page.locator(f"#widget-{table}").get_by_text("Delete").last.click()
+    expect(page.locator(f"#widget-{table}")).not_to_be_attached()
 
     # share
-    page.locator("#dashboard-share-1").click()
+    page.locator("#dashboard-share").click()
     page.locator("select[name=shared_status]").select_option("public")
     page.locator("#dashboard-share-update").click()
 

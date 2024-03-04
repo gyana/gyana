@@ -1,6 +1,8 @@
 import pytest
 from playwright.sync_api import expect
 
+from apps.integrations.models import Integration
+
 pytestmark = pytest.mark.django_db(transaction=True)
 
 BIGQUERY_TIMEOUT = 10000
@@ -8,15 +10,23 @@ BIGQUERY_TIMEOUT = 10000
 
 def test_upload_valid_csv(page, live_server, project, celery_worker, bigquery):
     page.force_login(live_server)
-    page.goto(live_server.url + "/projects/1/integrations")
+    page.goto(live_server.url + f"/projects/{project.id}/integrations")
 
     page.get_by_text("Upload CSV").click()
 
-    page.wait_for_url(live_server.url + "/projects/1/integrations/uploads/new")
+    page.wait_for_url(
+        live_server.url + f"/projects/{project.id}/integrations/uploads/new"
+    )
     page.locator("input[type=file]").set_input_files("cypress/fixtures/store_info.csv")
 
-    page.wait_for_url(live_server.url + "/projects/1/integrations/1/load")
     page.get_by_text("Validating and importing your upload...").wait_for()
+
+    integration = Integration.objects.first()
+    assert (
+        page.url
+        == live_server.url
+        + f"/projects/{project.id}/integrations/{integration.id}/load"
+    )
     page.get_by_text("Upload successfully imported").wait_for(timeout=BIGQUERY_TIMEOUT)
 
     # review the table and approve
@@ -28,7 +38,9 @@ def test_upload_valid_csv(page, live_server, project, celery_worker, bigquery):
     # validate row count
     page.get_by_text("15 rows").wait_for()
 
-    page.wait_for_url(live_server.url + "/projects/1/integrations/1")
+    page.wait_for_url(
+        live_server.url + f"/projects/{project.id}/integrations/{integration.id}"
+    )
     # file name inferred
     page.locator('input[name="name"]').input_value == "store_info"
 
@@ -40,7 +52,7 @@ def test_upload_streamed_with_chunks(
     page, live_server, project, celery_worker, bigquery
 ):
     page.force_login(live_server)
-    page.goto(live_server.url + "/projects/1/integrations")
+    page.goto(live_server.url + f"/projects/{project.id}/integrations")
 
     # minimum chunk size allowed "a multiple of 256 KiB (256 x 1024 bytes)"
     # https://cloud.google.com/storage/docs/performing-resumable-uploads#chunked-upload
@@ -60,13 +72,13 @@ def test_upload_streamed_with_chunks(
 
 def test_upload_failures(page, live_server, project):
     page.force_login(live_server)
-    page.goto(live_server.url + "/projects/1/integrations/uploads/new")
+    page.goto(live_server.url + f"/projects/{project.id}/integrations/uploads/new")
 
     # invalid format - better way to test this?
     assert page.locator("input[type=file]").get_attribute("accept") == ".csv"
 
     # file is too large
-    page.goto(live_server.url + "/projects/1/integrations")
+    page.goto(live_server.url + f"/projects/{project.id}/integrations")
     page.evaluate("() => window.__cypressMaxSize__ = 128;")
     page.get_by_text("Upload CSV").click()
 
@@ -75,7 +87,7 @@ def test_upload_failures(page, live_server, project):
     page.get_by_text("This file is too large").wait_for()
 
     # upload errors e.g. bad connectivity or Google is down
-    page.goto(live_server.url + "/projects/1/integrations")
+    page.goto(live_server.url + f"/projects/{project.id}/integrations")
     page.evaluate("() => window.__cypressMaxBackoff__ = 1;")
     page.get_by_text("Upload CSV").click()
 

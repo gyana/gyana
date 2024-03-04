@@ -58,7 +58,7 @@ def test_automate(
     output_node.save()
 
     page.force_login(live_server)
-    page.goto(live_server.url + "/projects/1/automate")
+    page.goto(live_server.url + f"/projects/{project.id}/automate")
 
     page.locator('button[data-cy="project-run"]').click()
 

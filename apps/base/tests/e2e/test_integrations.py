@@ -10,15 +10,17 @@ def test_create_sheet_integration_with_retry(
     page, live_server, project, drive_v2, sheets, celery_worker, bigquery
 ):
     page.force_login(live_server)
-    page.goto(live_server.url + "/projects/1")
+    page.goto(live_server.url + f"/projects/{project.id}")
 
     page.get_by_text("Create an integration to get started").click()
 
-    page.wait_for_url(live_server.url + "/projects/1/integrations/")
+    page.wait_for_url(live_server.url + f"/projects/{project.id}/integrations/")
     page.get_by_text("Add a Google Sheet").click()
 
     # start with runtime error
-    page.wait_for_url(live_server.url + "/projects/1/integrations/sheets/new")
+    page.wait_for_url(
+        live_server.url + f"/projects/{project.id}/integrations/sheets/new"
+    )
     page.fill('input[name="url"]', SHARED_SHEET)
     page.get_by_text("Advanced").click()
 
