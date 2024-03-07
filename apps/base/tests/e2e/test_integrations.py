@@ -1,9 +1,8 @@
 import pytest
 
-pytestmark = pytest.mark.django_db(transaction=True)
+from .conftest import BIGQUERY_TIMEOUT, SHARED_SHEET
 
-BIGQUERY_TIMEOUT = 10000
-SHARED_SHEET = "https://docs.google.com/spreadsheets/d/1mfauospJlft0B304j7em1vcyE1QKKVMhZjyLfIAnvmU/edit"
+pytestmark = pytest.mark.django_db(transaction=True)
 
 
 def test_create_sheet_integration_with_retry(

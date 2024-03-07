@@ -2,6 +2,9 @@ import pytest
 from celery.contrib.testing import worker
 from django.db import connection
 
+BIGQUERY_TIMEOUT = 10000
+SHARED_SHEET = "https://docs.google.com/spreadsheets/d/1mfauospJlft0B304j7em1vcyE1QKKVMhZjyLfIAnvmU/edit"
+
 
 @pytest.fixture(autouse=True)
 def patches():
@@ -35,6 +38,8 @@ def celery_worker(celery_session_app):
         yield w
 
 
+# reset sequences after each test, enables us to hard-code primary keys
+# adds ~1s latency per e2e test
 @pytest.fixture(autouse=True)
 def reset_sequences():
     yield

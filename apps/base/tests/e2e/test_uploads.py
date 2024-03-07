@@ -1,9 +1,9 @@
 import pytest
 from playwright.sync_api import expect
 
-pytestmark = pytest.mark.django_db(transaction=True)
+from .conftest import BIGQUERY_TIMEOUT
 
-BIGQUERY_TIMEOUT = 10000
+pytestmark = pytest.mark.django_db(transaction=True)
 
 
 def test_upload_valid_csv(page, live_server, project, celery_worker, bigquery):

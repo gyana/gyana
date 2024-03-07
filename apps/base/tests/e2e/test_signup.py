@@ -1,6 +1,7 @@
-from django.core import mail
-import pytest
 import re
+
+import pytest
+from django.core import mail
 
 pytestmark = pytest.mark.django_db(transaction=True)
 
@@ -33,9 +34,6 @@ def test_signup(page, live_server):
     assert f"/teams" in page.url
     page.fill('input[name="name"]', "My team")
     page.click('button[type="submit"]')
-
-    # todo: select plan and continue
-    # assert f"/teams/1/pricing" in page.url
 
     # new project
     assert f"/teams/1" in page.url
