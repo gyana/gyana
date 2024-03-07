@@ -19,14 +19,6 @@ beat:
 migrate app='' migration='':
     ./manage.py migrate {{app}} {{migration}}
 
-seed:
-    ./manage.py flush --noinput
-    ./manage.py loaddata cypress/fixtures/fixtures.json
-
-fixtures:
-    ./manage.py dumpdata {{ excludes }} > cypress/fixtures/fixtures.json
-    npm run prettier:fixtures
-
 shell:
     ./manage.py shell -i ipython
 
