@@ -28,6 +28,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: extractions/setup-just@v1
+      - uses: HatsuneMiku3939/direnv-action@v1
       - uses: actions/setup-python@v2
         with:
           python-version: 3.9
