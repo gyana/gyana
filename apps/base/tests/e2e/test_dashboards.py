@@ -7,6 +7,7 @@ pytestmark = pytest.mark.django_db(transaction=True)
 
 
 def test_dashboards(page, live_server, project, integration_table_factory):
+    # uploaded into bigquery as part of test_uploads
     table = integration_table_factory(
         project=project,
         name="upload_000000001",
@@ -21,16 +22,15 @@ def test_dashboards(page, live_server, project, integration_table_factory):
     page.locator('[data-cy="dashboard-create"]').click()
     page.locator("#dashboards-name input[id=name]").fill("Magical dashboard")
 
+    # create a table widget and view in the dashboard
     page.locator("#widget-table").drag_to(
         page.locator(".widgets"), target_position={"x": 100, "y": 100}
     )
     page.locator('[data-cy="widget-configure-1"]').click()
     page.get_by_text("store_info").click()
-
     expect(page.get_by_text("Edinburgh")).to_have_count(3)
 
     page.locator("button[class*=modal__close]").click()
-
     expect(page.locator("#widget-1").get_by_text("London")).to_have_count(5)
 
     # chart with aggregations

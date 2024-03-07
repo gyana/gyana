@@ -11,6 +11,7 @@ pytestmark = pytest.mark.django_db(transaction=True)
 def test_workflow_editor(
     page, live_server, project, integration_table_factory, celery_worker
 ):
+    # uploaded into bigquery as part of test_uploads
     table = integration_table_factory(
         project=project,
         name="upload_000000001",
@@ -85,7 +86,6 @@ def test_schema_error(page, live_server, project):
     page.evaluate("() => delete window.schema")
 
     page.locator('button[type="submit"]').first.click()
-
     page.get_by_text("Loading").wait_for()
     page.get_by_text("Something went wrong!").wait_for(timeout=BIGQUERY_TIMEOUT)
 
@@ -100,7 +100,6 @@ def test_nodes_loading_error(page, live_server, project):
     )
 
     page.locator('button[type="submit"]').first.click()
-
     page.get_by_text("Failed loading your nodes!").wait_for(timeout=BIGQUERY_TIMEOUT)
 
 
@@ -110,11 +109,10 @@ def test_workflow_format(page, live_server, project):
 
     page.get_by_text("Create a new workflow").click()
 
+    # drop and connect input->select->output workflow
     page.locator("#dnd-node-input").drag_to(
         page.locator(".react-flow"), target_position={"x": 450, "y": 400}
     )
-
-    # drop, connect and configure select node
     page.locator("#dnd-node-select").drag_to(
         page.locator(".react-flow"), target_position={"x": 300, "y": 100}
     )
@@ -122,36 +120,27 @@ def test_workflow_format(page, live_server, project):
     page.locator('[data-id="1"] .react-flow__handle.source').drag_to(
         page.locator('[data-id="2"] .react-flow__handle.target')
     )
-
-    # drop, connect and name output node
     page.locator("#dnd-node-output").drag_to(
         page.locator(".react-flow"), target_position={"x": 100, "y": 300}
     )
-
     page.locator('[data-id="3"]').wait_for()
     page.locator('[data-id="2"] .react-flow__handle.source').drag_to(
         page.locator('[data-id="3"] .react-flow__handle.target')
     )
 
-    pattern = r"transform: translate\((-?\d*\.?\d+)px, (-?\d*\.?\d+)px\);"
+    def get_positions():
+        pattern = r"transform: translate\((-?\d*\.?\d+)px, (-?\d*\.?\d+)px\);"
+        return {
+            x.get_attribute("data-id"): float(
+                re.search(pattern, x.get_attribute("style")).groups()[0]
+            )
+            for x in page.locator("[data-id]").all()
+        }
 
-    positions = {
-        x.get_attribute("data-id"): float(
-            re.search(pattern, x.get_attribute("style")).groups()[0]
-        )
-        for x in page.locator("[data-id]").all()
-    }
-
-    ids = [k for k, _ in sorted(positions.items(), key=lambda item: item[1])]
+    ids = [k for k, _ in sorted(get_positions().items(), key=lambda item: item[1])]
     assert ids == ["3", "2", "1"]
 
     page.locator(".react-flow__controls-button").nth(4).click()
 
-    positions = {
-        x.get_attribute("data-id"): float(
-            re.search(pattern, x.get_attribute("style")).groups()[0]
-        )
-        for x in page.locator("[data-id]").all()
-    }
-    ids = [k for k, _ in sorted(positions.items(), key=lambda item: item[1])]
+    ids = [k for k, _ in sorted(get_positions().items(), key=lambda item: item[1])]
     assert ids == ["1", "2", "3"]

@@ -56,7 +56,6 @@ def test_upload_streamed_with_chunks(
 
     page.get_by_text("Confirm", exact=True).click(timeout=BIGQUERY_TIMEOUT)
     page.get_by_text("Preview", exact=True).wait_for()
-
     # 2250 lines of CSV including header
     page.get_by_text("2,249").wait_for()
 
