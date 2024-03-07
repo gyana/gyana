@@ -1,4 +1,9 @@
-name: Pytest Unit Tests
+name: pytest
+
+# cancel concurrent runs to avoid bigquery race conditions
+concurrency: 
+  group: cypress-${{ github.ref }}
+  cancel-in-progress: true
 
 on:
   push:
@@ -7,7 +12,7 @@ on:
     branches: [main]
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
@@ -41,33 +46,22 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: 3.9
-          cache: 'pip'
+          cache: pip
       - run: pip install -r requirements.txt -r requirements-dev.txt
-      - name: Ensure browsers are installed
-        run: python -m playwright install --with-deps
-        # required for collectstatic
+      - run: python -m playwright install --with-deps
       - uses: actions/setup-node@v2
         with:
-          node-version: '14'
-          cache: 'npm'
-      - id: 'auth'
-        uses: 'google-github-actions/auth@v2'
+          node-version: 14
+          cache: npm
+      - uses: google-github-actions/auth@v2
         with:
-          credentials_json: '${{ secrets.GCP_SA_KEY }}'
-      - name: 'Set up Cloud SDK'
-        uses: 'google-github-actions/setup-gcloud@v2'
-      - name: Use gcloud CLI
-        run: gcloud info
-      - name: Install Node Dependencies
-        run: npm install
-      - name: Build assets
-        run: npm run build:dev
-      - name: Collect static
-        run: just collectstatic
-      - name: pytest run
-        run: just test-ci
-      - name: e2e run
-        run: just test-e2e
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+      - uses: google-github-actions/setup-gcloud@v2
+      - run: npm install
+      - run: npm run build:dev
+      - run: just collectstatic
+      - run: just test-ci
+      - run: just test-e2e
       - uses: codecov/codecov-action@v2
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
