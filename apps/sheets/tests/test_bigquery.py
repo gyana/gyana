@@ -10,7 +10,7 @@ pytestmark = pytest.mark.django_db
 
 @pytest.fixture
 def mock_bigquery(bigquery):
-    bigquery.query().exception = lambda: False
+    bigquery.query().exception = lambda timeout: False
     # the initial query
     bigquery.query().schema = [
         SchemaField("string_field_0", "STRING"),
