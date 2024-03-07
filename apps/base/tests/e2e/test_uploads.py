@@ -5,6 +5,8 @@ from .conftest import BIGQUERY_TIMEOUT
 
 pytestmark = pytest.mark.django_db(transaction=True)
 
+fixtures = "apps/base/tests/e2e/fixtures"
+
 
 def test_upload_valid_csv(page, live_server, project, celery_worker, bigquery):
     page.force_login(live_server)
@@ -13,7 +15,7 @@ def test_upload_valid_csv(page, live_server, project, celery_worker, bigquery):
     page.get_by_text("Upload CSV").click()
 
     page.wait_for_url(live_server.url + "/projects/1/integrations/uploads/new")
-    page.locator("input[type=file]").set_input_files("cypress/fixtures/store_info.csv")
+    page.locator("input[type=file]").set_input_files(f"{fixtures}/store_info.csv")
 
     page.wait_for_url(live_server.url + "/projects/1/integrations/1/load")
     page.get_by_text("Validating and importing your upload...").wait_for()
@@ -52,7 +54,7 @@ def test_upload_streamed_with_chunks(
 
     page.get_by_text("Upload CSV").click()
 
-    page.locator("input[type=file]").set_input_files("cypress/fixtures/fifa.csv")
+    page.locator("input[type=file]").set_input_files(f"{fixtures}/fifa.csv")
 
     page.get_by_text("Confirm", exact=True).click(timeout=BIGQUERY_TIMEOUT)
     page.get_by_text("Preview", exact=True).wait_for()
@@ -72,7 +74,7 @@ def test_upload_failures(page, live_server, project):
     page.evaluate("() => window.__cypressMaxSize__ = 128;")
     page.get_by_text("Upload CSV").click()
 
-    page.locator("input[type=file]").set_input_files("cypress/fixtures/store_info.csv")
+    page.locator("input[type=file]").set_input_files(f"{fixtures}/store_info.csv")
     page.get_by_text("Errors occurred when uploading your file").wait_for()
     page.get_by_text("This file is too large").wait_for()
 
@@ -88,6 +90,6 @@ def test_upload_failures(page, live_server, project):
 
     page.route("https://storage.googleapis.com/gyana-local/**/*", handle_put)
 
-    page.locator("input[type=file]").set_input_files("cypress/fixtures/store_info.csv")
+    page.locator("input[type=file]").set_input_files(f"{fixtures}/store_info.csv")
     page.get_by_text("Errors occurred when uploading your file").wait_for()
     page.get_by_text("Server error, try again later").wait_for()
