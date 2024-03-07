@@ -40,18 +40,18 @@ jobs:
           - 6379:6379
           
     steps:
-      - uses: actions/checkout@v2
-      - uses: extractions/setup-just@v1
+      - uses: actions/checkout@v4
+      - uses: extractions/setup-just@v2
       - uses: HatsuneMiku3939/direnv-action@v1
-      - uses: actions/setup-python@v2
+      - uses: actions/setup-python@v5
         with:
           python-version: 3.9
           cache: pip
       - run: pip install -r requirements.txt -r requirements-dev.txt
       - run: python -m playwright install --with-deps
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v4
         with:
-          node-version: 14
+          node-version: 16
           cache: npm
       - uses: google-github-actions/auth@v2
         with:
@@ -62,7 +62,7 @@ jobs:
       - run: just collectstatic
       - run: just test-ci
       - run: just test-e2e
-      - uses: codecov/codecov-action@v2
+      - uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./coverage.xml
