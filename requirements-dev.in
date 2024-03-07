@@ -16,3 +16,4 @@ pytest-django
 pytest-factoryboy
 pytest-mock
 pytest-playwright
+pytest-rerunfailures
