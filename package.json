@@ -10,10 +10,7 @@
     "prettier": "prettier --ignore-path .gitignore",
     "prettier:check": "prettier --ignore-path .gitignore --check",
     "prettier:write": "prettier --ignore-path .gitignore --write",
-    "prettier:fixtures": "prettier --write cypress/fixtures/fixtures.json",
-    "cypress:open": "cypress open",
-    "cypress:run": "cypress run",
-    "cypress:failed": "ls cypress/screenshots/*/ | grep ' -- '"
+    "prettier:fixtures": "prettier --write cypress/fixtures/fixtures.json"
   },
   "author": "Gyana",
   "homepage": "https://gyana.com/",
@@ -32,8 +29,6 @@
     "babel-plugin-transform-remove-console": "^6.9.4",
     "css-loader": "^5.2.6",
     "cssnano": "^5.0.6",
-    "cypress": "^8.0.0",
-    "cypress-file-upload": "^5.0.8",
     "file-loader": "^6.2.0",
     "mini-css-extract-plugin": "^1.3.1",
     "postcss": "^8.3.3",

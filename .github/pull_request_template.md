@@ -1,10 +1,10 @@
 ## Before merging:
 
 - [ ] Run pytest
-- [ ] Run cypress
+- [ ] Run e2e
 - [ ] Look through the changes and make sure nothing is broken
 
-### If you aren't sure about anything:  
+### If you aren't sure about anything:
 
 - [ ] Ask for a code review
 

@@ -109,11 +109,6 @@ urlpatterns = [
     path("", include(users_urls.accounts_urlpatterns)),
 ]
 
-if settings.CYPRESS_URLS:
-    urlpatterns += [
-        path("cypress/", include("apps.cypress.urls")),
-    ]
-
 if settings.DEBUG:
     urlpatterns += [path("silk/", include("silk.urls", namespace="silk"))]
 

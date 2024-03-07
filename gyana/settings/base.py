@@ -379,9 +379,6 @@ INVITATIONS_ACCEPT_INVITE_AFTER_SIGNUP = True
 
 HASHIDS_SALT = os.environ.get("HASHIDS_SALT", "")
 
-
-CYPRESS_URLS = False
-
 ADMIN_TOOLS_MENU = "apps.base.admin_tools.menu.CustomMenu"
 ADMIN_TOOLS_INDEX_DASHBOARD = "apps.base.admin_tools.dashboard.CustomIndexDashboard"
 
