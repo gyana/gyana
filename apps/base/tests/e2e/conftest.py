@@ -1,4 +1,5 @@
 import pytest
+from celery.contrib.testing import worker
 from django.db import connection
 
 
@@ -25,6 +26,13 @@ def bigquery():
 @pytest.fixture(scope="session")
 def celery_config():
     return {"broker_url": "redis://localhost:6379/1", "result_backend": "django-db"}
+
+
+# fork of original celery.contrib.pytest.celery_worker to use celery_session_app
+@pytest.fixture()
+def celery_worker(celery_session_app):
+    with worker.start_worker(celery_session_app, pool="solo") as w:
+        yield w
 
 
 @pytest.fixture(autouse=True)
