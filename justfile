@@ -87,3 +87,6 @@ test-retry:
 
 test-ci:
     python -m pytest --cov --cov-report xml --no-migrations --disable-pytest-warnings --ignore=apps/base/tests/e2e --ignore=apps/cookiecutter-app 
+
+test-e2e:
+    python -m pytest --no-migrations --disable-pytest-warnings apps/base/tests/e2e

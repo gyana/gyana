@@ -40,6 +40,14 @@ jobs:
         with:
           node-version: '14'
           cache: 'npm'
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@master
+        with:
+          project_id: gyana-1511894275181
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
+      - name: Use gcloud CLI
+        run: gcloud info
       - name: Install Node Dependencies
         run: npm install
       - name: Build assets
@@ -47,7 +55,7 @@ jobs:
       - name: Collect static
         run: just collectstatic
       - name: Pytest run
-        run: just test-ci
+        run: just test-e2e
       - uses: codecov/codecov-action@v2
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
