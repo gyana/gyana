@@ -2,7 +2,7 @@ import pytest
 from celery.contrib.testing import worker
 from django.db import connection
 
-BIGQUERY_TIMEOUT = 10000
+BIGQUERY_TIMEOUT = 20000
 SHARED_SHEET = "https://docs.google.com/spreadsheets/d/1mfauospJlft0B304j7em1vcyE1QKKVMhZjyLfIAnvmU/edit"
 
 
