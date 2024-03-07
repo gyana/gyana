@@ -64,7 +64,7 @@ jobs:
         run: npm run build:dev
       - name: Collect static
         run: just collectstatic
-      - name: e2e run
+      - name: pytest run
         run: just test-ci
       - name: e2e run
         run: just test-e2e

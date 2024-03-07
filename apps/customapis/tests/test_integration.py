@@ -66,7 +66,7 @@ def request_safe(mocker):
 
 def test_customapi_create(client, logged_in_user, project, bigquery, request_safe):
     # mock the configuration
-    bigquery.load_table_from_uri().exception = lambda timeout: False
+    bigquery.load_table_from_uri().exception = lambda: False
     bigquery.reset_mock()  # reset the call count
 
     LIST = f"/projects/{project.id}/integrations"
