@@ -9,8 +9,7 @@
     "build:watch": "webpack --mode=development --watch --progress",
     "prettier": "prettier --ignore-path .gitignore",
     "prettier:check": "prettier --ignore-path .gitignore --check",
-    "prettier:write": "prettier --ignore-path .gitignore --write",
-    "prettier:fixtures": "prettier --write cypress/fixtures/fixtures.json"
+    "prettier:write": "prettier --ignore-path .gitignore --write"
   },
   "author": "Gyana",
   "homepage": "https://gyana.com/",

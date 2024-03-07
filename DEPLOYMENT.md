@@ -5,7 +5,7 @@ We're running a traditional Django app on [Heroku](https://dashboard.heroku.com/
 ## Release
 
 - Choose and merge a commit from main onto the release branch
-- Run and fix the automated [QA process](DEVELOPMENT.md#QA) (Cypress test suite)
+- Run and fix the automated [QA process](DEVELOPMENT.md#QA)
 - Push any fixes onto main and cherrypick to the release branch
 - Run the manual QA process (written test plan) on gyana-release
 - Document and push any further fixes onto the release branch
