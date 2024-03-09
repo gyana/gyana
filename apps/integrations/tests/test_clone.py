@@ -1,6 +1,5 @@
 import pytest
 
-from apps.base.tests.mocks import mock_bq_client_with_records
 from apps.integrations.models import Integration
 from apps.sheets.models import Sheet
 from apps.tables.models import Table
@@ -11,8 +10,9 @@ pytestmark = pytest.mark.django_db(transaction=True)
 COPY_QUERY = "CREATE OR REPLACE TABLE {} as (SELECT * FROM {})"
 
 
-def test_integration_upload_clone(upload_factory, integration_table_factory, bigquery):
-    mock_bq_client_with_records(bigquery, {})
+def test_integration_upload_clone(
+    upload_factory, integration_table_factory, mock_bigquery
+):
     upload = upload_factory()
     table = integration_table_factory(integration=upload.integration)
     clone = upload.integration.make_clone()

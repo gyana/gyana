@@ -2,6 +2,7 @@ import os
 from unittest.mock import MagicMock
 
 import ibis.expr.schema as sch
+import pandas as pd
 import pytest
 import waffle
 from django.db import connection
@@ -10,6 +11,7 @@ from django.urls import get_resolver, path
 from ibis.backends.bigquery import Backend
 from ibis.expr.operations import DatabaseTable
 from ibis.expr.operations.relations import Namespace
+from pytest_django import live_server_helper
 from waffle.templatetags import waffle_tags
 
 from apps.base.clients import get_engine
@@ -96,34 +98,8 @@ def mock_bigquery(mocker):
         ).to_expr(),
     )
     mocker.patch.object(Backend, "_make_session", return_value=None)
-    mocker.patch.object(Backend, "raw_sql")
-
-
-# @pytest.fixture(autouse=True)
-# def bigquery(mocker, settings):
-#     client = MagicMock()
-#     # manually override the ibis client with a mock instead
-#     # set the project name to "project" in auto-generated SQL
-#     settings.ENGINE_URL = "bigquery://project"
-#     mocker.patch(
-#         "ibis.backends.bigquery.pydata_google_auth.default",
-#         return_value=(None, "project"),
-#     )
-#     mocker.patch("apps.base.engine.bigquery.bigquery", return_value=client)
-#     mocker.patch("ibis.backends.bigquery.client.bq.Client", return_value=client)
-
-#     ibis_client = clients.get_engine().client
-#     ibis_client.client = client
-#     bind(
-#         ibis_client,
-#         "get_schema",
-#         mock_backend_client_get_schema,
-#     )
-
-#     client.get_table().num_rows = 10
-#     client.get_table().modified = timezone.now()
-
-#     yield client
+    mocker.patch.object(Backend, "execute", return_value=pd.DataFrame())
+    return mocker.patch.object(Backend, "raw_sql")
 
 
 @pytest.fixture(autouse=True)

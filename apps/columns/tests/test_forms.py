@@ -4,7 +4,6 @@ from django.http import QueryDict
 from apps.base.core.aggregations import AggregationFunctions
 from apps.base.tests.asserts import assertFormChoicesLength
 from apps.base.tests.mock_data import TABLE
-from apps.base.tests.mocks import mock_bq_client_with_schema
 from apps.columns.forms import (
     AddColumnForm,
     AggregationColumnForm,
@@ -161,11 +160,8 @@ def test_convert_form(convert_column_factory):
 
 
 def test_join_form(
-    join_column_factory, node_factory, bigquery, integration_table_factory
+    join_column_factory, node_factory, mock_bigquery, integration_table_factory
 ):
-    mock_bq_client_with_schema(
-        bigquery, [(name, str(type_)) for name, type_ in TABLE.schema().items()]
-    )
     table = integration_table_factory()
     input_node = node_factory(kind=Node.Kind.INPUT, input_table=table)
     second_input = node_factory(kind=Node.Kind.INPUT, input_table=table)

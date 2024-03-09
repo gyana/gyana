@@ -246,7 +246,7 @@ class AddColumnForm(ModelForm):
         effect = f"computed.function_field = $store.ibis.functions[schema[column]]"
 
     def clean_label(self):
-        return column_naming_validation(self.cleaned_data["label"], self.schema.names)
+        return column_naming_validation(self.cleaned_data["label"], self.schema().names)
 
 
 class FormulaColumnForm(ModelForm):
@@ -302,7 +302,7 @@ def create_left_join_choices(parents, index):
         (
             f"Input {idx+1}",
             sorted(
-                [(f"{idx}:{col}", col) for col in parent.schema],
+                [(f"{idx}:{col}", col) for col in parent.schema()],
                 key=lambda x: str.casefold(x[1]),
             ),
         )
@@ -335,7 +335,7 @@ class JoinColumnForm(ModelForm):
         )
         self.fields["right_column"] = forms.ChoiceField(
             choices=create_column_choices(
-                parents[index + 1].schema,
+                parents[index + 1].schema(),
             ),
             help_text=self.fields["right_column"].help_text.format(index + 2),
         )
