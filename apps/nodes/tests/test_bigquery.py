@@ -91,7 +91,7 @@ WITH t0 AS (
     t3.`stars` AS `stars_2`,
     t3.`is_nice` AS `is_nice_2`,
     t3.`biography` AS `biography_2`
-  FROM project.dataset.table AS t3
+  FROM `project.dataset`.table AS t3
 ), t1 AS (
   SELECT
     t3.`id` AS `id_1`,
@@ -170,7 +170,7 @@ def test_join_node(setup):
     join_node.join_how = "outer"
     query = get_query_from_node(join_node)
     # TODO: Weird that this doesnt need any change?
-    assert query.compile() == JOIN_QUERY.replace("`project.dataset`", "project.dataset")
+    assert query.compile() == JOIN_QUERY
 
 
 def test_aggregation_node(setup):
@@ -222,7 +222,7 @@ FROM (
       t2.`stars`,
       t2.`is_nice`,
       t2.`biography`
-    FROM project.dataset.table AS t2
+    FROM `project.dataset`.table AS t2
   )
   SELECT
     t2.*
@@ -253,7 +253,7 @@ FROM (
   EXCEPT DISTINCT
   SELECT
     t1.*
-  FROM project.dataset.table AS t1
+  FROM `project.dataset`.table AS t1
 ) AS t0\
 """
 
@@ -275,7 +275,7 @@ def test_union_node(setup):
     union_node.union_distinct = True
     assert get_query_from_node(union_node).compile() == UNION_QUERY.replace(
         "UNION ALL", "UNION DISTINCT"
-    ).replace("`project.dataset`", "project.dataset")
+    )
 
 
 def test_union_node_casts_int_to_float(setup):
@@ -350,8 +350,7 @@ def test_sort_node(setup):
     sort_node.sort_columns.create(column="birthday", ascending=False)
     assert (
         get_query_from_node(sort_node).compile()
-        == sort_query.replace("`project.dataset`", "project.dataset")
-        + ",\n  t0.`birthday` DESC"
+        == sort_query + ",\n  t0.`birthday` DESC"
     )
 
 
@@ -377,7 +376,7 @@ def test_limit_node(setup):
 
     assert get_query_from_node(limit_node).compile() == limit_query.replace(
         "LIMIT 100", "LIMIT 250\n  OFFSET 50"
-    ).replace("`project.dataset`", "project.dataset")
+    )
 
 
 def test_filter_node(setup):
@@ -408,7 +407,7 @@ def test_filter_node(setup):
     assert get_query_from_node(filter_node).compile() == (
         f"{INPUT_QUERY}\nWHERE\n  (\n    NOT t0.`athlete` IS NULL\n  ) AND (\n    "
         f"t0.`birthday` = CAST('{datetime.now().strftime('%Y-%m-%d')}' AS DATE)\n  )"
-    ).replace("`project.dataset`", "project.dataset")
+    )
 
 
 def test_edit_node(setup):
@@ -432,7 +431,7 @@ def test_edit_node(setup):
     assert get_query_from_node(edit_node).compile() == limit_query.replace(
         "t0.`athlete`",
         "upper(t0.`athlete`) AS `athlete`",
-    ).replace("`project.dataset`", "project.dataset")
+    )
 
 
 def test_add_node(setup):
@@ -456,7 +455,7 @@ def test_add_node(setup):
     assert get_query_from_node(add_node).compile() == INPUT_QUERY.replace(
         "t0.*",
         "t0.*,\n  t0.`id` IS NULL AS `booly`,\n  upper(t0.`athlete`) AS `grand_athlete`",
-    ).replace("`project.dataset`", "project.dataset")
+    )
 
 
 def test_rename_node(setup):
@@ -479,7 +478,7 @@ def test_rename_node(setup):
     rename_node.rename_columns.create(column="id", new_name="identity")
     assert get_query_from_node(rename_node).compile() == rename_query.replace(
         "t0.`id`", "t0.`id` AS `identity`"
-    ).replace("`project.dataset`", "project.dataset")
+    )
 
 
 def test_formula_node(setup):
@@ -502,7 +501,7 @@ def test_formula_node(setup):
     assert get_query_from_node(formula_node).compile() == INPUT_QUERY.replace(
         "t0.*",
         "t0.*,\n  upper(t0.`athlete`) AS `grand_athlete`,\n  lower(t0.`athlete`) AS `low_athlete`",
-    ).replace("`project.dataset`", "project.dataset")
+    )
 
 
 def test_distinct_node(setup):
@@ -531,7 +530,7 @@ def test_distinct_node(setup):
             "t0.`athlete`,\n  t0.`birthday`,\n  ANY_VALUE(t0.`id`) AS `id`",
         )
         + "\nGROUP BY\n  1,\n  2"
-    ).replace("`project.dataset`", "project.dataset")
+    )
 
 
 def test_window_node(setup):
@@ -556,7 +555,7 @@ def test_window_node(setup):
     assert get_query_from_node(window_node).compile() == INPUT_QUERY.replace(
         "t0.*",
         "t0.*,\n  count(t0.`athlete`) OVER (PARTITION BY t0.`birthday`) AS `window`",
-    ).replace("`project.dataset`", "project.dataset")
+    )
 
     window.order_by = "id"
     window.ascending = False
@@ -564,19 +563,16 @@ def test_window_node(setup):
     assert get_query_from_node(window_node).compile() == INPUT_QUERY.replace(
         "t0.*",
         "t0.*,\n  count(t0.`athlete`) OVER (PARTITION BY t0.`birthday` ORDER BY t0.`id` DESC) AS `window`",
-    ).replace("`project.dataset`", "project.dataset")
+    )
 
     window_node.window_columns.create(
         column="id", function="count", group_by="athlete", label="door"
     )
-    assert (
-        get_query_from_node(window_node).compile()
-        == INPUT_QUERY.replace(
-            "t0.*",
-            """t0.*,
+    assert get_query_from_node(window_node).compile() == INPUT_QUERY.replace(
+        "t0.*",
+        """t0.*,
   count(t0.`athlete`) OVER (PARTITION BY t0.`birthday` ORDER BY t0.`id` DESC) AS `window`,
   count(t0.`id`) OVER (PARTITION BY t0.`athlete`) AS `door`""",
-        ).replace("`project.dataset`", "project.dataset")
     )
 
 

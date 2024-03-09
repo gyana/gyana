@@ -263,16 +263,12 @@ def get_distinct_query(node, query):
 
 @use_intermediate_table
 def get_pivot_query(node, parent):
-    # TODO: move this to the base client
-    client = bq.bigquery()
     column_type = parent[node.pivot_column].type()
 
     # the new column names consist of the unique values inside the selected column
     names_query = (
         _format_literal(row[node.pivot_column], column_type)
-        for row in client.get_query_results(
-            parent[[node.pivot_column]].distinct().compile()
-        ).rows_dict
+        for _, row in parent[[node.pivot_column]].distinct().execute().iterrows()
     )
     # `pivot_index` is optional and won't be displayed if not selected
     selection = ", ".join(

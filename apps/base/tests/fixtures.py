@@ -93,6 +93,7 @@ def mock_bigquery(mocker):
         ).to_expr(),
     )
     mocker.patch.object(Backend, "_make_session", return_value=None)
+    mocker.patch.object(Backend, "raw_sql")
 
 
 # @pytest.fixture(autouse=True)
