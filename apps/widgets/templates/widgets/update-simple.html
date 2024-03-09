@@ -6,11 +6,7 @@
       {% include 'widgets/name.html' %}
     </div>
 
-    <button
-      class="tf-modal__close"
-      data-action="click->tf-modal#close"
-      data-loading-false
-    >
+    <button class="modal__close">
       <i class="fal fa-times fa-lg"></i>
     </button>
   </div>
@@ -21,7 +17,6 @@
       class="widget-update-sidebar__form"
       action="{% url 'dashboard_widgets:update' project.id dashboard.id object.id %}"
       method="post"
-      data-tf-modal-target="form"
       {% if object.kind == "image" %}
         enctype='multipart/form-data'
       {% endif %}
@@ -48,7 +43,6 @@
         name="submit"
         value="Save & Close"
         class="button button--success button--filled w-full"
-        data-action="click->tf-modal#forceClose"
       >
         Save
       </button>

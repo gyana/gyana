@@ -29,11 +29,8 @@ def test_input_form(setup, node_factory):
     node = node_factory(kind=Node.Kind.INPUT, workflow=workflow)
     form = KIND_TO_FORM[node.kind](instance=node)
 
-    assert set(form.fields.keys()) == {"input_table", "search"}
-    table_choices = list(form.fields["input_table"].choices)
-    assert len(table_choices) == 2
-    assert table_choices[0][0] == ""
-    assert table_choices[1][0].instance == table
+    assert set(form.fields.keys()) == {"input_table"}
+    assert form.fields["input_table"].widget.parent_entity == workflow
 
 
 def test_output_form(setup, node_factory):

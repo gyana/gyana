@@ -44,9 +44,7 @@
     <button
       class="button button--sm button--tertiary"
       x-tooltip="View historical runs and enable scheduling"
-      data-action="click->tf-modal#open"
-      data-modal-id="workflows:settings"
-      data-modal-src="{% url "project_workflows:settings" project.id object.id %}"
+      x-modal="{% url "project_workflows:settings" project.id object.id %}"
     >
       <i class="fas fa-fw fa-cog"></i> Settings & History
     </button>

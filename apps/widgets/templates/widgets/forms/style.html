@@ -2,9 +2,6 @@
   id="widget-update-form"
   class="widget-update-sidebar__form"
   hx-post="{% url 'dashboard_widgets:update' project.id dashboard.id object.id %}?tab=style"
-  data-controller="live-update"
-  data-action="change->tf-modal#change"
-  data-tf-modal-target="form"
 >
   {% csrf_token %}
 

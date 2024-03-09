@@ -14,7 +14,6 @@ module.exports = {
     components: './apps/base/javascript/components.ts',
     dashboards: './apps/dashboards/javascript/index.ts',
     fontawesome: './apps/base/styles/vendors/fontawesome.css',
-    stimulus: './apps/base/javascript/stimulus.ts',
     style: './apps/base/styles/style.scss',
     tailwind: './apps/base/styles/vendors/tailwind.pcss',
     widgets: './apps/widgets/javascript/index.ts',

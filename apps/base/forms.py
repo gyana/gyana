@@ -8,7 +8,7 @@ from django import forms
 from django.db import transaction
 from django.forms.models import ModelFormOptions
 
-from apps.base.core.utils import create_column_choices
+from apps.columns.fields import ColumnField
 
 
 # By default, django-crispy-form caches the template, breaking hot-reloading in development
@@ -44,12 +44,10 @@ class BaseModelForm(forms.ModelForm):
         self.helper.form_tag = False
         self.helper.render_hidden_fields = True
 
-        # TODO: add a custom field/widget for this if possible
-        if self.fields.get("column"):
-            self.fields["column"] = forms.ChoiceField(
-                choices=create_column_choices(self.schema),
-                help_text=self.base_fields["column"].help_text,
-            )
+        # TODO: make this logic work for fields
+        # for field in self:
+        #     if not field.field.help_text:
+        #         field.field.help_text = self._meta.help_texts.get(field.name)
 
     def pre_save(self, instance):
         # override in child to add behaviour on commit save
@@ -138,6 +136,11 @@ class AlpineMixin:
         super().__init__(*args, **kwargs)
         self.helper.attrs["x-effect"] = self.effect
 
+        if self.schema:
+            for field in self:
+                if isinstance(field.field, ColumnField):
+                    field.field._set_column_choices(self.schema)
+
     @property
     def fields_json(self):
         return json.dumps(
@@ -146,7 +149,10 @@ class AlpineMixin:
                 for field in self
                 if not isinstance(field.field, forms.FileField)
             }
-            | {"computed": {}, "choices": {}}
+            | {
+                "computed": {},
+                "choices": {},
+            }
         )
 
     def schema_json(self):

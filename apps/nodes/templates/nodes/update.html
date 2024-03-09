@@ -22,9 +22,10 @@
           id="node-update-form"
           class="form--no-layout overflow-hidden flex-1"
           hx-post="{% url 'nodes:update' node.id %}"
-          data-tf-modal-target="form"
-          data-action="change->tf-modal#change"
           x-data
+          {% if node.kind == 'input' %}
+            @click="if ($event.target.name === 'input_table') $el.requestSubmit($refs.preview)"
+          {% endif %}
           @submit="$dispatch('gyana:update-workflow')
             $dispatch('gyana:update-node-{{ object.id }}')"
         >
@@ -40,24 +41,16 @@
           <div class='workflow-modal__footer'>
             <div class="flex flex-1 gap-7 pad">
               {% if node.kind == 'input' %}
-
-                <button
-                  type='submit'
-                  class="button button--success flex-1"
-                  data-action="tf-modal#close"
-                  {% comment %}Need name and value for node-input controller to work{% endcomment %}
-                  name='submit'
-                  value='Save & Preview'
-                >
+                <button type='submit' class="button button--success flex-1">
                   Close
                 </button>
 
+                <button x-ref="preview" type='submit' class="hidden" name='submit' value='Save & Preview'/>
               {% else %}
 
                 <button
                   type='submit'
                   class="button button--success flex-1"
-                  data-action="click->tf-modal#submit"
                   name='submit'
                   value='Save & Close'
                 >
@@ -67,7 +60,6 @@
                   type='submit'
                   class="button button--outline button--success flex-1"
                   name='submit'
-                  data-action="click->tf-modal#save"
                   value='Save & Preview'
                 >
                   Save & Preview
@@ -94,11 +86,7 @@
     {% else %}
       <div class='workflow-detail__warning'>
         <div class="absolute top-0 right-0">
-          <button
-            class="tf-modal__close tf-modal__close--inline ml-auto"
-            data-action="click->tf-modal#forceClose"
-            data-loading-false
-          >
+          <button class="modal__close modal__close--inline ml-auto">
             <i class="fal fa-times fa-lg"></i>
           </button>
         </div>

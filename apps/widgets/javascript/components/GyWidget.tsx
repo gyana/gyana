@@ -176,6 +176,13 @@ class GyWidget extends HTMLElement {
       </GyWidget_>,
       this
     )
+
+    // fix for Alpine compatability with react-html-parser in widgets
+    Array.from(this.querySelectorAll('template')).forEach((template) => {
+      if (template.innerHTML === '') {
+        template.innerHTML = template.childNodes[0].outerHTML
+      }
+    })
   }
 
   disconnectedCallback() {

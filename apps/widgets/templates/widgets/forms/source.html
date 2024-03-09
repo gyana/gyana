@@ -1,26 +1,33 @@
+{% load crispy_forms_tags %}
+
 <form
   id="widget-update-form"
   class="widget-update-sidebar__form"
   hx-post="{% url 'dashboard_widgets:update' project.id dashboard.id object.id %}?tab=source"
-  data-controller="live-update"
-  data-action="change->tf-modal#change"
-  data-tf-modal-target="form"
-  data-tf-modal-submit-on-close
+  x-data="{ loading: false }"
+  @click="if ($event.target.name === 'table') $refs.preview.click(); loading=true"
 >
   {% csrf_token %}
 
   <div class="widget-update__body">
-    {{ form }}
+    {% crispy form %}
   </div>
 
+  <template x-if="loading">
+    <div class="placeholder-scr--inline">
+      <i class="fad fa-spinner-third fa-spin"></i>
+    </div>
+  </template>
+
   <div class="widget-update__footer">
-    <button
-      type="submit"
-      name="submit"
-      value="Save & Preview"
+    <button x-ref="preview" type='submit' class="hidden" name='submit' value='Save & Preview'></button>
+    <a
+      {% if not object.table %}disabled{% endif %}
+      href="#"
+      {% if object.table %}hx-get="{% url "dashboard_widgets:update" project.id dashboard.id object.pk %}"{% endif %}
       class="button button--success flex-1"
     >
       Continue
-    </button>
+    </a>
   </div>
 </form>

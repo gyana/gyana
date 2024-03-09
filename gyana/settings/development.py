@@ -12,15 +12,6 @@ AUTH_PASSWORD_VALIDATORS = []
 # For this to work we will need to copy the sourcemaps as well.
 # STATICFILES_STORAGE = "django.contrib.staticfiles.storage.ManifestStaticFilesStorage"
 
-# URLs to reset and seed the database for testing. Although Cypress supports
-# running CLI commands, the overhead of starting up the python interpreter for
-# each ./manage.py command is 2-3s, whereas the actual reset/seed is 350ms.
-
-CYPRESS_URLS = True
-
-# like locmem but using JSON to store on disk
-EMAIL_BACKEND = "apps.cypress.mail.EmailBackend"
-
 # If using mailhog to debug emails uncomment these lines
 # EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 # EMAIL_HOST = "0.0.0.0"

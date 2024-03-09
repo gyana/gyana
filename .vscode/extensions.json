@@ -10,6 +10,7 @@
     "batisteo.vscode-django",
     "bradlc.vscode-tailwindcss",
     "pcbowers.alpine-intellisense",
-    "jkillian.custom-local-formatters"
+    "jkillian.custom-local-formatters",
+    "Tobermory.es6-string-html"
   ]
 }

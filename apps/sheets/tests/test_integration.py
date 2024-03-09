@@ -33,7 +33,7 @@ def test_sheet_create(
         return_value={"properties": {"title": "Store Info"}}
     )
     # mock the configuration
-    bigquery.query().exception = lambda: False
+    bigquery.query().exception = lambda timeout: False
     bigquery.reset_mock()
     # mock drive client to check last updated information
     drive_v2.files().get().execute = Mock(
@@ -187,7 +187,7 @@ def test_runtime_error(client, logged_in_user, sheet_factory, bigquery, drive_v2
 
     # test: runtime errors lead to error state
 
-    bigquery.query().exception = lambda: True
+    bigquery.query().exception = lambda timeout: True
     bigquery.query().errors = [{"message": "No columns found in the schema."}]
 
     # celery eager mode does not store error results in the backend, but it is enough
@@ -219,7 +219,7 @@ def test_resync_after_source_update(
     drive_v2.files().get().execute = Mock(
         return_value={"modifiedDate": "2020-10-01T00:00:00Z"}
     )
-    bigquery.query().exception = lambda: False
+    bigquery.query().exception = lambda timeout: False
     bigquery.reset_mock()  # reset the call count
 
     DETAIL = f"/projects/{integration.project.id}/integrations/{integration.id}"

@@ -4,18 +4,34 @@
 #
 #    pip-compile requirements-dev.in
 #
+amqp==5.1.1
+    # via
+    #   -c requirements.txt
+    #   kombu
 appnope==0.1.3
     # via ipython
 arrow==1.2.3
     # via jinja2-time
+async-timeout==4.0.2
+    # via
+    #   -c requirements.txt
+    #   redis
 autoflake==1.7.7
     # via -r requirements-dev.in
 backcall==0.2.0
     # via ipython
+billiard==3.6.4.0
+    # via
+    #   -c requirements.txt
+    #   celery
 binaryornot==0.4.4
     # via cookiecutter
 black==22.10.0
     # via -r requirements-dev.in
+celery[redis]==5.2.7
+    # via
+    #   -c requirements.txt
+    #   pytest-celery
 certifi==2022.9.24
     # via
     #   -c requirements.txt
@@ -30,7 +46,23 @@ click==8.1.3
     # via
     #   -c requirements.txt
     #   black
+    #   celery
+    #   click-didyoumean
+    #   click-plugins
+    #   click-repl
     #   cookiecutter
+click-didyoumean==0.3.0
+    # via
+    #   -c requirements.txt
+    #   celery
+click-plugins==1.1.1
+    # via
+    #   -c requirements.txt
+    #   celery
+click-repl==0.2.0
+    # via
+    #   -c requirements.txt
+    #   celery
 cookiecutter==1.7.3
     # via -r requirements-dev.in
 coverage[toml]==6.5.0
@@ -43,6 +75,10 @@ decorator==5.1.1
     #   ipython
 deepdiff==5.8.1
     # via -r requirements-dev.in
+deprecated==1.2.13
+    # via
+    #   -c requirements.txt
+    #   redis
 django-coverage-plugin==2.0.4
     # via -r requirements-dev.in
 djhtml==2.0.0
@@ -80,6 +116,10 @@ jinja2==3.1.2
     #   jinja2-time
 jinja2-time==0.2.0
     # via cookiecutter
+kombu==5.2.4
+    # via
+    #   -c requirements.txt
+    #   celery
 markupsafe==2.1.1
     # via
     #   -c requirements.txt
@@ -98,6 +138,8 @@ packaging==21.3
     # via
     #   -c requirements.txt
     #   pytest
+    #   pytest-rerunfailures
+    #   redis
 parso==0.8.3
     # via jedi
 pathspec==0.9.0
@@ -117,6 +159,7 @@ poyo==0.5.0
 prompt-toolkit==3.0.31
     # via
     #   -c requirements.txt
+    #   click-repl
     #   ipython
 ptyprocess==0.7.0
     # via pexpect
@@ -142,8 +185,11 @@ pytest==7.4.3
     #   pytest-factoryboy
     #   pytest-mock
     #   pytest-playwright
+    #   pytest-rerunfailures
 pytest-base-url==2.0.0
     # via pytest-playwright
+pytest-celery==0.0.0
+    # via -r requirements-dev.in
 pytest-cov==3.0.0
     # via -r requirements-dev.in
 pytest-django==4.5.2
@@ -156,6 +202,8 @@ pytest-mock==3.12.0
     # via -r requirements-dev.in
 pytest-playwright==0.4.3
     # via -r requirements-dev.in
+pytest-rerunfailures==13.0
+    # via -r requirements-dev.in
 python-dateutil==2.8.2
     # via
     #   -c requirements.txt
@@ -165,6 +213,14 @@ python-slugify==6.1.2
     # via
     #   cookiecutter
     #   pytest-playwright
+pytz==2022.7.1
+    # via
+    #   -c requirements.txt
+    #   celery
+redis==4.3.4
+    # via
+    #   -c requirements.txt
+    #   celery
 requests==2.28.1
     # via
     #   -c requirements.txt
@@ -173,6 +229,7 @@ requests==2.28.1
 six==1.16.0
     # via
     #   -c requirements.txt
+    #   click-repl
     #   cookiecutter
     #   django-coverage-plugin
     #   python-dateutil
@@ -202,10 +259,20 @@ urllib3==1.26.12
     # via
     #   -c requirements.txt
     #   requests
+vine==5.0.0
+    # via
+    #   -c requirements.txt
+    #   amqp
+    #   celery
+    #   kombu
 wcwidth==0.2.5
     # via
     #   -c requirements.txt
     #   prompt-toolkit
+wrapt==1.14.1
+    # via
+    #   -c requirements.txt
+    #   deprecated
 
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools

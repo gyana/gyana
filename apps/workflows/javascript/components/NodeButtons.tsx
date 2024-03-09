@@ -2,19 +2,8 @@ import React, { useContext } from 'react'
 import { DnDContext, IDnDContext } from '../context'
 
 const EditButton = ({ id }) => {
-  const params = new URLSearchParams(window.location.search)
-  const model_item = params.get('modal_item')
-
   return (
-    <button
-      data-action='click->tf-modal#open'
-      title='Edit'
-      data-modal-id='workflow-modal'
-      data-modal-src={`/nodes/${id}`}
-      data-modal-item={id}
-      data-modal-classes='tf-modal--full'
-      data-tf-modal-target={model_item == id ? 'onParam' : ''}
-    >
+    <button title='Edit' {...{ 'x-modal.full.persist': `/nodes/${id}` }}>
       <i className='fas fa-fw fa-edit fa-lg'></i>
     </button>
   )

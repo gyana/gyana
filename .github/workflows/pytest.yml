@@ -1,4 +1,9 @@
-name: Pytest Unit Tests
+name: pytest
+
+# cancel concurrent runs to avoid bigquery race conditions
+concurrency: 
+  group: cypress-${{ github.ref }}
+  cancel-in-progress: true
 
 on:
   push:
@@ -7,9 +12,9 @@ on:
     branches: [main]
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
 
     services:
       postgres:
@@ -24,31 +29,40 @@ jobs:
           --health-retries 5
         ports:
           - 5432:5432
-
+      redis:
+        image: redis
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+          
     steps:
-      - uses: actions/checkout@v2
-      - uses: extractions/setup-just@v1
-      - uses: actions/setup-python@v2
+      - uses: actions/checkout@v4
+      - uses: extractions/setup-just@v2
+      - uses: HatsuneMiku3939/direnv-action@v1
+      - uses: actions/setup-python@v5
         with:
           python-version: 3.9
-          cache: 'pip'
+          cache: pip
       - run: pip install -r requirements.txt -r requirements-dev.txt
-      - name: Ensure browsers are installed
-        run: python -m playwright install --with-deps
-        # required for collectstatic
-      - uses: actions/setup-node@v2
+      - run: python -m playwright install --with-deps
+      - uses: actions/setup-node@v4
         with:
-          node-version: '14'
-          cache: 'npm'
-      - name: Install Node Dependencies
-        run: npm install
-      - name: Build assets
-        run: npm run build:dev
-      - name: Collect static
-        run: just collectstatic
-      - name: Pytest run
-        run: just test-ci
-      - uses: codecov/codecov-action@v2
+          node-version: 16
+          cache: npm
+      - run: npm install
+      - run: npm run build:dev
+      - run: just collectstatic
+      - run: just test-ci
+      - uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./coverage.xml
+      - uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+      - uses: google-github-actions/setup-gcloud@v2
+      - run: just test-e2e

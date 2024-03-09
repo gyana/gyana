@@ -5,7 +5,7 @@ import analytics
 from django.shortcuts import render
 from django.urls import reverse
 from django.views.generic import DetailView
-from django_htmx.http import retarget, trigger_client_event
+from django_htmx.http import retarget
 from django_tables2.tables import Table as DjangoTable
 from django_tables2.views import SingleTableMixin
 from honeybadger import honeybadger
@@ -197,7 +197,7 @@ class WidgetUpdate(DashboardMixin, UpdateView):
                     self.object.id,
                 ),
             )
-            return f"{base_url}?tab={self.tab if self.tab!='source' else 'data'}"
+            return f"{base_url}?tab={self.tab}"
 
         return reverse(
             "project_dashboards:detail",
@@ -246,7 +246,7 @@ class WidgetUpdate(DashboardMixin, UpdateView):
         )
 
         return retarget(
-            trigger_client_event(self.get_htmx_response(context), "closeModal", {}),
+            self.get_htmx_response(context),
             f"#widget-{self.object.id}",
         )
 

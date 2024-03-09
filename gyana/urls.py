@@ -98,6 +98,7 @@ urlpatterns = [
     path("uploads/", include("apps.uploads.urls")),
     path("sheets/", include("apps.sheets.urls")),
     path("oauth2/", include("apps.oauth2.urls")),
+    path("tables/", include("apps.tables.urls")),
     path("", include("apps.web.urls")),
     path("celery-progress/", include("celery_progress.urls")),
     path("hijack/", include("hijack.urls", namespace="hijack")),
@@ -107,11 +108,6 @@ urlpatterns = [
     path("schemajs/", schemajs_view, name="api_schemajs"),
     path("", include(users_urls.accounts_urlpatterns)),
 ]
-
-if settings.CYPRESS_URLS:
-    urlpatterns += [
-        path("cypress/", include("apps.cypress.urls")),
-    ]
 
 if settings.DEBUG:
     urlpatterns += [path("silk/", include("silk.urls", namespace="silk"))]

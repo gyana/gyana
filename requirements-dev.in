@@ -10,9 +10,11 @@ ipython
 isort
 mypy
 pytest
+pytest-celery
 pytest-cov
 pytest-django
 pytest-env
 pytest-factoryboy
 pytest-mock
 pytest-playwright
+pytest-rerunfailures

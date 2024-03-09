@@ -27,7 +27,6 @@
     <link rel="stylesheet" href="{% static 'css/tailwind.css' %}">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
-    <script src="{% static 'js/stimulus-bundle.js' %}"></script>
     <script src="{% static 'js/base-bundle.js' %}"></script>
     <script src="{% static 'rest_framework/js/coreapi-0.1.1.js' %}"></script>
     <script src="{% url 'api_schemajs' %}"></script>
@@ -55,7 +54,6 @@
     {% endif %}
   </head>
   <body
-    data-controller="tf-modal"
     hx-boost="true"
   >
     <header x-data="{running: false}" class="widgets__export-header" data-html2canvas-ignore>
@@ -156,32 +154,7 @@
       </style>
     {% endblock body %}
 
-    {% comment %}
-  For use with the `tf_modal_controller.js` controller.
-  {% endcomment %}
-    {% block body.modal %}
-      <div
-        data-tf-modal-target="modal"
-        class="tf-modal"
-        hidden
-      >
-        <div class="card card--none card--modal">
-          {% block modal.body %}
-            <div
-              class="overflow-hidden flex-1"
-              data-tf-modal-target="htmx"
-              hx-trigger="hx-modal-load"
-            >
-              <div class="placeholder-scr placeholder-scr--fillscreen">
-                <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-2x"></i>
-              </div>
-            </div>
-          {% endblock modal.body %}
-        </div>
-      </div>
-
-      {% include "components/modal_closing_warning.html" %}
-    {% endblock body.modal %}
+    <div id="modal"></div>
 
     {% comment %} Has to be loaded once GyWidgets are rendered {% endcomment %}
     <script src="{% static 'js/components-bundle.js' %}"></script>

@@ -91,10 +91,7 @@
 
           {% flag 'beta' %}
             <button
-              data-action="click->tf-modal#open"
-              data-modal-id="dashboard:history"
-              data-modal-classes="tf-modal--auto tf-modal--wide tf-modal--tall"
-              data-modal-src="{% url "project_dashboards:history" project.id object.id %}?category=general"
+              x-modal.wide.tall="{% url "project_dashboards:history" project.id object.id %}?category=general"
               class="list__item list__item--interactive w-full"
             >
               <span class='beta mr-4'>History</span>
@@ -158,16 +155,11 @@
       </div>
 
 
-      <div x-tooltip="Customize dimensions, grid spacing and color palette">
-        <button data-action="click->tf-modal#open"
-          data-modal-id="dashboard:settings"
-          data-modal-classes="tf-modal--auto tf-modal--wide tf-modal--tall"
-          data-modal-src="{% url "project_dashboards:settings" project.id object.id %}?category=general"
-          data-modal-target="_top"
-          class="button button--sm button--tertiary">
-          <i class="fas fa-fw fa-paint-brush"></i> Theme and Layout
-        </button>
-      </div>
+      <button class="button button--sm button--tertiary"
+        x-tooltip="Customize dimensions, grid spacing and color palette"
+        x-modal.wide.tall.reload="{% url "project_dashboards:settings" project.id object.id %}?category=general">
+        <i class="fas fa-fw fa-paint-brush"></i> Theme and Layout
+      </button>
     {% endif %}
 
     <div x-tooltip="Click to change view mode">
@@ -187,10 +179,8 @@
     <button
       id="dashboard-share-{{ object.id }}"
       class="button button--sm button--success"
-      data-action="click->tf-modal#open"
-      data-modal-src="{% url "dashboards:share" object.id %}"
-      data-modal-id="dashboard-share"
       x-tooltip="Share a public or password-protected link"
+      x-modal="{% url "dashboards:share" object.id %}"
     >
       <i class="fas fa-fw fa-share"></i> Share
     </button>

@@ -5,15 +5,7 @@
     <div class="workflow-detail__header">
       <h3 class="mr-auto">Your Account</h3>
 
-      <button
-        class="tf-modal__close"
-        type="submit"
-        formnovalidate
-        name="close"
-        value="close"
-        data-action="click->tf-modal#close"
-        data-loading-false
-      >
+      <button class="modal__close">
         <i class="fal fa-times fa-lg"></i>
       </button>
     </div>
@@ -22,8 +14,6 @@
       <form
         class="pad"
         enctype='multipart/form-data'
-        data-action="change->tf-modal#change"
-        data-tf-modal-target='form'
         hx-post="{% url 'users:profile' %}"
       >
         {% csrf_token %}
@@ -33,11 +23,9 @@
         {% endwith %}
 
         <div class="flex w-full">
-          <button
-            data-action="click->tf-modal#save"
-            type="submit"
-            class="button button--success w-full"
-          >Save</button>
+          <button type="submit" class="button button--success w-full">
+            Save
+          </button>
         </div>
       </form>
     </div>

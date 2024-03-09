@@ -2,12 +2,12 @@ from crispy_forms.layout import Layout
 from django import forms
 from django.utils.functional import cached_property
 
-from apps.base.core.utils import create_column_choices
 from apps.base.crispy import CrispyFormset
 from apps.base.forms import ModelForm
-from apps.base.widgets import MultiSelect, SourceSelect
+from apps.base.widgets import MultiSelect
+from apps.columns.fields import ColumnField
 from apps.columns.models import Column
-from apps.tables.forms import IntegrationSearchMixin
+from apps.tables.widgets import TableSelect
 
 from .formsets import (
     AddColumnFormSet,
@@ -51,32 +51,16 @@ class DefaultNodeForm(NodeForm):
         fields = []
 
 
-class InputNodeForm(IntegrationSearchMixin, NodeForm):
-    search = forms.CharField(required=False)
-
+class InputNodeForm(NodeForm):
     class Meta:
         model = Node
         fields = ["input_table"]
         labels = {"input_table": "Table"}
-        widgets = {"input_table": SourceSelect()}
+        widgets = {"input_table": TableSelect(parent="workflow")}
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
-        if "search" in self.fields:
-            self.order_fields(["search", "input_table"])
-            self.fields["search"].widget.attrs["data-action"] = "input->tf-modal#search"
-
-            # Re-focus the search bar when there is a value
-            if self.data.get("search"):
-                self.fields["search"].widget.attrs["autofocus"] = ""
-
-            self.search_queryset(
-                self.fields["input_table"],
-                self.instance.workflow.project,
-                self.instance.input_table,
-                self.instance.workflow.input_tables_fk,
-            )
+        self.fields["input_table"].widget.parent_entity = self.instance.workflow
 
 
 class OutputNodeForm(NodeForm):
@@ -163,6 +147,10 @@ class LimitNodeForm(NodeForm):
 
 # TODO: Use Nodeform instead
 class PivotNodeForm(NodeForm):
+    pivot_index = ColumnField(required=False)
+    pivot_column = ColumnField()
+    pivot_value = ColumnField()
+
     class Meta:
         model = Node
         fields = ["pivot_index", "pivot_column", "pivot_value", "pivot_aggregation"]
@@ -176,23 +164,6 @@ class PivotNodeForm(NodeForm):
         }
         effect = (
             f"choices.pivot_aggregation = $store.ibis.aggregations[schema[pivot_value]]"
-        )
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        schema = self.instance.parents.first().schema
-        column_choices = create_column_choices(schema)
-
-        self.fields["pivot_index"] = forms.ChoiceField(
-            choices=column_choices,
-            required=False,
-            help_text=self.fields["pivot_index"].help_text,
-        )
-        self.fields["pivot_column"] = forms.ChoiceField(
-            choices=column_choices, help_text=self.fields["pivot_column"].help_text
-        )
-        self.fields["pivot_value"] = forms.ChoiceField(
-            choices=column_choices, help_text=self.fields["pivot_value"].help_text
         )
 
 

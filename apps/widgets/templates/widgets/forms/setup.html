@@ -4,11 +4,6 @@
   id="widget-update-form"
   class="widget-update-sidebar__form"
   hx-post="{% url 'dashboard_widgets:update' project.id dashboard.id object.id %}"
-  data-action="
-    change->tf-modal#change
-  "
-  data-tf-modal-target="form"
-  data-tf-modal-submit-on-close
 >
   {% comment %}
   The pressed button is outside the form this is just to trigger the submit

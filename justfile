@@ -19,14 +19,6 @@ beat:
 migrate app='' migration='':
     ./manage.py migrate {{app}} {{migration}}
 
-seed:
-    ./manage.py flush --noinput
-    ./manage.py loaddata cypress/fixtures/fixtures.json
-
-fixtures:
-    ./manage.py dumpdata {{ excludes }} > cypress/fixtures/fixtures.json
-    npm run prettier:fixtures
-
 shell:
     ./manage.py shell -i ipython
 
@@ -80,10 +72,10 @@ startapp:
     pushd apps && cookiecutter cookiecutter-app && popd
 
 test TEST=".":
-    python -m pytest --no-migrations --ignore=apps/cookiecutter-app --disable-pytest-warnings -k {{TEST}}
-
-test-retry:
-    python -m pytest --no-migrations --disable-pytest-warnings --last-failed --ignore=apps/cookiecutter-app 
+    python -m pytest --no-migrations --ignore=apps/base/tests/e2e --ignore=apps/cookiecutter-app --disable-pytest-warnings -k {{TEST}}
 
 test-ci:
-    python -m pytest --cov --cov-report xml --no-migrations --disable-pytest-warnings --ignore=apps/cookiecutter-app 
+    python -m pytest --cov --cov-report xml --no-migrations --disable-pytest-warnings --ignore=apps/base/tests/e2e --ignore=apps/cookiecutter-app 
+
+test-e2e:
+    python -m pytest --no-migrations --disable-pytest-warnings --reruns 2 apps/base/tests/e2e

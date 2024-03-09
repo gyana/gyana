@@ -5,22 +5,14 @@
   <div class="workflow-detail__header">
     <h3 class="mr-auto">Settings & History</h3>
 
-    <button
-      class="tf-modal__close"
-      data-action="click->tf-modal#close"
-      data-loading-false
-    >
+    <button class="modal__close">
       <i class="fal fa-times fa-lg"></i>
     </button>
   </div>
 
   <div class="flex-1 overflow-auto">
-    <form
-      class="pad max-w-4xl"
-      data-tf-modal-target='form'
-      hx-post="{% url 'project_workflows:settings' project.id object.id %}"
-      disabled
-    >
+    <form class="pad max-w-4xl"
+      hx-post="{% url 'project_workflows:settings' project.id object.id %}">
       {% csrf_token %}
 
       {% with optional=False %}

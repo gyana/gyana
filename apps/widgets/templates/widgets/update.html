@@ -15,7 +15,6 @@
           href="#"
           class="tabbar__link {% if tab == 'source' %}tabbar__link--active{% endif %}"
           hx-get="{% url "dashboard_widgets:update" project.id dashboard.id object.pk %}?tab=source"
-          data-action='tf-modal#changeTab'
         >
           Source
         </a>
@@ -23,7 +22,6 @@
           href="#"
           {% if object.table %}hx-get="{% url "dashboard_widgets:update" project.id dashboard.id object.pk %}"{% endif %}
           class="tabbar__link {% if tab == 'data' %}tabbar__link--active{% endif %}{% if not object.table %}tabbar__link--disabled{% endif %}"
-          data-action='tf-modal#changeTab'
         >
           Data
         </a>
@@ -31,7 +29,6 @@
           href="#"
           class="tabbar__link {% if tab == 'style' %}tabbar__link--active{% endif %}"
           hx-get="{% url "dashboard_widgets:update" project.id dashboard.id object.pk %}?tab=style"
-          data-action='tf-modal#changeTab'
         >
           Style
         </a>

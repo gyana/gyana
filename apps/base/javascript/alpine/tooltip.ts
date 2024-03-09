@@ -1,7 +1,7 @@
 import tippy from 'tippy.js'
 
 /**
- * Simple Tippy.js stimulus wrapper.
+ * Simple Tippy.js alpine wrapper.
  *
  * @link https://atomiks.github.io/tippyjs/
  *

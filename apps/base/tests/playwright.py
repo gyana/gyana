@@ -1,13 +1,61 @@
+from unittest.mock import MagicMock
+
+import pytest
 from django import forms
+from django.conf import settings
+from django.contrib.auth import BACKEND_SESSION_KEY, HASH_SESSION_KEY, SESSION_KEY
+from django.contrib.sessions.backends.db import SessionStore
+from django.middleware.csrf import get_token
 from django.template.loader import render_to_string
+from playwright.sync_api import Page
 
 from apps.base.alpine import ibis_store
+from apps.users.models import CustomUser
+
+pytestmark = pytest.mark.django_db
+
+
+def force_login(self, live_server):
+    user = CustomUser.objects.first()
+
+    session = SessionStore()
+    session[SESSION_KEY] = user.pk
+    session[BACKEND_SESSION_KEY] = settings.AUTHENTICATION_BACKENDS[0]
+    session[HASH_SESSION_KEY] = user.get_session_auth_hash()
+
+    # mock request object since we explicitly set cookies
+    csrf_token = get_token(MagicMock())
+    session["_csrftoken"] = csrf_token
+    session.save()
+
+    session_cookie = {
+        "name": settings.SESSION_COOKIE_NAME,
+        "value": session.session_key,
+        "secure": False,
+        "url": live_server.url,
+    }
+
+    csrf_cookie = {
+        "name": "csrftoken",
+        "value": csrf_token,
+        "secure": False,
+        "url": live_server.url,
+    }
+
+    self.context.add_cookies([session_cookie, csrf_cookie])
+
+
+Page.force_login = force_login
+
+pytestmark = pytest.mark.django_db
 
 
 class PlaywrightForm:
-    def __init__(self, page):
+    def __init__(self, page, dynamic_view, live_server):
         self.page = page
-        self.page.set_default_timeout(1000)
+        self.dynamic_view = dynamic_view
+        self.live_server = live_server
+        self.page.set_default_timeout(2000)
 
     def render(self, content):
         if isinstance(content, forms.BaseForm):
@@ -19,7 +67,8 @@ class PlaywrightForm:
                 "test/integration.html",
                 {"content": content.decode("utf-8"), "ibis_store": ibis_store},
             )
-        self.page.set_content(html)
+        dynamic_url = self.dynamic_view(html)
+        self.page.goto(self.live_server.url + "/" + dynamic_url)
 
     def select_value(self, name, value):
         self.page.select_option(f"select[name={name}]", value)

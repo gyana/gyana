@@ -78,20 +78,10 @@ For pytest, run the individual tests:
 just test -k {name}
 ```
 
-For cypress, run your app in development mode and open the cypress UI:
+For e2e, run the e2e tests:
 
 ```
-npm run cypress:open
-```
-
-The database is seeded with fixtures, and reset before each test. To modify the
-fixtures, manually make the changes in the UI and dump them.
-
-```bash
-# remember to re-seed the database to initial state
-just cypress-setup
-# ...make changes...
-just cypress-fixtures
+just test-e2e
 ```
 
 ## Profile
@@ -111,14 +101,9 @@ just test
 ```
 
 Run the entire e2e test suite locally, and view the list of failed tests. You can
-review screenshots and videos in the cypress folder to spot easy fixes:
+run specific tests with the `--headed` flag and `page.pause()` to debug.
 
-```
-npm run cypress:run
-npm run cypress:failed
-```
-
-Manually fix failed tests in the UI and re-run the tests suite to confirm.
+Manually fix failed tests and re-run the tests suite to confirm.
 
 ## Deployment
 

@@ -44,11 +44,7 @@ const NodeContent: React.FC<Props> = ({ id, data, showFilledIcon = true }) => {
           fa-fw
           ${data.icon}
           ${showContent && 'absolute opacity-10'}`}
-        data-modal-src={`/nodes/${id}`}
-        data-action='dblclick->tf-modal#open'
-        data-modal-item={id}
-        data-modal-id='workflow-modal'
-        data-modal-classes='tf-modal--full'
+        {...{ 'x-modal:dblclick.full.persist': `/nodes/${id}` }}
       ></i>
       <div className={`p-2 ${!showContent && 'hidden'}`}>
         <NodeDescription id={id} data={data} />

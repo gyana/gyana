@@ -27,7 +27,6 @@
     {% if request.GET.iframe %}
       <base target="_parent">
     {% endif %}
-    <script src="{% static "js/stimulus-bundle.js" %}"></script>
     <script src="{% static "js/base-bundle.js" %}"></script>
 
     <script src="{% static 'js/htmx@1.8.5.min.js' %}" defer></script>
@@ -74,37 +73,10 @@
         {% block body.content %}{% endblock body.content %}
       </main>
 
-      {% comment %}
-    For use with the `tf_modal_controller.js` controller.
-    {% endcomment %}
-      {% block body.modal %}
-        <div
-          data-tf-modal-target="modal"
-          class="tf-modal"
-          hidden
-        >
-          <div class="card card--none card--modal">
-            {% block modal.body %}
-              <div
-                id="hx-modal"
-                class="overflow-hidden flex-1"
-                data-tf-modal-target="htmx"
-                hx-trigger="hx-modal-load"
-                hx-target="this"
-              >
-                <div class="placeholder-scr placeholder-scr--fillscreen">
-                  <i class="placeholder-scr__icon fad fa-spinner-third fa-spin fa-2x"></i>
-                </div>
-              </div>
-            {% endblock modal.body %}
-          </div>
-        </div>
-
-        {% include "components/modal_closing_warning.html" %}
-      {% endblock body.modal %}
-
       {% block body.javascript %}{% endblock body.javascript %}
     {% endblock body %}
+
+    <div id="modal"></div>
   </body>
 </html>
 
@@ -114,4 +86,16 @@
   document.addEventListener('alpine:init', () => {
     Alpine.store('ibis', JSON.parse(document.getElementById('ibis_store').textContent))
   })
+</script>
+
+<script>
+  // https://gist.github.com/lysender/a36143c002a84ed2c166bf7567b1a913
+  document.body.addEventListener('htmx:beforeSwap', function(evt) {
+    // Allow 422 and 400 responses to swap
+    // We treat these as form validation errors
+    if (evt.detail.xhr.status === 422 || evt.detail.xhr.status === 400) {
+      evt.detail.shouldSwap = true;
+      evt.detail.isError = false;
+    }
+  });
 </script>
