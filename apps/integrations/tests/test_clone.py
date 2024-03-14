@@ -24,12 +24,14 @@ def test_integration_upload_clone(
     clone_table = clone.table_set.first()
     assert clone_table.name == clone.source_obj.table_id
 
-    assert bigquery.query.call_args.args[0] == COPY_QUERY.format(
+    assert mock_bigquery["raw_sql"].call_args.args[0] == COPY_QUERY.format(
         clone_table.fqn, table.fqn
     )
 
 
-def test_integration_sheet_clone(sheet_factory, integration_table_factory, bigquery):
+def test_integration_sheet_clone(
+    sheet_factory, integration_table_factory, mock_bigquery
+):
     sheet = sheet_factory()
     table = integration_table_factory(integration=sheet.integration)
     clone = sheet.integration.make_clone()
@@ -41,6 +43,6 @@ def test_integration_sheet_clone(sheet_factory, integration_table_factory, bigqu
     clone_table = clone.table_set.first()
     assert clone_table.name == clone.source_obj.table_id
     assert clone_table.namespace == table.namespace
-    assert bigquery.query.call_args.args[0] == COPY_QUERY.format(
+    assert mock_bigquery["raw_sql"].call_args.args[0] == COPY_QUERY.format(
         clone_table.fqn, table.fqn
     )

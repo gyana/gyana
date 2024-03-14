@@ -43,7 +43,7 @@ def _create_external_table(upload: "Upload", table_id: str, **job_kwargs):
     return bq.QueryJobConfig(table_definitions={table_id: external_config})
 
 
-def _load_table(upload: "Upload", table: "Table", client, **job_kwargs):
+def _load_table(upload: "Upload", table: "Table", client: bq.Client, **job_kwargs):
     job_config = bq.LoadJobConfig(
         source_format=bq.SourceFormat.CSV,
         write_disposition=bq.WriteDisposition.WRITE_TRUNCATE,

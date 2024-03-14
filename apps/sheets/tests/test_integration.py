@@ -24,7 +24,8 @@ def test_sheet_create(
     client,
     logged_in_user,
     project,
-    bigquery,
+    mock_bigquery,
+    mock_bq_query,
     sheets,
     drive_v2,
 ):
@@ -32,9 +33,6 @@ def test_sheet_create(
     sheets.spreadsheets().get().execute = Mock(
         return_value={"properties": {"title": "Store Info"}}
     )
-    # mock the configuration
-    bigquery.query().exception = lambda timeout: False
-    bigquery.reset_mock()
     # mock drive client to check last updated information
     drive_v2.files().get().execute = Mock(
         return_value={"modifiedDate": "2020-10-01T00:00:00Z"}
@@ -75,7 +73,7 @@ def test_sheet_create(
     assert integration.runs.count() == 1
 
     # Import should have happened already
-    assert bigquery.query.call_count == 1
+    assert mock_bq_query.call_count == 1
 
     # complete the sync
     # it will happen immediately as celery is run in eager mode
@@ -91,8 +89,8 @@ def test_sheet_create(
     # validate the sql and external table configuration
     table = integration.table_set.first()
     SQL = f"CREATE OR REPLACE TABLE {table.fqn} AS SELECT * FROM {table.name}_external"
-    assert bigquery.query.call_args.args == (SQL,)
-    job_config = bigquery.query.call_args.kwargs["job_config"]
+    assert mock_bq_query.call_args.args == (SQL,)
+    job_config = mock_bq_query.call_args.kwargs["job_config"]
     external_config = job_config.table_definitions[f"{table.name}_external"]
     assert external_config.source_uris == [SHEETS_URL]
     assert external_config.autodetect

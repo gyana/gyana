@@ -434,7 +434,9 @@ PARAMS = [
     ),
     pytest.param(
         "round(exp(month(birthday)*medals))",
-        QUERY.format("round(exp(EXTRACT(month FROM t0.`birthday`) * t0.`medals`))"),
+        QUERY.format(
+            "CAST(round(exp(EXTRACT(month FROM t0.`birthday`) * t0.`medals`)) AS INT64)"
+        ),
         id="nest numeric and datetime operations",
     ),
     pytest.param(

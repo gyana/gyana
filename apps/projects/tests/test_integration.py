@@ -207,8 +207,8 @@ def test_duplicate_simple_project(
     assert duplicate_widget.table == duplicate_output_node.table
 
     # Check the two tables from integration and workflow have been copied in bigquery
-    assert mock_bigquery.call_count == 2
-    call_queries = [arg.args[0] for arg in mock_bigquery.call_args_list]
+    assert mock_bigquery["raw_sql"].call_count == 2
+    call_queries = [arg.args[0] for arg in mock_bigquery["raw_sql"].call_args_list]
     assert (
         f"CREATE OR REPLACE TABLE {duplicate_table.fqn} as (SELECT * FROM {table.fqn})"
         in call_queries

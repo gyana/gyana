@@ -8,6 +8,8 @@ import waffle
 from django.db import connection
 from django.http import HttpResponse
 from django.urls import get_resolver, path
+from google.cloud.bigquery import Client
+from google.cloud.bigquery.schema import SchemaField
 from ibis.backends.bigquery import Backend
 from ibis.expr.operations import DatabaseTable
 from ibis.expr.operations.relations import Namespace
@@ -87,19 +89,44 @@ def mock_backend_client_get_schema(self, name):
 
 @pytest.fixture(autouse=True)
 def mock_bigquery(mocker):
-    mocker.patch.object(
-        Backend,
-        "table",
-        return_value=DatabaseTable(
-            name="table",
-            namespace=Namespace(schema="project.dataset"),
-            schema=MOCK_SCHEMA,
-            source=get_engine().client,
-        ).to_expr(),
+    return dict(
+        table=mocker.patch.object(
+            Backend,
+            "table",
+            return_value=DatabaseTable(
+                name="table",
+                namespace=Namespace(schema="project.dataset"),
+                schema=MOCK_SCHEMA,
+                source=get_engine().client,
+            ).to_expr(),
+        ),
+        _make_session=mocker.patch.object(Backend, "_make_session", return_value=None),
+        execute=mocker.patch.object(Backend, "execute", return_value=pd.DataFrame()),
+        raw_sql=mocker.patch.object(Backend, "raw_sql"),
     )
-    mocker.patch.object(Backend, "_make_session", return_value=None)
-    mocker.patch.object(Backend, "execute", return_value=pd.DataFrame())
-    return mocker.patch.object(Backend, "raw_sql")
+
+
+@pytest.fixture
+def load_table_from_uri(mocker):
+    # mock the configuration
+    load_job = mocker.MagicMock()
+    load_job.exception = lambda: False
+    return mocker.patch.object(Client, "load_table_from_uri", return_value=load_job)
+
+
+@pytest.fixture
+def mock_bq_query(mocker):
+    table = mocker.MagicMock()
+    table.schema = [
+        SchemaField("string_field_0", "STRING"),
+        SchemaField("string_field_1", "STRING"),
+    ]
+    mocker.patch.object(Client, "get_table", return_value=table)
+    query = mocker.MagicMock()
+    result = mocker.MagicMock()
+    result.values.return_value = ["Name", "Age"]
+    query.result.return_value = [result]
+    return mocker.patch.object(Client, "query", return_value=query)
 
 
 @pytest.fixture(autouse=True)
