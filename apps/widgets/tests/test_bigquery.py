@@ -156,6 +156,4 @@ def test_combo_chart(mock_bigquery, widget_factory):
     query = get_query_from_widget(widget, pre_filter(widget, None))
 
     # TODO: Weird issue where the backticks are removed by ibis
-    assert query.compile() == SINGLE_DIMENSION_TWO_AGGREGATIONS_QUERY.replace(
-        "`project.dataset`", "project.dataset"
-    )
+    assert query.compile() == SINGLE_DIMENSION_TWO_AGGREGATIONS_QUERY

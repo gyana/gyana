@@ -1,9 +1,7 @@
 import uuid
 
-import pandas as pd
 import pytest
 from django.utils import timezone
-from ibis.backends.bigquery import Backend
 
 from apps.base.tests.asserts import assertLoginRedirect, assertNotFound, assertOK
 from apps.dashboards.models import Dashboard
@@ -41,12 +39,7 @@ pytestmark = pytest.mark.django_db
         ),
     ],
 )
-def test_widget_project_required(
-    client, url, user, widget_factory, mock_bigquery, mocker
-):
-    mocker.patch.object(
-        Backend, "execute", return_value=pd.DataFrame({"athlete": ["Usain", "Alex"]})
-    )
+def test_widget_project_required(client, url, user, widget_factory, mock_bigquery):
     widget = widget_factory()
     project = widget.page.dashboard.project
     url = url.format(

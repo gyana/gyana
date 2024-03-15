@@ -233,7 +233,11 @@ PARAMS = [
         QUERY.format("t0.`medals` BETWEEN 2 AND 10"),
         id="between integer column",
     ),
-    create_int_unary_param("ceiling", "ceil"),
+    pytest.param(
+        "ceiling(medals)",
+        QUERY.format("CAST(ceil(t0.`medals`) AS INT64)"),
+        id="ceil",
+    ),
     pytest.param(
         "divide(medals, stars)",
         QUERY.format("IEEE_DIVIDE(t0.`medals`, t0.`stars`)"),

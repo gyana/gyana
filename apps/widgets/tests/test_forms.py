@@ -1,8 +1,6 @@
 import pytest
 
-from apps.base.tests.asserts import assertFormChoicesLength
 from apps.base.tests.mock_data import TABLE
-from apps.base.tests.mocks import mock_bq_client_with_schema
 from apps.widgets.forms import GenericWidgetForm, WidgetSourceForm
 from apps.widgets.models import Widget
 

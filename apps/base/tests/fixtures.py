@@ -17,7 +17,6 @@ from pytest_django import live_server_helper
 from waffle.templatetags import waffle_tags
 
 from apps.base.clients import get_engine
-from apps.base.tests.mock_data import MOCK_SCHEMA
 from apps.teams.models import Team
 from apps.users.models import CustomUser
 
@@ -74,24 +73,20 @@ def patches(mocker, settings):
     yield
 
 
-def bind(instance, name, func):
-    setattr(
-        instance,
-        name,
-        func.__get__(instance, instance.__class__),
-    )
-
-
-def mock_backend_client_get_schema(self, name):
-    table = self.client.get_table(name)
-    return sch.infer(table)
-
-
 @pytest.fixture(autouse=True)
 def mock_bigquery(mocker):
+    mocker.patch(
+        "ibis.backends.bigquery.pydata_google_auth.default",
+        return_value=(None, "project"),
+    )
     query_result = mocker.MagicMock()
     query_result.to_dataframe.return_value = pd.DataFrame()
     query_result.total_rows = 2
+
+    # NOTE: Hacky solution to make sure pydata_google_auth is mocked
+    # before initialising the backend client with get_engine() for TABLE_DATA
+    from apps.base.tests.mock_data import MOCK_SCHEMA
+
     return dict(
         table=mocker.patch.object(
             Backend,
