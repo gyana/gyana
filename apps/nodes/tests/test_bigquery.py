@@ -2,8 +2,10 @@ import textwrap
 from datetime import datetime
 
 import ibis
+import pandas as pd
 import pytest
 from django.utils import timezone
+from ibis.backends.bigquery import Backend
 
 from apps.base.tests.mock_data import TABLE
 from apps.columns.models import Column
@@ -278,6 +280,67 @@ def test_union_node(setup):
     )
 
 
+UNION_CAST_QUERY = """\
+WITH t0 AS (
+  SELECT
+    CAST(t2.`id` AS FLOAT64) AS `id`,
+    t2.`athlete`,
+    t2.`birthday`,
+    t2.`when`,
+    t2.`lunch`,
+    t2.`medals`,
+    t2.`stars`,
+    t2.`is_nice`,
+    t2.`biography`
+  FROM `project.dataset`.table AS t2
+)
+SELECT
+  t1.`id`,
+  t1.`athlete`,
+  t1.`birthday`,
+  t1.`when`,
+  t1.`lunch`,
+  t1.`medals`,
+  t1.`stars`,
+  t1.`is_nice`,
+  t1.`biography`
+FROM (
+  WITH t0 AS (
+    SELECT
+      CAST(t2.`id` AS FLOAT64) AS `id`,
+      t2.`athlete`,
+      t2.`birthday`,
+      t2.`when`,
+      t2.`lunch`,
+      t2.`medals`,
+      t2.`stars`,
+      t2.`is_nice`,
+      t2.`biography`
+    FROM `project.dataset`.table AS t2
+  ), t2 AS (
+    SELECT
+      t0.`id`,
+      t0.`athlete`,
+      t0.`birthday`,
+      t0.`when`,
+      t0.`lunch`,
+      t0.`medals`,
+      t0.`stars`,
+      t0.`is_nice`,
+      t0.`biography`
+    FROM t0
+  )
+  SELECT
+    *
+  FROM t0
+  UNION ALL
+  SELECT
+    *
+  FROM t2
+) AS t1\
+"""
+
+
 def test_union_node_casts_int_to_float(setup):
     input_node, workflow = setup
 
@@ -295,10 +358,7 @@ def test_union_node_casts_int_to_float(setup):
     union_node.parents.add(input_node)
     union_node.parents.add(convert_node, through_defaults={"position": 1})
 
-    assert (
-        get_query_from_node(union_node).compile()
-        == "WITH t0 AS (\n  SELECT CAST(t2.`id` AS FLOAT64) AS `id`, t2.`athlete`, t2.`birthday`\n  FROM `project.dataset.table` t2\n)\nSELECT t1.*\nFROM (\n  WITH t0 AS (\n    SELECT CAST(t2.`id` AS FLOAT64) AS `id`, t2.`athlete`, t2.`birthday`\n    FROM `project.dataset.table` t2\n  )\n  SELECT *\n  FROM t0\n  UNION ALL\n  SELECT t0.`id`, t0.`athlete`, t0.`birthday`\n  FROM t0\n) t1"
-    )
+    assert get_query_from_node(union_node).compile() == UNION_CAST_QUERY
 
 
 def test_except_node(setup):
@@ -504,6 +564,18 @@ def test_formula_node(setup):
     )
 
 
+DISTINCT_COLUMNS = """t0.`athlete`,
+  ANY_VALUE(t0.`id`) AS `id`,
+  ANY_VALUE(t0.`birthday`) AS `birthday`,
+  ANY_VALUE(t0.`when`) AS `when`,
+  ANY_VALUE(t0.`lunch`) AS `lunch`,
+  ANY_VALUE(t0.`medals`) AS `medals`,
+  ANY_VALUE(t0.`stars`) AS `stars`,
+  ANY_VALUE(t0.`is_nice`) AS `is_nice`,
+  ANY_VALUE(t0.`biography`) AS `biography`\
+"""
+
+
 def test_distinct_node(setup):
     input_node, workflow = setup
     distinct_node = Node.objects.create(
@@ -516,18 +588,16 @@ def test_distinct_node(setup):
     distinct_node.columns.create(column="athlete")
 
     assert get_query_from_node(distinct_node).compile() == (
-        INPUT_QUERY.replace(
-            "t0.*",
-            "t0.`athlete`,\n  ANY_VALUE(t0.`id`) AS `id`,\n  ANY_VALUE(t0.`birthday`) AS `birthday`",
-        )
-        + "\nGROUP BY\n  1"
+        INPUT_QUERY.replace("t0.*", DISTINCT_COLUMNS) + "\nGROUP BY\n  1"
     )
 
     distinct_node.columns.create(column="birthday")
     assert get_query_from_node(distinct_node).compile() == (
         INPUT_QUERY.replace(
             "t0.*",
-            "t0.`athlete`,\n  t0.`birthday`,\n  ANY_VALUE(t0.`id`) AS `id`",
+            DISTINCT_COLUMNS.replace(
+                "t0.`athlete`,", "t0.`athlete`,\n  t0.`birthday`,"
+            ).replace("  ANY_VALUE(t0.`birthday`) AS `birthday`,\n", ""),
         )
         + "\nGROUP BY\n  1,\n  2"
     )
@@ -576,7 +646,7 @@ def test_window_node(setup):
     )
 
 
-def test_pivot_node(setup):
+def test_pivot_node(setup, mocker):
     input_node, workflow = setup
     pivot_node = Node.objects.create(
         kind=Node.Kind.PIVOT,
@@ -584,7 +654,11 @@ def test_pivot_node(setup):
         **DEFAULT_X_Y,
     )
     pivot_node.parents.add(input_node)
-
+    mocker.patch.object(
+        Backend,
+        "execute",
+        return_value=pd.DataFrame({"athlete": ["Usain Bolt", "Sakura Yosozumi"]}),
+    ),
     pivot_node.pivot_column = "athlete"
     pivot_node.pivot_index = "id"
     pivot_node.pivot_aggregation = "sum"

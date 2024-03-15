@@ -3,6 +3,7 @@ import math
 from decimal import Decimal
 from numbers import Number
 
+import ibis
 import ibis.expr.datatypes as dt
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
@@ -80,8 +81,14 @@ class GyanaTableData(TableData):
 
     def order_by(self, aliases):
         sort_by = [
-            (self.get_column_from_md5(alias.replace("-", "")), alias.startswith("-"))
+            (
+                getattr(self.data, self.get_column_from_md5(alias.replace("-", ""))),
+                alias.startswith("-"),
+            )
             for alias in aliases
+        ]
+        sort_by = [
+            column if ascending else ibis.desc(column) for column, ascending in sort_by
         ]
         # If data has a ordering set we need to overwrite it
         if hasattr(self.data.op(), "sort_keys"):
