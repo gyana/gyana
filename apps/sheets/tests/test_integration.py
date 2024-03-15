@@ -173,7 +173,9 @@ def test_validation_failures(client, logged_in_user, sheet_factory, sheets):
     assertFormError(r, "form", "cell_range", error.reason)
 
 
-def test_runtime_error(client, logged_in_user, sheet_factory, bigquery, drive_v2):
+def test_runtime_error(
+    client, logged_in_user, sheet_factory, mock_bigquery, mock_bq_query, drive_v2
+):
     team = logged_in_user.teams.first()
     sheet = sheet_factory(integration__project__team=team)
     integration = sheet.integration
@@ -185,8 +187,8 @@ def test_runtime_error(client, logged_in_user, sheet_factory, bigquery, drive_v2
 
     # test: runtime errors lead to error state
 
-    bigquery.query().exception = lambda timeout: True
-    bigquery.query().errors = [{"message": "No columns found in the schema."}]
+    mock_bq_query.exception = lambda timeout: True
+    mock_bq_query.errors = [{"message": "No columns found in the schema."}]
 
     # celery eager mode does not store error results in the backend, but it is enough
     # to check an exception happens
@@ -205,7 +207,7 @@ def test_runtime_error(client, logged_in_user, sheet_factory, bigquery, drive_v2
 
 
 def test_resync_after_source_update(
-    client, logged_in_user, sheet_factory, drive_v2, bigquery
+    client, logged_in_user, sheet_factory, drive_v2, mock_bq_query
 ):
     team = logged_in_user.teams.first()
     sheet = sheet_factory(
@@ -217,8 +219,7 @@ def test_resync_after_source_update(
     drive_v2.files().get().execute = Mock(
         return_value={"modifiedDate": "2020-10-01T00:00:00Z"}
     )
-    bigquery.query().exception = lambda timeout: False
-    bigquery.reset_mock()  # reset the call count
+    mock_bq_query.exception = lambda timeout: False
 
     DETAIL = f"/projects/{integration.project.id}/integrations/{integration.id}"
 

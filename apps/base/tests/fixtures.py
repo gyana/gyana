@@ -1,7 +1,7 @@
+import datetime as dt
 import os
 from unittest.mock import MagicMock
 
-import ibis.expr.schema as sch
 import pandas as pd
 import pytest
 import waffle
@@ -89,6 +89,9 @@ def mock_backend_client_get_schema(self, name):
 
 @pytest.fixture(autouse=True)
 def mock_bigquery(mocker):
+    query_result = mocker.MagicMock()
+    query_result.to_dataframe.return_value = pd.DataFrame()
+    query_result.total_rows = 2
     return dict(
         table=mocker.patch.object(
             Backend,
@@ -100,8 +103,10 @@ def mock_bigquery(mocker):
                 source=get_engine().client,
             ).to_expr(),
         ),
-        _make_session=mocker.patch.object(Backend, "_make_session", return_value=None),
-        execute=mocker.patch.object(Backend, "execute", return_value=pd.DataFrame()),
+        _make_session=mocker.patch.object(Backend, "_make_session"),
+        query_and_wait=mocker.patch.object(
+            Client, "query_and_wait", return_value=query_result
+        ),
         raw_sql=mocker.patch.object(Backend, "raw_sql"),
     )
 
@@ -121,11 +126,14 @@ def mock_bq_query(mocker):
         SchemaField("string_field_0", "STRING"),
         SchemaField("string_field_1", "STRING"),
     ]
+    table.modified = dt.datetime(2020, 1, 1)
+    table.num_rows = 2
     mocker.patch.object(Client, "get_table", return_value=table)
     query = mocker.MagicMock()
     result = mocker.MagicMock()
     result.values.return_value = ["Name", "Age"]
     query.result.return_value = [result]
+    query.exception.return_value = False
     return mocker.patch.object(Client, "query", return_value=query)
 
 
