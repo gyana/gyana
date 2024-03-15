@@ -246,7 +246,7 @@ class AddColumnForm(ModelForm):
         effect = f"computed.function_field = $store.ibis.functions[schema[column]]"
 
     def clean_label(self):
-        return column_naming_validation(self.cleaned_data["label"], self.schema().names)
+        return column_naming_validation(self.cleaned_data["label"], self.schema.names)
 
 
 class FormulaColumnForm(ModelForm):
