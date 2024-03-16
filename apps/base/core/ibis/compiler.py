@@ -1,4 +1,3 @@
-import ibis.expr.datashape as ds
 import ibis.expr.datatypes as dt
 import ibis.expr.rules as rlz
 from ibis.backends.bigquery.compiler import BigQueryExprTranslator
@@ -12,6 +11,7 @@ from ibis.expr.operations import (
 )
 from ibis.expr.types import (
     Column,
+    DateScalar,
     DateValue,
     StringValue,
     StructValue,
@@ -44,7 +44,7 @@ compiles = BigQueryExprTranslator.compiles
 
 
 class AnyValue(Reduction):
-    arg: Value[ds.Any]
+    arg: Value
 
     dtype = rlz.dtype_like("arg")
 
@@ -283,11 +283,13 @@ def _parse_datetime(t, expr):
     return f"PARSE_TIMESTAMP({t.translate(format_)}, {t.translate(value)})"
 
 
+# TODO: Can be removed once https://github.com/ibis-project/ibis/pull/8664/files
+# is merged
 class Today(Constant):
     dtype = dt.date
 
 
-def today():
+def today() -> DateScalar:
     """
     Compute today's date
 
@@ -301,6 +303,10 @@ def today():
 @compiles(Today)
 def _today(t, expr):
     return "CURRENT_DATE()"
+
+
+# @ibis.udf.scalar.builtin(name="current_date")
+# def today() -> datetime.date: ...
 
 
 # Unfortunately, ibis INTERVAL doesnt except variables

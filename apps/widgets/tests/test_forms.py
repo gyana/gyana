@@ -1,13 +1,9 @@
 import pytest
 
-from apps.base.tests.mock_data import TABLE
 from apps.widgets.forms import GenericWidgetForm, WidgetSourceForm
 from apps.widgets.models import Widget
 
 pytestmark = pytest.mark.django_db
-
-# Number is columns plus unselected option
-NUM_COLUMN_OPTIONS = len(TABLE.schema()) + 1
 
 
 @pytest.fixture
@@ -33,12 +29,12 @@ def test_widget_source_form(setup, widget_factory):
     assert set(form.fields) == {"table"}
 
 
-def test_widget_generic_form_basic(setup, widget_factory, pwf):
+def test_widget_generic_form_basic(setup, widget_factory, pwf, table_data):
     dashboard, table = setup
     widget = widget_factory(
         kind=Widget.Kind.STACKED_BAR, table=table, page__dashboard=dashboard
     )
-    form = GenericWidgetForm(instance=widget, schema=TABLE.schema())
+    form = GenericWidgetForm(instance=widget, schema=table_data.schema())
 
     pwf.render(form)
 
@@ -58,6 +54,8 @@ def test_widget_generic_form_basic(setup, widget_factory, pwf):
 
     pwf.assert_formsets({"filters", "optional_metrics"})
 
+    # Number is columns plus unselected option
+    NUM_COLUMN_OPTIONS = len(table_data.schema()) + 1
     pwf.assert_select_options_length("dimension", NUM_COLUMN_OPTIONS)
     pwf.assert_select_options_length("second_dimension", NUM_COLUMN_OPTIONS)
     pwf.assert_select_options_length("sort_column", NUM_COLUMN_OPTIONS)
@@ -169,10 +167,12 @@ def test_widget_generic_form_basic(setup, widget_factory, pwf):
         (Widget.Kind.COMBO, set(), {"combo"}),
     ],
 )
-def test_widget_generic_form(setup, widget_factory, pwf, kind, fields, formsets):
+def test_widget_generic_form(
+    setup, widget_factory, pwf, kind, fields, formsets, table_data
+):
     dashboard, table = setup
     widget = widget_factory(kind=kind, table=table, page__dashboard=dashboard)
-    form = GenericWidgetForm(instance=widget, schema=TABLE.schema())
+    form = GenericWidgetForm(instance=widget, schema=table_data.schema())
 
     pwf.render(form)
 
@@ -187,10 +187,10 @@ def test_widget_generic_form(setup, widget_factory, pwf, kind, fields, formsets)
         (Widget.Kind.RADAR, 3),
     ],
 )
-def test_widget_formset_min(setup, widget_factory, pwf, kind, min):
+def test_widget_formset_min(setup, widget_factory, pwf, kind, min, table_data):
     dashboard, table = setup
     widget = widget_factory(kind=kind, table=table, page__dashboard=dashboard)
-    form = GenericWidgetForm(instance=widget, schema=TABLE.schema())
+    form = GenericWidgetForm(instance=widget, schema=table_data.schema())
 
     pwf.render(form)
 
@@ -214,10 +214,12 @@ def test_widget_formset_min(setup, widget_factory, pwf, kind, min):
         (Widget.Kind.BUBBLE, "xyz", 3),
     ],
 )
-def test_widget_formset_fixed(setup, widget_factory, pwf, kind, prefix, total):
+def test_widget_formset_fixed(
+    setup, widget_factory, pwf, kind, prefix, total, table_data
+):
     dashboard, table = setup
     widget = widget_factory(kind=kind, table=table, page__dashboard=dashboard)
-    form = GenericWidgetForm(instance=widget, schema=TABLE.schema())
+    form = GenericWidgetForm(instance=widget, schema=table_data.schema())
 
     pwf.render(form)
 

@@ -7,7 +7,6 @@ import pytest
 from django.utils import timezone
 from ibis.backends.bigquery import Backend
 
-from apps.base.tests.mock_data import TABLE
 from apps.columns.models import Column
 from apps.filters.models import DateRange, Filter
 from apps.nodes.engine import get_pivot_query, get_query_from_node, get_unpivot_query
@@ -46,13 +45,13 @@ def setup(
     )
 
 
-def test_input_node(setup):
+def test_input_node(setup, table_data):
     input_node, _ = setup
     query = get_query_from_node(input_node)
-    assert query.equals(TABLE)
+    assert query.equals(table_data)
 
 
-def test_ouput_node(setup):
+def test_ouput_node(setup, table_data):
     input_node, workflow = setup
     output_node = Node.objects.create(
         kind=Node.Kind.OUTPUT, workflow=workflow, **DEFAULT_X_Y
@@ -60,10 +59,10 @@ def test_ouput_node(setup):
     output_node.parents.add(input_node)
     query = get_query_from_node(output_node)
 
-    assert query.equals(TABLE)
+    assert query.equals(table_data)
 
 
-def test_select_node(setup):
+def test_select_node(setup, table_data):
     input_node, workflow = setup
     select_node = Node.objects.create(
         kind=Node.Kind.SELECT, workflow=workflow, **DEFAULT_X_Y
@@ -74,11 +73,11 @@ def test_select_node(setup):
     )
 
     query = get_query_from_node(select_node)
-    assert query.equals(TABLE.projection(["athlete", "birthday"]))
+    assert query.equals(table_data.projection(["athlete", "birthday"]))
 
     select_node.select_mode = "exclude"
     query = get_query_from_node(select_node)
-    assert query.equals(TABLE.drop(["athlete", "birthday"]))
+    assert query.equals(table_data.drop(["athlete", "birthday"]))
 
 
 JOIN_QUERY = """\
@@ -175,7 +174,7 @@ def test_join_node(setup):
     assert query.compile() == JOIN_QUERY
 
 
-def test_aggregation_node(setup):
+def test_aggregation_node(setup, table_data):
     input_node, workflow = setup
     aggregation_node = Node.objects.create(
         kind=Node.Kind.AGGREGATION,
@@ -183,21 +182,25 @@ def test_aggregation_node(setup):
         **DEFAULT_X_Y,
     )
     aggregation_node.parents.add(input_node)
-    assert get_query_from_node(aggregation_node).equals(TABLE.agg(count=ibis._.count()))
+    assert get_query_from_node(aggregation_node).equals(
+        table_data.agg(count=ibis._.count())
+    )
 
     aggregation_node.aggregations.create(column="id", function="sum")
     assert get_query_from_node(aggregation_node).equals(
-        TABLE.aggregate(TABLE.id.sum().name("id"))
+        table_data.aggregate(table_data.id.sum().name("id"))
     )
 
     aggregation_node.columns.create(column="birthday")
     assert get_query_from_node(aggregation_node).equals(
-        TABLE.group_by(["birthday"]).aggregate(TABLE.id.sum().name("id"))
+        table_data.group_by(["birthday"]).aggregate(table_data.id.sum().name("id"))
     )
 
     aggregation_node.columns.create(column="athlete")
     assert get_query_from_node(aggregation_node).equals(
-        TABLE.group_by(["birthday", "athlete"]).aggregate(TABLE.id.sum().name("id"))
+        table_data.group_by(["birthday", "athlete"]).aggregate(
+            table_data.id.sum().name("id")
+        )
     )
 
 

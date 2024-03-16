@@ -187,8 +187,8 @@ def test_runtime_error(
 
     # test: runtime errors lead to error state
 
-    mock_bq_query.exception = lambda timeout: True
-    mock_bq_query.errors = [{"message": "No columns found in the schema."}]
+    mock_bq_query.return_value.exception.return_value = True
+    mock_bq_query.return_value.errors = [{"message": "No columns found in the schema."}]
 
     # celery eager mode does not store error results in the backend, but it is enough
     # to check an exception happens

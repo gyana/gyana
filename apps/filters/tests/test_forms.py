@@ -1,6 +1,5 @@
 import pytest
 
-from apps.base.tests.mock_data import TABLE
 from apps.filters.forms import FilterForm
 from apps.filters.models import DateRange, Filter
 
@@ -203,8 +202,10 @@ def parametrize_column_predicate(
         ),
     ],
 )
-def test_filter_form(data, expected_fields, choice_lengths, node_factory, pwf):
-    pwf.render(FilterForm(schema=TABLE.schema(), parent_instance=node_factory()))
+def test_filter_form(
+    data, expected_fields, choice_lengths, node_factory, pwf, table_data
+):
+    pwf.render(FilterForm(schema=table_data.schema(), parent_instance=node_factory()))
 
     for k, v in data.items():
         pwf.select_value(k, v)

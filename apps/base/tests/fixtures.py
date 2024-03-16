@@ -20,6 +20,7 @@ from apps.base.clients import get_engine
 from apps.teams.models import Team
 from apps.users.models import CustomUser
 
+from .mock_data import MOCK_SCHEMA
 from .playwright import PlaywrightForm
 
 
@@ -73,8 +74,29 @@ def patches(mocker, settings):
     yield
 
 
+@pytest.fixture
+def table_data(mocker):
+    # Need to patch the authentication before initialising the client
+    # in get_engine()
+    mocker.patch(
+        "ibis.backends.bigquery.pydata_google_auth.default",
+        return_value=(None, "project"),
+    )
+    return DatabaseTable(
+        name="table",
+        namespace=Namespace(schema="project.dataset"),
+        schema=MOCK_SCHEMA,
+        source=get_engine().client,
+    ).to_expr()
+
+
 @pytest.fixture(autouse=True)
-def mock_bigquery(mocker):
+def mock_bq_create_dataset(mocker):
+    return mocker.patch.object(Client, "create_dataset")
+
+
+@pytest.fixture(autouse=True)
+def mock_bigquery(mocker, table_data):
     mocker.patch(
         "ibis.backends.bigquery.pydata_google_auth.default",
         return_value=(None, "project"),
@@ -83,21 +105,8 @@ def mock_bigquery(mocker):
     query_result.to_dataframe.return_value = pd.DataFrame()
     query_result.total_rows = 2
 
-    # NOTE: Hacky solution to make sure pydata_google_auth is mocked
-    # before initialising the backend client with get_engine() for TABLE_DATA
-    from apps.base.tests.mock_data import MOCK_SCHEMA
-
     return dict(
-        table=mocker.patch.object(
-            Backend,
-            "table",
-            return_value=DatabaseTable(
-                name="table",
-                namespace=Namespace(schema="project.dataset"),
-                schema=MOCK_SCHEMA,
-                source=get_engine().client,
-            ).to_expr(),
-        ),
+        table=mocker.patch.object(Backend, "table", return_value=table_data),
         _make_session=mocker.patch.object(Backend, "_make_session"),
         query_and_wait=mocker.patch.object(
             Client, "query_and_wait", return_value=query_result

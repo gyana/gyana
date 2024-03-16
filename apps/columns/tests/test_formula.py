@@ -1,7 +1,6 @@
 import pytest
 from ibis import bigquery
 
-from apps.base.tests.mock_data import TABLE
 from apps.columns.engine import compile_formula
 from apps.columns.transformer import FUNCTIONS
 
@@ -331,7 +330,7 @@ PARAMS = [
         ),
         id="time",
     ),
-    pytest.param("today()", "SELECT\n  CURRENT_DATE() AS `tmp`", id="today"),
+    pytest.param("today()", "SELECT\n  CURRENT_DATE AS `tmp`", id="today"),
     pytest.param("now()", "SELECT\n  CURRENT_TIMESTAMP() AS `tmp`", id="now"),
     # Test datetime operations
     create_extract_unary_param("year"),
@@ -464,8 +463,8 @@ PARAMS = [
 
 
 @pytest.mark.parametrize("formula, expected_sql", PARAMS)
-def test_formula(formula, expected_sql):
-    sql = bigquery.compile(compile_formula(TABLE, formula).name("tmp"))
+def test_formula(formula, expected_sql, table_data):
+    sql = bigquery.compile(compile_formula(table_data, formula).name("tmp"))
     assert sql == expected_sql
 
 
@@ -484,8 +483,8 @@ def test_formula(formula, expected_sql):
         ),
     ],
 )
-def test_string(formula, expected):
-    result = compile_formula(TABLE, formula)
+def test_string(formula, expected, table_data):
+    result = compile_formula(table_data, formula)
     assert result == expected
 
 

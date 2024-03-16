@@ -16,7 +16,12 @@ def bq_table_schema_is_not_string_only(mocker):
 
 
 def test_upload_create(
-    client, logged_in_user, project, mock_bigquery, load_table_from_uri
+    client,
+    logged_in_user,
+    project,
+    mock_bigquery,
+    load_table_from_uri,
+    mock_bq_query,
 ):
     GCS_URL = "path/to/gcs"
 

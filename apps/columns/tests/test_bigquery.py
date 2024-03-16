@@ -1,7 +1,6 @@
 import pytest
 from ibis import bigquery
 
-from apps.base.tests.mock_data import TABLE
 from apps.columns.engine import (
     DatePeriod,
     aggregate_columns,
@@ -249,8 +248,8 @@ def create_extract_edit(column, extraction, type_):
         ),
     ],
 )
-def test_compile_function(edit, expected_sql):
-    sql = bigquery.compile(compile_function(TABLE, edit).name("tmp"))
+def test_compile_function(edit, expected_sql, table_data):
+    sql = bigquery.compile(compile_function(table_data, edit).name("tmp"))
     assert sql == expected_sql
 
 
@@ -297,11 +296,15 @@ PARAMS = [
 
 
 @pytest.mark.parametrize("name, part, expected_sql", PARAMS)
-def test_column_part_group(name, part, expected_sql, column_factory, node_factory):
+def test_column_part_group(
+    name, part, expected_sql, column_factory, node_factory, table_data
+):
     node = node_factory()
     column_factory(column=name, part=part, node=node)
-    groups = get_groups(TABLE, node)
-    sql = bigquery.compile(aggregate_columns(TABLE, node.aggregations.all(), groups))
+    groups = get_groups(table_data, node)
+    sql = bigquery.compile(
+        aggregate_columns(table_data, node.aggregations.all(), groups)
+    )
     assert sql == expected_sql
 
 

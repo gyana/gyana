@@ -1,8 +1,4 @@
 from ibis import schema
-from ibis.expr.operations import DatabaseTable
-from ibis.expr.operations.relations import Namespace
-
-from apps.base.clients import get_engine
 
 MOCK_SCHEMA = schema(
     [
@@ -17,9 +13,3 @@ MOCK_SCHEMA = schema(
         ("biography", "struct<a:int32>"),
     ]
 )
-TABLE = DatabaseTable(
-    name="table",
-    namespace=Namespace(schema="project.dataset"),
-    schema=MOCK_SCHEMA,
-    source=get_engine().client,
-).to_expr()

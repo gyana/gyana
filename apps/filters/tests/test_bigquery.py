@@ -1,12 +1,10 @@
-from datetime import date
+from datetime import date, timedelta
 from datetime import datetime as dt
-from datetime import timedelta
 
 import pytest
 from dateutil.relativedelta import relativedelta
 from ibis import bigquery
 
-from apps.base.tests.mock_data import TABLE
 from apps.filters.engine import get_quarter, get_query_from_filter
 from apps.filters.models import DateRange, Filter
 
@@ -687,8 +685,8 @@ PARAMS = [
 
 
 @pytest.mark.parametrize("filter_, expected_sql", PARAMS)
-def test_compiles_filter(filter_, expected_sql):
-    sql = bigquery.compile(get_query_from_filter(TABLE, filter_))
+def test_compiles_filter(filter_, expected_sql, table_data):
+    sql = bigquery.compile(get_query_from_filter(table_data, filter_))
     assert sql == expected_sql
 
 
