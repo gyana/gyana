@@ -43,6 +43,11 @@ def with_pg_trgm_extension():
 
 
 @pytest.fixture(autouse=True)
+def engine_url(settings):
+    settings.ENGINE_URL = "bigquery://project"
+
+
+@pytest.fixture(autouse=True)
 def patches(mocker, settings):
     settings.TEST = True
 

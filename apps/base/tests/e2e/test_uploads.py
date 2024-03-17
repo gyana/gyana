@@ -8,7 +8,7 @@ pytestmark = pytest.mark.django_db(transaction=True)
 fixtures = "apps/base/tests/e2e/fixtures"
 
 
-def test_upload_valid_csv(page, live_server, project, celery_worker, bigquery):
+def test_upload_valid_csv(page, live_server, project, celery_worker, mock_bigquery):
     page.force_login(live_server)
     page.goto(live_server.url + "/projects/1/integrations")
 
@@ -39,7 +39,7 @@ def test_upload_valid_csv(page, live_server, project, celery_worker, bigquery):
 
 
 def test_upload_streamed_with_chunks(
-    page, live_server, project, celery_worker, bigquery, upload_factory
+    page, live_server, project, celery_worker, mock_bigquery, upload_factory
 ):
     # prevent upload from overriding upload for previous test (used in workflows/dashboards)
     upload_factory(integration__project__team=project.team)

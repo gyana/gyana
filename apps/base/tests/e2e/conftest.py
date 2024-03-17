@@ -11,6 +11,11 @@ def patches():
     pass
 
 
+@pytest.fixture(autouse=True)
+def engine_url(settings):
+    pass
+
+
 @pytest.fixture
 def sheets():
     pass
