@@ -1,8 +1,6 @@
 from datetime import date
 
-
-from apps.base.tests.mocks import TABLE_NAME
-
+TABLE_NAME = "`project.dataset`.table"
 POSITIVE_SCORE = +0.9
 NEGATIVE_SCORE = -0.9
 
