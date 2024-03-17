@@ -22,7 +22,32 @@ def drive_v2():
 
 
 @pytest.fixture
-def bigquery():
+def table_data(mocker):
+    pass
+
+
+@pytest.fixture
+def mock_bigquery():
+    pass
+
+
+@pytest.fixture(autouse=True)
+def mock_bq_create_dataset(mocker):
+    pass
+
+
+@pytest.fixture
+def mock_bq_delete_table(mocker):
+    pass
+
+
+@pytest.fixture
+def load_table_from_uri(mocker):
+    pass
+
+
+@pytest.fixture
+def mock_bq_query(mocker):
     pass
 
 
