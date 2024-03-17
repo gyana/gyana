@@ -10,7 +10,6 @@ from apps.base.engine.credentials import get_credentials
 from apps.base.engine.postgres import PostgresClient
 
 from .core.bigquery import *  # noqa
-from .core.ibis.bigquery import *  # noqa
 from .core.ibis.client import *  # noqa
 from .core.ibis.compiler import *  # noqa
 
