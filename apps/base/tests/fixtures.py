@@ -78,10 +78,7 @@ def patches(mocker, settings):
 def table_data(mocker):
     # Need to patch the authentication before initialising the client
     # in get_engine()
-    mocker.patch(
-        "ibis.backends.bigquery.pydata_google_auth.default",
-        return_value=(None, "project"),
-    )
+    mocker.patch.object(Backend, "do_connect")
     return DatabaseTable(
         name="table",
         namespace=Namespace(schema="project.dataset"),
