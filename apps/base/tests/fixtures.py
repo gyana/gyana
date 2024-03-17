@@ -2,6 +2,7 @@ import datetime as dt
 import os
 from unittest.mock import MagicMock
 
+import jwt
 import pandas as pd
 import pytest
 import waffle
@@ -10,6 +11,7 @@ from django.http import HttpResponse
 from django.urls import get_resolver, path
 from google.cloud.bigquery import Client
 from google.cloud.bigquery.schema import SchemaField
+from google.oauth2.service_account import Credentials
 from ibis.backends.bigquery import Backend
 from ibis.expr.operations import DatabaseTable
 from ibis.expr.operations.relations import Namespace
@@ -78,7 +80,20 @@ def patches(mocker, settings):
 def table_data(mocker):
     # Need to patch the authentication before initialising the client
     # in get_engine()
-    mocker.patch.object(Backend, "do_connect")
+
+    mocker.patch(
+        "ibis.backends.bigquery.pydata_google_auth.default",
+        return_value=(None, "project"),
+    )
+    signer = mocker.MagicMock()
+    signer.key_id = jwt.encode({"project": "credentials"}, "key_id")
+    mocker.patch(
+        "google.auth.default",
+        return_value=(
+            Credentials(jwt.encode({"project": "credentials"}, "key_id"), "", ""),
+            "project",
+        ),
+    )
     return DatabaseTable(
         name="table",
         namespace=Namespace(schema="project.dataset"),
@@ -90,6 +105,11 @@ def table_data(mocker):
 @pytest.fixture(autouse=True)
 def mock_bq_create_dataset(mocker):
     return mocker.patch.object(Client, "create_dataset")
+
+
+@pytest.fixture
+def mock_bq_delete_table(mocker):
+    return mocker.patch.object(Client, "delete_table")
 
 
 @pytest.fixture(autouse=True)

@@ -145,6 +145,7 @@ def test_duplicate_simple_project(
     upload_factory,
     node_factory,
     widget_factory,
+    mock_bq_delete_table,
 ):
     """Tests duplication of a project with an upload integration,
     a workflow with an input node to that integration's table and an output node,
