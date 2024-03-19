@@ -4,8 +4,13 @@ from os.path import splitext
 from django.conf import settings
 from django.db import models
 
+from apps.base.clients import SLUG
 from apps.base.models import BaseModel
 from apps.integrations.models import Integration
+
+
+def with_slug(path):
+    return f"{SLUG}-v2/{path}" if SLUG else path
 
 
 class Upload(BaseModel):
@@ -14,11 +19,16 @@ class Upload(BaseModel):
         TAB = "tab", "Tab"
         PIPE = "pipe", "Pipe"
 
-    integration = models.OneToOneField(Integration, on_delete=models.CASCADE)
+    integration = models.OneToOneField(Integration, on_delete=models.CASCADE, null=True)
 
-    file_gcs_path = models.TextField()
+    file_gcs_path = models.TextField(null=True)
     field_delimiter = models.CharField(
         max_length=8, choices=FieldDelimiter.choices, default=FieldDelimiter.COMMA
+    )
+    file = models.FileField(
+        upload_to=with_slug("integrations"),
+        null=True,
+        blank=True,
     )
 
     @property
@@ -31,7 +41,7 @@ class Upload(BaseModel):
 
     @property
     def gcs_uri(self):
-        return f"gs://{settings.GS_BUCKET_NAME}/{self.file_gcs_path}"
+        return f"gs://{settings.GS_BUCKET_NAME}/{self.file.name}"
 
     def create_integration(self, file_name, created_by, project):
         # file_gcs_path has an extra hidden input

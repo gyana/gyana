@@ -19,12 +19,18 @@
         id="create-form"
         action="{{ request.get_full_path }}"
         class="form--no-layout w-full"
+        enctype="multipart/form-data"
+        hx-boost="false"
       >
         <div class="flex flex-1 items-center" id='create-container'>
           {% csrf_token %}
 
-          {{ form.file_gcs_path }}
+          {{ form }}
         </div>
+
+        <button type="submit" class="btn btn--primary mt-4">
+          Upload
+        </button>
       </form>
     </div>
   </div>
