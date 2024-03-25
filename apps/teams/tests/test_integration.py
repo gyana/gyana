@@ -18,7 +18,7 @@ pytestmark = pytest.mark.django_db
 def test_team_crudl(client, logged_in_user, engine, flag_factory):
     team = logged_in_user.teams.first()
     flag = flag_factory(name="beta")
-
+    engine.create_dataset.reset_mock()
     # redirect
     assertRedirects(client.get("/"), f"/teams/{team.id}")
     r = client.get(f"/teams/{team.id}")
@@ -85,7 +85,7 @@ def test_team_crudl(client, logged_in_user, engine, flag_factory):
     assertRedirects(r, "/", target_status_code=302)
 
     # Does a soft delete
-    assert engine.delete_dataset.call_count == 0
+    assert engine.delete_table.call_count == 0
 
     assert logged_in_user.teams.count() == 1
 
