@@ -15,7 +15,7 @@ TEMPORARY_TABLE = "temporary_table"
 
 
 @pytest.fixture
-def mock_bigquery_functions(mocker, mock_bigquery):
+def mock_bigquery_functions(mocker):
     query = mocker.MagicMock()
     query.destination = TEMPORARY_TABLE
     mocker.patch.object(Client, "query", return_value=query)

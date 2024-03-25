@@ -11,11 +11,6 @@ def patches():
     pass
 
 
-@pytest.fixture(autouse=True)
-def engine_url(settings):
-    pass
-
-
 @pytest.fixture
 def sheets():
     pass
@@ -27,32 +22,7 @@ def drive_v2():
 
 
 @pytest.fixture
-def table_data(mocker):
-    pass
-
-
-@pytest.fixture
-def mock_bigquery():
-    pass
-
-
-@pytest.fixture(autouse=True)
-def mock_bq_create_dataset(mocker):
-    pass
-
-
-@pytest.fixture
-def mock_bq_delete_table(mocker):
-    pass
-
-
-@pytest.fixture
-def load_table_from_uri(mocker):
-    pass
-
-
-@pytest.fixture
-def mock_bq_query(mocker):
+def engine():
     pass
 
 

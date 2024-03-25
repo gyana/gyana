@@ -45,9 +45,9 @@ DAVIDS_BIRTHDAY = dt.date(1992, 8, 3)
         ),
     ],
 )
-def test_slice_query_custom_range(date_range, start, end, expected_sql, table_data):
+def test_slice_query_custom_range(date_range, start, end, expected_sql, engine):
     control = Control(date_range=date_range, start=start, end=end)
-    query = slice_query(table_data, "birthday", control, False)
+    query = slice_query(engine.data, "birthday", control, False)
 
     assert bigquery.compile(query) == expected_sql
 
@@ -214,8 +214,8 @@ def create_previous_last_n_days(date_range, days):
         ),
     ],
 )
-def test_previous_function(date_range, expected_sql, table_data):
+def test_previous_function(date_range, expected_sql, engine):
     control = Control(date_range=date_range)
-    query = slice_query(table_data, "birthday", control, True)
+    query = slice_query(engine.data, "birthday", control, True)
 
     assert bigquery.compile(query) == expected_sql

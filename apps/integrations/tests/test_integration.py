@@ -71,14 +71,14 @@ def test_integration_crudl(client, logged_in_user, sheet_factory):
 def test_integration_schema_and_preview(
     client,
     logged_in_user,
-    mock_bigquery,
+    engine,
     sheet_factory,
     integration_table_factory,
 ):
-    mock_bigquery["query_and_wait"].return_value.to_dataframe.return_value = (
-        pd.DataFrame({"athlete": ["Neera"] * 15 + ["Vayu"] * 5})
+    engine.query_and_wait.return_value.to_dataframe.return_value = pd.DataFrame(
+        {"athlete": ["Neera"] * 15 + ["Vayu"] * 5}
     )
-    mock_bigquery["query_and_wait"].return_value.total_rows = 20
+    engine.query_and_wait.return_value.total_rows = 20
     team = logged_in_user.teams.first()
     sheet = sheet_factory(integration__project__team=team)
     integration = sheet.integration
@@ -109,8 +109,8 @@ def test_integration_schema_and_preview(
     assertContains(r, "Neera")
     assertContains(r, "4")
 
-    assert mock_bigquery["query_and_wait"].call_count == 1
-    assert mock_bigquery["query_and_wait"].call_args.args[0] == (
+    assert engine.query_and_wait.call_count == 1
+    assert engine.query_and_wait.call_args.args[0] == (
         "SELECT\n  t0.*\nFROM `project.dataset`.table AS t0"
     )
 
@@ -125,8 +125,8 @@ def test_integration_schema_and_preview(
     assertContains(r, "Vayu")
     assertContains(r, "2")
 
-    assert mock_bigquery["query_and_wait"].call_count == 2
-    assert mock_bigquery["query_and_wait"].call_args.args[0] == (
+    assert engine.query_and_wait.call_count == 2
+    assert engine.query_and_wait.call_args.args[0] == (
         "SELECT\n  t0.*\nFROM `project.dataset`.table AS t0\nLIMIT 5\nOFFSET 15"
     )
 
@@ -142,8 +142,8 @@ def test_integration_schema_and_preview(
     assertContains(r, "Vayu")
     assertContains(r, "2")
 
-    assert mock_bigquery["query_and_wait"].call_count == 3
-    assert mock_bigquery["query_and_wait"].call_args.args[0] == (
+    assert engine.query_and_wait.call_count == 3
+    assert engine.query_and_wait.call_args.args[0] == (
         "SELECT\n  t0.*\nFROM `project.dataset`.table AS t0\nORDER BY\n  t0.`athlete` DESC\nLIMIT 5\nOFFSET 15"
     )
 

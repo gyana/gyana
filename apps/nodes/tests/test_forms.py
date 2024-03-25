@@ -104,10 +104,10 @@ def test_limit_form(setup, node_factory):
     assert set(form.fields.keys()) == {"limit_limit", "limit_offset"}
 
 
-def test_pivot_form(setup, node_factory, pwf, table_data):
+def test_pivot_form(setup, node_factory, pwf, engine):
     table, workflow = setup
     node = create_and_connect(Node.Kind.PIVOT, node_factory, table, workflow)
-    form = KIND_TO_FORM[node.kind](instance=node, schema=table_data.schema())
+    form = KIND_TO_FORM[node.kind](instance=node, schema=engine.data.schema())
     pwf.render(form)
 
     pwf.assert_fields({"pivot_value", "pivot_index", "pivot_column"})

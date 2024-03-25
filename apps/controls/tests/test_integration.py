@@ -3,7 +3,6 @@ from datetime import date
 
 import pandas as pd
 import pytest
-from ibis.backends.bigquery import Backend
 
 from apps.base.tests.asserts import assertFormRenders, assertOK
 from apps.controls.models import Control, ControlWidget, CustomChoice
@@ -23,12 +22,10 @@ INPUT_DATA = [
 ]
 
 
-@pytest.fixture(autouse=True)
-def mock_bq_client_data(mocker):
-    mocker.patch.object(Backend, "execute", return_value=pd.DataFrame(INPUT_DATA))
-
-
-def test_control_crudl(client, project, dashboard_factory, integration_table_factory):
+def test_control_crudl(
+    client, project, dashboard_factory, integration_table_factory, engine
+):
+    engine.set_data(pd.DataFrame(INPUT_DATA))
     # add a widget with a dateslice column so it's picked up when creating the output stream
     dashboard = dashboard_factory(project=project)
     page = dashboard.pages.create()

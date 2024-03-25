@@ -14,7 +14,6 @@ def test_workflow_run(
     workflow_factory,
     node_factory,
     integration_table_factory,
-    mock_bigquery,
 ):
     """Also tests last_run and out_of_date"""
     workflow = workflow_factory(project=project)

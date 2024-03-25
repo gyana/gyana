@@ -7,9 +7,7 @@ pytestmark = pytest.mark.django_db
 
 def test_upload_all_string(
     logged_in_user,
-    mock_bigquery,
-    load_table_from_uri,
-    mock_bq_query,
+    engine,
     upload_factory,
     integration_table_factory,
 ):
@@ -21,7 +19,7 @@ def test_upload_all_string(
     get_engine().import_table_from_upload(table, upload)
 
     # initial call has result with strings
-    initial_call = load_table_from_uri.call_args_list[0]
+    initial_call = engine.load_table_from_uri.call_args_list[0]
     assert initial_call.args == (upload.gcs_uri, table.fqn)
     job_config = initial_call.kwargs["job_config"]
     assert job_config.source_format == "CSV"
@@ -33,7 +31,7 @@ def test_upload_all_string(
     assert job_config.skip_leading_rows == 1
 
     # header call is to a temporary table with skipped leading rows
-    header_call = mock_bq_query.call_args_list[0]
+    header_call = engine.query.call_args_list[0]
     HEADER_SQL = "select * from (select * from table_temp except distinct select * from dataset.table) limit 1"
     assert header_call.args == (HEADER_SQL,)
     job_config = header_call.kwargs["job_config"]
@@ -46,7 +44,7 @@ def test_upload_all_string(
     assert external_config.options.skip_leading_rows == 0
 
     # final call with explicit schema
-    final_call = load_table_from_uri.call_args_list[1]
+    final_call = engine.load_table_from_uri.call_args_list[1]
     assert final_call.args == (upload.gcs_uri, table.fqn)
     job_config = final_call.kwargs["job_config"]
     assert job_config.source_format == "CSV"

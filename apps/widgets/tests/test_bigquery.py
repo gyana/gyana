@@ -79,7 +79,7 @@ simple_params = pytest.mark.parametrize(
 
 
 @simple_params
-def test_only_one_dimension(kind, mock_bigquery, widget_factory):
+def test_only_one_dimension(kind, widget_factory):
     widget = widget_factory(kind=kind, dimension="is_nice")
     query = get_query_from_widget(widget, pre_filter(widget, None))
 
@@ -87,7 +87,7 @@ def test_only_one_dimension(kind, mock_bigquery, widget_factory):
 
 
 @simple_params
-def test_one_dimension_one_aggregation(kind, mock_bigquery, widget_factory):
+def test_one_dimension_one_aggregation(kind, widget_factory):
     widget = widget_factory(kind=kind, dimension="is_nice")
     widget.aggregations.create(column="stars", function="sum")
     query = get_query_from_widget(widget, pre_filter(widget, None))
@@ -96,7 +96,7 @@ def test_one_dimension_one_aggregation(kind, mock_bigquery, widget_factory):
 
 
 @simple_params
-def test_one_dimension_two_aggregations(kind, mock_bigquery, widget_factory):
+def test_one_dimension_two_aggregations(kind, widget_factory):
     widget = widget_factory(kind=kind, dimension="is_nice")
     widget.aggregations.create(column="stars", function="sum")
     widget.aggregations.create(column="athlete", function="count")
@@ -117,7 +117,7 @@ stacked_params = pytest.mark.parametrize(
 
 
 @stacked_params
-def test_two_dimension(kind, mock_bigquery, widget_factory):
+def test_two_dimension(kind, widget_factory):
     widget = widget_factory(kind=kind, dimension="is_nice", second_dimension="medals")
     query = get_query_from_widget(widget, pre_filter(widget, None))
 
@@ -125,7 +125,7 @@ def test_two_dimension(kind, mock_bigquery, widget_factory):
 
 
 @stacked_params
-def test_two_dimension_one_aggregation(kind, mock_bigquery, widget_factory):
+def test_two_dimension_one_aggregation(kind, widget_factory):
     widget = widget_factory(kind=kind, dimension="is_nice", second_dimension="medals")
     widget.aggregations.create(column="stars", function="sum")
     query = get_query_from_widget(widget, pre_filter(widget, None))
@@ -136,7 +136,7 @@ def test_two_dimension_one_aggregation(kind, mock_bigquery, widget_factory):
 @pytest.mark.parametrize(
     "kind", [pytest.param(kind, id=kind) for kind in NO_DIMENSION_WIDGETS]
 )
-def test_no_dimension(kind, mock_bigquery, widget_factory):
+def test_no_dimension(kind, widget_factory):
     widget = widget_factory(kind=kind)
     widget.aggregations.create(column="stars", function="sum")
     widget.aggregations.create(column="athlete", function="count")
@@ -146,7 +146,7 @@ def test_no_dimension(kind, mock_bigquery, widget_factory):
     assert query.compile() == NO_DIMENSION_THREE_AGGREGATIONS_QUERY
 
 
-def test_combo_chart(mock_bigquery, widget_factory):
+def test_combo_chart(widget_factory):
     widget = widget_factory(kind=Widget.Kind.COMBO, dimension="is_nice")
     widget.charts.create(column="stars", function="sum")
     query = get_query_from_widget(widget, pre_filter(widget, None))

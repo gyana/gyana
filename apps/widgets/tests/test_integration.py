@@ -12,7 +12,6 @@ def test_widget_crudl(
     dashboard_factory,
     project,
     integration_table_factory,
-    mock_bigquery,
 ):
     table = integration_table_factory(project=project)
     dashboard = dashboard_factory(project=project)

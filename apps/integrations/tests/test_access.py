@@ -45,7 +45,7 @@ pytestmark = pytest.mark.django_db
     ],
 )
 def test_integration_access(
-    client, url, mock_bigquery, user, integration_table_factory, upload_factory
+    client, url, user, integration_table_factory, upload_factory
 ):
     integration = integration_table_factory().integration
     upload_factory(integration=integration)

@@ -463,8 +463,8 @@ PARAMS = [
 
 
 @pytest.mark.parametrize("formula, expected_sql", PARAMS)
-def test_formula(formula, expected_sql, table_data):
-    sql = bigquery.compile(compile_formula(table_data, formula).name("tmp"))
+def test_formula(formula, expected_sql, engine):
+    sql = bigquery.compile(compile_formula(engine.data, formula).name("tmp"))
     assert sql == expected_sql
 
 
@@ -483,8 +483,8 @@ def test_formula(formula, expected_sql, table_data):
         ),
     ],
 )
-def test_string(formula, expected, table_data):
-    result = compile_formula(table_data, formula)
+def test_string(formula, expected, engine):
+    result = compile_formula(engine.data, formula)
     assert result == expected
 
 

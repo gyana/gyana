@@ -3,7 +3,6 @@ import pytest
 
 @pytest.fixture
 def setup(
-    mock_bigquery,
     logged_in_user,
     integration_factory,
     integration_table_factory,

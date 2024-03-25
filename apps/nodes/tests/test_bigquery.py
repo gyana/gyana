@@ -19,7 +19,6 @@ pytestmark = pytest.mark.django_db
 @pytest.fixture
 def setup(
     logged_in_user,
-    mock_bigquery,
     integration_factory,
     integration_table_factory,
     workflow_factory,
@@ -45,13 +44,13 @@ def setup(
     )
 
 
-def test_input_node(setup, table_data):
+def test_input_node(setup, engine):
     input_node, _ = setup
     query = get_query_from_node(input_node)
-    assert query.equals(table_data)
+    assert query.equals(engine.data)
 
 
-def test_ouput_node(setup, table_data):
+def test_ouput_node(setup, engine):
     input_node, workflow = setup
     output_node = Node.objects.create(
         kind=Node.Kind.OUTPUT, workflow=workflow, **DEFAULT_X_Y
@@ -59,10 +58,10 @@ def test_ouput_node(setup, table_data):
     output_node.parents.add(input_node)
     query = get_query_from_node(output_node)
 
-    assert query.equals(table_data)
+    assert query.equals(engine.data)
 
 
-def test_select_node(setup, table_data):
+def test_select_node(setup, engine):
     input_node, workflow = setup
     select_node = Node.objects.create(
         kind=Node.Kind.SELECT, workflow=workflow, **DEFAULT_X_Y
@@ -73,11 +72,11 @@ def test_select_node(setup, table_data):
     )
 
     query = get_query_from_node(select_node)
-    assert query.equals(table_data.projection(["athlete", "birthday"]))
+    assert query.equals(engine.data.projection(["athlete", "birthday"]))
 
     select_node.select_mode = "exclude"
     query = get_query_from_node(select_node)
-    assert query.equals(table_data.drop(["athlete", "birthday"]))
+    assert query.equals(engine.data.drop(["athlete", "birthday"]))
 
 
 JOIN_QUERY = """\
@@ -174,7 +173,7 @@ def test_join_node(setup):
     assert query.compile() == JOIN_QUERY
 
 
-def test_aggregation_node(setup, table_data):
+def test_aggregation_node(setup, engine):
     input_node, workflow = setup
     aggregation_node = Node.objects.create(
         kind=Node.Kind.AGGREGATION,
@@ -183,23 +182,23 @@ def test_aggregation_node(setup, table_data):
     )
     aggregation_node.parents.add(input_node)
     assert get_query_from_node(aggregation_node).equals(
-        table_data.agg(count=ibis._.count())
+        engine.data.agg(count=ibis._.count())
     )
 
     aggregation_node.aggregations.create(column="id", function="sum")
     assert get_query_from_node(aggregation_node).equals(
-        table_data.aggregate(table_data.id.sum().name("id"))
+        engine.data.aggregate(engine.data.id.sum().name("id"))
     )
 
     aggregation_node.columns.create(column="birthday")
     assert get_query_from_node(aggregation_node).equals(
-        table_data.group_by(["birthday"]).aggregate(table_data.id.sum().name("id"))
+        engine.data.group_by(["birthday"]).aggregate(engine.data.id.sum().name("id"))
     )
 
     aggregation_node.columns.create(column="athlete")
     assert get_query_from_node(aggregation_node).equals(
-        table_data.group_by(["birthday", "athlete"]).aggregate(
-            table_data.id.sum().name("id")
+        engine.data.group_by(["birthday", "athlete"]).aggregate(
+            engine.data.id.sum().name("id")
         )
     )
 
@@ -649,7 +648,7 @@ def test_window_node(setup):
     )
 
 
-def test_pivot_node(setup, mocker):
+def test_pivot_node(setup, mocker, engine):
     input_node, workflow = setup
     pivot_node = Node.objects.create(
         kind=Node.Kind.PIVOT,
@@ -657,11 +656,8 @@ def test_pivot_node(setup, mocker):
         **DEFAULT_X_Y,
     )
     pivot_node.parents.add(input_node)
-    mocker.patch.object(
-        Backend,
-        "execute",
-        return_value=pd.DataFrame({"athlete": ["Usain Bolt", "Sakura Yosozumi"]}),
-    ),
+
+    engine.set_data(pd.DataFrame({"athlete": ["Usain Bolt", "Sakura Yosozumi"]}))
     pivot_node.pivot_column = "athlete"
     pivot_node.pivot_index = "id"
     pivot_node.pivot_aggregation = "sum"

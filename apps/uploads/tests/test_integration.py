@@ -15,14 +15,7 @@ def bq_table_schema_is_not_string_only(mocker):
     )
 
 
-def test_upload_create(
-    client,
-    logged_in_user,
-    project,
-    mock_bigquery,
-    load_table_from_uri,
-    mock_bq_query,
-):
+def test_upload_create(client, logged_in_user, project, engine):
     GCS_URL = "path/to/gcs"
 
     # test: create a new upload, configure it and complete the sync
@@ -43,7 +36,7 @@ def test_upload_create(
     assert integration.kind == Integration.Kind.UPLOAD
     assert integration.upload is not None
     assert integration.created_by == logged_in_user
-    assert mock_bigquery["raw_sql"].call_count == 0
+    assert engine.raw_sql.call_count == 0
 
     DETAIL = f"/projects/{project.id}/integrations/{integration.id}"
     assertRedirects(r, f"{DETAIL}/load", status_code=303, target_status_code=302)
@@ -51,15 +44,15 @@ def test_upload_create(
     # complete the sync
     # it will happen immediately as celery is run in eager mode
 
-    assert load_table_from_uri.call_count == 1
+    assert engine.load_table_from_uri.call_count == 1
 
     # validate the sql and external table configuration
     table = integration.table_set.first()
-    assert load_table_from_uri.call_args.args == (
+    assert engine.load_table_from_uri.call_args.args == (
         f"gs://gyana-test/{GCS_URL}",
         table.fqn,
     )
-    job_config = load_table_from_uri.call_args.kwargs["job_config"]
+    job_config = engine.load_table_from_uri.call_args.kwargs["job_config"]
     assert job_config.source_format == "CSV"
     assert job_config.write_disposition == "WRITE_TRUNCATE"
     assert job_config.field_delimiter == ","

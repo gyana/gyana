@@ -22,8 +22,8 @@ pytestmark = pytest.mark.django_db
 COLUMNS_LENGTH = 10
 
 
-def test_column_form_with_formatting(pwf, table_data):
-    pwf.render(ColumnFormWithFormatting(schema=table_data.schema()))
+def test_column_form_with_formatting(pwf, engine):
+    pwf.render(ColumnFormWithFormatting(schema=engine.data.schema()))
 
     pwf.assert_fields({"column"})
     pwf.assert_select_options_length("column", COLUMNS_LENGTH)
@@ -49,8 +49,8 @@ def test_column_form_with_formatting(pwf, table_data):
     )
 
 
-def test_aggregation_form(pwf, table_data):
-    pwf.render(AggregationColumnForm(schema=table_data.schema()))
+def test_aggregation_form(pwf, engine):
+    pwf.render(AggregationColumnForm(schema=engine.data.schema()))
 
     pwf.assert_fields({"column"})
     pwf.assert_select_options_length("column", COLUMNS_LENGTH)
@@ -63,8 +63,8 @@ def test_aggregation_form(pwf, table_data):
     )
 
 
-def test_aggregation_form_with_formatting(pwf, table_data):
-    pwf.render(AggregationFormWithFormatting(schema=table_data.schema()))
+def test_aggregation_form_with_formatting(pwf, engine):
+    pwf.render(AggregationFormWithFormatting(schema=engine.data.schema()))
 
     pwf.assert_fields({"column"})
     pwf.assert_select_options_length("column", COLUMNS_LENGTH)
@@ -92,8 +92,8 @@ def test_aggregation_form_with_formatting(pwf, table_data):
     )
 
 
-def test_operation_column_form(pwf, table_data):
-    pwf.render(OperationColumnForm(schema=table_data.schema()))
+def test_operation_column_form(pwf, engine):
+    pwf.render(OperationColumnForm(schema=engine.data.schema()))
 
     pwf.assert_fields({"column"})
     pwf.assert_select_options_length("column", COLUMNS_LENGTH)
@@ -107,8 +107,8 @@ def test_operation_column_form(pwf, table_data):
     pwf.assert_select_options_length("date_function", 6)
 
 
-def test_add_column_form(pwf, table_data):
-    pwf.render(AddColumnForm(schema=table_data.schema()))
+def test_add_column_form(pwf, engine):
+    pwf.render(AddColumnForm(schema=engine.data.schema()))
 
     pwf.assert_fields({"column"})
     pwf.assert_select_options_length("column", COLUMNS_LENGTH)
@@ -125,14 +125,14 @@ def test_add_column_form(pwf, table_data):
     pwf.assert_fields({"column", "time_function", "label"})
 
 
-def test_formula_form(table_data):
-    form = FormulaColumnForm(schema=table_data.schema())
+def test_formula_form(engine):
+    form = FormulaColumnForm(schema=engine.data.schema())
 
     assert set(form.fields.keys()) == {"formula", "label"}
 
 
-def test_window_form(pwf, table_data):
-    pwf.render(WindowColumnForm(schema=table_data.schema()))
+def test_window_form(pwf, engine):
+    pwf.render(WindowColumnForm(schema=engine.data.schema()))
 
     # Asserting initial state of the form
     pwf.assert_fields({"column"})
@@ -150,8 +150,8 @@ def test_window_form(pwf, table_data):
     pwf.assert_select_options_length("order_by", COLUMNS_LENGTH)
 
 
-def test_convert_form(convert_column_factory, table_data):
-    form = ConvertColumnForm(schema=table_data.schema())
+def test_convert_form(convert_column_factory, engine):
+    form = ConvertColumnForm(schema=engine.data.schema())
 
     assert set(form.fields.keys()) == {"column", "target_type"}
     assertFormChoicesLength(form, "column", COLUMNS_LENGTH)
@@ -161,9 +161,8 @@ def test_convert_form(convert_column_factory, table_data):
 def test_join_form(
     join_column_factory,
     node_factory,
-    mock_bigquery,
+    engine,
     integration_table_factory,
-    table_data,
 ):
     table = integration_table_factory()
     input_node = node_factory(kind=Node.Kind.INPUT, input_table=table)
@@ -175,7 +174,7 @@ def test_join_form(
 
     column = join_column_factory(node=join_node)
     form = JoinColumnForm(
-        schema=table_data.schema(),
+        schema=engine.data.schema(),
         parent_instance=column.node,
         prefix="join-column-0",
     )
@@ -229,8 +228,8 @@ def test_join_form(
         ),
     ],
 )
-def test_edit_live_fields(select, fields, pwf, table_data):
-    pwf.render(OperationColumnForm(schema=table_data.schema()))
+def test_edit_live_fields(select, fields, pwf, engine):
+    pwf.render(OperationColumnForm(schema=engine.data.schema()))
 
     for k, v in select.items():
         pwf.select_value(k, v)
@@ -238,9 +237,9 @@ def test_edit_live_fields(select, fields, pwf, table_data):
     pwf.assert_fields(set(fields))
 
 
-def test_rename_form(rename_column_factory, table_data):
+def test_rename_form(rename_column_factory, engine):
     column = rename_column_factory()
-    form = RenameColumnForm(instance=column, schema=table_data.schema())
+    form = RenameColumnForm(instance=column, schema=engine.data.schema())
 
     assert set(form.fields.keys()) == {"column", "new_name"}
     assertFormChoicesLength(form, "column", COLUMNS_LENGTH)
@@ -252,14 +251,14 @@ def test_rename_form(rename_column_factory, table_data):
     data[f"{prefix}-new_name"] = "athlete"
 
     form = RenameColumnForm(
-        instance=column, schema=table_data.schema(), prefix=prefix, data=data
+        instance=column, schema=engine.data.schema(), prefix=prefix, data=data
     )
     form.is_valid()
     assert form.errors["new_name"] == ["This column already exists"]
 
     data[f"{prefix}-new_name"] = "Athlete"
     form = RenameColumnForm(
-        instance=column, schema=table_data.schema(), prefix=prefix, data=data
+        instance=column, schema=engine.data.schema(), prefix=prefix, data=data
     )
     form.is_valid()
     assert form.errors["new_name"] == [
@@ -276,7 +275,7 @@ def test_rename_form(rename_column_factory, table_data):
     data[f"{prefix}-new_name"] = "brunch"
 
     form = RenameColumnForm(
-        instance=column, schema=table_data.schema(), prefix=prefix, data=data
+        instance=column, schema=engine.data.schema(), prefix=prefix, data=data
     )
     form.is_valid()
     assert form.errors["new_name"] == ["This column already exists"]

@@ -28,11 +28,9 @@ LIMIT 20\
 
 
 def test_filter_autocomplete(
-    client, project, node_factory, integration_table_factory, mock_bigquery, mocker
+    client, project, node_factory, integration_table_factory, engine
 ):
-    bq_execute = mocker.patch.object(
-        Backend, "execute", return_value=pd.DataFrame({"athlete": SOURCE_DATA})
-    )
+    bq_execute = engine.set_data(pd.DataFrame({"athlete": SOURCE_DATA}))
     table = integration_table_factory(project=project)
     input_node = node_factory(
         kind=Node.Kind.INPUT, workflow__project=project, input_table=table

@@ -64,9 +64,7 @@ def request_safe(mocker):
     return request_safe
 
 
-def test_customapi_create(
-    client, logged_in_user, project, load_table_from_uri, mock_bq_query, request_safe
-):
+def test_customapi_create(client, engine, logged_in_user, project, request_safe):
 
     LIST = f"/projects/{project.id}/integrations"
 
@@ -109,7 +107,7 @@ def test_customapi_create(
     )
 
     assert request_safe.call_count == 0
-    assert mock_bq_query.call_count == 0
+    assert engine.query.call_count == 0
 
     # complete the sync
     # it will happen immediately as celery is run in eager mode
@@ -147,13 +145,13 @@ def test_customapi_create(
     ]
 
     # validate the bigquery load job
-    assert load_table_from_uri.call_count == 1
+    assert engine.load_table_from_uri.call_count == 1
     table = integration.table_set.first()
-    assert load_table_from_uri.call_args.args == (
+    assert engine.load_table_from_uri.call_args.args == (
         customapi.gcs_uri,
         table.fqn,
     )
-    job_config = load_table_from_uri.call_args.kwargs["job_config"]
+    job_config = engine.load_table_from_uri.call_args.kwargs["job_config"]
     assert job_config.source_format == "NEWLINE_DELIMITED_JSON"
     assert job_config.write_disposition == "WRITE_TRUNCATE"
     assert job_config.autodetect

@@ -1,28 +1,17 @@
-import datetime as dt
 import os
 from unittest.mock import MagicMock
 
-import jwt
-import pandas as pd
 import pytest
 import waffle
 from django.db import connection
 from django.http import HttpResponse
 from django.urls import get_resolver, path
-from google.cloud.bigquery import Client
-from google.cloud.bigquery.schema import SchemaField
-from google.oauth2.service_account import Credentials
-from ibis.backends.bigquery import Backend
-from ibis.expr.operations import DatabaseTable
-from ibis.expr.operations.relations import Namespace
 from pytest_django import live_server_helper
 from waffle.templatetags import waffle_tags
 
-from apps.base.clients import get_engine
 from apps.teams.models import Team
 from apps.users.models import CustomUser
 
-from .mock_data import MOCK_SCHEMA
 from .playwright import PlaywrightForm
 
 
@@ -40,11 +29,6 @@ def with_pg_trgm_extension():
     with connection.cursor() as cursor:
         cursor.execute("CREATE EXTENSION IF NOT EXISTS pg_trgm;")
     yield
-
-
-@pytest.fixture(autouse=True)
-def engine_url(settings):
-    settings.ENGINE_URL = "bigquery://project"
 
 
 @pytest.fixture(autouse=True)
@@ -79,88 +63,6 @@ def patches(mocker, settings):
     settings.DEFAULT_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
 
     yield
-
-
-@pytest.fixture
-def table_data(mocker):
-    # Need to patch the authentication before initialising the client
-    # in get_engine()
-
-    mocker.patch(
-        "ibis.backends.bigquery.pydata_google_auth.default",
-        return_value=(None, "project"),
-    )
-    signer = mocker.MagicMock()
-    signer.key_id = jwt.encode({"project": "credentials"}, "key_id")
-    mocker.patch(
-        "google.auth.default",
-        return_value=(
-            Credentials(jwt.encode({"project": "credentials"}, "key_id"), "", ""),
-            "project",
-        ),
-    )
-    return DatabaseTable(
-        name="table",
-        namespace=Namespace(schema="project.dataset"),
-        schema=MOCK_SCHEMA,
-        source=get_engine().client,
-    ).to_expr()
-
-
-@pytest.fixture(autouse=True)
-def mock_bq_create_dataset(mocker):
-    return mocker.patch.object(Client, "create_dataset")
-
-
-@pytest.fixture
-def mock_bq_delete_table(mocker):
-    return mocker.patch.object(Client, "delete_table")
-
-
-@pytest.fixture(autouse=True)
-def mock_bigquery(mocker, table_data):
-    mocker.patch(
-        "ibis.backends.bigquery.pydata_google_auth.default",
-        return_value=(None, "project"),
-    )
-    query_result = mocker.MagicMock()
-    query_result.to_dataframe.return_value = pd.DataFrame()
-    query_result.total_rows = 2
-
-    return dict(
-        table=mocker.patch.object(Backend, "table", return_value=table_data),
-        _make_session=mocker.patch.object(Backend, "_make_session"),
-        query_and_wait=mocker.patch.object(
-            Client, "query_and_wait", return_value=query_result
-        ),
-        raw_sql=mocker.patch.object(Backend, "raw_sql"),
-    )
-
-
-@pytest.fixture
-def load_table_from_uri(mocker):
-    # mock the configuration
-    load_job = mocker.MagicMock()
-    load_job.exception = lambda: False
-    return mocker.patch.object(Client, "load_table_from_uri", return_value=load_job)
-
-
-@pytest.fixture
-def mock_bq_query(mocker):
-    table = mocker.MagicMock()
-    table.schema = [
-        SchemaField("string_field_0", "STRING"),
-        SchemaField("string_field_1", "STRING"),
-    ]
-    table.modified = dt.datetime(2020, 1, 1)
-    table.num_rows = 2
-    mocker.patch.object(Client, "get_table", return_value=table)
-    query = mocker.MagicMock()
-    result = mocker.MagicMock()
-    result.values.return_value = ["Name", "Age"]
-    query.result.return_value = [result]
-    query.exception.return_value = False
-    return mocker.patch.object(Client, "query", return_value=query)
 
 
 @pytest.fixture(autouse=True)

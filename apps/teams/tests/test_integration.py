@@ -15,9 +15,7 @@ from apps.users.models import CustomUser
 pytestmark = pytest.mark.django_db
 
 
-def test_team_crudl(
-    client, logged_in_user, mocker, mock_bigquery, flag_factory, settings
-):
+def test_team_crudl(client, logged_in_user, mocker, flag_factory, settings):
 
     team = logged_in_user.teams.first()
     flag = flag_factory(name="beta")

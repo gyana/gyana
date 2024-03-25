@@ -39,7 +39,7 @@ pytestmark = pytest.mark.django_db
         ),
     ],
 )
-def test_widget_project_required(client, url, user, widget_factory, mock_bigquery):
+def test_widget_project_required(client, url, user, widget_factory):
     widget = widget_factory()
     project = widget.page.dashboard.project
     url = url.format(

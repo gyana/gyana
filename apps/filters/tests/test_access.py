@@ -7,7 +7,7 @@ pytestmark = pytest.mark.django_db
 
 
 def test_access_autocomplete_options(
-    client, mock_bigquery, user, node_factory, integration_table_factory
+    client, user, node_factory, integration_table_factory
 ):
     table = integration_table_factory()
     input_node = node_factory(kind=Node.Kind.INPUT, input_table=table)

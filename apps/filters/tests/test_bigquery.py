@@ -685,8 +685,8 @@ PARAMS = [
 
 
 @pytest.mark.parametrize("filter_, expected_sql", PARAMS)
-def test_compiles_filter(filter_, expected_sql, table_data):
-    sql = bigquery.compile(get_query_from_filter(table_data, filter_))
+def test_compiles_filter(filter_, expected_sql, engine):
+    sql = bigquery.compile(get_query_from_filter(engine.data, filter_))
     assert sql == expected_sql
 
 
