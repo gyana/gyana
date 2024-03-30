@@ -16,6 +16,7 @@ django-clone
 django-crispy-forms
 django-cryptography
 django-dirtyfields
+django-drf-filepond
 django-filter
 django-heroku
 django-hijack

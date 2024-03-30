@@ -100,6 +100,7 @@ urlpatterns = [
     path("oauth2/", include("apps.oauth2.urls")),
     path("tables/", include("apps.tables.urls")),
     path("", include("apps.web.urls")),
+    path("fp/", include("django_drf_filepond.urls")),
     path("celery-progress/", include("celery_progress.urls")),
     path("hijack/", include("hijack.urls", namespace="hijack")),
     # API docs
