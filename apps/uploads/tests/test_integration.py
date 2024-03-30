@@ -1,5 +1,6 @@
 import pytest
 from django.core import mail
+from django.core.files.uploadedfile import SimpleUploadedFile
 from pytest_django.asserts import assertRedirects
 
 from apps.base.tests.asserts import assertOK
@@ -20,19 +21,15 @@ def test_upload_create(client, logged_in_user, project, bigquery):
     bigquery.load_table_from_uri().exception = lambda: False
     bigquery.reset_mock()  # reset the call count
 
-    GCS_URL = "path/to/gcs"
-
     # test: create a new upload, configure it and complete the sync
 
     # create
     r = client.get(f"/projects/{project.id}/integrations/uploads/new")
     assertOK(r)
 
-    # the form uses React, tested in Cypress
-    # pretend the file is upload and validate in mocked bigquery client
     r = client.post(
         f"/projects/{project.id}/integrations/uploads/new",
-        data={"file_name": "store_info.csv", "file_gcs_path": GCS_URL},
+        data={"file": SimpleUploadedFile("test.csv", b"test", content_type="text/csv")},
     )
 
     integration = project.integration_set.first()
@@ -53,7 +50,7 @@ def test_upload_create(client, logged_in_user, project, bigquery):
     # validate the sql and external table configuration
     table = integration.table_set.first()
     assert bigquery.load_table_from_uri.call_args.args == (
-        f"gs://gyana-test/{GCS_URL}",
+        f"gs://gyana-test/{integration.upload.file}",
         table.fqn,
     )
     job_config = bigquery.load_table_from_uri.call_args.kwargs["job_config"]
