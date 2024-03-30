@@ -1,6 +1,6 @@
 {% extends "projects/settings_base.html" %}
 {% load static %}
-{% load help_utils crispy_forms_tags %}
+{% load help_utils %}
 
 {% block app %}
   <div class="page-header">
@@ -32,11 +32,8 @@
         }
         })"
     >
-      <div class="hidden">
-        {% csrf_token %}
-
-        {% comment %} {% crispy form %} {% endcomment %}
-      </div>
+      {% csrf_token %}
+      {% comment %} hidden <input type="file" name="file"/> generated automatically by Dropzone {% endcomment %}
     </form>
   </div>
 
