@@ -5,13 +5,14 @@ import pytest
 from dateutil.relativedelta import relativedelta
 from ibis import bigquery
 
-from apps.base.tests.mock_data import TABLE
 from apps.filters.engine import get_quarter, get_query_from_filter
 from apps.filters.models import DateRange, Filter
 
-QUERY = """SELECT t0.*
-FROM olympians t0
-WHERE {}"""
+QUERY = """SELECT
+  t0.*
+FROM `project.dataset`.table AS t0
+WHERE
+  {}"""
 
 
 def create_int_filter(operation):
@@ -108,7 +109,7 @@ def create_last_n_days(date_range, days):
     return pytest.param(
         create_date_filter(date_range),
         QUERY.format(
-            f"t0.`birthday` BETWEEN DATE '{(TODAY - timedelta(days=days)).strftime('%Y-%m-%d')}' AND DATE '{TODAY.strftime('%Y-%m-%d')}'"
+            f"t0.`birthday` BETWEEN CAST('{(TODAY - timedelta(days=days)).strftime('%Y-%m-%d')}' AS DATE) AND CAST('{TODAY.strftime('%Y-%m-%d')}' AS DATE)"
         ),
         id=f"Date on last {days}",
     )
@@ -125,7 +126,13 @@ PARAMS = [
         create_int_filter(
             Filter.NumericPredicate.NEQUAL,
         ),
-        QUERY.format("(t0.`id` != 42) OR (t0.`id` IS NULL)"),
+        QUERY.format(
+            """(
+    t0.`id` <> 42
+  ) OR (
+    t0.`id` IS NULL
+  )"""
+        ),
         id="Integer not equal",
     ),
     pytest.param(
@@ -167,7 +174,7 @@ PARAMS = [
         create_int_filter(
             Filter.NumericPredicate.NOTNULL,
         ),
-        QUERY.format("t0.`id` IS NOT NULL"),
+        QUERY.format("NOT t0.`id` IS NULL"),
         id="Integer not null",
     ),
     pytest.param(
@@ -187,7 +194,11 @@ PARAMS = [
             numeric_predicate=Filter.NumericPredicate.NOTIN,
             integer_values=[42, 43],
         ),
-        QUERY.format("t0.`id` NOT IN (42, 43) OR (t0.`id` IS NULL)"),
+        QUERY.format(
+            """NOT t0.`id` IN (42, 43) OR (
+    t0.`id` IS NULL
+  )"""
+        ),
         id="Integer not in",
     ),
     # Float filters
@@ -198,7 +209,13 @@ PARAMS = [
     ),
     pytest.param(
         create_float_filter(Filter.NumericPredicate.NEQUAL),
-        QUERY.format("(t0.`stars` != 42.0) OR (t0.`stars` IS NULL)"),
+        QUERY.format(
+            """(
+    t0.`stars` <> 42.0
+  ) OR (
+    t0.`stars` IS NULL
+  )"""
+        ),
         id="Float not equal",
     ),
     pytest.param(
@@ -228,7 +245,7 @@ PARAMS = [
     ),
     pytest.param(
         create_float_filter(Filter.NumericPredicate.NOTNULL),
-        QUERY.format("t0.`stars` IS NOT NULL"),
+        QUERY.format("NOT t0.`stars` IS NULL"),
         id="Float not null",
     ),
     pytest.param(
@@ -248,7 +265,11 @@ PARAMS = [
             numeric_predicate=Filter.NumericPredicate.NOTIN,
             float_values=[42.0, 42.3],
         ),
-        QUERY.format("t0.`stars` NOT IN (42.0, 42.3) OR (t0.`stars` IS NULL)"),
+        QUERY.format(
+            """NOT t0.`stars` IN (42.0, 42.3) OR (
+    t0.`stars` IS NULL
+  )"""
+        ),
         id="Float not in",
     ),
     # String filters
@@ -259,7 +280,13 @@ PARAMS = [
     ),
     pytest.param(
         create_string_filter(Filter.StringPredicate.NEQUAL),
-        QUERY.format("(t0.`athlete` != 'Adam Ondra') OR (t0.`athlete` IS NULL)"),
+        QUERY.format(
+            """(
+    t0.`athlete` <> 'Adam Ondra'
+  ) OR (
+    t0.`athlete` IS NULL
+  )"""
+        ),
         id="String not equal",
     ),
     pytest.param(
@@ -274,12 +301,12 @@ PARAMS = [
     ),
     pytest.param(
         create_string_filter(Filter.StringPredicate.STARTSWITH),
-        QUERY.format("t0.`athlete` like concat('Adam Ondra', '%')"),
+        QUERY.format("STARTS_WITH(t0.`athlete`, 'Adam Ondra')"),
         id="String starts with",
     ),
     pytest.param(
         create_string_filter(Filter.StringPredicate.ENDSWITH),
-        QUERY.format("t0.`athlete` like concat('%', 'Adam Ondra')"),
+        QUERY.format("ENDS_WITH(t0.`athlete`, 'Adam Ondra')"),
         id="String ends with",
     ),
     pytest.param(
@@ -289,7 +316,7 @@ PARAMS = [
     ),
     pytest.param(
         create_string_filter(Filter.StringPredicate.NOTNULL),
-        QUERY.format("t0.`athlete` IS NOT NULL"),
+        QUERY.format("NOT t0.`athlete` IS NULL"),
         id="String not null",
     ),
     pytest.param(
@@ -310,7 +337,9 @@ PARAMS = [
             string_values=["Janja Garnbret"],
         ),
         QUERY.format(
-            "t0.`athlete` NOT IN ('Janja Garnbret') OR (t0.`athlete` IS NULL)"
+            """NOT t0.`athlete` IN ('Janja Garnbret') OR (
+    t0.`athlete` IS NULL
+  )"""
         ),
         id="String not in",
     ),
@@ -343,7 +372,13 @@ PARAMS = [
     ),
     pytest.param(
         create_time_filter(Filter.TimePredicate.NOTON),
-        QUERY.format("(t0.`lunch` != '11:11:11.1111') OR (t0.`lunch` IS NULL)"),
+        QUERY.format(
+            """(
+    t0.`lunch` <> '11:11:11.1111'
+  ) OR (
+    t0.`lunch` IS NULL
+  )"""
+        ),
         id="Time not on",
     ),
     pytest.param(
@@ -373,7 +408,7 @@ PARAMS = [
     ),
     pytest.param(
         create_time_filter(Filter.TimePredicate.NOTNULL),
-        QUERY.format("t0.`lunch` IS NOT NULL"),
+        QUERY.format("NOT t0.`lunch` IS NULL"),
         id="Time not null",
     ),
     # Date filters
@@ -384,7 +419,13 @@ PARAMS = [
     ),
     pytest.param(
         create_date_filter(Filter.TimePredicate.NOTON),
-        QUERY.format("(t0.`birthday` != '1993-07-26') OR (t0.`birthday` IS NULL)"),
+        QUERY.format(
+            """(
+    t0.`birthday` <> '1993-07-26'
+  ) OR (
+    t0.`birthday` IS NULL
+  )"""
+        ),
         id="Date not on",
     ),
     pytest.param(
@@ -414,67 +455,67 @@ PARAMS = [
     ),
     pytest.param(
         create_date_filter(Filter.TimePredicate.NOTNULL),
-        QUERY.format("t0.`birthday` IS NOT NULL"),
+        QUERY.format("NOT t0.`birthday` IS NULL"),
         id="Date not null",
     ),
     pytest.param(
         create_date_filter(DateRange.TODAY),
-        QUERY.format(f"t0.`birthday` = DATE '{TODAY.strftime('%Y-%m-%d')}'"),
+        QUERY.format(f"t0.`birthday` = CAST('{TODAY.strftime('%Y-%m-%d')}' AS DATE)"),
         id="Date today",
     ),
     pytest.param(
         create_date_filter(DateRange.TOMORROW),
         QUERY.format(
-            f"t0.`birthday` = DATE '{(TODAY + timedelta(days=1)).strftime('%Y-%m-%d')}'"
+            f"t0.`birthday` = CAST('{(TODAY + timedelta(days=1)).strftime('%Y-%m-%d')}' AS DATE)"
         ),
         id="Date tomorrow",
     ),
     pytest.param(
         create_date_filter(DateRange.YESTERDAY),
         QUERY.format(
-            f"t0.`birthday` = DATE '{(TODAY - timedelta(days=1)).strftime('%Y-%m-%d')}'"
+            f"t0.`birthday` = CAST('{(TODAY - timedelta(days=1)).strftime('%Y-%m-%d')}' AS DATE)"
         ),
         id="Date yesterday",
     ),
     pytest.param(
         create_date_filter(DateRange.ONEWEEKAGO),
         QUERY.format(
-            f"t0.`birthday` BETWEEN DATE '{(TODAY - timedelta(days=7)).strftime('%Y-%m-%d')}' AND DATE '{TODAY.strftime('%Y-%m-%d')}'"
+            f"t0.`birthday` BETWEEN CAST('{(TODAY - timedelta(days=7)).strftime('%Y-%m-%d')}' AS DATE) AND CAST('{TODAY.strftime('%Y-%m-%d')}' AS DATE)"
         ),
         id="Date one week ago",
     ),
     pytest.param(
         create_date_filter(DateRange.ONEMONTHAGO),
         QUERY.format(
-            f"t0.`birthday` BETWEEN DATE '{(TODAY - relativedelta(months=1)).strftime('%Y-%m-%d')}' AND DATE '{TODAY.strftime('%Y-%m-%d')}'"
+            f"t0.`birthday` BETWEEN CAST('{(TODAY - relativedelta(months=1)).strftime('%Y-%m-%d')}' AS DATE) AND CAST('{TODAY.strftime('%Y-%m-%d')}' AS DATE)"
         ),
         id="Date one month ago",
     ),
     pytest.param(
         create_date_filter(DateRange.ONEYEARAGO),
         QUERY.format(
-            f"t0.`birthday` BETWEEN DATE '{(TODAY - relativedelta(years=1)).strftime('%Y-%m-%d')}' AND DATE '{TODAY.strftime('%Y-%m-%d')}'"
+            f"t0.`birthday` BETWEEN CAST('{(TODAY - relativedelta(years=1)).strftime('%Y-%m-%d')}' AS DATE) AND CAST('{TODAY.strftime('%Y-%m-%d')}' AS DATE)"
         ),
         id="Date one year ago",
     ),
     pytest.param(
         create_date_filter(DateRange.THIS_WEEK),
         QUERY.format(
-            f"(EXTRACT(year from t0.`birthday`) = {YEAR}) AND\n      (EXTRACT(ISOWEEK from t0.`birthday`) = {WEEK})"
+            f"(\n    EXTRACT(year FROM t0.`birthday`) = {YEAR}\n  )\n  AND (\n    EXTRACT(ISOWEEK FROM t0.`birthday`) = {WEEK}\n  )"
         ),
         id="Date on this week",
     ),
     pytest.param(
         create_date_filter(DateRange.THIS_WEEK_UP_TO_DATE),
         QUERY.format(
-            f"t0.`birthday` BETWEEN DATE '{(TODAY - timedelta(days=TODAY.weekday())).strftime('%Y-%m-%d')}' AND DATE '{TODAY.strftime('%Y-%m-%d')}'"
+            f"t0.`birthday` BETWEEN CAST('{(TODAY - timedelta(days=TODAY.weekday())).strftime('%Y-%m-%d')}' AS DATE) AND CAST('{TODAY.strftime('%Y-%m-%d')}' AS DATE)"
         ),
         id="Date on this week up to date",
     ),
     pytest.param(
         create_date_filter(DateRange.LAST_WEEK),
         QUERY.format(
-            f"(EXTRACT(year from t0.`birthday`) = {LAST_WEEK_YEAR}) AND\n      (EXTRACT(ISOWEEK from t0.`birthday`) = {LAST_WEEK})"
+            f"(\n    EXTRACT(year FROM t0.`birthday`) = {LAST_WEEK_YEAR}\n  )\n  AND (\n    EXTRACT(ISOWEEK FROM t0.`birthday`) = {LAST_WEEK}\n  )"
         ),
         id="Date on last week",
     ),
@@ -487,73 +528,73 @@ PARAMS = [
     pytest.param(
         create_date_filter(DateRange.THIS_MONTH),
         QUERY.format(
-            f"(EXTRACT(year from t0.`birthday`) = {YEAR}) AND\n      (EXTRACT(month from t0.`birthday`) = {MONTH})"
+            f"(\n    EXTRACT(year FROM t0.`birthday`) = {YEAR}\n  )\n  AND (\n    EXTRACT(month FROM t0.`birthday`) = {MONTH}\n  )"
         ),
         id="Date on this month",
     ),
     pytest.param(
         create_date_filter(DateRange.THIS_MONTH_UP_TO_DATE),
         QUERY.format(
-            f"t0.`birthday` BETWEEN DATE '{(TODAY.replace(day=1)).strftime('%Y-%m-%d')}' AND DATE '{TODAY.strftime('%Y-%m-%d')}'"
+            f"t0.`birthday` BETWEEN CAST('{(TODAY.replace(day=1)).strftime('%Y-%m-%d')}' AS DATE) AND CAST('{TODAY.strftime('%Y-%m-%d')}' AS DATE)"
         ),
         id="Date on this month up to date",
     ),
     pytest.param(
         create_date_filter(DateRange.LAST_MONTH),
         QUERY.format(
-            f"(EXTRACT(year from t0.`birthday`) = {LAST_MONTH_YEAR}) AND\n      (EXTRACT(month from t0.`birthday`) = {LAST_MONTH})"
+            f"(\n    EXTRACT(year FROM t0.`birthday`) = {LAST_MONTH_YEAR}\n  )\n  AND (\n    EXTRACT(month FROM t0.`birthday`) = {LAST_MONTH}\n  )"
         ),
         id="Date on last month",
     ),
     pytest.param(
         create_date_filter(DateRange.THIS_YEAR),
-        QUERY.format(f"EXTRACT(year from t0.`birthday`) = {YEAR }"),
+        QUERY.format(f"EXTRACT(year FROM t0.`birthday`) = {YEAR }"),
         id="Date on this year",
     ),
     pytest.param(
         create_date_filter(DateRange.THIS_YEAR_UP_TO_DATE),
         QUERY.format(
-            f"(EXTRACT(year from t0.`birthday`) = {YEAR }) AND\n      (t0.`birthday` <= DATE '{TODAY.strftime('%Y-%m-%d')}')"
+            f"(\n    EXTRACT(year FROM t0.`birthday`) = {YEAR }\n  )\n  AND (\n    t0.`birthday` <= CAST('{TODAY.strftime('%Y-%m-%d')}' AS DATE)\n  )"
         ),
         id="Date on this year up to date",
     ),
     pytest.param(
         create_date_filter(DateRange.LAST_YEAR),
-        QUERY.format(f"EXTRACT(year from t0.`birthday`) = {YEAR -1}"),
+        QUERY.format(f"EXTRACT(year FROM t0.`birthday`) = {YEAR -1}"),
         id="Date on last year",
     ),
     pytest.param(
         create_date_filter(DateRange.THIS_QUARTER),
         QUERY.format(
-            f"(EXTRACT(year from t0.`birthday`) = {YEAR}) AND\n      (EXTRACT(quarter from t0.`birthday`) = {QUARTER})"
+            f"(\n    EXTRACT(year FROM t0.`birthday`) = {YEAR}\n  )\n  AND (\n    EXTRACT(quarter FROM t0.`birthday`) = {QUARTER}\n  )"
         ),
         id="Date on this quarter",
     ),
     pytest.param(
         create_date_filter(DateRange.THIS_QUARTER_UP_TO_DATE),
         QUERY.format(
-            f"t0.`birthday` BETWEEN DATE '{date(TODAY.year, (QUARTER-1)*3+1, 1).strftime('%Y-%m-%d')}' AND DATE '{TODAY.strftime('%Y-%m-%d')}'"
+            f"t0.`birthday` BETWEEN CAST('{date(TODAY.year, (QUARTER-1)*3+1, 1).strftime('%Y-%m-%d')}' AS DATE) AND CAST('{TODAY.strftime('%Y-%m-%d')}' AS DATE)"
         ),
         id="Date on this quarter up to date",
     ),
     pytest.param(
         create_date_filter(DateRange.LAST_QUARTER),
         QUERY.format(
-            f"(EXTRACT(year from t0.`birthday`) = {LAST_QUARTER_YEAR}) AND\n      (EXTRACT(quarter from t0.`birthday`) = {LAST_QUARTER})"
+            f"(\n    EXTRACT(year FROM t0.`birthday`) = {LAST_QUARTER_YEAR}\n  )\n  AND (\n    EXTRACT(quarter FROM t0.`birthday`) = {LAST_QUARTER}\n  )"
         ),
         id="Date on last quarter",
     ),
     pytest.param(
         create_date_filter(DateRange.LAST_12_MONTH),
         QUERY.format(
-            f"t0.`birthday` BETWEEN DATE '{(TODAY - relativedelta(months=12)).strftime('%Y-%m-%d')}' AND DATE '{TODAY.strftime('%Y-%m-%d')}'"
+            f"t0.`birthday` BETWEEN CAST('{(TODAY - relativedelta(months=12)).strftime('%Y-%m-%d')}' AS DATE) AND CAST('{TODAY.strftime('%Y-%m-%d')}' AS DATE)"
         ),
         id="Date on last 12 month",
     ),
     pytest.param(
         create_date_filter(DateRange.LAST_FULL_12_MONTH),
         QUERY.format(
-            f"t0.`birthday` BETWEEN DATE '{(TODAY.replace(day=1) - relativedelta(months=12)).strftime('%Y-%m-%d')}' AND DATE '{TODAY.strftime('%Y-%m-%d')}'"
+            f"t0.`birthday` BETWEEN CAST('{(TODAY.replace(day=1) - relativedelta(months=12)).strftime('%Y-%m-%d')}' AS DATE) AND CAST('{TODAY.strftime('%Y-%m-%d')}' AS DATE)"
         ),
         id="Date on last full 12 month",
     ),
@@ -561,82 +602,82 @@ PARAMS = [
     pytest.param(
         create_datetime_filter(Filter.TimePredicate.ON),
         QUERY.format("t0.`when` = '1993-07-26T06:30:12.1234'"),
-        id="Dateime on",
+        id="Datetime on",
     ),
     pytest.param(
         create_datetime_filter(Filter.TimePredicate.NOTON),
         QUERY.format(
-            "(t0.`when` != '1993-07-26T06:30:12.1234') OR (t0.`when` IS NULL)"
+            "(\n    t0.`when` <> '1993-07-26T06:30:12.1234'\n  ) OR (\n    t0.`when` IS NULL\n  )"
         ),
-        id="Dateime not on",
+        id="Datetime not on",
     ),
     pytest.param(
         create_datetime_filter(Filter.TimePredicate.BEFORE),
         QUERY.format("t0.`when` < '1993-07-26T06:30:12.1234'"),
-        id="Dateime before",
+        id="Datetime before",
     ),
     pytest.param(
         create_datetime_filter(Filter.TimePredicate.BEFOREON),
         QUERY.format("t0.`when` <= '1993-07-26T06:30:12.1234'"),
-        id="Dateime before on",
+        id="Datetime before on",
     ),
     pytest.param(
         create_datetime_filter(Filter.TimePredicate.AFTER),
         QUERY.format("t0.`when` > '1993-07-26T06:30:12.1234'"),
-        id="Dateime after",
+        id="Datetime after",
     ),
     pytest.param(
         create_datetime_filter(Filter.TimePredicate.AFTERON),
         QUERY.format("t0.`when` >= '1993-07-26T06:30:12.1234'"),
-        id="Dateime after on",
+        id="Datetime after on",
     ),
     pytest.param(
         create_datetime_filter(Filter.TimePredicate.ISNULL),
         QUERY.format("t0.`when` IS NULL"),
-        id="Dateime is null",
+        id="Datetime is null",
     ),
     pytest.param(
         create_datetime_filter(Filter.TimePredicate.NOTNULL),
-        QUERY.format("t0.`when` IS NOT NULL"),
-        id="Dateime not null",
+        QUERY.format("NOT t0.`when` IS NULL"),
+        id="Datetime not null",
     ),
     pytest.param(
         create_datetime_filter(DateRange.TODAY),
-        QUERY.format(f"DATE(t0.`when`) = DATE '{TODAY.strftime('%Y-%m-%d')}'"),
+        QUERY.format(f"DATE(t0.`when`) = CAST('{TODAY.strftime('%Y-%m-%d')}' AS DATE)"),
         id="Datetime today",
     ),
     pytest.param(
         create_datetime_filter(DateRange.TOMORROW),
         QUERY.format(
-            f"DATE(t0.`when`) = DATE '{(TODAY + timedelta(days=1)).strftime('%Y-%m-%d')}'"
+            f"DATE(t0.`when`) = CAST('{(TODAY + timedelta(days=1)).strftime('%Y-%m-%d')}' AS DATE)"
         ),
         id="Datetime tomorrow",
     ),
     pytest.param(
         create_datetime_filter(DateRange.YESTERDAY),
         QUERY.format(
-            f"DATE(t0.`when`) = DATE '{(TODAY - timedelta(days=1)).strftime('%Y-%m-%d')}'"
+            f"DATE(t0.`when`) = CAST('{(TODAY - timedelta(days=1)).strftime('%Y-%m-%d')}' AS DATE)"
         ),
         id="Datetime yesterday",
     ),
     pytest.param(
         create_datetime_filter(DateRange.ONEWEEKAGO),
         QUERY.format(
-            f"DATE(t0.`when`) BETWEEN DATE '{(TODAY - timedelta(days=7)).strftime('%Y-%m-%d')}' AND DATE '{TODAY.strftime('%Y-%m-%d')}'"
+            f"DATE(t0.`when`) BETWEEN CAST('{(TODAY - timedelta(days=7)).strftime('%Y-%m-%d')}' AS DATE) AND CAST('{TODAY.strftime('%Y-%m-%d')}' AS DATE)"
         ),
         id="Datetime one week ago",
     ),
     pytest.param(
         create_datetime_filter(DateRange.ONEMONTHAGO),
         QUERY.format(
-            f"DATE(t0.`when`) BETWEEN DATE '{(TODAY - relativedelta(months=1)).strftime('%Y-%m-%d')}' AND DATE '{TODAY.strftime('%Y-%m-%d')}'"
+            f"DATE(t0.`when`) BETWEEN CAST('{(TODAY - relativedelta(months=1)).strftime('%Y-%m-%d')}' AS DATE) AND CAST('{TODAY.strftime('%Y-%m-%d')}' AS DATE)"
         ),
         id="Datetime one month ago",
     ),
     pytest.param(
         create_datetime_filter(DateRange.ONEYEARAGO),
         QUERY.format(
-            f"DATE(t0.`when`) BETWEEN DATE '{(TODAY - relativedelta(years=1)).strftime('%Y-%m-%d')}' AND DATE '{TODAY.strftime('%Y-%m-%d')}'"
+            f"DATE(t0.`when`) BETWEEN CAST('{(TODAY - relativedelta(years=1)).strftime('%Y-%m-%d')}' AS DATE) AND CAST('{TODAY.strftime('%Y-%m-%d')}' AS DATE)"
         ),
         id="Datetime one year ago",
     ),
@@ -644,8 +685,8 @@ PARAMS = [
 
 
 @pytest.mark.parametrize("filter_, expected_sql", PARAMS)
-def test_compiles_filter(filter_, expected_sql):
-    sql = bigquery.compile(get_query_from_filter(TABLE, filter_))
+def test_compiles_filter(filter_, expected_sql, engine):
+    sql = bigquery.compile(get_query_from_filter(engine.data, filter_))
     assert sql == expected_sql
 
 

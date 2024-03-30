@@ -28,7 +28,7 @@ FUNCTIONS = json.loads(data)
 
 
 def _hash(caller, args):
-    return caller.hash("farm_fingerprint")
+    return caller.hash()
 
 
 def convert(caller, args):

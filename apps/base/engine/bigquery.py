@@ -2,14 +2,16 @@ import re
 from functools import lru_cache
 from typing import TYPE_CHECKING
 
+import beeline
 import ibis
+import pandas as pd
 from django.conf import settings
 from django.core.cache import cache
 from google.cloud import bigquery as bq
-from ibis.backends import bigquery
-from ibis.backends.bigquery.client import BigQueryTable
-from ibis.expr.types import TableExpr
-
+from ibis.backends.bigquery import Backend
+from ibis.config import options
+from ibis.expr.operations import DatabaseTable
+from ibis.expr.operations.relations import Namespace
 from apps.base.core.bigquery import (
     bq_table_schema_is_string_only,
     sanitize_bq_column_name,
@@ -25,6 +27,38 @@ if TYPE_CHECKING:
     from apps.tables.models import Table
     from apps.teams.models import Team
     from apps.uploads.models import Upload
+
+
+# update the default execute implemention of Ibis BigQuery backend
+# - support the faster synchronous client.query_and_wait
+# - include `total_rows` information in pandas results
+
+
+@beeline.traced(name="bigquery_query_results_fast")
+def execute(self, expr, params=None, limit="default", **kwargs):
+    sql = expr.compile()
+
+    # run a synchronous query and retrieve results in one API call
+    # https://github.com/googleapis/python-bigquery/pull/1722
+    job_config = bq.QueryJobConfig()
+    query_results = self.client.query_and_wait(
+        sql,
+        job_config=job_config,
+        project=self.billing_project,
+        max_results=options.sql.default_limit if limit == "default" else limit,
+    )
+
+    df = query_results.to_dataframe()
+
+    if isinstance(df, pd.DataFrame):
+        # TODO: find a more elegant solution
+        # bypass the default `__setattr__` of `pd.DataFrame`
+        df.__dict__["total_rows"] = query_results.total_rows
+
+    return df
+
+
+Backend.execute = execute
 
 
 def _create_external_table(upload: "Upload", table_id: str, **job_kwargs):
@@ -44,7 +78,7 @@ def _create_external_table(upload: "Upload", table_id: str, **job_kwargs):
     return bq.QueryJobConfig(table_definitions={table_id: external_config})
 
 
-def _load_table(upload: "Upload", table: "Table", client, **job_kwargs):
+def _load_table(upload: "Upload", table: "Table", client: bq.Client, **job_kwargs):
     job_config = bq.LoadJobConfig(
         source_format=bq.SourceFormat.CSV,
         write_disposition=bq.WriteDisposition.WRITE_TRUNCATE,
@@ -157,16 +191,15 @@ class BigQueryClient(BaseClient):
         schema = cache.get(key)
 
         if schema is None:
-            tbl = self.client.table(table.name, database=table.namespace)
+            tbl = self.client.table(table.name, schema=table.namespace)
             cache.set(key, tbl.schema(), 24 * 3600)
         else:
-            tbl = TableExpr(
-                BigQueryTable(
-                    name=f"{self.gcp_project}.{table.namespace}.{table.name}",
-                    schema=schema,
-                    source=self.client,
-                )
-            )
+            tbl = DatabaseTable(
+                name=f"{table.name}",
+                schema=schema,
+                source=self.client,
+                namespace=Namespace(schema=f"{self.gcp_project}.{table.namespace}"),
+            ).to_expr()
 
         return tbl
 

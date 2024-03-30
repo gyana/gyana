@@ -8,7 +8,7 @@ pytestmark = pytest.mark.django_db(transaction=True)
 fixtures = "apps/base/tests/e2e/fixtures"
 
 
-def test_upload_valid_csv(page, live_server, project, celery_worker, bigquery):
+def test_upload_valid_csv(page, live_server, project, celery_worker):
     page.force_login(live_server)
     page.goto(live_server.url + "/projects/1/integrations")
 

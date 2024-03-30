@@ -68,7 +68,7 @@ class NodeUpdate(UpdateView):
     def get_form_kwargs(self):
         form_kwargs = super().get_form_kwargs()
         if parent := self.object.parents.first():
-            form_kwargs["schema"] = parent.schema
+            form_kwargs["schema"] = parent.schema()
         return form_kwargs
 
     def get_success_url(self) -> str:

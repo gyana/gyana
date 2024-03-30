@@ -1,11 +1,8 @@
-from unittest.mock import MagicMock
-
 import pytest
 from django.conf import settings
 from django.core import mail
+from google.cloud.bigquery import Client
 
-from apps.base.tests.mock_data import TABLE
-from apps.base.tests.mocks import mock_bq_client_with_schema
 from apps.exports import tasks
 from apps.exports.models import Export
 from apps.nodes.models import Node
@@ -18,21 +15,20 @@ TEMPORARY_TABLE = "temporary_table"
 
 
 @pytest.fixture
-def mock_bigquery_functions(mocker, bigquery):
-    bigquery.query = MagicMock()
-    bigquery.query.return_value.destination = TEMPORARY_TABLE
-    bigquery.extract_table = MagicMock()
-    mock_bq_client_with_schema(
-        bigquery, [(name, str(type_)) for name, type_ in TABLE.schema().items()]
-    )
+def mock_bigquery_functions(mocker):
+    query = mocker.MagicMock()
+    query.destination = TEMPORARY_TABLE
+    mocker.patch.object(Client, "query", return_value=query)
 
-    bucket = MagicMock()
+    mocker.patch.object(Client, "extract_table")
+
+    bucket = mocker.MagicMock()
     bucket.blob.return_value.generate_signed_url.return_value = SIGNED_URL
     mocker.patch("apps.base.clients.get_bucket", return_value=bucket)
+    return mocker.patch.object(Client, "extract_table")
 
 
 def test_export_to_gcs(
-    bigquery,
     mock_bigquery_functions,
     node_factory,
     logged_in_user,
@@ -52,8 +48,8 @@ def test_export_to_gcs(
     assert len(mail.outbox) == 1
     assert SIGNED_URL in mail.outbox[0].body
 
-    assert bigquery.extract_table.call_count == 1
-    assert bigquery.extract_table.call_args.args == (
+    assert mock_bigquery_functions.call_count == 1
+    assert mock_bigquery_functions.call_args.args == (
         TEMPORARY_TABLE,
         f"gs://{settings.GS_BUCKET_NAME}/{export.path}",
     )

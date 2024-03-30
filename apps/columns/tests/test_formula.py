@@ -1,13 +1,12 @@
 import pytest
 from ibis import bigquery
 
-from apps.base.tests.mock_data import TABLE
 from apps.columns.engine import compile_formula
 from apps.columns.transformer import FUNCTIONS
 
-UNNAMED_QUERY = "SELECT {} AS `tmp`\nFROM olympians t0"
+UNNAMED_QUERY = "SELECT\n  {} AS `tmp`\nFROM `project.dataset`.table AS t0"
 
-QUERY = "SELECT {} AS `tmp`\nFROM olympians t0"
+QUERY = "SELECT\n  {} AS `tmp`\nFROM `project.dataset`.table AS t0"
 
 
 def create_str_unary_param(func_name, sql_name=None):
@@ -37,7 +36,7 @@ def create_datetime_unary_param(func_name, sql_name=None):
 def create_extract_unary_param(func_name, sql_name=None):
     return pytest.param(
         f"{func_name}(when)",
-        UNNAMED_QUERY.format(f"EXTRACT({sql_name or func_name} from t0.`when`)"),
+        UNNAMED_QUERY.format(f"EXTRACT({sql_name or func_name} FROM t0.`when`)"),
         id=func_name,
     )
 
@@ -50,12 +49,12 @@ PARAMS = [
     ),
     pytest.param(
         "notnull(stars)",
-        QUERY.format("t0.`stars` IS NOT NULL"),
+        QUERY.format("NOT t0.`stars` IS NULL"),
         id="notnull",
     ),
     pytest.param(
         'fillnull(athlete, "Usain Bolt")',
-        QUERY.format("IFNULL(t0.`athlete`, 'Usain Bolt')"),
+        QUERY.format("coalesce(t0.`athlete`, 'Usain Bolt')"),
         id="fillnull",
     ),
     pytest.param(
@@ -65,7 +64,7 @@ PARAMS = [
     ),
     pytest.param(
         'convert(athlete, "timestamp")',
-        UNNAMED_QUERY.format("CAST(t0.`athlete` AS TIMESTAMP)"),
+        UNNAMED_QUERY.format("CAST(t0.`athlete` AS DATETIME)"),
         id="convert string to datetime",
     ),
     pytest.param(
@@ -80,7 +79,7 @@ PARAMS = [
     ),
     pytest.param(
         "ifelse(is_nice, medals*10, medals-5)",
-        QUERY.format("if(t0.`is_nice`, t0.`medals` * 10, t0.`medals` - 5)"),
+        QUERY.format("IF(t0.`is_nice`, t0.`medals` * 10, t0.`medals` - 5)"),
         id="if else",
     ),
     # Test string operations
@@ -103,7 +102,7 @@ PARAMS = [
     pytest.param(
         'lpad(athlete,3, "\n")',
         # for some reason ibis adds a random newlineafter the select
-        "SELECT\n  lpad(t0.`athlete`, 3, '\n  ') AS `tmp`\nFROM olympians t0",
+        "SELECT\n  lpad(t0.`athlete`, 3, '\\n') AS `tmp`\nFROM `project.dataset`.table AS t0",
         id="lpad with fillchar",
     ),
     pytest.param(
@@ -118,13 +117,13 @@ PARAMS = [
     ),
     pytest.param(
         'json_extract(\'{"class":{"id": 3}}\', "$.class.id")',
-        "SELECT JSON_QUERY('{\"class\":{\"id\": 3}}', '$.class.id') AS `tmp`",
+        "SELECT\n  JSON_QUERY('{\"class\":{\"id\": 3}}', '$.class.id') AS `tmp`",
         id="json_extract",
     ),
     create_str_unary_param("upper"),
     create_str_unary_param("length"),
     create_str_unary_param("reverse"),
-    create_str_unary_param("trim"),
+    create_str_unary_param("trim", "TRIM"),
     create_str_unary_param("ltrim"),
     create_str_unary_param("rtrim"),
     pytest.param(
@@ -135,7 +134,7 @@ PARAMS = [
     pytest.param(
         'rpad(athlete,3, "\n")',
         # for some reason ibis adds a random newlineafter the select
-        "SELECT\n  rpad(t0.`athlete`, 3, '\n  ') AS `tmp`\nFROM olympians t0",
+        "SELECT\n  rpad(t0.`athlete`, 3, '\\n') AS `tmp`\nFROM `project.dataset`.table AS t0",
         id="rpad with fillchar",
     ),
     pytest.param(
@@ -156,18 +155,18 @@ PARAMS = [
     pytest.param(
         'regex_extract(athlete, "ough", 2)',
         QUERY.format(
-            "IF(REGEXP_CONTAINS(t0.`athlete`, r'ough'), IF(COALESCE(2, 0) = 0, t0.`athlete`, REGEXP_EXTRACT_ALL(t0.`athlete`, r'ough')[SAFE_ORDINAL(2)]), NULL)"
+            "IF(\n    REGEXP_CONTAINS(t0.`athlete`, 'ough'),\n    IF(\n      2 = 0,\n      REGEXP_REPLACE(t0.`athlete`, CONCAT('.*?', CONCAT('(', 'ough', ')'), '.*'), '\\\\1'),\n      REGEXP_REPLACE(t0.`athlete`, CONCAT('.*?', 'ough', '.*'), CONCAT('\\\\', CAST(2 AS STRING)))\n    ),\n    NULL\n  )"
         ),
         id="regex_extract",
     ),
     pytest.param(
         'regex_replace(athlete, "ough", "uff")',
-        QUERY.format("REGEXP_REPLACE(t0.`athlete`, r'ough', 'uff')"),
+        QUERY.format("REGEXP_REPLACE(t0.`athlete`, 'ough', 'uff')"),
         id="regex_replace",
     ),
     pytest.param(
         'regex_search(athlete, "Will.*")',
-        QUERY.format("REGEXP_CONTAINS(t0.`athlete`, r'Will.*')"),
+        QUERY.format("REGEXP_CONTAINS(t0.`athlete`, 'Will.*')"),
         id="regex_search",
     ),
     pytest.param(
@@ -191,7 +190,11 @@ PARAMS = [
         id="substitute with both arguments",
     ),
     pytest.param(
-        "left(athlete, 4)", QUERY.format("substr(t0.`athlete`, 0 + 1, 4)"), id="left"
+        "left(athlete, 4)",
+        QUERY.format(
+            "IF(\n    0 >= 0,\n    SUBSTR(t0.`athlete`, 0 + 1, 4),\n    SUBSTR(t0.`athlete`, LENGTH(t0.`athlete`) + 0 + 1, 4)\n  )"
+        ),
+        id="left",
     ),
     pytest.param(
         "right(athlete, 4)",
@@ -229,7 +232,11 @@ PARAMS = [
         QUERY.format("t0.`medals` BETWEEN 2 AND 10"),
         id="between integer column",
     ),
-    create_int_unary_param("ceiling", "ceil"),
+    pytest.param(
+        "ceiling(medals)",
+        QUERY.format("CAST(ceil(t0.`medals`) AS INT64)"),
+        id="ceil",
+    ),
     pytest.param(
         "divide(medals, stars)",
         QUERY.format("IEEE_DIVIDE(t0.`medals`, t0.`stars`)"),
@@ -250,7 +257,7 @@ PARAMS = [
     create_int_unary_param("ln"),
     pytest.param(
         "log(medals, 3)",
-        QUERY.format("log(t0.`medals`, 3)"),
+        QUERY.format("LOG(t0.`medals`, 3)"),
         id="log",
     ),
     pytest.param(
@@ -301,7 +308,7 @@ PARAMS = [
     ),
     pytest.param(
         'datetime_seconds(131313131313, "ms")',
-        "SELECT TIMESTAMP_MILLIS(131313131313) AS `tmp`",
+        "SELECT\n  TIMESTAMP_MILLIS(131313131313) AS `tmp`",
         id="integer to datetime",
     ),
     pytest.param(
@@ -312,19 +319,19 @@ PARAMS = [
     pytest.param(
         "date(1993,07, medals)",
         QUERY.format(
-            "PARSE_DATE('%Y-%m-%d', CONCAT(CONCAT(CONCAT(CONCAT(CAST(1993 AS STRING), '-'), CAST(7 AS STRING)), '-'), CAST(t0.`medals` AS STRING)))"
+            "PARSE_DATE('%Y-%m-%d', CONCAT(\n    CONCAT(CONCAT(CONCAT(CAST(1993 AS STRING), '-'), CAST(7 AS STRING)), '-'),\n    CAST(t0.`medals` AS STRING)\n  ))"
         ),
         id="date",
     ),
     pytest.param(
         "time(12,12, medals)",
         QUERY.format(
-            "PARSE_TIME('%H:%M:%S', CONCAT(CONCAT(CONCAT(CONCAT(CAST(12 AS STRING), ':'), CAST(12 AS STRING)), ':'), CAST(t0.`medals` AS STRING)))"
+            "PARSE_TIME(\n    '%H:%M:%S',\n    CONCAT(\n      CONCAT(CONCAT(CONCAT(CAST(12 AS STRING), ':'), CAST(12 AS STRING)), ':'),\n      CAST(t0.`medals` AS STRING)\n    )\n  )"
         ),
         id="time",
     ),
-    pytest.param("today()", "SELECT CURRENT_DATE() AS `tmp`", id="today"),
-    pytest.param("now()", "SELECT CURRENT_TIMESTAMP() AS `tmp`", id="now"),
+    pytest.param("today()", "SELECT\n  CURRENT_DATE AS `tmp`", id="today"),
+    pytest.param("now()", "SELECT\n  CURRENT_TIMESTAMP() AS `tmp`", id="now"),
     # Test datetime operations
     create_extract_unary_param("year"),
     create_datetime_unary_param("extract_time", "TIME"),
@@ -343,7 +350,7 @@ PARAMS = [
     ),
     pytest.param(
         'format_datetime(when,"%d-%m")',
-        QUERY.format("FORMAT_TIMESTAMP('%d-%m', t0.`when`, 'UTC')"),
+        QUERY.format("FORMAT_DATETIME('%d-%m', t0.`when`)"),
         id="format_datetime",
     ),
     pytest.param(
@@ -382,8 +389,8 @@ PARAMS = [
         id="time datetime_diff",
     ),
     pytest.param(
-        'datetime_diff(extract_date( when), when, "W")',
-        QUERY.format("DATE_DIFF(DATE(t0.`when`), t0.`when`, WEEK(MONDAY))"),
+        'datetime_diff(extract_date( when), birthday, "W")',
+        QUERY.format("DATE_DIFF(DATE(t0.`when`), t0.`birthday`, WEEK(MONDAY))"),
         id="date datetime_diff",
     ),
     pytest.param(
@@ -397,25 +404,29 @@ PARAMS = [
     ),
     pytest.param(
         "weekday(birthday)",
-        "SELECT\n  CASE EXTRACT(DAYOFWEEK FROM t0.`birthday`)\n    WHEN 1 THEN 'Sunday'\n    WHEN 2 THEN 'Monday'\n    WHEN 3 THEN 'Tuesday'\n    WHEN 4 THEN 'Wednesday'\n    WHEN 5 THEN 'Thursday'\n    WHEN 6 THEN 'Friday'\n    WHEN 7 THEN 'Saturday'\n    ELSE CAST(NULL AS STRING)\n  END AS `tmp`\nFROM olympians t0",
+        "SELECT\n  CASE EXTRACT(DAYOFWEEK FROM t0.`birthday`)\n    WHEN 1\n    THEN 'Sunday'\n    WHEN 2\n    THEN 'Monday'\n    WHEN 3\n    THEN 'Tuesday'\n    WHEN 4\n    THEN 'Wednesday'\n    WHEN 5\n    THEN 'Thursday'\n    WHEN 6\n    THEN 'Friday'\n    WHEN 7\n    THEN 'Saturday'\n    ELSE CAST(NULL AS STRING)\n  END AS `tmp`\nFROM `project.dataset`.table AS t0",
         id="weekday",
     ),
     # Test boolean functions and and or
     pytest.param(
         "and(athlete='Usain Bolt', is_nice, 1=1)",
-        QUERY.format("((t0.`athlete` = 'Usain Bolt') AND t0.`is_nice`) AND TRUE"),
+        QUERY.format(
+            "(\n    (\n      t0.`athlete` = 'Usain Bolt'\n    ) AND t0.`is_nice`\n  ) AND TRUE"
+        ),
         id="and",
     ),
     pytest.param(
         "or(athlete='Usain Bolt', is_nice, 1=1)",
-        QUERY.format("((t0.`athlete` = 'Usain Bolt') OR t0.`is_nice`) OR TRUE"),
+        QUERY.format(
+            "(\n    (\n      t0.`athlete` = 'Usain Bolt'\n    ) OR t0.`is_nice`\n  ) OR TRUE"
+        ),
         id="or",
     ),
     # Test nested functions
     pytest.param(
         "(medals + stars)/(stars - 42) * medals",
         QUERY.format(
-            "(IEEE_DIVIDE(t0.`medals` + t0.`stars`, t0.`stars` - 42)) * t0.`medals`"
+            "(\n    IEEE_DIVIDE(t0.`medals` + t0.`stars`, t0.`stars` - 42)\n  ) * t0.`medals`"
         ),
         id="arithmetic formula mixing different operation",
     ),
@@ -426,19 +437,21 @@ PARAMS = [
     ),
     pytest.param(
         "round(exp(month(birthday)*medals))",
-        QUERY.format("round(exp(EXTRACT(month from t0.`birthday`) * t0.`medals`))"),
+        QUERY.format(
+            "CAST(round(exp(EXTRACT(month FROM t0.`birthday`) * t0.`medals`)) AS INT64)"
+        ),
         id="nest numeric and datetime operations",
     ),
     pytest.param(
         'ifelse(between(birthday, 2000-01-01, 2000-01-31), "millenium kid", "normal kid")',
         QUERY.format(
-            "if(t0.`birthday` BETWEEN '2000-01-01' AND '2000-01-31', 'millenium kid', 'normal kid')"
+            "IF(t0.`birthday` BETWEEN '2000-01-01' AND '2000-01-31', 'millenium kid', 'normal kid')"
         ),
         id="nest ifelse with datetime function",
     ),
     pytest.param(
         'regex_extract(\'{"id": "1234", "name": "John"}\', \'{"id": "(.*?)",\', 0)',
-        'SELECT IF(REGEXP_CONTAINS(\'{"id": "1234", "name": "John"}\', r\'{"id": "(.*?)",\'), IF(COALESCE(0, 0) = 0, \'{"id": "1234", "name": "John"}\', REGEXP_EXTRACT_ALL(\'{"id": "1234", "name": "John"}\', r\'{"id": "(.*?)",\')[SAFE_ORDINAL(0)]), NULL) AS `tmp`',
+        'SELECT\n  IF(\n    REGEXP_CONTAINS(\'{"id": "1234", "name": "John"}\', \'{"id": "(.*?)",\'),\n    IF(\n      0 = 0,\n      REGEXP_REPLACE(\n        \'{"id": "1234", "name": "John"}\',\n        CONCAT(\'.*?\', CONCAT(\'(\', \'{"id": "(.*?)",\', \')\'), \'.*\'),\n        \'\\\\1\'\n      ),\n      REGEXP_REPLACE(\n        \'{"id": "1234", "name": "John"}\',\n        CONCAT(\'.*?\', \'{"id": "(.*?)",\', \'.*\'),\n        CONCAT(\'\\\\\', CAST(0 AS STRING))\n      )\n    ),\n    NULL\n  ) AS `tmp`',
         id="regex_extract with quote nesting",
     ),
     pytest.param(
@@ -450,8 +463,8 @@ PARAMS = [
 
 
 @pytest.mark.parametrize("formula, expected_sql", PARAMS)
-def test_formula(formula, expected_sql):
-    sql = bigquery.compile(compile_formula(TABLE, formula))
+def test_formula(formula, expected_sql, engine):
+    sql = bigquery.compile(compile_formula(engine.data, formula).name("tmp"))
     assert sql == expected_sql
 
 
@@ -470,8 +483,8 @@ def test_formula(formula, expected_sql):
         ),
     ],
 )
-def test_string(formula, expected):
-    result = compile_formula(TABLE, formula)
+def test_string(formula, expected, engine):
+    result = compile_formula(engine.data, formula)
     assert result == expected
 
 

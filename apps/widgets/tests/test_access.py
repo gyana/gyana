@@ -4,11 +4,6 @@ import pytest
 from django.utils import timezone
 
 from apps.base.tests.asserts import assertLoginRedirect, assertNotFound, assertOK
-from apps.base.tests.mock_data import TABLE
-from apps.base.tests.mocks import (
-    mock_bq_client_with_records,
-    mock_bq_client_with_schema,
-)
 from apps.dashboards.models import Dashboard
 from apps.widgets.models import Widget
 
@@ -44,12 +39,7 @@ pytestmark = pytest.mark.django_db
         ),
     ],
 )
-def test_widget_project_required(client, url, user, widget_factory, bigquery):
-    mock_bq_client_with_schema(bigquery, [("athlete", str(TABLE.schema()["athlete"]))])
-    mock_bq_client_with_records(
-        bigquery,
-        {"athlete": ["Usain", "Alex"]},
-    )
+def test_widget_project_required(client, url, user, widget_factory):
     widget = widget_factory()
     project = widget.page.dashboard.project
     url = url.format(

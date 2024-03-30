@@ -1,4 +1,5 @@
 import pytest
+from google.cloud.bigquery import Client
 from pytest_django.asserts import assertRedirects
 
 from apps.base.tests.asserts import (
@@ -14,18 +15,15 @@ from apps.users.models import CustomUser
 pytestmark = pytest.mark.django_db
 
 
-def test_team_crudl(client, logged_in_user, bigquery, flag_factory, settings):
-
+def test_team_crudl(client, logged_in_user, engine, flag_factory):
     team = logged_in_user.teams.first()
     flag = flag_factory(name="beta")
-    # the fixture creates a new team
-    bigquery.reset_mock()
-
+    engine.create_dataset.reset_mock()
     # redirect
     assertRedirects(client.get("/"), f"/teams/{team.id}")
     r = client.get(f"/teams/{team.id}")
     assertOK(r)
-    assertLink(r, f"/teams/new")
+    assertLink(r, "/teams/new")
 
     # create
     r = client.get("/teams/new")
@@ -37,8 +35,8 @@ def test_team_crudl(client, logged_in_user, bigquery, flag_factory, settings):
     new_team = logged_in_user.teams.first()
     assertRedirects(r, f"/teams/{new_team.id}", status_code=302)
 
-    assert bigquery.create_dataset.call_count == 1
-    assert bigquery.create_dataset.call_args.args == (new_team.tables_dataset_id,)
+    assert engine.create_dataset.call_count == 1
+    assert engine.create_dataset.call_args.args == (new_team.tables_dataset_id,)
 
     # read
     r = client.get(f"/teams/{new_team.id}")
@@ -87,7 +85,7 @@ def test_team_crudl(client, logged_in_user, bigquery, flag_factory, settings):
     assertRedirects(r, "/", target_status_code=302)
 
     # Does a soft delete
-    assert bigquery.delete_dataset.call_count == 0
+    assert engine.delete_table.call_count == 0
 
     assert logged_in_user.teams.count() == 1
 

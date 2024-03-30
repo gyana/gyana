@@ -1,7 +1,6 @@
 import pytest
 from ibis import bigquery
 
-from apps.base.tests.mock_data import TABLE
 from apps.columns.engine import (
     DatePeriod,
     aggregate_columns,
@@ -13,17 +12,19 @@ from apps.columns.models import EditColumn
 pytestmark = pytest.mark.django_db
 
 
-UNNAMED_QUERY = """SELECT {} AS `tmp`
-FROM olympians t0"""
+UNNAMED_QUERY = """SELECT
+  {} AS `tmp`
+FROM `project.dataset`.table AS t0"""
 
-QUERY = """SELECT {} AS `tmp`
-FROM olympians t0"""
+QUERY = """SELECT
+  {} AS `tmp`
+FROM `project.dataset`.table AS t0"""
 
 
 def create_extract_edit(column, extraction, type_):
     return pytest.param(
         EditColumn(column=column, **{f"{type_.lower()}_function": extraction}),
-        UNNAMED_QUERY.format(f"EXTRACT({extraction} from t0.`{column}`)"),
+        UNNAMED_QUERY.format(f"EXTRACT({extraction} FROM t0.`{column}`)"),
         id=f"{type_} {extraction}",
     )
 
@@ -39,20 +40,20 @@ def create_extract_edit(column, extraction, type_):
         ),
         pytest.param(
             EditColumn(column="id", integer_function="notnull"),
-            QUERY.format("t0.`id` IS NOT NULL"),
+            QUERY.format("NOT t0.`id` IS NULL"),
             id="Integer notnull",
         ),
         pytest.param(
             EditColumn(column="id", integer_function="cummax"),
             QUERY.format(
-                "max(t0.`id`) OVER (RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)"
+                "MAX(t0.`id`) OVER (ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)"
             ),
             id="Integer cummax",
         ),
         pytest.param(
             EditColumn(column="id", integer_function="cummin"),
             QUERY.format(
-                "min(t0.`id`) OVER (RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)"
+                "MIN(t0.`id`) OVER (ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)"
             ),
             id="Integer cummin",
         ),
@@ -68,7 +69,7 @@ def create_extract_edit(column, extraction, type_):
         ),
         pytest.param(
             EditColumn(column="id", integer_function="ceil"),
-            QUERY.format("ceil(t0.`id`)"),
+            QUERY.format("CAST(ceil(t0.`id`) AS INT64)"),
             id="Integer ceil",
         ),
         pytest.param(
@@ -93,7 +94,7 @@ def create_extract_edit(column, extraction, type_):
         ),
         pytest.param(
             EditColumn(column="id", integer_function="log", float_value=42.0),
-            QUERY.format("log(t0.`id`, 42.0)"),
+            QUERY.format("LOG(t0.`id`, 42.0)"),
             id="Integer log",
         ),
         pytest.param(
@@ -129,7 +130,7 @@ def create_extract_edit(column, extraction, type_):
         ),
         pytest.param(
             EditColumn(column="athlete", string_function="notnull"),
-            QUERY.format("t0.`athlete` IS NOT NULL"),
+            QUERY.format("NOT t0.`athlete` IS NULL"),
             id="String not null",
         ),
         pytest.param(
@@ -138,7 +139,7 @@ def create_extract_edit(column, extraction, type_):
                 string_function="fillna",
                 string_value="Sascha Hofmann",
             ),
-            QUERY.format("IFNULL(t0.`athlete`, 'Sascha Hofmann')"),
+            QUERY.format("coalesce(t0.`athlete`, 'Sascha Hofmann')"),
             id="String fillna",
         ),
         pytest.param(
@@ -163,7 +164,7 @@ def create_extract_edit(column, extraction, type_):
         ),
         pytest.param(
             EditColumn(column="athlete", string_function="strip"),
-            QUERY.format("trim(t0.`athlete`)"),
+            QUERY.format("TRIM(t0.`athlete`)"),
             id="String strip",
         ),
         pytest.param(
@@ -191,7 +192,7 @@ def create_extract_edit(column, extraction, type_):
         ),
         pytest.param(
             EditColumn(column="lunch", time_function="notnull"),
-            QUERY.format("t0.`lunch` IS NOT NULL"),
+            QUERY.format("NOT t0.`lunch` IS NULL"),
             id="Time not null",
         ),
         create_extract_edit("lunch", "hour", "Time"),
@@ -206,7 +207,7 @@ def create_extract_edit(column, extraction, type_):
         ),
         pytest.param(
             EditColumn(column="birthday", date_function="notnull"),
-            QUERY.format("t0.`birthday` IS NOT NULL"),
+            QUERY.format("NOT t0.`birthday` IS NULL"),
             id="Date not null",
         ),
         create_extract_edit("birthday", "year", "Date"),
@@ -220,7 +221,7 @@ def create_extract_edit(column, extraction, type_):
         ),
         pytest.param(
             EditColumn(column="when", date_function="notnull"),
-            QUERY.format("t0.`when` IS NOT NULL"),
+            QUERY.format("NOT t0.`when` IS NULL"),
             id="Datetime not null",
         ),
         create_extract_edit("when", "year", "Datetime"),
@@ -247,12 +248,12 @@ def create_extract_edit(column, extraction, type_):
         ),
     ],
 )
-def test_compile_function(edit, expected_sql):
-    sql = bigquery.compile(compile_function(TABLE, edit))
+def test_compile_function(edit, expected_sql, engine):
+    sql = bigquery.compile(compile_function(engine.data, edit).name("tmp"))
     assert sql == expected_sql
 
 
-GROUP_QUERY = "SELECT {}, count(1) AS `count`\nFROM olympians t0\nGROUP BY 1"
+GROUP_QUERY = "SELECT\n  {},\n  count(1) AS `count`\nFROM `project.dataset`.table AS t0\nGROUP BY\n  1"
 
 PARAMS = [
     pytest.param(
@@ -264,15 +265,13 @@ PARAMS = [
     pytest.param(
         "birthday",
         DatePeriod.WEEK,
-        GROUP_QUERY.format(
-            "DATE_TRUNC(t0.`birthday`, WEEK(MONDAY)) AS `birthday`"
-        ).replace(" count(1)", "\n       count(1)"),
+        GROUP_QUERY.format("DATE_TRUNC(t0.`birthday`, WEEK(MONDAY)) AS `birthday`"),
         id="week",
     ),
     pytest.param(
         "birthday",
         DatePeriod.MONTH_ONLY,
-        GROUP_QUERY.format("EXTRACT(month from t0.`birthday`) AS `birthday`"),
+        GROUP_QUERY.format("EXTRACT(month FROM t0.`birthday`) AS `birthday`"),
         id="month only",
     ),
     pytest.param(
@@ -284,7 +283,7 @@ PARAMS = [
     pytest.param(
         "birthday",
         DatePeriod.YEAR,
-        GROUP_QUERY.format("EXTRACT(year from t0.`birthday`) AS `birthday`"),
+        GROUP_QUERY.format("EXTRACT(year FROM t0.`birthday`) AS `birthday`"),
         id="year",
     ),
     pytest.param(
@@ -297,11 +296,15 @@ PARAMS = [
 
 
 @pytest.mark.parametrize("name, part, expected_sql", PARAMS)
-def test_column_part_group(name, part, expected_sql, column_factory, node_factory):
+def test_column_part_group(
+    name, part, expected_sql, column_factory, node_factory, engine
+):
     node = node_factory()
     column_factory(column=name, part=part, node=node)
-    groups = get_groups(TABLE, node)
-    sql = bigquery.compile(aggregate_columns(TABLE, node.aggregations.all(), groups))
+    groups = get_groups(engine.data, node)
+    sql = bigquery.compile(
+        aggregate_columns(engine.data, node.aggregations.all(), groups)
+    )
     assert sql == expected_sql
 
 

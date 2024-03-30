@@ -202,9 +202,10 @@ def get_intersect_query(node, query, *queries):
 
 def get_sort_query(node, query):
     sort_columns = [
-        (getattr(query, s.column), s.ascending) for s in node.sort_columns.all()
+        getattr(query, s.column) if s.ascending else ibis.desc(getattr(query, s.column))
+        for s in node.sort_columns.all()
     ]
-    return query.sort_by(sort_columns)
+    return query.order_by(sort_columns)
 
 
 def get_limit_query(node, query):
@@ -262,16 +263,12 @@ def get_distinct_query(node, query):
 
 @use_intermediate_table
 def get_pivot_query(node, parent):
-    # TODO: move this to the base client
-    client = bq.bigquery()
     column_type = parent[node.pivot_column].type()
 
     # the new column names consist of the unique values inside the selected column
     names_query = (
         _format_literal(row[node.pivot_column], column_type)
-        for row in client.get_query_results(
-            parent[[node.pivot_column]].distinct().compile()
-        ).rows_dict
+        for _, row in parent[[node.pivot_column]].distinct().execute().iterrows()
     )
     # `pivot_index` is optional and won't be displayed if not selected
     selection = ", ".join(
@@ -310,9 +307,11 @@ def get_window_query(node, query):
 
         w = ibis.window(
             group_by=window.group_by or None,
-            order_by=ops.SortKey(query[window.order_by], window.ascending).to_expr()
-            if window.order_by
-            else None,
+            order_by=(
+                ops.SortKey(query[window.order_by], window.ascending).to_expr()
+                if window.order_by
+                else None
+            ),
         )
         aggregation = aggregation.over(w)
         aggregations.append(aggregation)

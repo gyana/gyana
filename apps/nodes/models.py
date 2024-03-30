@@ -192,7 +192,7 @@ class Node(DirtyFieldsMixin, BaseModel):
         from .engine import get_query_from_node
 
         query = get_query_from_node(self)
-        return query.schema()
+        return query.schema
 
     @property
     def display_name(self):

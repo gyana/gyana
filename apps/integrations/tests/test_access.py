@@ -1,10 +1,6 @@
 import pytest
 
 from apps.base.tests.asserts import assertLoginRedirect, assertNotFound, assertOK
-from apps.base.tests.mocks import (
-    mock_bq_client_with_records,
-    mock_bq_client_with_schema,
-)
 
 pytestmark = pytest.mark.django_db
 
@@ -49,12 +45,11 @@ pytestmark = pytest.mark.django_db
     ],
 )
 def test_integration_access(
-    client, url, bigquery, user, integration_table_factory, upload_factory
+    client, url, user, integration_table_factory, upload_factory
 ):
     integration = integration_table_factory().integration
     upload_factory(integration=integration)
-    mock_bq_client_with_records(bigquery, {"name": ["Neera"], "age": [4]})
-    mock_bq_client_with_schema(bigquery, [("name", "STRING"), ("age", "INTEGER")])
+
     url = url.format(integration_id=integration.id, project_id=integration.project.id)
     assertLoginRedirect(client, url)
 

@@ -3,8 +3,6 @@ from django.utils import timezone
 from pytest_django.asserts import assertContains
 
 from apps.base.tests.asserts import assertOK
-from apps.base.tests.mock_data import TABLE
-from apps.base.tests.mocks import mock_bq_client_with_schema
 from apps.nodes.models import Node
 
 pytestmark = pytest.mark.django_db
@@ -16,12 +14,8 @@ def test_workflow_run(
     workflow_factory,
     node_factory,
     integration_table_factory,
-    bigquery,
 ):
     """Also tests last_run and out_of_date"""
-    mock_bq_client_with_schema(
-        bigquery, [(name, str(type_)) for name, type_ in TABLE.schema().items()]
-    )
     workflow = workflow_factory(project=project)
 
     # check is out_of_date returns out_of_date has not been run

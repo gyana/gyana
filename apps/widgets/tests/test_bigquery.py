@@ -1,7 +1,5 @@
 import pytest
 
-from apps.base.tests.mock_data import TABLE
-from apps.base.tests.mocks import mock_bq_client_with_schema
 from apps.widgets.engine import get_query_from_widget
 from apps.widgets.models import NO_DIMENSION_WIDGETS, Widget
 from apps.widgets.visuals import pre_filter
@@ -9,21 +7,19 @@ from apps.widgets.visuals import pre_filter
 pytestmark = pytest.mark.django_db
 
 
-@pytest.fixture
-def setup(bigquery):
-    mock_bq_client_with_schema(
-        bigquery, [(name, str(type_)) for name, type_ in TABLE.schema().items()]
-    )
-
-
 SINGLE_DIMENSION_QUERY = """\
-SELECT t0.*
+SELECT
+  t0.*
 FROM (
-  SELECT t1.`is_nice`, count(1) AS `count`
-  FROM `project.dataset.table` t1
-  GROUP BY 1
-) t0
-ORDER BY t0.`is_nice` ASC\
+  SELECT
+    t1.`is_nice`,
+    count(1) AS `count`
+  FROM `project.dataset`.table AS t1
+  GROUP BY
+    1
+) AS t0
+ORDER BY
+  t0.`is_nice` ASC\
 """
 
 SINGLE_DIMENSION_SINGLE_AGGREGATION_QUERY = SINGLE_DIMENSION_QUERY.replace(
@@ -31,17 +27,24 @@ SINGLE_DIMENSION_SINGLE_AGGREGATION_QUERY = SINGLE_DIMENSION_QUERY.replace(
 )
 SINGLE_DIMENSION_TWO_AGGREGATIONS_QUERY = SINGLE_DIMENSION_QUERY.replace(
     "count(1) AS `count`",
-    "sum(t1.`stars`) AS `stars`,\n         count(t1.`athlete`) AS `athlete`",
+    "sum(t1.`stars`) AS `stars`,\n    count(t1.`athlete`) AS `athlete`",
 )
 
 TWO_DIMENSION_QUERY = """\
-SELECT t0.*
+SELECT
+  t0.*
 FROM (
-  SELECT t1.`is_nice`, t1.`medals`, count(1) AS `count`
-  FROM `project.dataset.table` t1
-  GROUP BY 1, 2
-) t0
-ORDER BY t0.`is_nice` ASC\
+  SELECT
+    t1.`is_nice`,
+    t1.`medals`,
+    count(1) AS `count`
+  FROM `project.dataset`.table AS t1
+  GROUP BY
+    1,
+    2
+) AS t0
+ORDER BY
+  t0.`is_nice` ASC\
 """
 
 TWO_DIMENSION_SINGLE_AGGREGATION_QUERY = TWO_DIMENSION_QUERY.replace(
@@ -49,9 +52,11 @@ TWO_DIMENSION_SINGLE_AGGREGATION_QUERY = TWO_DIMENSION_QUERY.replace(
 )
 
 NO_DIMENSION_THREE_AGGREGATIONS_QUERY = """\
-SELECT sum(t0.`stars`) AS `stars`, count(t0.`athlete`) AS `athlete`,
-       avg(t0.`id`) AS `id`
-FROM `project.dataset.table` t0\
+SELECT
+  sum(t0.`stars`) AS `stars`,
+  count(t0.`athlete`) AS `athlete`,
+  avg(t0.`id`) AS `id`
+FROM `project.dataset`.table AS t0\
 """
 
 simple_params = pytest.mark.parametrize(
@@ -74,7 +79,7 @@ simple_params = pytest.mark.parametrize(
 
 
 @simple_params
-def test_only_one_dimension(kind, setup, widget_factory):
+def test_only_one_dimension(kind, widget_factory):
     widget = widget_factory(kind=kind, dimension="is_nice")
     query = get_query_from_widget(widget, pre_filter(widget, None))
 
@@ -82,7 +87,7 @@ def test_only_one_dimension(kind, setup, widget_factory):
 
 
 @simple_params
-def test_one_dimension_one_aggregation(kind, setup, widget_factory):
+def test_one_dimension_one_aggregation(kind, widget_factory):
     widget = widget_factory(kind=kind, dimension="is_nice")
     widget.aggregations.create(column="stars", function="sum")
     query = get_query_from_widget(widget, pre_filter(widget, None))
@@ -91,7 +96,7 @@ def test_one_dimension_one_aggregation(kind, setup, widget_factory):
 
 
 @simple_params
-def test_one_dimension_two_aggregations(kind, setup, widget_factory):
+def test_one_dimension_two_aggregations(kind, widget_factory):
     widget = widget_factory(kind=kind, dimension="is_nice")
     widget.aggregations.create(column="stars", function="sum")
     widget.aggregations.create(column="athlete", function="count")
@@ -112,7 +117,7 @@ stacked_params = pytest.mark.parametrize(
 
 
 @stacked_params
-def test_two_dimension(kind, setup, widget_factory):
+def test_two_dimension(kind, widget_factory):
     widget = widget_factory(kind=kind, dimension="is_nice", second_dimension="medals")
     query = get_query_from_widget(widget, pre_filter(widget, None))
 
@@ -120,7 +125,7 @@ def test_two_dimension(kind, setup, widget_factory):
 
 
 @stacked_params
-def test_two_dimension_one_aggregation(kind, setup, widget_factory):
+def test_two_dimension_one_aggregation(kind, widget_factory):
     widget = widget_factory(kind=kind, dimension="is_nice", second_dimension="medals")
     widget.aggregations.create(column="stars", function="sum")
     query = get_query_from_widget(widget, pre_filter(widget, None))
@@ -131,7 +136,7 @@ def test_two_dimension_one_aggregation(kind, setup, widget_factory):
 @pytest.mark.parametrize(
     "kind", [pytest.param(kind, id=kind) for kind in NO_DIMENSION_WIDGETS]
 )
-def test_no_dimension(kind, setup, widget_factory):
+def test_no_dimension(kind, widget_factory):
     widget = widget_factory(kind=kind)
     widget.aggregations.create(column="stars", function="sum")
     widget.aggregations.create(column="athlete", function="count")
@@ -141,7 +146,7 @@ def test_no_dimension(kind, setup, widget_factory):
     assert query.compile() == NO_DIMENSION_THREE_AGGREGATIONS_QUERY
 
 
-def test_combo_chart(setup, widget_factory):
+def test_combo_chart(widget_factory):
     widget = widget_factory(kind=Widget.Kind.COMBO, dimension="is_nice")
     widget.charts.create(column="stars", function="sum")
     query = get_query_from_widget(widget, pre_filter(widget, None))
@@ -150,4 +155,5 @@ def test_combo_chart(setup, widget_factory):
     widget.charts.create(column="athlete", function="count")
     query = get_query_from_widget(widget, pre_filter(widget, None))
 
+    # TODO: Weird issue where the backticks are removed by ibis
     assert query.compile() == SINGLE_DIMENSION_TWO_AGGREGATIONS_QUERY

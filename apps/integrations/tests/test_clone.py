@@ -1,6 +1,5 @@
 import pytest
 
-from apps.base.tests.mocks import mock_bq_client_with_records
 from apps.integrations.models import Integration
 from apps.sheets.models import Sheet
 from apps.tables.models import Table
@@ -11,8 +10,7 @@ pytestmark = pytest.mark.django_db(transaction=True)
 COPY_QUERY = "CREATE OR REPLACE TABLE {} as (SELECT * FROM {})"
 
 
-def test_integration_upload_clone(upload_factory, integration_table_factory, bigquery):
-    mock_bq_client_with_records(bigquery, {})
+def test_integration_upload_clone(upload_factory, integration_table_factory, engine):
     upload = upload_factory()
     table = integration_table_factory(integration=upload.integration)
     clone = upload.integration.make_clone()
@@ -24,12 +22,12 @@ def test_integration_upload_clone(upload_factory, integration_table_factory, big
     clone_table = clone.table_set.first()
     assert clone_table.name == clone.source_obj.table_id
 
-    assert bigquery.query.call_args.args[0] == COPY_QUERY.format(
+    assert engine.raw_sql.call_args.args[0] == COPY_QUERY.format(
         clone_table.fqn, table.fqn
     )
 
 
-def test_integration_sheet_clone(sheet_factory, integration_table_factory, bigquery):
+def test_integration_sheet_clone(sheet_factory, integration_table_factory, engine):
     sheet = sheet_factory()
     table = integration_table_factory(integration=sheet.integration)
     clone = sheet.integration.make_clone()
@@ -41,6 +39,6 @@ def test_integration_sheet_clone(sheet_factory, integration_table_factory, bigqu
     clone_table = clone.table_set.first()
     assert clone_table.name == clone.source_obj.table_id
     assert clone_table.namespace == table.namespace
-    assert bigquery.query.call_args.args[0] == COPY_QUERY.format(
+    assert engine.raw_sql.call_args.args[0] == COPY_QUERY.format(
         clone_table.fqn, table.fqn
     )

@@ -1,7 +1,4 @@
-from unittest.mock import Mock
-
 import pytest
-from google.cloud.bigquery.schema import SchemaField
 
 from apps.base.clients import get_engine
 
@@ -9,29 +6,20 @@ pytestmark = pytest.mark.django_db
 
 
 def test_upload_all_string(
-    logged_in_user, bigquery, upload_factory, integration_table_factory
+    logged_in_user,
+    engine,
+    upload_factory,
+    integration_table_factory,
 ):
     upload = upload_factory(integration__project__team=logged_in_user.teams.first())
     table = integration_table_factory(
         project=upload.integration.project, integration=upload.integration
     )
 
-    bigquery.load_table_from_uri().exception = lambda: False
-    # the initial query
-    bigquery.query().schema = [
-        SchemaField("string_field_0", "STRING"),
-        SchemaField("string_field_1", "STRING"),
-    ]
-    # result from except distinct on temporary table
-    result_mock = Mock()
-    result_mock.values.return_value = ["Name", "Age"]
-    bigquery.query().result.return_value = [result_mock]
-    bigquery.reset_mock()
-
     get_engine().import_table_from_upload(table, upload)
 
     # initial call has result with strings
-    initial_call = bigquery.load_table_from_uri.call_args_list[0]
+    initial_call = engine.load_table_from_uri.call_args_list[0]
     assert initial_call.args == (upload.gcs_uri, table.fqn)
     job_config = initial_call.kwargs["job_config"]
     assert job_config.source_format == "CSV"
@@ -43,7 +31,7 @@ def test_upload_all_string(
     assert job_config.skip_leading_rows == 1
 
     # header call is to a temporary table with skipped leading rows
-    header_call = bigquery.query.call_args_list[0]
+    header_call = engine.query.call_args_list[0]
     HEADER_SQL = "select * from (select * from table_temp except distinct select * from dataset.table) limit 1"
     assert header_call.args == (HEADER_SQL,)
     job_config = header_call.kwargs["job_config"]
@@ -56,7 +44,7 @@ def test_upload_all_string(
     assert external_config.options.skip_leading_rows == 0
 
     # final call with explicit schema
-    final_call = bigquery.load_table_from_uri.call_args_list[1]
+    final_call = engine.load_table_from_uri.call_args_list[1]
     assert final_call.args == (upload.gcs_uri, table.fqn)
     job_config = final_call.kwargs["job_config"]
     assert job_config.source_format == "CSV"

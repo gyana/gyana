@@ -1,17 +1,14 @@
 import os
 from unittest.mock import MagicMock
 
-import ibis.expr.schema as sch
 import pytest
 import waffle
 from django.db import connection
 from django.http import HttpResponse
 from django.urls import get_resolver, path
-from django.utils import timezone
 from pytest_django import live_server_helper
 from waffle.templatetags import waffle_tags
 
-from apps.base import clients
 from apps.teams.models import Team
 from apps.users.models import CustomUser
 
@@ -66,46 +63,6 @@ def patches(mocker, settings):
     settings.DEFAULT_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
 
     yield
-
-
-def bind(instance, name, func):
-    setattr(
-        instance,
-        name,
-        func.__get__(instance, instance.__class__),
-    )
-
-
-def mock_backend_client_get_schema(self, name):
-    table = self.client.get_table(name)
-    return sch.infer(table)
-
-
-@pytest.fixture(autouse=True)
-def bigquery(mocker, settings):
-    client = MagicMock()
-    # manually override the ibis client with a mock instead
-    # set the project name to "project" in auto-generated SQL
-    settings.ENGINE_URL = "bigquery://project"
-    mocker.patch(
-        "ibis.backends.bigquery.pydata_google_auth.default",
-        return_value=(None, "project"),
-    )
-    mocker.patch("apps.base.engine.bigquery.bigquery", return_value=client)
-    mocker.patch("ibis.backends.bigquery.client.bq.Client", return_value=client)
-
-    ibis_client = clients.get_engine().client
-    ibis_client.client = client
-    bind(
-        ibis_client,
-        "get_schema",
-        mock_backend_client_get_schema,
-    )
-
-    client.get_table().num_rows = 10
-    client.get_table().modified = timezone.now()
-
-    yield client
 
 
 @pytest.fixture(autouse=True)

@@ -1,6 +1,6 @@
-import ibis
+from ibis import schema
 
-TABLE = ibis.table(
+MOCK_SCHEMA = schema(
     [
         ("id", "int32"),
         ("athlete", "string"),
@@ -11,6 +11,5 @@ TABLE = ibis.table(
         ("stars", "double"),
         ("is_nice", "boolean"),
         ("biography", "struct<a:int32>"),
-    ],
-    name="olympians",
+    ]
 )

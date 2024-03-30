@@ -2,8 +2,6 @@ import pytest
 from pytest_django.asserts import assertContains
 
 from apps.base.tests.asserts import assertLink, assertOK, assertSelectorLength
-from apps.base.tests.mock_data import TABLE
-from apps.base.tests.mocks import mock_bq_client_with_schema
 from apps.widgets.models import Widget
 
 pytestmark = pytest.mark.django_db
@@ -14,11 +12,7 @@ def test_widget_crudl(
     dashboard_factory,
     project,
     integration_table_factory,
-    bigquery,
 ):
-    mock_bq_client_with_schema(
-        bigquery, [(name, str(type_)) for name, type_ in TABLE.schema().items()]
-    )
     table = integration_table_factory(project=project)
     dashboard = dashboard_factory(project=project)
     page = dashboard.pages.create()

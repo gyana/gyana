@@ -19,8 +19,10 @@ def _sort(query, widget):
         column = query[widget.dimension]
     else:
         return query
-    sort_column = [(column, widget.sort_ascending)]
-    return query.sort_by(sort_column)
+    if not widget.sort_ascending:
+        column = column.desc()
+    sort_column = [column]
+    return query.order_by(sort_column)
 
 
 def get_query_from_widget(widget: Widget, query):

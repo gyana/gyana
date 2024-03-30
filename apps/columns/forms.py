@@ -302,7 +302,7 @@ def create_left_join_choices(parents, index):
         (
             f"Input {idx+1}",
             sorted(
-                [(f"{idx}:{col}", col) for col in parent.schema],
+                [(f"{idx}:{col}", col) for col in parent.schema()],
                 key=lambda x: str.casefold(x[1]),
             ),
         )
@@ -335,7 +335,7 @@ class JoinColumnForm(ModelForm):
         )
         self.fields["right_column"] = forms.ChoiceField(
             choices=create_column_choices(
-                parents[index + 1].schema,
+                parents[index + 1].schema(),
             ),
             help_text=self.fields["right_column"].help_text.format(index + 2),
         )

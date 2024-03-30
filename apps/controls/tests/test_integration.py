@@ -1,13 +1,10 @@
 import uuid
 from datetime import date
-from unittest.mock import Mock
 
 import pandas as pd
 import pytest
 
 from apps.base.tests.asserts import assertFormRenders, assertOK
-from apps.base.tests.mock_data import TABLE
-from apps.base.tests.mocks import PickableMock, mock_bq_client_with_schema
 from apps.controls.models import Control, ControlWidget, CustomChoice
 from apps.dashboards.models import Dashboard
 from apps.filters.models import DateRange
@@ -25,27 +22,14 @@ INPUT_DATA = [
 ]
 
 
-def mock_bq_client_data(bigquery):
-    def side_effect(query, **kwargs):
-        mock = PickableMock()
-        mock.rows_df = pd.DataFrame(INPUT_DATA)
-        mock.total_rows = len(INPUT_DATA)
-        return mock
-
-    bigquery.get_query_results = Mock(side_effect=side_effect)
-
-
 def test_control_crudl(
-    client, project, dashboard_factory, bigquery, integration_table_factory
+    client, project, dashboard_factory, integration_table_factory, engine
 ):
-    mock_bq_client_with_schema(
-        bigquery, [(name, str(type_)) for name, type_ in TABLE.schema().items()]
-    )
-    mock_bq_client_data(bigquery)
+    engine.set_data(pd.DataFrame(INPUT_DATA))
     # add a widget with a dateslice column so it's picked up when creating the output stream
     dashboard = dashboard_factory(project=project)
     page = dashboard.pages.create()
-    widget = page.widgets.create(
+    page.widgets.create(
         date_column="birthday",
         dimension="athlete",
         kind=Widget.Kind.COLUMN,

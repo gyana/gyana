@@ -37,7 +37,7 @@ class NodeForm(ModelForm):
     def columns(self):
         """Returns the schema for the first parent."""
         parent = self.instance.parents.first()
-        return parent.schema if parent else {}
+        return parent.schema() if parent else {}
 
     def save(self, commit=True):
         if not self.instance.has_been_saved:

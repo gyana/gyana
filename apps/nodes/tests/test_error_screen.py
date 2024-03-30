@@ -131,14 +131,14 @@ def test_relation_error(client, setup, node_factory):
     )
 
 
-def raise_error():
+def raise_error(*args):
     raise Exception
 
 
 def test_default(client, setup, node_factory, mocker):
+    mocker.patch("apps.nodes.frames.get_query_from_node", side_effect=raise_error)
     table, workflow = setup
 
-    mocker.patch("apps.nodes.engine.get_query_from_node", side_effect=raise_error)
     select_node = create_node(table, workflow, Node.Kind.SELECT, node_factory)
     r = client.get(f"/nodes/{select_node.id}/grid")
     assertOK(r)

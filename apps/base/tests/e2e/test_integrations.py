@@ -6,7 +6,7 @@ pytestmark = pytest.mark.django_db(transaction=True)
 
 
 def test_create_sheet_integration_with_retry(
-    page, live_server, project, drive_v2, sheets, celery_worker, bigquery
+    page, live_server, project, drive_v2, sheets, celery_worker, engine
 ):
     page.force_login(live_server)
     page.goto(live_server.url + "/projects/1")

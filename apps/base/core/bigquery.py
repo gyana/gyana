@@ -1,14 +1,7 @@
 import re
 
-import beeline
-import pandas as pd
-from django.conf import settings
-from google.cloud import bigquery
-from google.cloud.bigquery.query import _QueryResults
-
 from .ibis.client import *  # noqa
 from .ibis.compiler import *  # noqa
-from .utils import md5
 
 
 def sanitize_bq_column_name(name: str):

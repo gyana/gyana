@@ -1,5 +1,6 @@
 import hashlib
 
+import pandas as pd
 import pytest
 from pytest_django.asserts import assertContains, assertRedirects
 
@@ -8,10 +9,6 @@ from apps.base.tests.asserts import (
     assertLink,
     assertOK,
     assertSelectorLength,
-)
-from apps.base.tests.mocks import (
-    mock_bq_client_with_records,
-    mock_bq_client_with_schema,
 )
 
 pytestmark = pytest.mark.django_db
@@ -72,20 +69,21 @@ def test_integration_crudl(client, logged_in_user, sheet_factory):
 
 
 def test_integration_schema_and_preview(
-    client, logged_in_user, bigquery, sheet_factory, integration_table_factory
+    client,
+    logged_in_user,
+    engine,
+    sheet_factory,
+    integration_table_factory,
 ):
+    engine.query_and_wait.return_value.to_dataframe.return_value = pd.DataFrame(
+        {"athlete": ["Neera"] * 15 + ["Vayu"] * 5}
+    )
+    engine.query_and_wait.return_value.total_rows = 20
     team = logged_in_user.teams.first()
     sheet = sheet_factory(integration__project__team=team)
     integration = sheet.integration
     project = integration.project
-    table = integration_table_factory(project=project, integration=integration)
-
-    # mock table with two columns, 20 rows
-    mock_bq_client_with_schema(bigquery, [("name", "STRING"), ("age", "INTEGER")])
-    mock_bq_client_with_records(
-        bigquery,
-        {"name": ["Neera"] * 15 + ["Vayu"] * 5, "age": [4] * 15 + [2] * 5},
-    )
+    integration_table_factory(project=project, integration=integration)
 
     # test: user can view the data tab, and view the schema and preview information
     # mock the bigquery client and verify it is called with correct args
@@ -97,13 +95,9 @@ def test_integration_schema_and_preview(
         f"{DETAIL}?view=schema", f"/integrations/{integration.id}/schema?table_id="
     )
     assertOK(r)
-    assertSelectorLength(r, "table tbody tr", 2)
+    assertSelectorLength(r, "table tbody tr", 9)
     assertContains(r, "name")
     assertContains(r, "Text")
-
-    # Schema also calls get_table
-    assert bigquery.get_table.call_count == 2
-    assert bigquery.get_table.call_args_list[0].args == (f"project.{table.fqn}",)
 
     # preview (default)
     r = client.get_htmx_partial(
@@ -115,9 +109,9 @@ def test_integration_schema_and_preview(
     assertContains(r, "Neera")
     assertContains(r, "4")
 
-    assert bigquery.query_and_wait.call_count == 1
-    assert bigquery.query_and_wait.call_args.args == (
-        "SELECT t0.*\nFROM `project.dataset.table` t0",
+    assert engine.query_and_wait.call_count == 1
+    assert engine.query_and_wait.call_args.args[0] == (
+        "SELECT\n  t0.*\nFROM `project.dataset`.table AS t0"
     )
 
     # preview page 2
@@ -131,14 +125,14 @@ def test_integration_schema_and_preview(
     assertContains(r, "Vayu")
     assertContains(r, "2")
 
-    assert bigquery.query_and_wait.call_count == 2
-    assert bigquery.query_and_wait.call_args.args == (
-        "SELECT t0.*\nFROM `project.dataset.table` t0\nLIMIT 5 OFFSET 15",
+    assert engine.query_and_wait.call_count == 2
+    assert engine.query_and_wait.call_args.args[0] == (
+        "SELECT\n  t0.*\nFROM `project.dataset`.table AS t0\nLIMIT 5\nOFFSET 15"
     )
 
     # preview page 2 with sort
     SORT_URL = (
-        f"/integrations/{integration.id}/grid?table_id=&page=2&sort={md5('name')}"
+        f"/integrations/{integration.id}/grid?table_id=&page=2&sort={md5('athlete')}"
     )
     assertLink(r, SORT_URL, htmx=True)
 
@@ -148,9 +142,9 @@ def test_integration_schema_and_preview(
     assertContains(r, "Vayu")
     assertContains(r, "2")
 
-    assert bigquery.query_and_wait.call_count == 3
-    assert bigquery.query_and_wait.call_args.args == (
-        "SELECT t0.*\nFROM `project.dataset.table` t0\nORDER BY t0.`name` DESC\nLIMIT 5 OFFSET 15",
+    assert engine.query_and_wait.call_count == 3
+    assert engine.query_and_wait.call_args.args[0] == (
+        "SELECT\n  t0.*\nFROM `project.dataset`.table AS t0\nORDER BY\n  t0.`athlete` DESC\nLIMIT 5\nOFFSET 15"
     )
 
 
