@@ -1,16 +1,25 @@
+import os
 import textwrap
+import time
 from os.path import splitext
 
 from django.conf import settings
 from django.db import models
+from django.utils.text import slugify
 
 from apps.base.clients import SLUG
 from apps.base.models import BaseModel
 from apps.integrations.models import Integration
 
 
-def with_slug(path):
-    return f"{SLUG}-v2/{path}" if SLUG else path
+def upload_to(path):
+    filename, file_extension = os.path.splitext(filename)
+    path = f"integrations/{filename}-{slugify(time.time())}{file_extension}"
+
+    if SLUG:
+        path = f"{SLUG}/{path}"
+
+    return path
 
 
 class Upload(BaseModel):
@@ -26,7 +35,7 @@ class Upload(BaseModel):
         max_length=8, choices=FieldDelimiter.choices, default=FieldDelimiter.COMMA
     )
     file = models.FileField(
-        upload_to=with_slug("integrations"),
+        upload_to=upload_to("integrations"),
         null=True,
         blank=True,
     )
