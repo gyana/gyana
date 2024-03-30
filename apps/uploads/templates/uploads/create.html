@@ -12,8 +12,8 @@
     </h1>
   </div>
 
-  <div class="upload-csv">
-    <form
+  {% comment %} <div class="upload-csv"> {% endcomment %}
+  {% comment %} <form
       method="POST"
       action="{{ request.get_full_path }}"
       class="upload-csv__form"
@@ -23,7 +23,33 @@
     >
       {% csrf_token %}
       {% crispy form %}
-    </form>
+    </form> {% endcomment %}
+
+  <div class="upload-csv flex flex-1 justify-center items-center">
+    <div class='upload-csv__form flex flex-col items-center flex-1'>
+      <form
+        method="POST"
+        id="create-form"
+        action="{{ request.get_full_path }}"
+        class="form--no-layout w-full"
+        x-init="SiteJS.base.FilePond.create($el.querySelector('input[type=file]'), {
+          server: {
+          url: '/fp',
+          process: '/process/',
+          patch: '/patch/',
+          revert: '/revert/',
+          fetch: '/fetch/?target='
+          },
+          credits: null
+          })"
+      >
+        <div class="w-full" id='create-container'>
+          {% csrf_token %}
+          <input type="file" name="file" />
+          {% comment %} {% crispy form %} {% endcomment %}
+        </div>
+      </form>
+    </div>
   </div>
 
 {% endblock %}
