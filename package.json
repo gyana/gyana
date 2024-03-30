@@ -53,6 +53,7 @@
     "codemirror": "^5.61.1",
     "currency-symbol-map": "^5.0.1",
     "dagre": "^0.8.5",
+    "dropzone": "^5.9.3",
     "html2pdf.js": "^0.10.1",
     "js-cookie": "^2.2.1",
     "morphdom": "^2.6.1",
