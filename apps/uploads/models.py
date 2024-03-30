@@ -12,8 +12,8 @@ from apps.base.models import BaseModel
 from apps.integrations.models import Integration
 
 
-def upload_to(path):
-    filename, file_extension = os.path.splitext(path)
+def upload_to(instance, filename):
+    filename, file_extension = os.path.splitext(filename)
     path = f"integrations/{filename}-{slugify(time.time())}{file_extension}"
 
     if SLUG:
@@ -30,14 +30,9 @@ class Upload(BaseModel):
 
     integration = models.OneToOneField(Integration, on_delete=models.CASCADE, null=True)
 
-    file_gcs_path = models.TextField(null=True)
+    file = models.FileField(upload_to=upload_to)
     field_delimiter = models.CharField(
         max_length=8, choices=FieldDelimiter.choices, default=FieldDelimiter.COMMA
-    )
-    file = models.FileField(
-        upload_to=upload_to("integrations"),
-        null=True,
-        blank=True,
     )
 
     @property

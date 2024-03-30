@@ -6,13 +6,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('uploads', '0001_initial'),
+        ("uploads", "0001_initial"),
     ]
 
     operations = [
-        migrations.AddField(
-            model_name='upload',
-            name='file',
-            field=models.FileField(null=True, upload_to='cypress/integrations'),
+        migrations.RenameField(
+            model_name="upload",
+            old_name="file_gcs_path",
+            new_name="file",
+        ),
+        migrations.AlterField(
+            model_name="upload",
+            name="file",
+            field=models.FileField(),
         ),
     ]
