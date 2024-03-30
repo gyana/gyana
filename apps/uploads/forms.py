@@ -1,5 +1,4 @@
 from apps.base.forms import ModelForm
-from apps.uploads.widgets import GCSFileUpload
 
 from .models import Upload
 
@@ -26,8 +25,8 @@ class UploadCreateForm(ModelForm):
 class UploadUpdateForm(ModelForm):
     class Meta:
         model = Upload
-        fields = ["file_gcs_path", "field_delimiter"]
-        widgets = {"file_gcs_path": GCSFileUpload()}
+        fields = ["file", "field_delimiter"]
+        labels = {"file": "Choose a file"}
         labels = {"file_gcs_path": "Choose a file"}
         help_texts = {
             "file_gcs_path": "Maximum file size is 1GB",
