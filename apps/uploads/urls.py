@@ -6,6 +6,8 @@ from . import views
 
 app_name = "uploads"
 
+urlpatterns = []
+
 integration_urlpatterns = (
     [
         path(

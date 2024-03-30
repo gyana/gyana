@@ -13,7 +13,7 @@ from apps.integrations.models import Integration
 
 
 def upload_to(path):
-    filename, file_extension = os.path.splitext(filename)
+    filename, file_extension = os.path.splitext(path)
     path = f"integrations/{filename}-{slugify(time.time())}{file_extension}"
 
     if SLUG:
