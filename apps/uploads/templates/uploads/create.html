@@ -26,7 +26,7 @@
         </div>`,
         maxFiles: 1,
         maxFilesize: window.__cypressMaxSize__ || 1000,
-        acceptedFiles: '.csv, .tsv, text/csv, text/plain',
+        acceptedFiles: '.csv,.tsv,text/csv,text/plain',
         success: function(file) {
         window.location.href = file.xhr.responseURL
         }
