@@ -27,13 +27,12 @@ class UploadUpdateForm(ModelForm):
         model = Upload
         fields = ["file", "field_delimiter"]
         labels = {"file": "Choose a file"}
-        labels = {"file_gcs_path": "Choose a file"}
         help_texts = {
-            "file_gcs_path": "Maximum file size is 1GB",
+            "file": "Maximum file size is 1GB",
             "field_delimiter": "A field delimiter is a character that separates cells in a CSV table.",
         }
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-        self.fields["file_gcs_path"].required = False
+        self.fields["file"].required = False
