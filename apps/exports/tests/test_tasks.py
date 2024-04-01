@@ -51,5 +51,5 @@ def test_export_to_gcs(
     assert mock_bigquery_functions.call_count == 1
     assert mock_bigquery_functions.call_args.args == (
         TEMPORARY_TABLE,
-        f"gs://{settings.GS_BUCKET_NAME}/{export.path}",
+        f"gs://{settings.GS_BUCKET_NAME}/{export.file.name}",
     )

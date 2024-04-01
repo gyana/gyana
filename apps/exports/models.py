@@ -34,7 +34,3 @@ class Export(BaseModel):
     @property
     def table_id(self):
         return f"export_{self.pk}"
-
-    @property
-    def path(self):
-        return f"exports/export_{self.pk}_{self.gcs_id}.csv"

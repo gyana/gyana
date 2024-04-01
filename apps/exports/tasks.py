@@ -1,3 +1,5 @@
+import uuid
+
 import analytics
 from celery.app import shared_task
 from django.conf import settings
@@ -22,9 +24,11 @@ def export_to_gcs(export_id, user_id):
     else:
         query = engine.get_table(export.integration_table)
 
-    engine.export_to_csv(query, f"gs://{settings.GS_BUCKET_NAME}/{export.path}")
+    path = f"exports/export_{uuid.uuid4()}.csv"
+    export.file.name = path
+    engine.export_to_csv(query, f"gs://{settings.GS_BUCKET_NAME}/{path}")
 
-    send_export_email(export.path, user)
+    send_export_email(export.file.name, user)
 
     export.exported_at = timezone.now()
     export.save()
