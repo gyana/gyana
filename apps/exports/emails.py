@@ -1,21 +1,14 @@
-from datetime import datetime as dt
-from datetime import timedelta
-
+from django.conf import settings
 from django.core.mail.message import EmailMultiAlternatives
 from django.template.loader import render_to_string
+from django.urls import reverse
 
-from apps.base import clients
 
-
-def send_export_email(file_path, user):
-    blob = clients.get_bucket().blob(file_path)
-    download_link = blob.generate_signed_url(
-        version="v4", expiration=dt.now() + timedelta(days=7), scheme="https"
-    )
+def send_export_email(export, user):
 
     context = {
         "user": user,
-        "download_link": download_link,
+        "download_link": f'{settings.EXTERNAL_URL}{reverse("exports:download", args=(export.id,))}',
     }
 
     subject = render_to_string(

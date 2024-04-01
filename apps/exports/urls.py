@@ -1,6 +1,6 @@
 from django.urls import path
 
-from . import frames
+from . import frames, views
 from .access import login_and_node_required, login_and_table_required
 
 app_name = "exports"
@@ -15,4 +15,5 @@ urlpatterns = [
         login_and_table_required(frames.ExportCreateIntegrationTable.as_view()),
         name="create_integration_table",
     ),
+    path("<int:pk>/download", views.ExportDownload.as_view(), name="download"),
 ]

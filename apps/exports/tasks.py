@@ -28,7 +28,7 @@ def export_to_gcs(export_id, user_id):
     export.file.name = path
     engine.export_to_csv(query, f"gs://{settings.GS_BUCKET_NAME}/{path}")
 
-    send_export_email(export.file.name, user)
+    send_export_email(export, user)
 
     export.exported_at = timezone.now()
     export.save()
