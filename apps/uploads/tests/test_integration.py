@@ -1,6 +1,9 @@
+from unittest.mock import MagicMock
+
 import pytest
 from django.core import mail
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django_drf_filepond.models import TemporaryUpload
 from pytest_django.asserts import assertRedirects
 
 from apps.base.tests.asserts import assertOK
@@ -16,7 +19,7 @@ def bq_table_schema_is_not_string_only(mocker):
     )
 
 
-def test_upload_create(client, logged_in_user, project, engine):
+def test_upload_create(client, logged_in_user, project, engine, mocker):
 
     # test: create a new upload, configure it and complete the sync
 
@@ -24,9 +27,14 @@ def test_upload_create(client, logged_in_user, project, engine):
     r = client.get(f"/projects/{project.id}/integrations/uploads/new")
     assertOK(r)
 
+    mocker.patch(
+        "django_drf_filepond.models.TemporaryUpload.objects.get",
+        return_value=MagicMock(file=SimpleUploadedFile("file.csv", b"")),
+    )
+
     r = client.post(
         f"/projects/{project.id}/integrations/uploads/new",
-        data={"file": SimpleUploadedFile("test.csv", b"test", content_type="text/csv")},
+        data={"filepond": "upload_id"},
     )
 
     integration = project.integration_set.first()
