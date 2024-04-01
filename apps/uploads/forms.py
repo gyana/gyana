@@ -1,3 +1,6 @@
+from django.core.files import File
+from django_drf_filepond.models import TemporaryUpload
+
 from apps.base.forms import ModelForm
 
 from .models import Upload
@@ -17,9 +20,15 @@ class UploadCreateForm(ModelForm):
         super().__init__(*args, **kwargs)
 
     def pre_save(self, instance):
-        # todo: understand why this is required
-        instance.file = self.files["file"]
-        instance.create_integration(instance.file.name, self._created_by, self._project)
+        self._tu = TemporaryUpload.objects.get(upload_id=self.data["filepond"])
+        instance.file = File(self._tu.file)
+
+        instance.create_integration(
+            self._tu.upload_name, self._created_by, self._project
+        )
+
+    def post_save(self, instance):
+        self._tu.delete()
 
 
 class UploadUpdateForm(ModelForm):

@@ -43,6 +43,9 @@
           fetch: '/fetch/?target='
           },
           credits: null,
+          onprocessfile: (error, file) => {
+          if (error === null) $el.requestSubmit()
+          }
           })"
       >
         <div class="w-full" id='create-container'>
