@@ -1,6 +1,6 @@
 {% extends "projects/settings_base.html" %}
 {% load static %}
-{% load help_utils crispy_forms_tags %}
+{% load help_utils %}
 
 {% block app %}
   <div class="page-header">
@@ -12,27 +12,15 @@
     </h1>
   </div>
 
-  {% comment %} <div class="upload-csv"> {% endcomment %}
-  {% comment %} <form
-      method="POST"
-      action="{{ request.get_full_path }}"
-      class="upload-csv__form"
-      enctype="multipart/form-data"
-      style="background: none; border: none;"
-      x-init="SiteJS.base.FilePond.create($el.querySelector('input[type=file]'))"
-    >
-      {% csrf_token %}
-      {% crispy form %}
-    </form> {% endcomment %}
-
   <div class="upload-csv flex flex-1 justify-center items-center">
     <div class='upload-csv__form flex flex-col items-center flex-1'>
       <form
         method="POST"
         id="create-form"
         action="{{ request.get_full_path }}"
-        class="form--no-layout w-full"
+        class="form--no-layout w-full h-full"
         x-init="SiteJS.base.FilePond.create($el.querySelector('input[type=file]'), {
+          imageCropAspectRatio: '1:1',
           chunkUploads: true,
           server: {
           url: '/fp',
@@ -48,10 +36,9 @@
           }
           })"
       >
-        <div class="w-full" id='create-container'>
+        <div class="w-full h-full" id='create-container'>
           {% csrf_token %}
-          <input type="file" class="pond" name="filepond" />
-          {% comment %} {% crispy form %} {% endcomment %}
+          <input type="file" class="pond" name="filepond" accept='.csv,.tsv,text/csv,text/plain'/>
         </div>
       </form>
     </div>

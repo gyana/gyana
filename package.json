@@ -55,6 +55,8 @@
     "dagre": "^0.8.5",
     "dropzone": "^5.9.3",
     "filepond": "^4.30.6",
+    "filepond-plugin-file-validate-size": "^2.2.8",
+    "filepond-plugin-file-validate-type": "^1.2.9",
     "html2pdf.js": "^0.10.1",
     "js-cookie": "^2.2.1",
     "morphdom": "^2.6.1",
