@@ -20,9 +20,10 @@
         action="{{ request.get_full_path }}"
         class="form--no-layout w-full h-full"
         x-init="SiteJS.base.FilePond.create($el.querySelector('input[type=file]'), {
-          labelIdle: `<span style='font-size: 1.6rem;'>Drag & Drop your files or <span class='filepond--label-action' tabindex='0'>Browse</span></span>
-          <p class='input__help-text'>Maximum upload size is 100MB</p>`,
+          labelIdle: `Drag & Drop your files or <span class='filepond--label-action' tabindex='0'>Browse</span>
+          <p style='font-size: 1.2rem;' class='input__help-text'>Maximum upload size is 100MB</p>`,
           chunkUploads: true,
+          chunkSize: window.__cypressChunkSize__ || 5000000,
           maxFileSize: window.__cypressMaxSize__ || '100MB',
           server: {
           url: '/fp',
