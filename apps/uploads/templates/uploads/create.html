@@ -12,39 +12,37 @@
     </h1>
   </div>
 
-  <div class="upload-csv flex flex-1 justify-center items-center">
-    <div class='upload-csv__form flex flex-col items-center flex-1'>
-      <form
-        method="POST"
-        id="create-form"
-        action="{{ request.get_full_path }}"
-        class="form--no-layout w-full h-full"
-        x-init="SiteJS.base.FilePond.create($el.querySelector('input[type=file]'), {
-          labelIdle: `Drag & Drop your files or <span class='filepond--label-action' tabindex='0'>Browse</span>
-          <p style='font-size: 1.2rem;' class='input__help-text'>Maximum upload size is 100MB</p>`,
-          chunkUploads: true,
-          chunkSize: window.__cypressChunkSize__ || 5000000,
-          maxFileSize: window.__cypressMaxSize__ || '100MB',
-          server: {
-          url: '/fp',
-          headers: {'X-CSRFToken': $el.querySelector('input[name=csrfmiddlewaretoken]').value},
-          process: '/process/',
-          patch: '/patch/',
-          revert: '/revert/',
-          fetch: '/fetch/?target='
-          },
-          credits: null,
-          onprocessfile: (error, file) => {
-          if (error === null) $el.requestSubmit()
-          }
-          })"
-      >
-        <div class="w-full h-full" id='create-container'>
-          {% csrf_token %}
-          <input type="file" class="pond" name="filepond" accept='.csv,.tsv,text/csv,text/plain'/>
-        </div>
-      </form>
-    </div>
+  <div class="upload-csv">
+    <form
+      method="POST"
+      id="create-form"
+      action="{{ request.get_full_path }}"
+      class="form--no-layout w-full h-full"
+      x-init="SiteJS.base.FilePond.create($el.querySelector('input[type=file]'), {
+        labelIdle: `Drag & Drop your files or <span class='filepond--label-action' tabindex='0'>Browse</span>
+        <p style='font-size: 1.2rem;' class='input__help-text'>Maximum upload size is 100MB</p>`,
+        chunkUploads: true,
+        chunkSize: window.__cypressChunkSize__ || 5000000,
+        maxFileSize: window.__cypressMaxSize__ || '100MB',
+        server: {
+        url: '/fp',
+        headers: {'X-CSRFToken': $el.querySelector('input[name=csrfmiddlewaretoken]').value},
+        process: '/process/',
+        patch: '/patch/',
+        revert: '/revert/',
+        fetch: '/fetch/?target='
+        },
+        credits: null,
+        onprocessfile: (error, file) => {
+        if (error === null) $el.requestSubmit()
+        }
+        })"
+    >
+      <div class="w-full h-full" id='create-container'>
+        {% csrf_token %}
+        <input type="file" class="pond" name="filepond" accept='.csv,.tsv,text/csv,text/plain'/>
+      </div>
+    </form>
   </div>
 
 {% endblock %}
