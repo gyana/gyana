@@ -50,7 +50,7 @@ def test_upload_failures(page, live_server, project):
 
     # file is too large
     page.goto(live_server.url + "/projects/1/integrations")
-    page.evaluate("() => window.__cypressMaxSize__ = 1;")
+    page.evaluate("() => window.__cypressMaxSize__ = '1KB';")
     page.get_by_text("Upload CSV").click()
 
     page.locator("input[type=file]").set_input_files(f"{fixtures}/fifa.csv")

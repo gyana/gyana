@@ -20,8 +20,8 @@
         action="{{ request.get_full_path }}"
         class="form--no-layout w-full h-full"
         x-init="SiteJS.base.FilePond.create($el.querySelector('input[type=file]'), {
-          imageCropAspectRatio: '1:1',
           chunkUploads: true,
+          maxFileSize: window.__cypressMaxSize__ || '1GB',
           server: {
           url: '/fp',
           headers: {'X-CSRFToken': $el.querySelector('input[name=csrfmiddlewaretoken]').value},
