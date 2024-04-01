@@ -17,7 +17,7 @@ class Export(BaseModel):
     integration_table = models.ForeignKey(
         Table, related_name="exports", on_delete=models.CASCADE, null=True
     )
-    gcs_id = models.UUIDField(default=uuid.uuid4, editable=False)
+    file = models.FileField(upload_to="exports/")
 
     created_by = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True
