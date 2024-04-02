@@ -16,6 +16,7 @@ from apps.columns.models import (
 from apps.controls.models import Control, ControlWidget
 from apps.customapis.models import CustomApi
 from apps.dashboards.models import Dashboard, Page
+from apps.exports.models import Export
 from apps.filters.models import Filter
 from apps.integrations.models import Integration
 from apps.invites.models import Invite
@@ -281,3 +282,11 @@ class ColumnFactory(factory.django.DjangoModelFactory):
 class FlagFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Flag
+
+
+@register
+class ExportFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Export
+
+    node = factory.SubFactory(NodeFactory)

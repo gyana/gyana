@@ -1,5 +1,7 @@
+from django.http import FileResponse
 from django.urls.base import reverse
 from django.utils.functional import cached_property
+from django.views.generic import DetailView
 
 from apps.base.views import CreateView
 from apps.exports.tasks import export_to_gcs
@@ -58,3 +60,14 @@ class ExportCreateIntegrationTable(ExportCreate):
     def save_parent(self, export):
         export.integration_table = self.parent
         export.save()
+
+
+class ExportDownload(DetailView):
+    model = Export
+
+    def get(self, request, *args, **kwargs):
+        object = self.get_object()
+        res = FileResponse(object.file)
+        res["Content-Type"] = "application/octet-stream"
+        res["Content-Disposition"] = f'attachment; filename="{object.file.name}"'
+        return res
