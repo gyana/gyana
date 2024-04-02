@@ -23,6 +23,7 @@ from .credentials import get_credentials
 
 if TYPE_CHECKING:
     from apps.customapis.models import CustomApi
+    from apps.exports.models import Export
     from apps.sheets.models import Sheet
     from apps.tables.models import Table
     from apps.teams.models import Team
@@ -344,14 +345,14 @@ class BigQueryClient(BaseClient):
                 ],
             )
 
-    def export_to_csv(self, query, gcs_path):
+    def export_to_csv(self, query, export: "Export"):
         client = bigquery()
         # Create temporary table in bigquery
         job = client.query(query.compile())
         job.result()
 
         # Use temporary table and export to GCS
-        extract_job = client.extract_table(job.destination, gcs_path)
+        extract_job = client.extract_table(job.destination, export.gcs_uri)
         extract_job.result()
 
     def get_dashboard_url(self, dataset, table):

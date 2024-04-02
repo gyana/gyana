@@ -28,3 +28,7 @@ class Export(BaseModel):
     @property
     def table_id(self):
         return f"export_{self.pk}"
+
+    @property
+    def gcs_uri(self):
+        return f"gs://{settings.GS_BUCKET_NAME}/{self.file.name}"

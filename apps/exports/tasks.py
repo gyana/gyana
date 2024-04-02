@@ -26,7 +26,7 @@ def run_export_task(export_id, user_id):
 
     path = f"exports/export_{uuid.uuid4()}.csv"
     export.file.name = path
-    engine.export_to_csv(query, f"gs://{settings.GS_BUCKET_NAME}/{path}")
+    engine.export_to_csv(query, export)
 
     send_export_email(export, user)
 
