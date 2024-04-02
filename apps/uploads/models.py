@@ -28,7 +28,7 @@ class Upload(BaseModel):
         TAB = "tab", "Tab"
         PIPE = "pipe", "Pipe"
 
-    integration = models.OneToOneField(Integration, on_delete=models.CASCADE, null=True)
+    integration = models.OneToOneField(Integration, on_delete=models.CASCADE)
 
     file = models.FileField(upload_to=upload_to)
     field_delimiter = models.CharField(
