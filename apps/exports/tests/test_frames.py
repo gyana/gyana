@@ -9,14 +9,14 @@ pytestmark = pytest.mark.django_db
 
 
 @pytest.fixture
-def export_to_gcs(mocker):
+def run_export_task(mocker):
     return mocker.patch(
-        "apps.exports.frames.export_to_gcs",
+        "apps.exports.frames.run_export_task",
     )
 
 
 def test_export_create_node(
-    client, node_factory, export_to_gcs, logged_in_user, project
+    client, node_factory, run_export_task, logged_in_user, project
 ):
     node = node_factory(kind=Node.Kind.INPUT, workflow__project=project)
     EXPORT_URL = f"/exports/new/node/{node.id}"
@@ -27,12 +27,12 @@ def test_export_create_node(
 
     r = client.post(EXPORT_URL)
     assertRedirects(r, EXPORT_URL, status_code=303)
-    assert export_to_gcs.delay.call_count == 1
-    assert export_to_gcs.delay.call_args.args[1] == logged_in_user.id
+    assert run_export_task.delay.call_count == 1
+    assert run_export_task.delay.call_args.args[1] == logged_in_user.id
 
 
 def test_export_create_integration_table(
-    client, integration_table_factory, export_to_gcs, logged_in_user, project
+    client, integration_table_factory, run_export_task, logged_in_user, project
 ):
     table = integration_table_factory(integration__project=project)
     EXPORT_URL = f"/exports/new/integration_table/{table.id}"
@@ -43,8 +43,8 @@ def test_export_create_integration_table(
 
     r = client.post(EXPORT_URL)
     assertRedirects(r, EXPORT_URL, status_code=303)
-    assert export_to_gcs.delay.call_count == 1
-    assert export_to_gcs.delay.call_args.args[1] == logged_in_user.id
+    assert run_export_task.delay.call_count == 1
+    assert run_export_task.delay.call_args.args[1] == logged_in_user.id
 
 
 def test_export_download(client, export_factory):

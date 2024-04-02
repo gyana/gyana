@@ -20,7 +20,7 @@ def mock_bigquery_functions(mocker):
     return mocker.patch.object(Client, "extract_table")
 
 
-def test_export_to_gcs(
+def test_run_export_task(
     mock_bigquery_functions,
     node_factory,
     logged_in_user,
@@ -31,7 +31,7 @@ def test_export_to_gcs(
     export = Export(node=input_node, created_by=logged_in_user)
     export.save()
 
-    tasks.export_to_gcs(export.id, logged_in_user.id)
+    tasks.run_export_task(export.id, logged_in_user.id)
 
     export.refresh_from_db()
 

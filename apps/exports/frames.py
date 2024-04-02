@@ -4,7 +4,7 @@ from django.utils.functional import cached_property
 from django.views.generic import DetailView
 
 from apps.base.views import CreateView
-from apps.exports.tasks import export_to_gcs
+from apps.exports.tasks import run_export_task
 from apps.nodes.models import Node
 from apps.tables.models import Table
 
@@ -19,7 +19,7 @@ class ExportCreate(CreateView):
     def form_valid(self, form):
         export = form.instance
         self.save_parent(export)
-        export_to_gcs.delay(export.id, self.request.user.id)
+        run_export_task.delay(export.id, self.request.user.id)
         return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
