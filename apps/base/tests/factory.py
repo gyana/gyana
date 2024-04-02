@@ -77,7 +77,7 @@ class UploadFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Upload
 
-    file = "/path/to/gcs"
+    file = "/path/to/csv"
     integration = factory.SubFactory(
         IntegrationFactory, kind=Integration.Kind.UPLOAD, name="Store info"
     )

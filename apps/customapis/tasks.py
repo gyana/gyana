@@ -45,7 +45,7 @@ def run_customapi_sync_task(self, run_id):
     context = {}
 
     try:
-        # fetch data from the api, extract the list of items, write to GCS as
+        # fetch data from the api, extract the list of items, write to filesystem as
         # newline delimited JSON
         session = (
             OAuth2Session(
