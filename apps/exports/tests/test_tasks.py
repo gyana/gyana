@@ -9,8 +9,6 @@ from apps.nodes.models import Node
 
 pytestmark = pytest.mark.django_db
 
-SIGNED_URL = "https://export.save.url"
-
 TEMPORARY_TABLE = "temporary_table"
 
 
@@ -19,12 +17,6 @@ def mock_bigquery_functions(mocker):
     query = mocker.MagicMock()
     query.destination = TEMPORARY_TABLE
     mocker.patch.object(Client, "query", return_value=query)
-
-    mocker.patch.object(Client, "extract_table")
-
-    bucket = mocker.MagicMock()
-    bucket.blob.return_value.generate_signed_url.return_value = SIGNED_URL
-    mocker.patch("apps.base.clients.get_bucket", return_value=bucket)
     return mocker.patch.object(Client, "extract_table")
 
 
@@ -46,6 +38,7 @@ def test_export_to_gcs(
     assert export.exported_at is not None
 
     assert len(mail.outbox) == 1
+    SIGNED_URL = f"{settings.EXTERNAL_URL}/exports/{export.id}/download"
     assert SIGNED_URL in mail.outbox[0].body
 
     assert mock_bigquery_functions.call_count == 1

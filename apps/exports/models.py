@@ -1,5 +1,3 @@
-import uuid
-
 from django.conf import settings
 from django.db import models
 from django.urls import reverse
@@ -10,7 +8,6 @@ from apps.tables.models import Table
 
 
 class Export(BaseModel):
-
     node = models.ForeignKey(
         Node, related_name="exports", on_delete=models.CASCADE, null=True
     )
@@ -24,9 +21,6 @@ class Export(BaseModel):
     )
 
     exported_at = models.DateTimeField(null=True, editable=False)
-
-    def __str__(self):
-        return self.pk
 
     def get_absolute_url(self):
         return reverse("exports:detail", args=(self.pk,))
