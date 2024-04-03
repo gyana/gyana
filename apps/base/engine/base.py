@@ -1,4 +1,5 @@
 from abc import ABC
+import os
 from typing import TYPE_CHECKING
 
 import ibis
@@ -117,6 +118,11 @@ class BaseClient(ABC):
         """Exports a query to a csv on GCS"""
 
         df = query.execute()
+
+        dir = os.path.dirname(export.file.path)
+        if not os.path.exists(dir):
+            os.makedirs(dir)
+
         df.to_csv(export.file.path, index=False)
 
     def get_dashboard_url(self):
