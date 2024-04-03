@@ -347,12 +347,20 @@ DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
 ENGINE_URL = os.environ.get("ENGINE_URL")
 
-GCP_BQ_SVC_ACCOUNT = os.environ.get("GCP_BQ_SVC_ACCOUNT")
+if ENGINE_URL.startswith("postgresql://"):
+    DEFAULT_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
 
-DEFAULT_FILE_STORAGE = "storages.backends.gcloud.GoogleCloudStorage"
+elif ENGINE_URL.startswith("bigquery://"):
+    DEFAULT_FILE_STORAGE = "storages.backends.gcloud.GoogleCloudStorage"
+
+else:
+    raise ValueError(f"Gyana doesnt not support this engine URL {ENGINE_URL}")
+
 GS_BUCKET_NAME = os.environ.get("GS_BUCKET_NAME")
 GS_PUBLIC_BUCKET_NAME = os.environ.get("GS_PUBLIC_BUCKET_NAME")
 GS_PUBLIC_CACHE_CONTROL = "public, max-age=31536000"
+
+GCP_BQ_SVC_ACCOUNT = os.environ.get("GCP_BQ_SVC_ACCOUNT")
 
 DJANGO_DRF_FILEPOND_UPLOAD_TMP = os.path.join(BASE_DIR, "filepond-temp-uploads")
 DJANGO_DRF_FILEPOND_STORAGES_BACKEND = DEFAULT_FILE_STORAGE

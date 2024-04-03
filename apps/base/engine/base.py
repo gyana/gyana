@@ -1,4 +1,3 @@
-import re
 from abc import ABC
 from typing import TYPE_CHECKING
 
@@ -12,6 +11,7 @@ from ._sheet import create_dataframe_from_sheet
 
 if TYPE_CHECKING:
     from apps.customapis.models import CustomApi
+    from apps.exports.models import Export
     from apps.sheets.models import Sheet
     from apps.tables.models import Table
     from apps.teams.models import Team
@@ -74,13 +74,13 @@ class BaseClient(ABC):
 
     def import_table_from_upload(self, table: "Table", upload: "Upload"):
         # TODO: Potentially can use ibis client read_csv when updating ibis
-        df = read_csv(upload.gcs_uri)
+        df = read_csv(upload.file.path)
 
         self._df_to_sql(df, table.name, table.namespace)
 
     def import_table_from_customapi(self, table: "Table", customapi: "CustomApi"):
         # TODO: Potentially can use ibis client read_json when updating ibis
-        df = read_json(customapi.gcs_uri, lines=True)
+        df = read_json(customapi.file.path, lines=True)
 
         self._df_to_sql(df, table.name, table.namespace)
 
@@ -113,11 +113,11 @@ class BaseClient(ABC):
         """
         return self.create_or_replace_table(to_table, f"SELECT * FROM {from_table}")
 
-    def export_to_csv(self, query, gcs_path):
+    def export_to_csv(self, query, export: "Export"):
         """Exports a query to a csv on GCS"""
 
         df = query.execute()
-        df.to_csv(gcs_path, index=False)
+        df.to_csv(export.file.path, index=False)
 
     def get_dashboard_url(self):
         # only implemented for BigQuery
