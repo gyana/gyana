@@ -76,6 +76,7 @@ class TeamUpdateForm(ModelForm):
 
     def pre_save(self, instance):
         self._timezone_is_dirty = "timezone" in instance.get_dirty_fields()
+        instance.icon = self.files.get("icon", instance.icon)
 
     def post_save(self, instance):
         if self._timezone_is_dirty:

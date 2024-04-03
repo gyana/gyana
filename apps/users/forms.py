@@ -94,3 +94,6 @@ class CustomUserChangeForm(ModelForm, UserChangeForm):
             "email": "Changing this will not change the email you use to login",
             "first_name": "We use this name to help personalize content and support",
         }
+
+    def pre_save(self, instance):
+        self.instance.avatar = self.files.get("avatar", instance.avatar)
