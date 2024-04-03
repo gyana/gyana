@@ -4,12 +4,12 @@ from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 from safedelete.models import SafeDeleteModel
-from storages.backends.gcloud import GoogleCloudStorage
 from timezone_field import TimeZoneField
 from timezone_field.choices import with_gmt_offset
 
 from apps.base.clients import get_engine
 from apps.base.models import BaseModel
+from apps.base.storage import get_public_storage
 
 from . import roles
 from .flag import Flag  # noqa
@@ -21,11 +21,7 @@ class Team(DirtyFieldsMixin, BaseModel, SafeDeleteModel):
         ordering = ("-created",)
 
     icon = models.FileField(
-        storage=GoogleCloudStorage(
-            bucket_name=settings.GS_PUBLIC_BUCKET_NAME,
-            cache_control=settings.GS_PUBLIC_CACHE_CONTROL,
-            querystring_auth=False,
-        ),
+        storage=get_public_storage(),
         upload_to="team-icons/",
         null=True,
         blank=True,

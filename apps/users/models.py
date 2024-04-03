@@ -8,6 +8,7 @@ from storages.backends.gcloud import GoogleCloudStorage
 
 from apps.base.clients import SLUG
 from apps.base.models import BaseModel
+from apps.base.storage import get_public_storage
 from apps.teams import roles
 from apps.teams.models import Team
 
@@ -62,11 +63,7 @@ class CustomUser(AbstractUser):
         MORE_THAN_ONE_THOUSAND = "more than 1000", "More than 1000"
 
     avatar = models.FileField(
-        storage=GoogleCloudStorage(
-            bucket_name=settings.GS_PUBLIC_BUCKET_NAME,
-            cache_control=settings.GS_PUBLIC_CACHE_CONTROL,
-            querystring_auth=False,
-        ),
+        storage=get_public_storage(),
         upload_to="profile-pictures/",
         null=True,
         blank=True,
@@ -111,7 +108,6 @@ class CustomUser(AbstractUser):
 
     @property
     def teams_admin_of(self):
-
         return Team.objects.filter(
             membership__role=roles.ROLE_ADMIN, membership__user=self
         ).all()
