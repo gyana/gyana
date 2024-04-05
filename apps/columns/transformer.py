@@ -27,7 +27,7 @@ with open("apps/columns/functions.json", "r") as file:
 FUNCTIONS = json.loads(data)
 
 
-def _hash(caller, args):
+def hash_(caller, args):
     return caller.hash()
 
 
@@ -37,18 +37,7 @@ def convert(caller, args):
 
 
 def weekday(caller, args):
-    day_of_week = caller.day_of_week()
-    return day_of_week.cases(
-        [
-            (1, "Sunday"),
-            (2, "Monday"),
-            (3, "Tuesday"),
-            (4, "Wednesday"),
-            (5, "Thursday"),
-            (6, "Friday"),
-            (7, "Saturday"),
-        ]
-    )
+    return caller.day_of_week.full_name()
 
 
 def _cast_string(py_scalar_or_column):
@@ -89,14 +78,26 @@ def or_(caller, args):
     return query
 
 
+def datetime_diff(caller, args):
+    start = args[0]
+    unit = args[1]
+    return caller.delta(start, unit)
+
+
+def day_of_week(caller, args):
+    return caller.day_of_week.index()
+
+
 ODD_FUNCTIONS = {
     "and": and_,
     "or": or_,
-    "hash": _hash,
+    "hash": hash_,
     "cast": convert,
     "weekday": weekday,
+    "day_of_week": day_of_week,
     "create_date": create_date,
     "create_time": create_time,
+    "timestamp_diff": datetime_diff,
 }
 
 NO_CALLER = {"today": today, "now": ibis.now}

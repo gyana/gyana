@@ -16,7 +16,6 @@ from ibis.expr.types import (
     StringValue,
     StructValue,
     TimestampValue,
-    TimeValue,
 )
 
 _date_units = {
@@ -61,80 +60,6 @@ def _any_value(t, expr):
     (arg,) = expr.op().args
 
     return f"ANY_VALUE({t.translate(arg)})"
-
-
-class TimestampDifference(Value):
-    left: Value[dt.Timestamp]
-    right: Value[dt.Timestamp]
-    unit: Value[dt.String]
-
-    shape = rlz.shape_like("left")
-    dtype = dt.int64
-
-
-def timestamp_difference(left, right, unit):
-    return TimestampDifference(left, right, unit).to_expr()
-
-
-TimestampValue.timestamp_diff = timestamp_difference
-
-
-@compiles(TimestampDifference)
-def _timestamp_difference(translator, expr):
-    left, right, unit = expr.op().args
-    t_left = translator.translate(left)
-    t_right = translator.translate(right)
-    t_unit = _timestamp_units[translator.translate(unit).replace("'", "")]
-    return f"TIMESTAMP_DIFF({t_left}, {t_right}, {t_unit})"
-
-
-class DateDifference(Value):
-    left: Value[dt.Date]
-    right: Value[dt.Date]
-    unit: Value[dt.String]
-
-    shape = rlz.shape_like("left")
-    dtype = dt.int64
-
-
-def date_difference(left, right, unit):
-    return DateDifference(left, right, unit).to_expr()
-
-
-DateValue.timestamp_diff = date_difference
-
-
-@compiles(DateDifference)
-def _date_difference(translator, expr):
-    left, right, unit = expr.op().args
-    t_left = translator.translate(left)
-    t_right = translator.translate(right)
-    t_unit = _timestamp_units[translator.translate(unit).replace("'", "")]
-    return f"DATE_DIFF({t_left}, {t_right}, {t_unit})"
-
-
-class TimeDifference(Value):
-    left: Value[dt.Time]
-    right: Value[dt.Time]
-    unit: Value[dt.String]
-    shape = rlz.shape_like("left")
-    dtype = dt.int64
-
-
-def time_difference(left, right, unit):
-    return TimeDifference(left, right, unit).to_expr()
-
-
-TimeValue.timestamp_diff = time_difference
-
-
-@compiles(TimeDifference)
-def _time_difference(translator, expr):
-    left, right, unit = expr.op().args
-    t_left = translator.translate(left)
-    t_right = translator.translate(right)
-    t_unit = _timestamp_units[translator.translate(unit).replace("'", "")]
-    return f"TIME_DIFF({t_left}, {t_right}, {t_unit})"
 
 
 def _compiles_timestamp_diff_op(op, bq_func, unit):
@@ -196,28 +121,6 @@ def _isoweek(t, expr):
     (arg,) = expr.op().args
 
     return f"EXTRACT(ISOWEEK from {t.translate(arg)})"
-
-
-class DayOfWeek(Value):
-    arg: Value[dt.Date | dt.Timestamp]
-
-    shape = rlz.shape_like("arg")
-    dtype = dt.int32
-
-
-def day_of_week(arg):
-    return DayOfWeek(arg).to_expr()
-
-
-DateValue.day_of_week = day_of_week
-TimestampValue.day_of_week = day_of_week
-
-
-@compiles(DayOfWeek)
-def _day_of_week(t, expr):
-    (arg,) = expr.op().args
-
-    return f"EXTRACT(DAYOFWEEK FROM {t.translate(arg)})"
 
 
 class ParseDate(Value):

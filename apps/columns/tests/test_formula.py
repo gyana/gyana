@@ -390,7 +390,7 @@ PARAMS = [
     ),
     pytest.param(
         'datetime_diff(extract_date( when), birthday, "W")',
-        QUERY.format("DATE_DIFF(DATE(t0.`when`), t0.`birthday`, WEEK(MONDAY))"),
+        QUERY.format("DATE_DIFF(DATE(t0.`when`), t0.`birthday`, WEEK)"),
         id="date datetime_diff",
     ),
     pytest.param(
@@ -400,11 +400,12 @@ PARAMS = [
     ),
     pytest.param(
         "day_of_week(birthday)",
-        QUERY.format("EXTRACT(DAYOFWEEK FROM t0.`birthday`)", id="dat_of_week"),
+        QUERY.format("MOD(EXTRACT(DAYOFWEEK FROM t0.`birthday`) + 5, 7)"),
+        id="day_of_week",
     ),
     pytest.param(
         "weekday(birthday)",
-        "SELECT\n  CASE EXTRACT(DAYOFWEEK FROM t0.`birthday`)\n    WHEN 1\n    THEN 'Sunday'\n    WHEN 2\n    THEN 'Monday'\n    WHEN 3\n    THEN 'Tuesday'\n    WHEN 4\n    THEN 'Wednesday'\n    WHEN 5\n    THEN 'Thursday'\n    WHEN 6\n    THEN 'Friday'\n    WHEN 7\n    THEN 'Saturday'\n    ELSE CAST(NULL AS STRING)\n  END AS `tmp`\nFROM `project.dataset`.table AS t0",
+        QUERY.format("INITCAP(CAST(t0.`birthday` AS STRING FORMAT 'DAY'))"),
         id="weekday",
     ),
     # Test boolean functions and and or
