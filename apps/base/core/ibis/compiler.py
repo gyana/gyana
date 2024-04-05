@@ -18,24 +18,6 @@ from ibis.expr.types import (
     TimestampValue,
 )
 
-_date_units = {
-    "Y": "YEAR",
-    "Q": "QUARTER",
-    "W": "WEEK(MONDAY)",
-    "M": "MONTH",
-    "D": "DAY",
-}
-
-
-_timestamp_units = {
-    "us": "MICROSECOND",
-    "ms": "MILLISECOND",
-    "s": "SECOND",
-    "m": "MINUTE",
-    "h": "HOUR",
-}
-_timestamp_units.update(_date_units)
-
 # Do not place compile functions and classes in a function as local variables
 # this will mess with cacheops and lead to cant pickle local object error
 
@@ -99,28 +81,6 @@ def _json_extract(t, expr):
     t_json_path = t.translate(json_path)
 
     return f"JSON_QUERY({t_value}, {t_json_path})"
-
-
-class ISOWeek(Value):
-    arg: Value[dt.Date | dt.Timestamp]
-
-    shape = rlz.shape_like("arg")
-    dtype = dt.int32
-
-
-def isoweek(arg):
-    return ISOWeek(arg).to_expr()
-
-
-DateValue.isoweek = isoweek
-TimestampValue.isoweek = isoweek
-
-
-@compiles(ISOWeek)
-def _isoweek(t, expr):
-    (arg,) = expr.op().args
-
-    return f"EXTRACT(ISOWEEK from {t.translate(arg)})"
 
 
 class ParseDate(Value):
@@ -206,10 +166,6 @@ def today() -> DateScalar:
 @compiles(Today)
 def _today(t, expr):
     return "CURRENT_DATE()"
-
-
-# @ibis.udf.scalar.builtin(name="current_date")
-# def today() -> datetime.date: ...
 
 
 # Unfortunately, ibis INTERVAL doesnt except variables
