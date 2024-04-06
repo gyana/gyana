@@ -250,7 +250,7 @@ def get_formula_query(node, query):
 def get_distinct_query(node, query):
     distinct_columns = [column.column for column in node.columns.all()]
     columns = [
-        query[column].any_value().name(column)
+        query[column].any().name(column)
         for column in query.schema()
         if column not in distinct_columns
     ]

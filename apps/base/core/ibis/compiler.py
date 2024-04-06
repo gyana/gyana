@@ -3,10 +3,7 @@ import ibis.expr.rules as rlz
 from ibis.backends.bigquery.compiler import BigQueryExprTranslator
 from ibis.expr.operations import (
     Constant,
-    DateDiff,
     Reduction,
-    TimeDiff,
-    TimestampDiff,
     Value,
 )
 from ibis.expr.types import (
@@ -42,22 +39,6 @@ def _any_value(t, expr):
     (arg,) = expr.op().args
 
     return f"ANY_VALUE({t.translate(arg)})"
-
-
-def _compiles_timestamp_diff_op(op, bq_func, unit):
-    def diff(translator, expr):
-        left, right = expr.op().args
-        t_left = translator.translate(left)
-        t_right = translator.translate(right)
-
-        return f"{bq_func}({t_left}, {t_right}, {unit})"
-
-    return compiles(op)(diff)
-
-
-_compiles_timestamp_diff_op(TimestampDiff, "TIMESTAMP_DIFF", "SECOND")
-_compiles_timestamp_diff_op(TimeDiff, "TIME_DIFF", "SECOND")
-_compiles_timestamp_diff_op(DateDiff, "DATE_DIFF", "DAY")
 
 
 class JSONExtract(Value):

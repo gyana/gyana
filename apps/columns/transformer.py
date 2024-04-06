@@ -200,6 +200,11 @@ class TreeToIbis(Transformer):
 
     @staticmethod
     def subtract(left, right):
+        dtype = left.type()
+        if isinstance(dtype, (dt.Timestamp, dt.Time)):
+            return left.delta(right, "s")
+        if isinstance(dtype, dt.Date):
+            return left.delta(right, "d")
         return left - right
 
     @staticmethod
