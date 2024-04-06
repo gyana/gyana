@@ -203,17 +203,18 @@ PARAMS = [
     ),
     pytest.param(
         "parse_date(athlete, '%Y-%m-%d')",
-        QUERY.format("PARSE_DATE('%Y-%m-%d', t0.`athlete`)", id="parse_date"),
+        QUERY.format("DATE(PARSE_TIMESTAMP('%Y-%m-%d', t0.`athlete`))"),
+        id="parse_date",
     ),
     pytest.param(
         "parse_time(athlete, '%H:%M:%S')",
-        QUERY.format("PARSE_TIME('%H:%M:%S', t0.`athlete`)", id="parse_time"),
+        QUERY.format("TIME(PARSE_TIMESTAMP('%H:%M:%S', t0.`athlete`))"),
+        id="parse_time",
     ),
     pytest.param(
         "parse_datetime(athlete, '%Y-%m-%dT%H:%M:%S')",
-        QUERY.format(
-            "PARSE_TIMESTAMP('%Y-%m-%dT%H:%M:%S', t0.`athlete`)", id="parse_datetime"
-        ),
+        QUERY.format("PARSE_TIMESTAMP('%Y-%m-%dT%H:%M:%S', t0.`athlete`)"),
+        id="parse_datetime",
     ),
     # Test numeric operations
     create_int_unary_param("abs"),

@@ -88,6 +88,18 @@ def day_of_week(caller, args):
     return caller.day_of_week.index()
 
 
+def parse_datetime(caller, args):
+    return caller.to_timestamp(args[0])
+
+
+def parse_date(caller, args):
+    return caller.to_timestamp(args[0]).date()
+
+
+def parse_time(caller, args):
+    return caller.to_timestamp(args[0]).time()
+
+
 ODD_FUNCTIONS = {
     "and": and_,
     "or": or_,
@@ -98,6 +110,9 @@ ODD_FUNCTIONS = {
     "create_date": create_date,
     "create_time": create_time,
     "timestamp_diff": datetime_diff,
+    "parse_datetime": parse_datetime,
+    "parse_date": parse_date,
+    "parse_time": parse_time,
 }
 
 NO_CALLER = {"today": today, "now": ibis.now}
