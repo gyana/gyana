@@ -5,7 +5,6 @@ import ibis.expr.datatypes as dt
 from ibis.common.exceptions import IbisTypeError
 from lark import Transformer, v_args
 
-from apps.base.core.ibis.compiler import today
 from apps.columns.exceptions import (
     ArgumentError,
     ColumnAttributeError,
@@ -53,7 +52,7 @@ def create_date(caller, args):  # sourcery skip: use-fstring-for-concatenation
     month = _cast_string(args[0])
     day = _cast_string(args[1])
     text = year + "-" + month + "-" + day
-    return text.parse_date("%Y-%m-%d")
+    return text.to_timestamp("%Y-%m-%d").date()
 
 
 def create_time(caller, args):  # sourcery skip: use-fstring-for-concatenation
@@ -61,7 +60,7 @@ def create_time(caller, args):  # sourcery skip: use-fstring-for-concatenation
     minute = _cast_string(args[0])
     second = _cast_string(args[1])
     text = hour + ":" + minute + ":" + second
-    return text.parse_time("%H:%M:%S")
+    return text.to_timestamp("%H:%M:%S").time()
 
 
 def and_(caller, args):
@@ -100,6 +99,31 @@ def parse_time(caller, args):
     return caller.to_timestamp(args[0]).time()
 
 
+# TODO: Currently only supports scalar in days
+# See https://github.com/ibis-project/ibis/issues/8910
+def subtract_days(caller, args):
+    return caller - ibis.interval(args[0], unit="d")
+
+
+# TODO: Can be removed once https://github.com/ibis-project/ibis/pull/8664/files
+# is merged
+def today():
+    return ibis.now().date()
+
+
+def json_extract(caller, args):
+    query = caller.cast("json")
+    # First node is $=root, so we skip it
+    for node in args[0].split(".")[1:]:
+        if "[" in node:
+            key, index = node.split("[")
+            index = int(index[:-1])
+            query = query[key][index]
+        else:
+            query = query[node]
+    return query.cast("string")
+
+
 ODD_FUNCTIONS = {
     "and": and_,
     "or": or_,
@@ -113,6 +137,8 @@ ODD_FUNCTIONS = {
     "parse_datetime": parse_datetime,
     "parse_date": parse_date,
     "parse_time": parse_time,
+    "subtract_days": subtract_days,
+    "json_extract": json_extract,
 }
 
 NO_CALLER = {"today": today, "now": ibis.now}

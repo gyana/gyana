@@ -184,7 +184,6 @@ def get_union_query(node, query, *queries):
 
 
 def get_except_query(node, query, *queries):
-    colnames = query.schema()
     for parent in queries:
         query = query.difference(parent)
     # Need to `select *` so we can operate on the query
@@ -192,7 +191,6 @@ def get_except_query(node, query, *queries):
 
 
 def get_intersect_query(node, query, *queries):
-    colnames = query.schema()
     for parent in queries:
         query = query.intersect(parent)
 
@@ -250,7 +248,7 @@ def get_formula_query(node, query):
 def get_distinct_query(node, query):
     distinct_columns = [column.column for column in node.columns.all()]
     columns = [
-        query[column].any().name(column)
+        query[column].any_value().name(column)
         for column in query.schema()
         if column not in distinct_columns
     ]

@@ -9,8 +9,6 @@ from ibis.expr.operations import (
 from ibis.expr.types import (
     Column,
     DateScalar,
-    DateValue,
-    StringValue,
     StructValue,
     TimestampValue,
 )
@@ -39,96 +37,6 @@ def _any_value(t, expr):
     (arg,) = expr.op().args
 
     return f"ANY_VALUE({t.translate(arg)})"
-
-
-class JSONExtract(Value):
-    value: Value[dt.String]
-    json_path: Value[dt.String]
-    shape = rlz.shape_like("value")
-    dtype = dt.string
-
-
-def json_extract(value, json_path):
-    return JSONExtract(value, json_path).to_expr()
-
-
-StringValue.json_extract = json_extract
-
-
-@compiles(JSONExtract)
-def _json_extract(t, expr):
-    value, json_path = expr.op().args
-    t_value = t.translate(value)
-    t_json_path = t.translate(json_path)
-
-    return f"JSON_QUERY({t_value}, {t_json_path})"
-
-
-# TODO: Can be removed once https://github.com/ibis-project/ibis/pull/8664/files
-# is merged
-class Today(Constant):
-    dtype = dt.date
-
-
-def today() -> DateScalar:
-    """
-    Compute today's date
-
-    Returns
-    -------
-    today : Date scalar
-    """
-    return Today().to_expr()
-
-
-@compiles(Today)
-def _today(t, expr):
-    return "CURRENT_DATE()"
-
-
-# Unfortunately, ibis INTERVAL doesnt except variables
-class SubtractDays(Value):
-    date: Value[dt.Date]
-    days: Value[dt.Integer]
-
-    shape = rlz.shape_like("args")
-    dtype = dt.date
-
-
-def subtract_days(date, days):
-    return SubtractDays(date, days).to_expr()
-
-
-DateValue.subtract_days = subtract_days
-
-
-@compiles(SubtractDays)
-def _subtract_days(translator, expr):
-    date, days = expr.op().args
-    t_date = translator.translate(date)
-    t_days = translator.translate(days)
-
-    return f"DATE_SUB({t_date}, INTERVAL {t_days} DAY)"
-
-
-class Date(Value):
-    date: Value[dt.Date]
-
-    shape = rlz.shape_like("date")
-    dtype = dt.date
-
-
-def date(d):
-    return Date(d).to_expr()
-
-
-DateValue.date = date
-
-
-@compiles(Date)
-def _date(t, expr):
-    d = expr.op().args[0]
-    return t.translate(d)
 
 
 class ToJsonString(Value):

@@ -117,7 +117,7 @@ PARAMS = [
     ),
     pytest.param(
         'json_extract(\'{"class":{"id": 3}}\', "$.class.id")',
-        "SELECT\n  JSON_QUERY('{\"class\":{\"id\": 3}}', '$.class.id') AS `tmp`",
+        'SELECT\n  CAST(CAST(\'{"class":{"id": 3}}\' AS JSON).class.id AS STRING) AS `tmp`',
         id="json_extract",
     ),
     create_str_unary_param("upper"),
@@ -315,18 +315,18 @@ PARAMS = [
     pytest.param(
         "date(1993,07, medals)",
         QUERY.format(
-            "PARSE_DATE('%Y-%m-%d', CONCAT(\n    CONCAT(CONCAT(CONCAT(CAST(1993 AS STRING), '-'), CAST(7 AS STRING)), '-'),\n    CAST(t0.`medals` AS STRING)\n  ))"
+            "DATE(\n    PARSE_TIMESTAMP(\n      '%Y-%m-%d',\n      CONCAT(\n        CONCAT(CONCAT(CONCAT(CAST(1993 AS STRING), '-'), CAST(7 AS STRING)), '-'),\n        CAST(t0.`medals` AS STRING)\n      )\n    )\n  )"
         ),
         id="date",
     ),
     pytest.param(
         "time(12,12, medals)",
         QUERY.format(
-            "PARSE_TIME(\n    '%H:%M:%S',\n    CONCAT(\n      CONCAT(CONCAT(CONCAT(CAST(12 AS STRING), ':'), CAST(12 AS STRING)), ':'),\n      CAST(t0.`medals` AS STRING)\n    )\n  )"
+            "TIME(\n    PARSE_TIMESTAMP(\n      '%H:%M:%S',\n      CONCAT(\n        CONCAT(CONCAT(CONCAT(CAST(12 AS STRING), ':'), CAST(12 AS STRING)), ':'),\n        CAST(t0.`medals` AS STRING)\n      )\n    )\n  )"
         ),
         id="time",
     ),
-    pytest.param("today()", "SELECT\n  CURRENT_DATE AS `tmp`", id="today"),
+    pytest.param("today()", "SELECT\n  DATE(CURRENT_TIMESTAMP()) AS `tmp`", id="today"),
     pytest.param("now()", "SELECT\n  CURRENT_TIMESTAMP() AS `tmp`", id="now"),
     # Test datetime operations
     create_extract_unary_param("year"),
@@ -346,7 +346,7 @@ PARAMS = [
     ),
     pytest.param(
         'format_datetime(when,"%d-%m")',
-        QUERY.format("FORMAT_DATETIME('%d-%m', t0.`when`)"),
+        QUERY.format("FORMAT_TIMESTAMP('%d-%m', t0.`when`)"),
         id="format_datetime",
     ),
     pytest.param(

@@ -819,7 +819,7 @@
       { "name": "date", "description": "a date scalar or column" },
       {
         "name": "days",
-        "description": "an integer scalar or column of days to subtract"
+        "description": "an integer scalar to subtract"
       }
     ],
     "keywords": ["minus"],
