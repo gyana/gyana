@@ -1,6 +1,7 @@
 from .base import *
 
 USE_HASHIDS = False
+ACCOUNT_EMAIL_VERIFICATION = "optional"
 
 # Allows the debug context processor to add variables into the context.
 INTERNAL_IPS = {"127.0.0.1"}

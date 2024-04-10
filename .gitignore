@@ -54,3 +54,6 @@ _dist/
 # redis output
 dump.rdb
 gyana-local.json
+
+# added secrets
+.keys/

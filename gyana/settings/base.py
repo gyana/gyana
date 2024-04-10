@@ -13,11 +13,17 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 import os
 from pathlib import Path
 
+from dotenv import load_dotenv
+load_dotenv()
+
+import environ
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 # Three repetitions of `.parent` as we are climbing the directory tree to the root of the
 # project.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
+env = environ.Env()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
@@ -186,16 +192,19 @@ FORM_RENDERER = "django.forms.renderers.TemplatesSetting"
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": "gyana",
-        "USER": os.getenv("PG_USER", "postgres"),
-        "PASSWORD": os.getenv("PG_PASSWORD", "***"),
-        "HOST": "localhost",
-        "PORT": "5432",
+if "DATABASE_URL" in env:
+    DATABASES = {"default": env.db()}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": env("DJANGO_DATABASE_NAME", default="gyana"),
+            "USER": env("DJANGO_DATABASE_USER", default="postgres"),
+            "PASSWORD": env("DJANGO_DATABASE_PASSWORD", default="***"),
+            "HOST": env("DJANGO_DATABASE_HOST", default="db"),
+            "PORT": env("DJANGO_DATABASE_PORT", default="5432"),
+        }
     }
-}
 
 
 # Auth / login stuff
@@ -365,7 +374,7 @@ EXTERNAL_URL = "http://localhost:8000"
 
 BIGQUERY_COLUMN_NAME_LENGTH = 300
 BIGQUERY_TABLE_NAME_LENGTH = 1024
-BIGQUERY_LOCATION = "EU"
+BIGQUERY_LOCATION = env("BIGQUERY_LOCATION", default="EU")
 
 # Namespace based on git email to avoid collisions in PKs on local dev
 CLOUD_NAMESPACE = os.environ.get("CLOUD_NAMESPACE")
@@ -413,3 +422,6 @@ SOCIALACCOUNT_LOGIN_ON_GET = True
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "crispy"
 CRISPY_TEMPLATE_PACK = "crispy"
+
+
+GOOGLE_APPLICATION_CREDENTIALS = env("GOOGLE_APPLICATION_CREDENTIALS", default="") 

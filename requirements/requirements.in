@@ -54,3 +54,5 @@ psycopg2-binary
 python-Levenshtein
 readtime
 sqlalchemy
+python-dotenv
+environ
