@@ -2,13 +2,11 @@ import ibis.expr.datatypes as dt
 import ibis.expr.rules as rlz
 from ibis.backends.bigquery.compiler import BigQueryExprTranslator
 from ibis.expr.operations import (
-    Constant,
     Reduction,
     Value,
 )
 from ibis.expr.types import (
     Column,
-    DateScalar,
     StructValue,
     TimestampValue,
 )

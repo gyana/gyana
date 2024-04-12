@@ -99,10 +99,14 @@ def parse_time(caller, args):
     return caller.to_timestamp(args[0]).time()
 
 
-# TODO: Currently only supports scalar in days
-# See https://github.com/ibis-project/ibis/issues/8910
 def subtract_days(caller, args):
-    return caller - ibis.interval(args[0], unit="d")
+    # Ibis interval only works on scalars
+    interval = (
+        ibis.interval(args[0], unit="D")
+        if isinstance(args[0], int)
+        else args[0].to_interval(unit="D")
+    )
+    return caller - interval
 
 
 # TODO: Can be removed once https://github.com/ibis-project/ibis/pull/8664/files
