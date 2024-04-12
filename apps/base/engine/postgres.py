@@ -12,7 +12,10 @@ def postgres(engine_url):
 
 
 class PostgresClient(BaseClient):
-    excluded_nodes = ["pivot", "unpivot"]
+    # Both pivot and unpivot are currently unique to BigQuery
+    # TODO: Distinct relies on a custom any_value function
+    # that I havent managed to replace yet
+    excluded_nodes = ["pivot", "unpivot", "distinct"]
 
     def __init__(self, engine_url):
         super().__init__(engine_url)
