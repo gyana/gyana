@@ -874,17 +874,6 @@
     "description": "Create a datetime from an integer as the number of unit since from January 1st, 1970 UTC (unix time)"
   },
   {
-    "id": "to_json_string",
-    "intercom_id": "h_72054072d1",
-    "name": "to_json_string",
-    "categories": ["text"],
-    "arguments": [
-      { "name": "dictionary", "description": "a dictionary column or scalar" }
-    ],
-    "keywords": ["dictionary", "struct"],
-    "description": "Transform a dictionary to a JSON string"
-  },
-  {
     "id": "today",
     "intercom_id": "h_ddaa026eeb",
     "name": "today",

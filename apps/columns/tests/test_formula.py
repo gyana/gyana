@@ -451,11 +451,6 @@ PARAMS = [
         'SELECT\n  IF(\n    REGEXP_CONTAINS(\'{"id": "1234", "name": "John"}\', \'{"id": "(.*?)",\'),\n    IF(\n      0 = 0,\n      REGEXP_REPLACE(\n        \'{"id": "1234", "name": "John"}\',\n        CONCAT(\'.*?\', CONCAT(\'(\', \'{"id": "(.*?)",\', \')\'), \'.*\'),\n        \'\\\\1\'\n      ),\n      REGEXP_REPLACE(\n        \'{"id": "1234", "name": "John"}\',\n        CONCAT(\'.*?\', \'{"id": "(.*?)",\', \'.*\'),\n        CONCAT(\'\\\\\', CAST(0 AS STRING))\n      )\n    ),\n    NULL\n  ) AS `tmp`',
         id="regex_extract with quote nesting",
     ),
-    pytest.param(
-        "to_json_string(biography)",
-        QUERY.format("TO_JSON_STRING(t0.`biography`)"),
-        id="to_json_string",
-    ),
 ]
 
 
