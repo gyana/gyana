@@ -346,7 +346,7 @@ PARAMS = [
     ),
     pytest.param(
         'format_datetime(when,"%d-%m")',
-        QUERY.format("FORMAT_TIMESTAMP('%d-%m', t0.`when`)"),
+        QUERY.format("FORMAT_TIMESTAMP('%d-%m', t0.`when`, 'UTC')"),
         id="format_datetime",
     ),
     pytest.param(
