@@ -819,7 +819,7 @@
       { "name": "date", "description": "a date scalar or column" },
       {
         "name": "days",
-        "description": "an integer scalar or column of days to subtract"
+        "description": "an integer scalar to subtract"
       }
     ],
     "keywords": ["minus"],
@@ -872,32 +872,6 @@
     ],
     "keywords": [],
     "description": "Create a datetime from an integer as the number of unit since from January 1st, 1970 UTC (unix time)"
-  },
-  {
-    "id": "to_timezone",
-    "intercom_id": "h_e0cb2a5436",
-    "name": "to_timezone",
-    "categories": ["time & date"],
-    "arguments": [
-      { "name": "datetime", "description": "a date & time scalar or column" },
-      {
-        "name": "timezone",
-        "description": "the time zone for the new column in tz format e.g. 'US/Pacific'"
-      }
-    ],
-    "keywords": [],
-    "description": "Convert a date & time to a new date & time in a different timezone"
-  },
-  {
-    "id": "to_json_string",
-    "intercom_id": "h_72054072d1",
-    "name": "to_json_string",
-    "categories": ["text"],
-    "arguments": [
-      { "name": "dictionary", "description": "a dictionary column or scalar" }
-    ],
-    "keywords": ["dictionary", "struct"],
-    "description": "Transform a dictionary to a JSON string"
   },
   {
     "id": "today",

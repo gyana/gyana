@@ -55,7 +55,7 @@ def one_year_ago(query, column):
 def this_week(query, column):
     date = get_date(query[column])
     year, week, _ = dt.date.today().isocalendar()
-    return query[(date.year() == year) & (date.isoweek() == week)]
+    return query[(date.year() == year) & (date.week_of_year() == week)]
 
 
 def this_week_up_todate(query, column):
@@ -68,7 +68,7 @@ def this_week_up_todate(query, column):
 def last_week(query, column):
     date = get_date(query[column])
     year, week, _ = (dt.date.today() - dt.timedelta(days=7)).isocalendar()
-    return query[(date.year() == year) & (date.isoweek() == week)]
+    return query[(date.year() == year) & (date.week_of_year() == week)]
 
 
 def last_n_days(query, column, days):
@@ -185,7 +185,7 @@ def previous_year(query, column):
 def previous_last_week(query, column):
     date = get_date(query[column])
     year, week, _ = (dt.date.today() - dt.timedelta(days=14)).isocalendar()
-    return query[(date.year() == year) & (date.isoweek() == week)]
+    return query[(date.year() == year) & (date.week_of_year() == week)]
 
 
 def previous_last_n_days(query, column, days):

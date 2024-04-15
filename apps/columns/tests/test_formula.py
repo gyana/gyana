@@ -117,7 +117,7 @@ PARAMS = [
     ),
     pytest.param(
         'json_extract(\'{"class":{"id": 3}}\', "$.class.id")',
-        "SELECT\n  JSON_QUERY('{\"class\":{\"id\": 3}}', '$.class.id') AS `tmp`",
+        'SELECT\n  CAST(CAST(\'{"class":{"id": 3}}\' AS JSON).class.id AS STRING) AS `tmp`',
         id="json_extract",
     ),
     create_str_unary_param("upper"),
@@ -203,17 +203,18 @@ PARAMS = [
     ),
     pytest.param(
         "parse_date(athlete, '%Y-%m-%d')",
-        QUERY.format("PARSE_DATE('%Y-%m-%d', t0.`athlete`)", id="parse_date"),
+        QUERY.format("DATE(PARSE_TIMESTAMP('%Y-%m-%d', t0.`athlete`))"),
+        id="parse_date",
     ),
     pytest.param(
         "parse_time(athlete, '%H:%M:%S')",
-        QUERY.format("PARSE_TIME('%H:%M:%S', t0.`athlete`)", id="parse_time"),
+        QUERY.format("TIME(PARSE_TIMESTAMP('%H:%M:%S', t0.`athlete`))"),
+        id="parse_time",
     ),
     pytest.param(
         "parse_datetime(athlete, '%Y-%m-%dT%H:%M:%S')",
-        QUERY.format(
-            "PARSE_TIMESTAMP('%Y-%m-%dT%H:%M:%S', t0.`athlete`)", id="parse_datetime"
-        ),
+        QUERY.format("PARSE_TIMESTAMP('%Y-%m-%dT%H:%M:%S', t0.`athlete`)"),
+        id="parse_datetime",
     ),
     # Test numeric operations
     create_int_unary_param("abs"),
@@ -312,25 +313,20 @@ PARAMS = [
         id="integer to datetime",
     ),
     pytest.param(
-        'to_timezone(when, "US/Pacific")',
-        QUERY.format("TIMESTAMP(DATETIME(t0.`when`, 'US/Pacific'))"),
-        id="to_timezone",
-    ),
-    pytest.param(
         "date(1993,07, medals)",
         QUERY.format(
-            "PARSE_DATE('%Y-%m-%d', CONCAT(\n    CONCAT(CONCAT(CONCAT(CAST(1993 AS STRING), '-'), CAST(7 AS STRING)), '-'),\n    CAST(t0.`medals` AS STRING)\n  ))"
+            "DATE(\n    PARSE_TIMESTAMP(\n      '%Y-%m-%d',\n      CONCAT(\n        CONCAT(CONCAT(CONCAT(CAST(1993 AS STRING), '-'), CAST(7 AS STRING)), '-'),\n        CAST(t0.`medals` AS STRING)\n      )\n    )\n  )"
         ),
         id="date",
     ),
     pytest.param(
         "time(12,12, medals)",
         QUERY.format(
-            "PARSE_TIME(\n    '%H:%M:%S',\n    CONCAT(\n      CONCAT(CONCAT(CONCAT(CAST(12 AS STRING), ':'), CAST(12 AS STRING)), ':'),\n      CAST(t0.`medals` AS STRING)\n    )\n  )"
+            "TIME(\n    PARSE_TIMESTAMP(\n      '%H:%M:%S',\n      CONCAT(\n        CONCAT(CONCAT(CONCAT(CAST(12 AS STRING), ':'), CAST(12 AS STRING)), ':'),\n        CAST(t0.`medals` AS STRING)\n      )\n    )\n  )"
         ),
         id="time",
     ),
-    pytest.param("today()", "SELECT\n  CURRENT_DATE AS `tmp`", id="today"),
+    pytest.param("today()", "SELECT\n  DATE(CURRENT_TIMESTAMP()) AS `tmp`", id="today"),
     pytest.param("now()", "SELECT\n  CURRENT_TIMESTAMP() AS `tmp`", id="now"),
     # Test datetime operations
     create_extract_unary_param("year"),
@@ -350,7 +346,7 @@ PARAMS = [
     ),
     pytest.param(
         'format_datetime(when,"%d-%m")',
-        QUERY.format("FORMAT_DATETIME('%d-%m', t0.`when`)"),
+        QUERY.format("FORMAT_TIMESTAMP('%d-%m', t0.`when`, 'UTC')"),
         id="format_datetime",
     ),
     pytest.param(
@@ -390,7 +386,7 @@ PARAMS = [
     ),
     pytest.param(
         'datetime_diff(extract_date( when), birthday, "W")',
-        QUERY.format("DATE_DIFF(DATE(t0.`when`), t0.`birthday`, WEEK(MONDAY))"),
+        QUERY.format("DATE_DIFF(DATE(t0.`when`), t0.`birthday`, WEEK)"),
         id="date datetime_diff",
     ),
     pytest.param(
@@ -400,11 +396,12 @@ PARAMS = [
     ),
     pytest.param(
         "day_of_week(birthday)",
-        QUERY.format("EXTRACT(DAYOFWEEK FROM t0.`birthday`)", id="dat_of_week"),
+        QUERY.format("MOD(EXTRACT(DAYOFWEEK FROM t0.`birthday`) + 5, 7)"),
+        id="day_of_week",
     ),
     pytest.param(
         "weekday(birthday)",
-        "SELECT\n  CASE EXTRACT(DAYOFWEEK FROM t0.`birthday`)\n    WHEN 1\n    THEN 'Sunday'\n    WHEN 2\n    THEN 'Monday'\n    WHEN 3\n    THEN 'Tuesday'\n    WHEN 4\n    THEN 'Wednesday'\n    WHEN 5\n    THEN 'Thursday'\n    WHEN 6\n    THEN 'Friday'\n    WHEN 7\n    THEN 'Saturday'\n    ELSE CAST(NULL AS STRING)\n  END AS `tmp`\nFROM `project.dataset`.table AS t0",
+        QUERY.format("INITCAP(CAST(t0.`birthday` AS STRING FORMAT 'DAY'))"),
         id="weekday",
     ),
     # Test boolean functions and and or
@@ -453,11 +450,6 @@ PARAMS = [
         'regex_extract(\'{"id": "1234", "name": "John"}\', \'{"id": "(.*?)",\', 0)',
         'SELECT\n  IF(\n    REGEXP_CONTAINS(\'{"id": "1234", "name": "John"}\', \'{"id": "(.*?)",\'),\n    IF(\n      0 = 0,\n      REGEXP_REPLACE(\n        \'{"id": "1234", "name": "John"}\',\n        CONCAT(\'.*?\', CONCAT(\'(\', \'{"id": "(.*?)",\', \')\'), \'.*\'),\n        \'\\\\1\'\n      ),\n      REGEXP_REPLACE(\n        \'{"id": "1234", "name": "John"}\',\n        CONCAT(\'.*?\', \'{"id": "(.*?)",\', \'.*\'),\n        CONCAT(\'\\\\\', CAST(0 AS STRING))\n      )\n    ),\n    NULL\n  ) AS `tmp`',
         id="regex_extract with quote nesting",
-    ),
-    pytest.param(
-        "to_json_string(biography)",
-        QUERY.format("TO_JSON_STRING(t0.`biography`)"),
-        id="to_json_string",
     ),
 ]
 
