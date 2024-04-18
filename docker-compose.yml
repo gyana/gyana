@@ -1,4 +1,4 @@
-version: "3.8"
+version: '3.8'
 
 services:
   redis:
@@ -19,38 +19,66 @@ services:
     environment:
       - POSTGRES_DB=gyana
       - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_PASSWORD=psql
     healthcheck:
       test: pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}
       interval: 2s
       retries: 10
-  web:
+  engine:
+    image: postgres
+    # persist data beyond lifetime of container
+    volumes:
+      - engine_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=gyana
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=psql
+    healthcheck:
+      test: pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}
+      interval: 2s
+      retries: 10
+  builder:
     build:
       context: .
       dockerfile: Dockerfile.dev
-    command: python manage.py runserver 0.0.0.0:8000
+    image: gyana:dev
+  web:
+    image: gyana:dev
+    command: /bin/bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     volumes:
       - .:/code
     ports:
-      - "8000:8000"
+      - '8000:8000'
     env_file:
       - ./.env.docker
     restart: unless-stopped
     depends_on:
+      builder:
+        condition: service_completed_successfully
       db:
         condition: service_healthy
       redis:
         condition: service_healthy
-  celery:
-    build:
-      context: .
-      dockerfile: Dockerfile.dev
-    command: celery -A gyana worker -l INFO --beat --concurrency 2
+  js:
+    image: gyana:dev
+    command: npm run build:watch
     volumes:
       - .:/code
     env_file:
       - ./.env.docker
     depends_on:
+      builder:
+        condition: service_completed_successfully
+  celery:
+    image: gyana:dev
+    command: celery -A gyana worker -Q celery,priority -l INFO
+    volumes:
+      - .:/code
+    env_file:
+      - ./.env.docker
+    depends_on:
+      builder:
+        condition: service_completed_successfully
       db:
         condition: service_healthy
       redis:
@@ -59,3 +87,4 @@ services:
 volumes:
   postgres_data:
   redis_data:
+  engine_data:

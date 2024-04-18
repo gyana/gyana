@@ -1,14 +1,16 @@
-FROM python:3.11-bookworm as build
+FROM --platform=linux/amd64 python:3.9-slim as build
+
 RUN apt-get update && apt-get install libpq-dev build-essential git curl libxml2 libxslt1-dev -y
 RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
 RUN apt-get install -y nodejs
+
 WORKDIR /code
+
 RUN pip install --upgrade pip
-COPY requirements.txt requirements.txt
-COPY requirements-dev.txt requirements-dev.txt
-COPY requirements requirements/
+COPY requirements.txt requirements-dev.txt .
+RUN pip install -r requirements.txt
 RUN pip install -r requirements-dev.txt
+
 ADD package.json /code
 ADD package-lock.json /code
-RUN npm install npm@8.19.2 -g
 RUN npm install
