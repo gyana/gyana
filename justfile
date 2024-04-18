@@ -43,7 +43,8 @@ enc_env:
     just gcloud_kms encrypt {{service_account}}
 
 compile:
-    pip-compile
+    # TODO: remove dependency on django-heroku
+    pip-compile --unsafe-package psycopg2 --unsafe-package setuptools
     pip-compile requirements-dev.in
 
 sync:
