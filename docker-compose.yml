@@ -37,11 +37,6 @@ services:
       test: pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}
       interval: 2s
       retries: 10
-  builder:
-    build:
-      context: .
-      dockerfile: Dockerfile.dev
-    image: gyana:dev
   web:
     image: gyana:dev
     command: /bin/bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
@@ -53,8 +48,6 @@ services:
       - ./.env.docker
     restart: unless-stopped
     depends_on:
-      builder:
-        condition: service_completed_successfully
       db:
         condition: service_healthy
       redis:
@@ -66,9 +59,6 @@ services:
       - .:/code
     env_file:
       - ./.env.docker
-    depends_on:
-      builder:
-        condition: service_completed_successfully
   celery:
     image: gyana:dev
     command: celery -A gyana worker -Q celery,priority -l INFO
@@ -77,8 +67,6 @@ services:
     env_file:
       - ./.env.docker
     depends_on:
-      builder:
-        condition: service_completed_successfully
       db:
         condition: service_healthy
       redis:

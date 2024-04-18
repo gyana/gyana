@@ -1,4 +1,4 @@
-FROM --platform=linux/amd64 python:3.9-slim as build
+FROM python:3.9-slim as build
 
 RUN apt-get update && apt-get install libpq-dev build-essential git curl libxml2 libxslt1-dev -y
 RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
