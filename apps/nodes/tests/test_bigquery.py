@@ -203,66 +203,7 @@ def test_aggregation_node(setup, engine):
     )
 
 
-UNION_QUERY = """\
-SELECT
-  t0.`id`,
-  t0.`athlete`,
-  t0.`birthday`,
-  t0.`when`,
-  t0.`lunch`,
-  t0.`medals`,
-  t0.`stars`,
-  t0.`is_nice`,
-  t0.`biography`
-FROM (
-  WITH t1 AS (
-    SELECT
-      t2.`id`,
-      t2.`athlete`,
-      t2.`birthday`,
-      t2.`when`,
-      t2.`lunch`,
-      t2.`medals`,
-      t2.`stars`,
-      t2.`is_nice`,
-      t2.`biography`
-    FROM `project.dataset`.table AS t2
-  )
-  SELECT
-    t2.*
-  FROM `project.dataset`.table AS t2
-  UNION ALL
-  SELECT
-    *
-  FROM t1
-) AS t0\
-"""
-
-
-EXCEPT_QUERY = """\
-SELECT
-  t0.`id`,
-  t0.`athlete`,
-  t0.`birthday`,
-  t0.`when`,
-  t0.`lunch`,
-  t0.`medals`,
-  t0.`stars`,
-  t0.`is_nice`,
-  t0.`biography`
-FROM (
-  SELECT
-    t1.*
-  FROM `project.dataset`.table AS t1
-  EXCEPT DISTINCT
-  SELECT
-    t1.*
-  FROM `project.dataset`.table AS t1
-) AS t0\
-"""
-
-
-def test_union_node(setup):
+def test_union_node(setup, engine):
     input_node, workflow = setup
     second_input_node = input_node.make_clone()
 
@@ -273,13 +214,13 @@ def test_union_node(setup):
     )
     union_node.parents.add(input_node)
     union_node.parents.add(second_input_node, through_defaults={"position": 1})
-
-    assert get_query_from_node(union_node).compile() == UNION_QUERY
+    columns = engine.data.columns
+    expected = engine.data.union(engine.data.projection(columns))
+    assert get_query_from_node(union_node).equals(expected)
 
     union_node.union_distinct = True
-    assert get_query_from_node(union_node).compile() == UNION_QUERY.replace(
-        "UNION ALL", "UNION DISTINCT"
-    )
+    expected = engine.data.union(engine.data.projection(columns), distinct=True)
+    assert get_query_from_node(union_node).equals(expected)
 
 
 UNION_CAST_QUERY = """\
@@ -343,7 +284,7 @@ FROM (
 """
 
 
-def test_union_node_casts_int_to_float(setup):
+def test_union_node_casts_int_to_float(setup, engine):
     input_node, workflow = setup
 
     union_node = Node.objects.create(
@@ -359,11 +300,15 @@ def test_union_node_casts_int_to_float(setup):
 
     union_node.parents.add(input_node)
     union_node.parents.add(convert_node, through_defaults={"position": 1})
+    columns = engine.data.columns
+    converted = engine.data.mutate(id=engine.data.id.cast("float"))
+    expected = engine.data.union(
+        converted.projection(columns).mutate(id=converted.id.cast("int32"))
+    )
+    assert get_query_from_node(union_node).equals(expected)
 
-    assert get_query_from_node(union_node).compile() == UNION_CAST_QUERY
 
-
-def test_except_node(setup):
+def test_except_node(setup, engine):
     input_node, workflow = setup
     second_input_node = input_node.make_clone()
 
@@ -375,10 +320,10 @@ def test_except_node(setup):
     except_node.parents.add(input_node)
     except_node.parents.add(second_input_node, through_defaults={"position": 1})
 
-    assert get_query_from_node(except_node).compile() == EXCEPT_QUERY
+    assert get_query_from_node(except_node).equals(engine.data.difference(engine.data))
 
 
-def test_intersect_node(setup):
+def test_intersect_node(setup, engine):
     input_node, workflow = setup
     second_input_node = input_node.make_clone()
 
@@ -390,8 +335,8 @@ def test_intersect_node(setup):
     intersect_node.parents.add(input_node)
     intersect_node.parents.add(second_input_node, through_defaults={"position": 1})
 
-    assert get_query_from_node(intersect_node).compile() == EXCEPT_QUERY.replace(
-        "EXCEPT DISTINCT", "INTERSECT DISTINCT"
+    assert get_query_from_node(intersect_node).equals(
+        engine.data.intersect(engine.data)
     )
 
 

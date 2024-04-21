@@ -179,6 +179,7 @@ def get_union_query(node, query, *queries):
             parent = parent.mutate(**p_castings)
 
         query = query.union(parent, distinct=node.union_distinct)
+    # TODO: Check is still requirerd
     # Need to `select *` so we can operate on the query
     return query[query]
 
@@ -186,6 +187,7 @@ def get_union_query(node, query, *queries):
 def get_except_query(node, query, *queries):
     for parent in queries:
         query = query.difference(parent)
+    # TODO: Check whether this is still necessary
     # Need to `select *` so we can operate on the query
     return query[query]
 
