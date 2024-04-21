@@ -209,6 +209,7 @@ def get_sort_query(node, query):
 
 
 def get_limit_query(node, query):
+    # TODO: Check projection is still necessary
     # Need to project again to make sure limit isn't overwritten
     query = query.limit(node.limit_limit, offset=node.limit_offset or 0)
     return query[query]

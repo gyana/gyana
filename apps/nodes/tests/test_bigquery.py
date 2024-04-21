@@ -340,7 +340,7 @@ def test_intersect_node(setup, engine):
     )
 
 
-def test_sort_node(setup):
+def test_sort_node(setup, engine):
     input_node, workflow = setup
 
     sort_node = Node.objects.create(
@@ -351,17 +351,16 @@ def test_sort_node(setup):
     sort_node.parents.add(input_node)
 
     sort_node.sort_columns.create(column="id")
-    sort_query = f"{INPUT_QUERY}\nORDER BY\n  t0.`id` ASC"
-    assert get_query_from_node(sort_node).compile() == sort_query
+
+    assert get_query_from_node(sort_node).equals(engine.data.order_by("id"))
 
     sort_node.sort_columns.create(column="birthday", ascending=False)
-    assert (
-        get_query_from_node(sort_node).compile()
-        == sort_query + ",\n  t0.`birthday` DESC"
+    assert get_query_from_node(sort_node).equals(
+        engine.data.order_by(["id", ibis.desc("birthday")])
     )
 
 
-def test_limit_node(setup):
+def test_limit_node(setup, engine):
     input_node, workflow = setup
 
     limit_node = Node.objects.create(
@@ -370,20 +369,13 @@ def test_limit_node(setup):
         **DEFAULT_X_Y,
     )
     limit_node.parents.add(input_node)
-
-    limit_query = (
-        f"SELECT\n  t0.*"
-        f"\nFROM (\n{textwrap.indent(INPUT_QUERY.replace('t0', 't1'), '  ')}"
-        f"\n  LIMIT 100\n) AS t0"
-    )
-    assert get_query_from_node(limit_node).compile() == limit_query
+    limited = engine.data.limit(100)
+    assert get_query_from_node(limit_node).equals(limited[limited])
 
     limit_node.limit_offset = 50
     limit_node.limit_limit = 250
-
-    assert get_query_from_node(limit_node).compile() == limit_query.replace(
-        "LIMIT 100", "LIMIT 250\n  OFFSET 50"
-    )
+    limited = engine.data.limit(250, offset=50)
+    assert get_query_from_node(limit_node).equals(limited[limited])
 
 
 def test_filter_node(setup):
