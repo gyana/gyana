@@ -137,8 +137,11 @@ def get_join_query(node, left, right, *queries):
         if join.how == "inner":
             drops.add(right_col)
             relabels[left_col] = join.left_column
+    drops = list(drops)
+    if len(drops):
+        query = query.drop(drops)
 
-    return query.drop(list(drops)).relabel(
+    return query.relabel(
         {key: value for key, value in relabels.items() if key not in drops}
     )
 

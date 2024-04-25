@@ -79,77 +79,7 @@ def test_select_node(setup, engine):
     assert query.equals(engine.data.drop(["athlete", "birthday"]))
 
 
-JOIN_QUERY = """\
-WITH t0 AS (
-  SELECT
-    t3.`id` AS `id_2`,
-    t3.`athlete` AS `athlete_2`,
-    t3.`birthday` AS `birthday_2`,
-    t3.`when` AS `when_2`,
-    t3.`lunch` AS `lunch_2`,
-    t3.`medals` AS `medals_2`,
-    t3.`stars` AS `stars_2`,
-    t3.`is_nice` AS `is_nice_2`,
-    t3.`biography` AS `biography_2`
-  FROM `project.dataset`.table AS t3
-), t1 AS (
-  SELECT
-    t3.`id` AS `id_1`,
-    t3.`athlete` AS `athlete_1`,
-    t3.`birthday` AS `birthday_1`,
-    t3.`when` AS `when_1`,
-    t3.`lunch` AS `lunch_1`,
-    t3.`medals` AS `medals_1`,
-    t3.`stars` AS `stars_1`,
-    t3.`is_nice` AS `is_nice_1`,
-    t3.`biography` AS `biography_1`
-  FROM `project.dataset`.table AS t3
-)
-SELECT
-  t2.`id_1` AS `id`,
-  t2.`athlete_1`,
-  t2.`birthday_1`,
-  t2.`when_1`,
-  t2.`lunch_1`,
-  t2.`medals_1`,
-  t2.`stars_1`,
-  t2.`is_nice_1`,
-  t2.`biography_1`,
-  t2.`athlete_2`,
-  t2.`birthday_2`,
-  t2.`when_2`,
-  t2.`lunch_2`,
-  t2.`medals_2`,
-  t2.`stars_2`,
-  t2.`is_nice_2`,
-  t2.`biography_2`
-FROM (
-  SELECT
-    `id_1`,
-    `athlete_1`,
-    `birthday_1`,
-    `when_1`,
-    `lunch_1`,
-    `medals_1`,
-    `stars_1`,
-    `is_nice_1`,
-    `biography_1`,
-    `athlete_2`,
-    `birthday_2`,
-    `when_2`,
-    `lunch_2`,
-    `medals_2`,
-    `stars_2`,
-    `is_nice_2`,
-    `biography_2`
-  FROM t1
-  INNER JOIN t0
-    ON t1.`id_1` = t0.`id_2`
-) AS t2\
-"""
-
-
-def test_join_node(setup):
+def test_join_node(setup, engine):
     input_node, workflow = setup
     second_input_node = input_node.make_clone()
     join_node = Node.objects.create(
@@ -159,18 +89,26 @@ def test_join_node(setup):
     )
     join_node.parents.add(input_node)
     join_node.parents.add(second_input_node, through_defaults={"position": 1})
-    join_node.join_columns.create(left_column="id", right_column="id")
+    join_column = join_node.join_columns.create(left_column="id", right_column="id")
 
     query = get_query_from_node(join_node)
     # Mocking the table conditionally requires a little bit more work
     # So we simply join the table with itself which leads to duplicate columns that
     # Are aliased
-    assert query.compile() == JOIN_QUERY
+    left = engine.data.rename(lambda x: f"{x}_1")
+    right = engine.data.rename(lambda x: f"{x}_2")
+    expected = (
+        left.join(right, left.id_1 == right.id_2, how="inner")
+        .drop(["id_2"])
+        .rename(id="id_1")
+    )
+    assert query.equals(expected)
 
-    join_node.join_how = "outer"
+    join_column.how = "outer"
+    join_column.save()
     query = get_query_from_node(join_node)
-    # TODO: Weird that this doesnt need any change?
-    assert query.compile() == JOIN_QUERY
+    expected = left.join(right, left.id_1 == right.id_2, how="outer").relabel({})
+    assert query.equals(expected)
 
 
 def test_aggregation_node(setup, engine):
@@ -223,67 +161,6 @@ def test_union_node(setup, engine):
     assert get_query_from_node(union_node).equals(expected)
 
 
-UNION_CAST_QUERY = """\
-WITH t0 AS (
-  SELECT
-    CAST(t2.`id` AS FLOAT64) AS `id`,
-    t2.`athlete`,
-    t2.`birthday`,
-    t2.`when`,
-    t2.`lunch`,
-    t2.`medals`,
-    t2.`stars`,
-    t2.`is_nice`,
-    t2.`biography`
-  FROM `project.dataset`.table AS t2
-)
-SELECT
-  t1.`id`,
-  t1.`athlete`,
-  t1.`birthday`,
-  t1.`when`,
-  t1.`lunch`,
-  t1.`medals`,
-  t1.`stars`,
-  t1.`is_nice`,
-  t1.`biography`
-FROM (
-  WITH t0 AS (
-    SELECT
-      CAST(t2.`id` AS FLOAT64) AS `id`,
-      t2.`athlete`,
-      t2.`birthday`,
-      t2.`when`,
-      t2.`lunch`,
-      t2.`medals`,
-      t2.`stars`,
-      t2.`is_nice`,
-      t2.`biography`
-    FROM `project.dataset`.table AS t2
-  ), t2 AS (
-    SELECT
-      t0.`id`,
-      t0.`athlete`,
-      t0.`birthday`,
-      t0.`when`,
-      t0.`lunch`,
-      t0.`medals`,
-      t0.`stars`,
-      t0.`is_nice`,
-      t0.`biography`
-    FROM t0
-  )
-  SELECT
-    *
-  FROM t0
-  UNION ALL
-  SELECT
-    *
-  FROM t2
-) AS t1\
-"""
-
-
 def test_union_node_casts_int_to_float(setup, engine):
     input_node, workflow = setup
 
@@ -302,8 +179,8 @@ def test_union_node_casts_int_to_float(setup, engine):
     union_node.parents.add(convert_node, through_defaults={"position": 1})
     columns = engine.data.columns
     converted = engine.data.mutate(id=engine.data.id.cast("float"))
-    expected = engine.data.union(
-        converted.projection(columns).mutate(id=converted.id.cast("int32"))
+    expected = engine.data.mutate(id=engine.data.id.cast("float")).union(
+        converted.projection(columns)
     )
     assert get_query_from_node(union_node).equals(expected)
 
@@ -639,7 +516,7 @@ def test_unpivot_node(setup):
     )
 
 
-def test_convert_node(setup):
+def test_convert_node(setup, engine):
     input_node, workflow = setup
     convert_node = Node.objects.create(
         kind=Node.Kind.CONVERT,
@@ -655,12 +532,12 @@ def test_convert_node(setup):
     ]:
         convert_node.convert_columns.create(column=column, target_type=target_type)
 
-    assert get_query_from_node(convert_node).compile() == INPUT_QUERY.replace(
-        "  t0.*",
-        """\
-  CAST(t0.`id` AS STRING) AS `id`,
-  CAST(t0.`athlete` AS INT64) AS `athlete`,
-  CAST(t0.`birthday` AS DATETIME) AS `birthday`,
-  t0.`when`,\n  t0.`lunch`,\n  t0.`medals`,\n  t0.`stars`,\n  t0.`is_nice`,\n  t0.`biography`\
-""",
+    assert get_query_from_node(convert_node).equals(
+        engine.data.cast(
+            {
+                "athlete": "int",
+                "id": "string",
+                "birthday": "timestamp",
+            }
+        )
     )
