@@ -6,55 +6,49 @@ Packages and software required to develop the tool. Install via homebrew, unless
 
 Required:
 
+- docker desktop (https://www.docker.com/products/docker-desktop/)
 - just
-- direnv
-- pyenv (`pyenv install 3.9.14`)
-- volta (`curl https://get.volta.sh | bash`)
-- watchexec
-- redis 6 (`brew services start redis`)
 - postgres 13 (https://postgresapp.com/)
-
-Optional / Recommended:
-
-- heroku
-
-We have a recommended list of extensions for developing in VSCode.
+- Node.js (https://nodejs.org/)
+- NPM (https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)
 
 ## Setup
 
-Authorize direnv to configure your local environment:
+Ensure you are running python v3.9 and upgrade pip. If not on 3.9 or above, follow steps below to install py 3.9 in the virtual environment
 
 ```bash
-direnv allow .
+pyton -V
+pip install –-upgrade pip
 ```
 
-Install pip-tools in local python environment:
+Create virtual environment and install requirements
 
 ```bash
-pip install pip-tools
-```
+python -m venv .env/
 
-Install all required python and node dependencies:
+# Activate environment
+.venv/Scripts/activate
+
+# Install requirements
+pip install -r requirements.txt
+
+```
+Note: if you’re running an outdated version of Python, run the following command to set v3.9 in your virtual environment:
 
 ```bash
-just update
+python3.11 -m venv .env9/
+
+# Activate environment
+.env/Scripts/activate
 ```
 
-Create a local database and run migrations on it:
+Set up docker containers, including redis, celery, db, and web
 
 ```bash
-createdb gyana
-just migrate
-just seed
+just init
 ```
 
-Make sure to authenticate using gcloud and generate the relevant env variables:
-
-```bash
-gcloud auth login
-gcloud config set project gyana-1511894275181
-just env # decrypt secrets stored in repository
-```
+Navigate to localhost:8000 in your web browser
 
 ## Develop
 
@@ -63,12 +57,33 @@ celery backend for tasks and webpack to bundle all the client side code and styl
 Make sure that Postgres and Redis servers are running:
 
 ```bash
-just dev
-just celery
-npm run build:watch
+just npm-install
+just npm-dev
 ```
 
-Bootstrap a new CRUDL Django app with `just startapp`.
+### Quick commands for everyday development:
+Start docker containers
+```bash
+just start
+```
+
+Stop docker containers
+```bash
+just stop
+```
+
+### When installing new modules:
+First add the module to requirements/requirement.in, then run
+
+```bash
+just requirements
+```
+
+Make and run migrations
+```bash
+just migrations
+just migrate
+```
 
 ## Tests
 
@@ -78,10 +93,20 @@ For pytest, run the individual tests:
 just test -k {name}
 ```
 
-For e2e, run the e2e tests:
+For cypress, run your app in development mode and open the cypress UI:
 
 ```
-just test-e2e
+npm run cypress:open
+```
+
+The database is seeded with fixtures, and reset before each test. To modify the
+fixtures, manually make the changes in the UI and dump them.
+
+```bash
+# remember to re-seed the database to initial state
+just cypress-setup
+# ...make changes...
+just cypress-fixtures
 ```
 
 ## Profile
@@ -101,16 +126,19 @@ just test
 ```
 
 Run the entire e2e test suite locally, and view the list of failed tests. You can
-run specific tests with the `--headed` flag and `page.pause()` to debug.
+review screenshots and videos in the cypress folder to spot easy fixes:
 
-Manually fix failed tests and re-run the tests suite to confirm.
+```
+npm run cypress:run
+npm run cypress:failed
+```
+
+Manually fix failed tests in the UI and re-run the tests suite to confirm.
 
 ## Deployment
 
 For more in-depth information see [DEPLOYMENT.md](DEPLOYMENT.md)
 
-Run `just export` and push to main. View errors on
-[Heroku](https://dashboard.heroku.com/apps/gyana-dev).
 
 ## Javascript
 
