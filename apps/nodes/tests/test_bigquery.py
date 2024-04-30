@@ -1,5 +1,5 @@
 import textwrap
-from datetime import datetime
+from datetime import date, datetime
 
 import ibis
 import pandas as pd
@@ -255,7 +255,7 @@ def test_limit_node(setup, engine):
     assert get_query_from_node(limit_node).equals(limited[limited])
 
 
-def test_filter_node(setup):
+def test_filter_node(setup, engine):
     input_node, workflow = setup
 
     filter_node = Node.objects.create(
@@ -270,23 +270,20 @@ def test_filter_node(setup):
         type=Filter.Type.STRING,
     )
 
-    assert (
-        get_query_from_node(filter_node).compile()
-        == f"{INPUT_QUERY}\nWHERE\n  NOT t0.`athlete` IS NULL"
-    )
+    expected = engine.data[engine.data.athlete.notnull()]
+    assert get_query_from_node(filter_node).equals(expected)
 
     filter_node.filters.create(
         column="birthday",
         datetime_predicate=DateRange.TODAY,
         type=Filter.Type.DATE,
     )
-    assert get_query_from_node(filter_node).compile() == (
-        f"{INPUT_QUERY}\nWHERE\n  (\n    NOT t0.`athlete` IS NULL\n  ) AND (\n    "
-        f"t0.`birthday` = CAST('{datetime.now().strftime('%Y-%m-%d')}' AS DATE)\n  )"
+    assert get_query_from_node(filter_node).equals(
+        expected[expected.birthday == date.today()]
     )
 
 
-def test_edit_node(setup):
+def test_edit_node(setup, engine):
     input_node, workflow = setup
 
     edit_node = Node.objects.create(
@@ -297,20 +294,20 @@ def test_edit_node(setup):
     edit_node.parents.add(input_node)
 
     edit_node.edit_columns.create(column="id", integer_function="isnull")
-    limit_query = INPUT_QUERY.replace(
-        "t0.*",
-        "t0.`id` IS NULL AS `id`,\n  t0.`athlete`,\n  t0.`birthday`,\n  t0.`when`,\n  t0.`lunch`,\n  t0.`medals`,\n  t0.`stars`,\n  t0.`is_nice`,\n  t0.`biography`",
+
+    assert get_query_from_node(edit_node).equals(
+        engine.data.mutate(id=engine.data.id.isnull())
     )
-    assert get_query_from_node(edit_node).compile() == limit_query
 
     edit_node.edit_columns.create(column="athlete", string_function="upper")
-    assert get_query_from_node(edit_node).compile() == limit_query.replace(
-        "t0.`athlete`",
-        "upper(t0.`athlete`) AS `athlete`",
+    assert get_query_from_node(edit_node).equals(
+        engine.data.mutate(
+            id=engine.data.id.isnull(), athlete=engine.data.athlete.upper()
+        )
     )
 
 
-def test_add_node(setup):
+def test_add_node(setup, engine):
     input_node, workflow = setup
 
     add_node = Node.objects.create(
@@ -321,20 +318,20 @@ def test_add_node(setup):
     add_node.parents.add(input_node)
 
     add_node.add_columns.create(column="id", integer_function="isnull", label="booly")
-    assert get_query_from_node(add_node).compile() == INPUT_QUERY.replace(
-        "t0.*", "t0.*,\n  t0.`id` IS NULL AS `booly`"
+    assert get_query_from_node(add_node).equals(
+        engine.data.mutate(booly=engine.data.id.isnull())
     )
-
     add_node.add_columns.create(
         column="athlete", string_function="upper", label="grand_athlete"
     )
-    assert get_query_from_node(add_node).compile() == INPUT_QUERY.replace(
-        "t0.*",
-        "t0.*,\n  t0.`id` IS NULL AS `booly`,\n  upper(t0.`athlete`) AS `grand_athlete`",
+    assert get_query_from_node(add_node).equals(
+        engine.data.mutate(
+            booly=engine.data.id.isnull(), grand_athlete=engine.data.athlete.upper()
+        )
     )
 
 
-def test_rename_node(setup):
+def test_rename_node(setup, engine):
     input_node, workflow = setup
 
     rename_node = Node.objects.create(
@@ -345,19 +342,17 @@ def test_rename_node(setup):
     rename_node.parents.add(input_node)
 
     rename_node.rename_columns.create(column="birthday", new_name="bd")
-    rename_query = INPUT_QUERY.replace(
-        "t0.*",
-        "t0.`id`,\n  t0.`athlete`,\n  t0.`birthday` AS `bd`,\n  t0.`when`,\n  t0.`lunch`,\n  t0.`medals`,\n  t0.`stars`,\n  t0.`is_nice`,\n  t0.`biography`",
+    assert get_query_from_node(rename_node).equals(
+        engine.data.relabel(dict(birthday="bd"))
     )
-    assert get_query_from_node(rename_node).compile() == rename_query
 
     rename_node.rename_columns.create(column="id", new_name="identity")
-    assert get_query_from_node(rename_node).compile() == rename_query.replace(
-        "t0.`id`", "t0.`id` AS `identity`"
+    assert get_query_from_node(rename_node).equals(
+        engine.data.relabel(dict(birthday="bd", id="identity"))
     )
 
 
-def test_formula_node(setup):
+def test_formula_node(setup, engine):
     input_node, workflow = setup
 
     formula_node = Node.objects.create(
@@ -368,31 +363,21 @@ def test_formula_node(setup):
     formula_node.parents.add(input_node)
 
     formula_node.formula_columns.create(formula="upper(athlete)", label="grand_athlete")
-    formula_query = INPUT_QUERY.replace(
-        "t0.*", "t0.*,\n  upper(t0.`athlete`) AS `grand_athlete`"
+
+    assert get_query_from_node(formula_node).equals(
+        engine.data.mutate(grand_athlete=engine.data.athlete.upper())
     )
-    assert get_query_from_node(formula_node).compile() == formula_query
 
     formula_node.formula_columns.create(formula="lower(athlete)", label="low_athlete")
-    assert get_query_from_node(formula_node).compile() == INPUT_QUERY.replace(
-        "t0.*",
-        "t0.*,\n  upper(t0.`athlete`) AS `grand_athlete`,\n  lower(t0.`athlete`) AS `low_athlete`",
+    assert get_query_from_node(formula_node).equals(
+        engine.data.mutate(
+            grand_athlete=engine.data.athlete.upper(),
+            low_athlete=engine.data.athlete.lower(),
+        )
     )
 
 
-DISTINCT_COLUMNS = """t0.`athlete`,
-  ANY_VALUE(t0.`id`) AS `id`,
-  ANY_VALUE(t0.`birthday`) AS `birthday`,
-  ANY_VALUE(t0.`when`) AS `when`,
-  ANY_VALUE(t0.`lunch`) AS `lunch`,
-  ANY_VALUE(t0.`medals`) AS `medals`,
-  ANY_VALUE(t0.`stars`) AS `stars`,
-  ANY_VALUE(t0.`is_nice`) AS `is_nice`,
-  ANY_VALUE(t0.`biography`) AS `biography`\
-"""
-
-
-def test_distinct_node(setup):
+def test_distinct_node(setup, engine):
     input_node, workflow = setup
     distinct_node = Node.objects.create(
         kind=Node.Kind.DISTINCT,
@@ -402,20 +387,23 @@ def test_distinct_node(setup):
     distinct_node.parents.add(input_node)
 
     distinct_node.columns.create(column="athlete")
-
-    assert get_query_from_node(distinct_node).compile() == (
-        INPUT_QUERY.replace("t0.*", DISTINCT_COLUMNS) + "\nGROUP BY\n  1"
+    columns = [
+        engine.data[column].any_value().name(column)
+        for column in engine.data.columns
+        if column != "athlete"
+    ]
+    assert get_query_from_node(distinct_node).equals(
+        engine.data.group_by(["athlete"]).aggregate(columns)
     )
 
     distinct_node.columns.create(column="birthday")
-    assert get_query_from_node(distinct_node).compile() == (
-        INPUT_QUERY.replace(
-            "t0.*",
-            DISTINCT_COLUMNS.replace(
-                "t0.`athlete`,", "t0.`athlete`,\n  t0.`birthday`,"
-            ).replace("  ANY_VALUE(t0.`birthday`) AS `birthday`,\n", ""),
-        )
-        + "\nGROUP BY\n  1,\n  2"
+    columns = [
+        engine.data[column].any_value().name(column)
+        for column in engine.data.columns
+        if column not in ["athlete", "birthday"]
+    ]
+    assert get_query_from_node(distinct_node).equals(
+        engine.data.group_by(["athlete", "birthday"]).aggregate(columns)
     )
 
 
