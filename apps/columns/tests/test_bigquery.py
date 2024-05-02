@@ -12,245 +12,110 @@ from apps.columns.models import EditColumn
 pytestmark = pytest.mark.django_db
 
 
-UNNAMED_QUERY = """SELECT
-  {} AS `tmp`
-FROM `project.dataset`.table AS t0"""
-
 QUERY = """SELECT
   {} AS `tmp`
 FROM `project.dataset`.table AS t0"""
 
+TYPE_COLUMN_MAP = {
+    "Integer": "id",
+    "String": "athlete",
+    "Time": "lunch",
+    "Date": "birthday",
+    "Datetime": "when",
+}
 
-def create_extract_edit(column, extraction, type_):
+
+def no_arg_func_param(function, type_):
     return pytest.param(
-        EditColumn(column=column, **{f"{type_.lower()}_function": extraction}),
-        UNNAMED_QUERY.format(f"EXTRACT({extraction} FROM t0.`{column}`)"),
-        id=f"{type_} {extraction}",
+        function,
+        type_,
+        id=f"{type_} {function}",
     )
 
 
 @pytest.mark.parametrize(
-    "edit, expected_sql",
+    "function, type_",
     [
-        # Numeric edit
-        pytest.param(
-            EditColumn(column="id", integer_function="isnull"),
-            QUERY.format("t0.`id` IS NULL"),
-            id="Integer isnull",
-        ),
-        pytest.param(
-            EditColumn(column="id", integer_function="notnull"),
-            QUERY.format("NOT t0.`id` IS NULL"),
-            id="Integer notnull",
-        ),
-        pytest.param(
-            EditColumn(column="id", integer_function="cummax"),
-            QUERY.format(
-                "MAX(t0.`id`) OVER (ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)"
-            ),
-            id="Integer cummax",
-        ),
-        pytest.param(
-            EditColumn(column="id", integer_function="cummin"),
-            QUERY.format(
-                "MIN(t0.`id`) OVER (ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)"
-            ),
-            id="Integer cummin",
-        ),
-        pytest.param(
-            EditColumn(column="id", integer_function="abs"),
-            QUERY.format("abs(t0.`id`)"),
-            id="Integer abs",
-        ),
-        pytest.param(
-            EditColumn(column="id", integer_function="sqrt"),
-            QUERY.format("sqrt(t0.`id`)"),
-            id="Integer sqrt",
-        ),
-        pytest.param(
-            EditColumn(column="id", integer_function="ceil"),
-            QUERY.format("CAST(ceil(t0.`id`) AS INT64)"),
-            id="Integer ceil",
-        ),
-        pytest.param(
-            EditColumn(column="id", integer_function="floor"),
-            QUERY.format("CAST(FLOOR(t0.`id`) AS INT64)"),
-            id="Integer floor",
-        ),
-        pytest.param(
-            EditColumn(column="id", integer_function="ln"),
-            QUERY.format("ln(t0.`id`)"),
-            id="Integer ln",
-        ),
-        pytest.param(
-            EditColumn(column="id", integer_function="log2"),
-            QUERY.format("LOG(t0.`id`, 2)"),
-            id="Integer log2",
-        ),
-        pytest.param(
-            EditColumn(column="id", integer_function="log10"),
-            QUERY.format("log10(t0.`id`)"),
-            id="Integer log10",
-        ),
-        pytest.param(
-            EditColumn(column="id", integer_function="log", float_value=42.0),
-            QUERY.format("LOG(t0.`id`, 42.0)"),
-            id="Integer log",
-        ),
-        pytest.param(
-            EditColumn(column="id", integer_function="exp"),
-            QUERY.format("exp(t0.`id`)"),
-            id="Integer exp",
-        ),
-        pytest.param(
-            EditColumn(column="id", integer_function="add", float_value=42.0),
-            QUERY.format("t0.`id` + 42.0"),
-            id="Integer add",
-        ),
-        pytest.param(
-            EditColumn(column="id", integer_function="sub", float_value=42.0),
-            QUERY.format("t0.`id` - 42.0"),
-            id="Integer subtract",
-        ),
-        pytest.param(
-            EditColumn(column="id", integer_function="mul", float_value=42.0),
-            QUERY.format("t0.`id` * 42.0"),
-            id="Integer mul",
-        ),
-        pytest.param(
-            EditColumn(column="id", integer_function="div", float_value=42.0),
-            QUERY.format("IEEE_DIVIDE(t0.`id`, 42.0)"),
-            id="Integer div",
-        ),
-        # String edit
-        pytest.param(
-            EditColumn(column="athlete", string_function="isnull"),
-            QUERY.format("t0.`athlete` IS NULL"),
-            id="String is null",
-        ),
-        pytest.param(
-            EditColumn(column="athlete", string_function="notnull"),
-            QUERY.format("NOT t0.`athlete` IS NULL"),
-            id="String not null",
-        ),
-        pytest.param(
-            EditColumn(
-                column="athlete",
-                string_function="fillna",
-                string_value="Sascha Hofmann",
-            ),
-            QUERY.format("coalesce(t0.`athlete`, 'Sascha Hofmann')"),
-            id="String fillna",
-        ),
-        pytest.param(
-            EditColumn(column="athlete", string_function="lower"),
-            QUERY.format("lower(t0.`athlete`)"),
-            id="String lower",
-        ),
-        pytest.param(
-            EditColumn(column="athlete", string_function="upper"),
-            QUERY.format("upper(t0.`athlete`)"),
-            id="String upper",
-        ),
-        pytest.param(
-            EditColumn(column="athlete", string_function="length"),
-            QUERY.format("length(t0.`athlete`)"),
-            id="String length",
-        ),
-        pytest.param(
-            EditColumn(column="athlete", string_function="reverse"),
-            QUERY.format("reverse(t0.`athlete`)"),
-            id="String reverse",
-        ),
-        pytest.param(
-            EditColumn(column="athlete", string_function="strip"),
-            QUERY.format("TRIM(t0.`athlete`)"),
-            id="String strip",
-        ),
-        pytest.param(
-            EditColumn(column="athlete", string_function="lstrip"),
-            QUERY.format("ltrim(t0.`athlete`)"),
-            id="String lstrip",
-        ),
-        pytest.param(
-            EditColumn(column="athlete", string_function="rstrip"),
-            QUERY.format("rtrim(t0.`athlete`)"),
-            id="String rstrip",
-        ),
-        pytest.param(
-            EditColumn(
-                column="athlete", string_function="like", string_value="David %"
-            ),
-            QUERY.format("t0.`athlete` LIKE 'David %'"),
-            id="String like",
-        ),
-        # Time edit
-        pytest.param(
-            EditColumn(column="lunch", time_function="isnull"),
-            QUERY.format("t0.`lunch` IS NULL"),
-            id="Time is null",
-        ),
-        pytest.param(
-            EditColumn(column="lunch", time_function="notnull"),
-            QUERY.format("NOT t0.`lunch` IS NULL"),
-            id="Time not null",
-        ),
-        create_extract_edit("lunch", "hour", "Time"),
-        create_extract_edit("lunch", "minute", "Time"),
-        create_extract_edit("lunch", "second", "Time"),
-        create_extract_edit("lunch", "millisecond", "Time"),
-        # Date edit
-        pytest.param(
-            EditColumn(column="birthday", date_function="isnull"),
-            QUERY.format("t0.`birthday` IS NULL"),
-            id="Date is null",
-        ),
-        pytest.param(
-            EditColumn(column="birthday", date_function="notnull"),
-            QUERY.format("NOT t0.`birthday` IS NULL"),
-            id="Date not null",
-        ),
-        create_extract_edit("birthday", "year", "Date"),
-        create_extract_edit("birthday", "month", "Date"),
-        create_extract_edit("birthday", "day", "Date"),
-        #  Datetime edit
-        pytest.param(
-            EditColumn(column="when", date_function="isnull"),
-            QUERY.format("t0.`when` IS NULL"),
-            id="Datetime is null",
-        ),
-        pytest.param(
-            EditColumn(column="when", date_function="notnull"),
-            QUERY.format("NOT t0.`when` IS NULL"),
-            id="Datetime not null",
-        ),
-        create_extract_edit("when", "year", "Datetime"),
-        create_extract_edit("when", "month", "Datetime"),
-        create_extract_edit("when", "day", "Datetime"),
-        create_extract_edit("when", "hour", "Datetime"),
-        create_extract_edit("when", "minute", "Datetime"),
-        create_extract_edit("when", "second", "Datetime"),
-        create_extract_edit("when", "millisecond", "Datetime"),
-        pytest.param(
-            EditColumn(column="when", datetime_function="time"),
-            QUERY.format("TIME(t0.`when`)"),
-            id="Datetime time",
-        ),
-        pytest.param(
-            EditColumn(column="when", datetime_function="date"),
-            QUERY.format("DATE(t0.`when`)"),
-            id="Datetime date",
-        ),
-        pytest.param(
-            EditColumn(column="when", datetime_function="epoch_seconds"),
-            QUERY.format("UNIX_SECONDS(t0.`when`)"),
-            id="Datetime epoch seconds",
-        ),
+        no_arg_func_param("isnull", "Integer"),
+        no_arg_func_param("notnull", "Integer"),
+        no_arg_func_param("abs", "Integer"),
+        no_arg_func_param("isnull", "String"),
+        no_arg_func_param("notnull", "String"),
+        no_arg_func_param("lower", "String"),
+        no_arg_func_param("upper", "String"),
+        no_arg_func_param("length", "String"),
+        no_arg_func_param("reverse", "String"),
+        no_arg_func_param("strip", "String"),
+        no_arg_func_param("lstrip", "String"),
+        no_arg_func_param("rstrip", "String"),
+        no_arg_func_param("isnull", "Time"),
+        no_arg_func_param("notnull", "Time"),
+        no_arg_func_param("isnull", "Date"),
+        no_arg_func_param("notnull", "Date"),
+        no_arg_func_param("isnull", "Datetime"),
+        no_arg_func_param("notnull", "Datetime"),
+        no_arg_func_param("cummax", "Integer"),
+        no_arg_func_param("cummin", "Integer"),
+        no_arg_func_param("sqrt", "Integer"),
+        no_arg_func_param("ceil", "Integer"),
+        no_arg_func_param("floor", "Integer"),
+        no_arg_func_param("ln", "Integer"),
+        no_arg_func_param("log2", "Integer"),
+        no_arg_func_param("log10", "Integer"),
+        no_arg_func_param("exp", "Integer"),
+        no_arg_func_param("time", "Datetime"),
+        no_arg_func_param("date", "Datetime"),
+        no_arg_func_param("epoch_seconds", "Datetime"),
+        no_arg_func_param("hour", "Time"),
+        no_arg_func_param("minute", "Time"),
+        no_arg_func_param("second", "Time"),
+        no_arg_func_param("millisecond", "Time"),
+        no_arg_func_param("year", "Date"),
+        no_arg_func_param("month", "Date"),
+        no_arg_func_param("day", "Date"),
+        no_arg_func_param("year", "Datetime"),
+        no_arg_func_param("month", "Datetime"),
+        no_arg_func_param("day", "Datetime"),
+        no_arg_func_param("hour", "Datetime"),
+        no_arg_func_param("minute", "Datetime"),
+        no_arg_func_param("second", "Datetime"),
+        no_arg_func_param("millisecond", "Datetime"),
     ],
 )
-def test_compile_function(edit, expected_sql, engine):
-    sql = bigquery.compile(compile_function(engine.data, edit).name("tmp"))
-    assert sql == expected_sql
+def test_no_arg_function(engine, function, type_):
+    column = TYPE_COLUMN_MAP[type_]
+    edit = EditColumn(column=column, **{f"{type_.lower()}_function": function})
+    query = compile_function(engine.data, edit)
+    assert query.equals(getattr(engine.data[column], function)())
+
+
+def unary_func_param(function, type_, arg):
+    return pytest.param(function, type_, arg, id=f"{type_} {function}")
+
+
+@pytest.mark.parametrize(
+    "function, type_, arg",
+    [
+        unary_func_param("log", "Integer", 42.0),
+        unary_func_param("add", "Integer", 42.0),
+        unary_func_param("sub", "Integer", 42.0),
+        unary_func_param("mul", "Integer", 42.0),
+        unary_func_param("div", "Integer", 42.0),
+        unary_func_param("fillna", "String", "Sascha Hofmann"),
+        unary_func_param("like", "String", "David %"),
+    ],
+)
+def test_unary_function(engine, function, type_, arg):
+    column = TYPE_COLUMN_MAP[type_]
+    edit = EditColumn(
+        column=column,
+        **{
+            f"{type_.lower()}_function": function,
+            f"{'string' if type_=='String' else 'float'}_value": arg,
+        },
+    )
+    query = compile_function(engine.data, edit)
+    assert query.equals(getattr(engine.data[column], function)(arg))
 
 
 GROUP_QUERY = "SELECT\n  {},\n  count(1) AS `count`\nFROM `project.dataset`.table AS t0\nGROUP BY\n  1"
