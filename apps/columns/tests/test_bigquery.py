@@ -1,7 +1,8 @@
+import ibis
 import pytest
-from ibis import bigquery
 
 from apps.columns.engine import (
+    PART_MAP,
     DatePeriod,
     aggregate_columns,
     compile_function,
@@ -10,11 +11,6 @@ from apps.columns.engine import (
 from apps.columns.models import EditColumn
 
 pytestmark = pytest.mark.django_db
-
-
-QUERY = """SELECT
-  {} AS `tmp`
-FROM `project.dataset`.table AS t0"""
 
 TYPE_COLUMN_MAP = {
     "Integer": "id",
@@ -118,59 +114,51 @@ def test_unary_function(engine, function, type_, arg):
     assert query.equals(getattr(engine.data[column], function)(arg))
 
 
-GROUP_QUERY = "SELECT\n  {},\n  count(1) AS `count`\nFROM `project.dataset`.table AS t0\nGROUP BY\n  1"
-
 PARAMS = [
     pytest.param(
         "birthday",
         DatePeriod.MONTH,
-        GROUP_QUERY.format("DATE_TRUNC(t0.`birthday`, MONTH) AS `birthday`"),
         id="month",
     ),
     pytest.param(
         "birthday",
         DatePeriod.WEEK,
-        GROUP_QUERY.format("DATE_TRUNC(t0.`birthday`, WEEK(MONDAY)) AS `birthday`"),
         id="week",
     ),
     pytest.param(
         "birthday",
         DatePeriod.MONTH_ONLY,
-        GROUP_QUERY.format("EXTRACT(month FROM t0.`birthday`) AS `birthday`"),
         id="month only",
     ),
     pytest.param(
         "when",
         DatePeriod.DATE,
-        GROUP_QUERY.format("DATE(t0.`when`) AS `when`"),
         id="date",
     ),
     pytest.param(
         "birthday",
         DatePeriod.YEAR,
-        GROUP_QUERY.format("EXTRACT(year FROM t0.`birthday`) AS `birthday`"),
         id="year",
     ),
     pytest.param(
         "birthday",
         DatePeriod.QUARTER,
-        GROUP_QUERY.format("DATE_TRUNC(t0.`birthday`, QUARTER) AS `birthday`"),
         id="quarter",
     ),
 ]
 
 
-@pytest.mark.parametrize("name, part, expected_sql", PARAMS)
-def test_column_part_group(
-    name, part, expected_sql, column_factory, node_factory, engine
-):
+@pytest.mark.parametrize("name, part", PARAMS)
+def test_column_part_group(name, part, column_factory, node_factory, engine):
     node = node_factory()
     column_factory(column=name, part=part, node=node)
     groups = get_groups(engine.data, node)
-    sql = bigquery.compile(
-        aggregate_columns(engine.data, node.aggregations.all(), groups)
+    query = aggregate_columns(engine.data, node.aggregations.all(), groups)
+    assert query.equals(
+        engine.data.group_by(**{name: PART_MAP[part](engine.data[name])}).aggregate(
+            count=ibis._.count()
+        )
     )
-    assert sql == expected_sql
 
 
 def test_all_parts_tested():
