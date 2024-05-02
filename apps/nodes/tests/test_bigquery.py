@@ -1,11 +1,9 @@
-import textwrap
-from datetime import date, datetime
+from datetime import date
 
 import ibis
 import pandas as pd
 import pytest
 from django.utils import timezone
-from ibis.backends.bigquery import Backend
 
 from apps.columns.models import Column
 from apps.filters.models import DateRange, Filter
@@ -407,7 +405,7 @@ def test_distinct_node(setup, engine):
     )
 
 
-def test_window_node(setup):
+def test_window_node(setup, engine):
     input_node, workflow = setup
     window_node = Node.objects.create(
         kind=Node.Kind.WINDOW,
@@ -420,33 +418,35 @@ def test_window_node(setup):
         column="athlete", function="count", label="window"
     )
 
-    assert get_query_from_node(window_node).compile() == INPUT_QUERY.replace(
-        "t0.*", "t0.*,\n  count(t0.`athlete`) OVER () AS `window`"
+    assert get_query_from_node(window_node).equals(
+        engine.data.mutate(window=engine.data.athlete.count().over())
     )
 
     window.group_by = "birthday"
     window.save()
-    assert get_query_from_node(window_node).compile() == INPUT_QUERY.replace(
-        "t0.*",
-        "t0.*,\n  count(t0.`athlete`) OVER (PARTITION BY t0.`birthday`) AS `window`",
+    assert get_query_from_node(window_node).equals(
+        engine.data.mutate(
+            window=engine.data.athlete.count().over(ibis.window(group_by="birthday"))
+        )
     )
 
     window.order_by = "id"
     window.ascending = False
     window.save()
-    assert get_query_from_node(window_node).compile() == INPUT_QUERY.replace(
-        "t0.*",
-        "t0.*,\n  count(t0.`athlete`) OVER (PARTITION BY t0.`birthday` ORDER BY t0.`id` DESC) AS `window`",
+    birthday_window = engine.data.athlete.count().over(
+        ibis.window(group_by="birthday", order_by=ibis.desc(engine.data.id))
     )
-
+    assert get_query_from_node(window_node).equals(
+        engine.data.mutate(window=birthday_window)
+    )
     window_node.window_columns.create(
         column="id", function="count", group_by="athlete", label="door"
     )
-    assert get_query_from_node(window_node).compile() == INPUT_QUERY.replace(
-        "t0.*",
-        """t0.*,
-  count(t0.`athlete`) OVER (PARTITION BY t0.`birthday` ORDER BY t0.`id` DESC) AS `window`,
-  count(t0.`id`) OVER (PARTITION BY t0.`athlete`) AS `door`""",
+    assert get_query_from_node(window_node).equals(
+        engine.data.mutate(
+            window=birthday_window,
+            door=engine.data.id.count().over(ibis.window(group_by="athlete")),
+        )
     )
 
 

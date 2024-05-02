@@ -1,5 +1,3 @@
-from typing import Any
-
 import pytest
 from crispy_forms.bootstrap import TabHolder
 from crispy_forms.layout import Layout
