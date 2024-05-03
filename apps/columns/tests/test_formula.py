@@ -1,42 +1,46 @@
+import ibis
 import pytest
-from ibis import bigquery
 
 from apps.columns.engine import compile_formula
 from apps.columns.transformer import FUNCTIONS
 
-UNNAMED_QUERY = "SELECT\n  {} AS `tmp`\nFROM `project.dataset`.table AS t0"
+FUNC_MAP = {
+    "trim": "strip",
+    "ltrim": "lstrip",
+    "rtrim": "rstrip",
+    "extract_time": "time",
+    "extract_date": "date",
+}
 
-QUERY = "SELECT\n  {} AS `tmp`\nFROM `project.dataset`.table AS t0"
 
-
-def create_str_unary_param(func_name, sql_name=None):
+def create_str_unary_param(func_name):
     return pytest.param(
         f"{func_name}(athlete)",
-        QUERY.format(f"{sql_name or func_name}(t0.`athlete`)"),
+        lambda d: getattr(d.athlete, FUNC_MAP.get(func_name, func_name))(),
         id=func_name,
     )
 
 
-def create_int_unary_param(func_name, sql_name=None):
+def create_int_unary_param(func_name):
     return pytest.param(
         f"{func_name}(medals)",
-        QUERY.format(f"{sql_name or func_name}(t0.`medals`)"),
+        lambda d: getattr(d.medals, func_name)(),
         id=func_name,
     )
 
 
-def create_datetime_unary_param(func_name, sql_name=None):
+def create_datetime_unary_param(func_name):
     return pytest.param(
         f"{func_name}(when)",
-        QUERY.format(f"{sql_name or func_name}(t0.`when`)"),
+        lambda d: getattr(d.when, FUNC_MAP.get(func_name, func_name))(),
         id=func_name,
     )
 
 
-def create_extract_unary_param(func_name, sql_name=None):
+def create_extract_unary_param(func_name):
     return pytest.param(
         f"{func_name}(when)",
-        UNNAMED_QUERY.format(f"EXTRACT({sql_name or func_name} FROM t0.`when`)"),
+        lambda d: getattr(d.when, func_name)(),
         id=func_name,
     )
 
@@ -44,420 +48,419 @@ def create_extract_unary_param(func_name, sql_name=None):
 PARAMS = [
     pytest.param(
         "isnull(athlete)",
-        QUERY.format("t0.`athlete` IS NULL"),
+        lambda d: d.athlete.isnull(),
         id="isnull",
     ),
     pytest.param(
         "notnull(stars)",
-        QUERY.format("NOT t0.`stars` IS NULL"),
+        lambda d: d.stars.notnull(),
         id="notnull",
     ),
     pytest.param(
         'fillnull(athlete, "Usain Bolt")',
-        QUERY.format("coalesce(t0.`athlete`, 'Usain Bolt')"),
+        lambda d: d.athlete.fillna("Usain Bolt"),
         id="fillnull",
     ),
     pytest.param(
         'convert(medals, "float")',
-        UNNAMED_QUERY.format("CAST(t0.`medals` AS FLOAT64)"),
+        lambda d: d.medals.cast("float"),
         id="convert int to float",
     ),
     pytest.param(
         'convert(athlete, "timestamp")',
-        UNNAMED_QUERY.format("CAST(t0.`athlete` AS DATETIME)"),
+        lambda d: d.athlete.cast("timestamp"),
         id="convert string to datetime",
     ),
     pytest.param(
         'convert(birthday, "str")',
-        UNNAMED_QUERY.format("CAST(t0.`birthday` AS STRING)", "cast(birthday, string)"),
+        lambda d: d.birthday.cast("string"),
         id="convert date to string",
     ),
     pytest.param(
         "coalesce(id, medals, stars)",
-        QUERY.format("coalesce(t0.`id`, t0.`medals`, t0.`stars`)"),
+        lambda d: d.id.coalesce(d.medals, d.stars),
         id="coalesce",
     ),
     pytest.param(
         "ifelse(is_nice, medals*10, medals-5)",
-        QUERY.format("IF(t0.`is_nice`, t0.`medals` * 10, t0.`medals` - 5)"),
+        lambda d: d.is_nice.ifelse(d.medals * 10, d.medals - 5),
         id="if else",
     ),
-    # Test string operations
     pytest.param(
         'between(athlete, "Rafael Nadal" , "Roger Federer")',
-        QUERY.format("t0.`athlete` BETWEEN 'Rafael Nadal' AND 'Roger Federer'"),
+        lambda d: d.athlete.between("Rafael Nadal", "Roger Federer"),
         id="between string column",
     ),
     pytest.param(
         'find(athlete, "Kipchoge")',
-        QUERY.format("STRPOS(t0.`athlete`, 'Kipchoge') - 1"),
+        lambda d: d.athlete.find("Kipchoge"),
         id="find no optional arguments",
     ),
-    create_str_unary_param("lower"),
     pytest.param(
         "lpad(athlete,3)",
-        QUERY.format("lpad(t0.`athlete`, 3, ' ')"),
+        lambda d: d.athlete.lpad(3),
         id="lpad no optional argument",
     ),
     pytest.param(
         'lpad(athlete,3, "\n")',
-        # for some reason ibis adds a random newlineafter the select
-        "SELECT\n  lpad(t0.`athlete`, 3, '\\n') AS `tmp`\nFROM `project.dataset`.table AS t0",
+        lambda d: d.athlete.lpad(3, "\n"),
         id="lpad with fillchar",
     ),
     pytest.param(
         "hash(athlete)",
-        QUERY.format("farm_fingerprint(t0.`athlete`)"),
+        lambda d: d.athlete.hash(),
         id="hash",
     ),
     pytest.param(
         'join(", ", athlete, "that genius")',
-        QUERY.format("ARRAY_TO_STRING([t0.`athlete`, 'that genius'], ', ')"),
+        lambda d: ibis.literal(", ").join([d.athlete, "that genius"]),
         id="join",
     ),
     pytest.param(
         'json_extract(\'{"class":{"id": 3}}\', "$.class.id")',
-        'SELECT\n  CAST(CAST(\'{"class":{"id": 3}}\' AS JSON).class.id AS STRING) AS `tmp`',
+        lambda d: ibis.literal('{"class":{"id": 3}}')
+        .cast("json")["class"]["id"]
+        .cast("string"),
         id="json_extract",
     ),
-    create_str_unary_param("upper"),
-    create_str_unary_param("length"),
-    create_str_unary_param("reverse"),
-    create_str_unary_param("trim", "TRIM"),
-    create_str_unary_param("ltrim"),
-    create_str_unary_param("rtrim"),
     pytest.param(
         "rpad(athlete,3)",
-        QUERY.format("rpad(t0.`athlete`, 3, ' ')"),
+        lambda d: d.athlete.rpad(3),
         id="rpad no optional argument",
     ),
     pytest.param(
         'rpad(athlete,3, "\n")',
-        # for some reason ibis adds a random newlineafter the select
-        "SELECT\n  rpad(t0.`athlete`, 3, '\\n') AS `tmp`\nFROM `project.dataset`.table AS t0",
+        lambda d: d.athlete.rpad(3, "\n"),
         id="rpad with fillchar",
     ),
     pytest.param(
         'like(athlete, "Tom Daley")',
-        QUERY.format("t0.`athlete` LIKE 'Tom Daley'"),
+        lambda d: d.athlete.like("Tom Daley"),
         id="like",
     ),
     pytest.param(
         'contains(athlete, "Usain Bolt")',
-        QUERY.format("STRPOS(t0.`athlete`, 'Usain Bolt') - 1 >= 0"),
+        lambda d: d.athlete.contains("Usain Bolt"),
         id="contains",
     ),
     pytest.param(
         "repeat(athlete, 2)",
-        QUERY.format("REPEAT(t0.`athlete`, 2)"),
+        lambda d: d.athlete.repeat(2),
         id="repeat",
     ),
     pytest.param(
         'regex_extract(athlete, "ough", 2)',
-        QUERY.format(
-            "IF(\n    REGEXP_CONTAINS(t0.`athlete`, 'ough'),\n    IF(\n      2 = 0,\n      REGEXP_REPLACE(t0.`athlete`, CONCAT('.*?', CONCAT('(', 'ough', ')'), '.*'), '\\\\1'),\n      REGEXP_REPLACE(t0.`athlete`, CONCAT('.*?', 'ough', '.*'), CONCAT('\\\\', CAST(2 AS STRING)))\n    ),\n    NULL\n  )"
-        ),
+        lambda d: d.athlete.re_extract("ough", 2),
         id="regex_extract",
     ),
     pytest.param(
         'regex_replace(athlete, "ough", "uff")',
-        QUERY.format("REGEXP_REPLACE(t0.`athlete`, 'ough', 'uff')"),
+        lambda d: d.athlete.re_replace("ough", "uff"),
         id="regex_replace",
     ),
     pytest.param(
         'regex_search(athlete, "Will.*")',
-        QUERY.format("REGEXP_CONTAINS(t0.`athlete`, 'Will.*')"),
+        lambda d: d.athlete.re_search("Will.*"),
         id="regex_search",
     ),
     pytest.param(
         'replace(athlete, "ough", "uff")',
-        QUERY.format("REPLACE(t0.`athlete`, 'ough', 'uff')"),
+        lambda d: d.athlete.replace("ough", "uff"),
         id="replace",
     ),
     pytest.param(
         'substitute(athlete, "Tim")',
-        QUERY.format("CASE t0.`athlete` WHEN 'Tim' THEN NULL ELSE t0.`athlete` END"),
+        lambda d: d.athlete.substitute("Tim"),
         id="substitute no optional arguments",
     ),
     pytest.param(
         'substitute(athlete, "Tim", "Tom")',
-        QUERY.format("CASE t0.`athlete` WHEN 'Tim' THEN 'Tom' ELSE t0.`athlete` END"),
+        lambda d: d.athlete.substitute("Tim", "Tom"),
         id="substitute with replace argument",
     ),
     pytest.param(
         'substitute(athlete, "Tim", "Tom", "Till")',
-        QUERY.format("CASE t0.`athlete` WHEN 'Tim' THEN 'Tom' ELSE 'Till' END"),
+        lambda d: d.athlete.substitute("Tim", "Tom", "Till"),
         id="substitute with both arguments",
     ),
     pytest.param(
         "left(athlete, 4)",
-        QUERY.format(
-            "IF(\n    0 >= 0,\n    SUBSTR(t0.`athlete`, 0 + 1, 4),\n    SUBSTR(t0.`athlete`, LENGTH(t0.`athlete`) + 0 + 1, 4)\n  )"
-        ),
+        lambda d: d.athlete.left(4),
         id="left",
     ),
     pytest.param(
         "right(athlete, 4)",
-        QUERY.format("SUBSTR(t0.`athlete`, -LEAST(LENGTH(t0.`athlete`), 4))"),
+        lambda d: d.athlete.right(4),
         id="right",
     ),
     pytest.param(
         "parse_date(athlete, '%Y-%m-%d')",
-        QUERY.format("DATE(PARSE_TIMESTAMP('%Y-%m-%d', t0.`athlete`))"),
+        lambda d: d.athlete.to_timestamp("%Y-%m-%d").date(),
         id="parse_date",
     ),
     pytest.param(
         "parse_time(athlete, '%H:%M:%S')",
-        QUERY.format("TIME(PARSE_TIMESTAMP('%H:%M:%S', t0.`athlete`))"),
+        lambda d: d.athlete.to_timestamp("%H:%M:%S").time(),
         id="parse_time",
     ),
     pytest.param(
         "parse_datetime(athlete, '%Y-%m-%dT%H:%M:%S')",
-        QUERY.format("PARSE_TIMESTAMP('%Y-%m-%dT%H:%M:%S', t0.`athlete`)"),
+        lambda d: d.athlete.to_timestamp("%Y-%m-%dT%H:%M:%S"),
         id="parse_datetime",
     ),
-    # Test numeric operations
-    create_int_unary_param("abs"),
     pytest.param(
         "add(medals, stars)",
-        QUERY.format("t0.`medals` + t0.`stars`"),
+        lambda d: d.medals + d.stars,
         id="add integer and float columns",
     ),
     pytest.param(
         "medals + 5",
-        QUERY.format("t0.`medals` + 5"),
+        lambda d: d.medals + 5,
         id="add integer scalar to integer column",
     ),
     pytest.param(
         "between(medals,2,10)",
-        QUERY.format("t0.`medals` BETWEEN 2 AND 10"),
+        lambda d: d.medals.between(2, 10),
         id="between integer column",
     ),
     pytest.param(
         "ceiling(medals)",
-        QUERY.format("CAST(ceil(t0.`medals`) AS INT64)"),
+        lambda d: d.medals.ceil(),
         id="ceil",
     ),
     pytest.param(
         "divide(medals, stars)",
-        QUERY.format("IEEE_DIVIDE(t0.`medals`, t0.`stars`)"),
+        lambda d: d.medals / d.stars,
         id="div integer and float columns",
     ),
     pytest.param(
         "medals / 42",
-        QUERY.format("IEEE_DIVIDE(t0.`medals`, 42)"),
+        lambda d: d.medals / 42,
         id="div integer column and integer scalar",
     ),
-    create_int_unary_param("exp"),
     pytest.param(
         "floor(stars)",
-        QUERY.format("CAST(FLOOR(t0.`stars`) AS INT64)"),
+        lambda d: d.stars.floor(),
         id="floor",
     ),
-    create_int_unary_param("sqrt"),
-    create_int_unary_param("ln"),
     pytest.param(
         "log(medals, 3)",
-        QUERY.format("LOG(t0.`medals`, 3)"),
+        lambda d: d.medals.log(3),
         id="log",
     ),
     pytest.param(
         "log2(medals)",
-        QUERY.format("LOG(t0.`medals`, 2)"),
+        lambda d: d.medals.log2(),
         id="log2",
     ),
-    create_int_unary_param("log10"),
     pytest.param(
         "product(stars, medals)",
-        QUERY.format("t0.`stars` * t0.`medals`"),
+        lambda d: d.stars * d.medals,
         id="multiply int and float column",
     ),
     pytest.param(
         "medals % 3",
-        QUERY.format("MOD(t0.`medals`, 3)"),
+        lambda d: d.medals % 3,
         id="modulo integer column and integer scalar",
     ),
     pytest.param(
         "round(stars, 2)",
-        QUERY.format("round(t0.`stars`, 2)"),
+        lambda d: d.stars.round(2),
         id="round",
     ),
     pytest.param(
         "stars * 42",
-        QUERY.format("t0.`stars` * 42"),
+        lambda d: d.stars * 42,
         id="multiply float column and int scalar",
     ),
     pytest.param(
         "power(stars, medals)",
-        QUERY.format("pow(t0.`stars`, t0.`medals`)"),
+        lambda d: d.stars.pow(d.medals),
         id="float column to the power of int column",
     ),
     pytest.param(
         "subtract(stars, medals)",
-        QUERY.format("t0.`stars` - t0.`medals`"),
+        lambda d: d.stars - d.medals,
         id="subtract int column from float column",
     ),
     pytest.param(
         "stars - 42.0",
-        QUERY.format("t0.`stars` - 42.0"),
+        lambda d: d.stars - 42.0,
         id="subtract float scalar from float column",
     ),
     pytest.param(
         'datetime_seconds(medals, "s")',
-        QUERY.format("TIMESTAMP_SECONDS(t0.`medals`)"),
+        lambda d: d.medals.to_timestamp("s"),
         id="integer column to datetime",
     ),
     pytest.param(
         'datetime_seconds(131313131313, "ms")',
-        "SELECT\n  TIMESTAMP_MILLIS(131313131313) AS `tmp`",
+        lambda d: ibis.literal(131313131313).to_timestamp("ms"),
         id="integer to datetime",
     ),
     pytest.param(
         "date(1993,07, medals)",
-        QUERY.format(
-            "DATE(\n    PARSE_TIMESTAMP(\n      '%Y-%m-%d',\n      CONCAT(\n        CONCAT(CONCAT(CONCAT(CAST(1993 AS STRING), '-'), CAST(7 AS STRING)), '-'),\n        CAST(t0.`medals` AS STRING)\n      )\n    )\n  )"
-        ),
+        lambda d: (
+            ibis.literal(1993).cast("string")
+            + "-"
+            + ibis.literal(7).cast("string")
+            + "-"
+            + d.medals.cast("string")
+        )
+        .to_timestamp("%Y-%m-%d")
+        .date(),
         id="date",
     ),
     pytest.param(
         "time(12,12, medals)",
-        QUERY.format(
-            "TIME(\n    PARSE_TIMESTAMP(\n      '%H:%M:%S',\n      CONCAT(\n        CONCAT(CONCAT(CONCAT(CAST(12 AS STRING), ':'), CAST(12 AS STRING)), ':'),\n        CAST(t0.`medals` AS STRING)\n      )\n    )\n  )"
-        ),
+        lambda d: (
+            ibis.literal(12).cast("string")
+            + ":"
+            + ibis.literal(12).cast("string")
+            + ":"
+            + d.medals.cast("string")
+        )
+        .to_timestamp("%H:%M:%S")
+        .time(),
         id="time",
     ),
-    pytest.param("today()", "SELECT\n  DATE(CURRENT_TIMESTAMP()) AS `tmp`", id="today"),
-    pytest.param("now()", "SELECT\n  CURRENT_TIMESTAMP() AS `tmp`", id="now"),
-    # Test datetime operations
-    create_extract_unary_param("year"),
-    create_datetime_unary_param("extract_time", "TIME"),
-    create_datetime_unary_param("extract_date", "DATE"),
-    create_extract_unary_param("second"),
-    create_extract_unary_param("month"),
-    create_extract_unary_param("minute"),
-    create_extract_unary_param("millisecond"),
-    create_extract_unary_param("hour"),
-    create_datetime_unary_param("epoch_seconds", "UNIX_SECONDS"),
-    create_extract_unary_param("day"),
+    pytest.param("today()", lambda d: ibis.now().date(), id="today"),
+    pytest.param("now()", lambda d: ibis.now(), id="now"),
     pytest.param(
         "between(birthday, 1990-01-01, 2000-07-01)",
-        QUERY.format("t0.`birthday` BETWEEN '1990-01-01' AND '2000-07-01'"),
+        lambda d: d.birthday.between("1990-01-01", "2000-07-01"),
         id="between date column",
     ),
     pytest.param(
         'format_datetime(when,"%d-%m")',
-        QUERY.format("FORMAT_TIMESTAMP('%d-%m', t0.`when`, 'UTC')"),
+        lambda d: d.when.strftime("%d-%m"),
         id="format_datetime",
     ),
     pytest.param(
         'truncate(when, "ms")',
-        QUERY.format("TIMESTAMP_TRUNC(t0.`when`, MILLISECOND)"),
+        lambda d: d.when.truncate("ms"),
         id="truncate milliseconds from datetime",
     ),
     pytest.param(
         'truncate(birthday, "d")',
-        QUERY.format("DATE_TRUNC(t0.`birthday`, DAY)"),
+        lambda d: d.birthday.truncate("d"),
         id="truncate day from date",
     ),
     pytest.param(
         "when - when",
-        QUERY.format("TIMESTAMP_DIFF(t0.`when`, t0.`when`, SECOND)"),
+        lambda d: d.when.delta(d.when, "s"),
         id="datetime difference",
     ),
     pytest.param(
         "birthday - birthday",
-        QUERY.format("DATE_DIFF(t0.`birthday`, t0.`birthday`, DAY)"),
+        lambda d: d.birthday.delta(d.birthday, "d"),
         id="date difference",
     ),
     pytest.param(
         "lunch - lunch",
-        QUERY.format("TIME_DIFF(t0.`lunch`, t0.`lunch`, SECOND)"),
+        lambda d: d.lunch.delta(d.lunch, "s"),
         id="time difference",
     ),
     pytest.param(
         'datetime_diff(when, when, "Y")',
-        QUERY.format("TIMESTAMP_DIFF(t0.`when`, t0.`when`, YEAR)"),
+        lambda d: d.when.delta(d.when, "Y"),
         id="datetime datetime_diff",
     ),
     pytest.param(
         'datetime_diff(extract_time(when), lunch, "m")',
-        QUERY.format("TIME_DIFF(TIME(t0.`when`), t0.`lunch`, MINUTE)"),
+        lambda d: d.when.time().delta(d.lunch, "m"),
         id="time datetime_diff",
     ),
     pytest.param(
         'datetime_diff(extract_date( when), birthday, "W")',
-        QUERY.format("DATE_DIFF(DATE(t0.`when`), t0.`birthday`, WEEK)"),
+        lambda d: d.when.date().delta(d.birthday, "W"),
         id="date datetime_diff",
     ),
     pytest.param(
         "subtract_days(birthday, 30)",
-        QUERY.format("DATE_SUB(t0.`birthday`, INTERVAL 30 DAY)"),
+        lambda d: d.birthday - ibis.interval(30, unit="D"),
         id="date subtract_days",
     ),
     pytest.param(
         "day_of_week(birthday)",
-        QUERY.format("MOD(EXTRACT(DAYOFWEEK FROM t0.`birthday`) + 5, 7)"),
+        lambda d: d.birthday.day_of_week.index(),
         id="day_of_week",
     ),
     pytest.param(
         "weekday(birthday)",
-        QUERY.format("INITCAP(CAST(t0.`birthday` AS STRING FORMAT 'DAY'))"),
+        lambda d: d.birthday.day_of_week.full_name(),
         id="weekday",
     ),
-    # Test boolean functions and and or
     pytest.param(
         "and(athlete='Usain Bolt', is_nice, 1=1)",
-        QUERY.format(
-            "(\n    (\n      t0.`athlete` = 'Usain Bolt'\n    ) AND t0.`is_nice`\n  ) AND TRUE"
-        ),
+        lambda d: (d.athlete == "Usain Bolt") & d.is_nice & (1 == 1),
         id="and",
     ),
     pytest.param(
         "or(athlete='Usain Bolt', is_nice, 1=1)",
-        QUERY.format(
-            "(\n    (\n      t0.`athlete` = 'Usain Bolt'\n    ) OR t0.`is_nice`\n  ) OR TRUE"
-        ),
+        lambda d: (d.athlete == "Usain Bolt") | d.is_nice | (1 == 1),
         id="or",
     ),
-    # Test nested functions
     pytest.param(
         "(medals + stars)/(stars - 42) * medals",
-        QUERY.format(
-            "(\n    IEEE_DIVIDE(t0.`medals` + t0.`stars`, t0.`stars` - 42)\n  ) * t0.`medals`"
-        ),
+        lambda d: ((d.medals + d.stars) / (d.stars - 42)) * d.medals,
         id="arithmetic formula mixing different operation",
     ),
     pytest.param(
         'upper(replace(athlete, "ff", "f"))',
-        QUERY.format("upper(REPLACE(t0.`athlete`, 'ff', 'f'))"),
+        lambda d: d.athlete.replace("ff", "f").upper(),
         id="nest two string methods",
     ),
     pytest.param(
         "round(exp(month(birthday)*medals))",
-        QUERY.format(
-            "CAST(round(exp(EXTRACT(month FROM t0.`birthday`) * t0.`medals`)) AS INT64)"
-        ),
+        lambda d: (d.birthday.month() * d.medals).exp().round(),
         id="nest numeric and datetime operations",
     ),
     pytest.param(
         'ifelse(between(birthday, 2000-01-01, 2000-01-31), "millenium kid", "normal kid")',
-        QUERY.format(
-            "IF(t0.`birthday` BETWEEN '2000-01-01' AND '2000-01-31', 'millenium kid', 'normal kid')"
+        lambda d: d.birthday.between("2000-01-01", "2000-01-31").ifelse(
+            "millenium kid", "normal kid"
         ),
         id="nest ifelse with datetime function",
     ),
     pytest.param(
         'regex_extract(\'{"id": "1234", "name": "John"}\', \'{"id": "(.*?)",\', 0)',
-        'SELECT\n  IF(\n    REGEXP_CONTAINS(\'{"id": "1234", "name": "John"}\', \'{"id": "(.*?)",\'),\n    IF(\n      0 = 0,\n      REGEXP_REPLACE(\n        \'{"id": "1234", "name": "John"}\',\n        CONCAT(\'.*?\', CONCAT(\'(\', \'{"id": "(.*?)",\', \')\'), \'.*\'),\n        \'\\\\1\'\n      ),\n      REGEXP_REPLACE(\n        \'{"id": "1234", "name": "John"}\',\n        CONCAT(\'.*?\', \'{"id": "(.*?)",\', \'.*\'),\n        CONCAT(\'\\\\\', CAST(0 AS STRING))\n      )\n    ),\n    NULL\n  ) AS `tmp`',
+        lambda d: ibis.literal('{"id": "1234", "name": "John"}').re_extract(
+            '{"id": "(.*?)",', 0
+        ),
         id="regex_extract with quote nesting",
     ),
+    create_str_unary_param("lower"),
+    create_str_unary_param("upper"),
+    create_str_unary_param("length"),
+    create_str_unary_param("reverse"),
+    create_str_unary_param(
+        "trim",
+    ),
+    create_str_unary_param("ltrim"),
+    create_str_unary_param("rtrim"),
+    create_int_unary_param("abs"),
+    create_int_unary_param("exp"),
+    create_int_unary_param("sqrt"),
+    create_int_unary_param("ln"),
+    create_int_unary_param("log10"),
+    create_extract_unary_param("year"),
+    create_datetime_unary_param("extract_time"),
+    create_datetime_unary_param("extract_date"),
+    create_extract_unary_param("second"),
+    create_extract_unary_param("month"),
+    create_extract_unary_param("minute"),
+    create_extract_unary_param("millisecond"),
+    create_extract_unary_param("hour"),
+    create_datetime_unary_param("epoch_seconds"),
+    create_extract_unary_param("day"),
 ]
 
 
-@pytest.mark.parametrize("formula, expected_sql", PARAMS)
-def test_formula(formula, expected_sql, engine):
-    sql = bigquery.compile(compile_formula(engine.data, formula).name("tmp"))
-    assert sql == expected_sql
+@pytest.mark.parametrize("formula, get_expected", PARAMS)
+def test_formula(engine, formula, get_expected):
+    query = compile_formula(engine.data, formula)
+    assert query.equals(get_expected(engine.data))
 
 
 @pytest.mark.parametrize(
