@@ -80,3 +80,51 @@ test-ci:
 
 test-e2e:
     python -m pytest --no-migrations --disable-pytest-warnings --reruns 2 apps/base/tests/e2e
+
+# calls to run app in docker containers
+docker-setup-env:
+	@[ ! -f ./.env.docker ] && cp ./.env.example ./.env.docker || echo ".env.docker file already exists."
+
+docker-start: ## Start the docker containers
+	@echo "Starting the docker containers"
+	@docker-compose up --build -d
+	@echo "Containers started - http://localhost:8000"
+	@echo "Run make refresh-image to refresh the images"
+
+docker-stop: ## Stop Containers
+	@docker compose down
+
+docker-restart: docker-stop docker-start ## Restart Containers
+
+docker-start-bg:  ## Run containers in the background
+	@docker compose up -d
+
+docker-build: ## Build Containers
+	@docker compose build
+
+docker-migrations: ## Create DB migrations in the container
+	@docker compose run --rm --no-deps web python manage.py makemigrations
+
+docker-migrate: ## Run DB migrations in the container
+	@docker compose run --rm --no-deps web python manage.py migrate
+
+docker-init: docker-setup-env docker-start-bg docker-migrations docker-migrate  ## Quickly get up and running (start containers and migrate DB)
+
+docker-pip-compile: ## Compiles your requirements.in file to requirements.txt
+	@docker compose run --rm --no-deps web pip-compile requirements/requirements.in
+	@docker compose run --rm --no-deps web pip-compile requirements/dev-requirements.in
+	@docker compose run --rm --no-deps web pip-compile requirements/prod-requirements.in
+
+docker-requirements: docker-pip-compile docker-build docker-restart  ## Rebuild your requirements and restart your containers
+
+docker-npm-install: ## Runs npm install in the container
+	@docker compose run --rm --no-deps web npm install $(filter-out $@,$(MAKECMDGOALS))
+
+docker-npm-build: ## Runs npm build in the container (for production assets)
+	@docker compose run --rm --no-deps web npm run build
+
+docker-npm-dev: ## Runs npm dev in the container
+	@docker compose run --rm --no-deps web npm run build:dev
+
+docker-npm-watch: ## Runs npm watch in the container (recommended for dev)
+	@docker compose run --rm --no-deps web npm run build:watch
