@@ -12,38 +12,10 @@ class UserNameForm(ModelForm):
         required=True, widget=forms.TextInput(attrs={"class": "label--half"})
     )
     last_name = forms.CharField(widget=forms.TextInput(attrs={"class": "label--half"}))
-    marketing_allowed = forms.TypedChoiceField(
-        coerce=lambda x: x == "True",
-        choices=((True, "Yes"), (False, "No")),
-        label="Opt-in to email communications",
-        help_text="There is a lot you can do with Gyana, opt-in so we can send you occasional tips. (You can always opt-out)",
-        widget=forms.RadioSelect,
-        required=True,
-    )
 
     class Meta:
         model = CustomUser
-        fields = ["first_name", "last_name", "marketing_allowed"]
-
-    def pre_save(self, instance):
-        instance.onboarded = True
-
-
-class UserOnboardingForm(ModelForm):
-    class Meta:
-        model = CustomUser
-        fields = [
-            "company_industry",
-            "company_role",
-            "company_size",
-            "source_channel",
-        ]
-        labels = {
-            "company_industry": "What's your industry?",
-            "company_role": "What's your role?",
-            "company_size": "Company size",
-            "source_channel": "How did you hear about us?",
-        }
+        fields = ["first_name", "last_name"]
 
     def pre_save(self, instance):
         instance.onboarded = True

@@ -1,5 +1,5 @@
 {% extends "web/base.html" %}
-{% load static site_tags %}
+{% load static %}
 
 {% block body.content %}
   <div class="landing">
@@ -17,17 +17,6 @@
 
       {% block content %}
       {% endblock content %}
-
-      <footer class="landing__footer">
-        {% block footer %}
-          <p>
-            By using the app, you agree to our
-            <a href="{% external_url 'terms_of_use' %}" class="link">terms of service</a>
-            and
-            <a href="{% external_url 'privacy_policy' %}" class="link">privacy policy</a>.
-          </p>
-        {% endblock %}
-      </footer>
     </div>
 
     <div class="landing__image">

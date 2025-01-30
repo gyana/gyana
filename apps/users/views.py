@@ -9,20 +9,15 @@ from apps.base.analytics import ONBOARDING_COMPLETED_EVENT
 from apps.base.mixins import PageTitleMixin
 from apps.base.views import UpdateView
 
-from .forms import UserNameForm, UserOnboardingForm
+from .forms import UserNameForm
 from .models import CustomUser
 
 
 class UserOnboarding(PageTitleMixin, UpdateView):
     template_name = "users/onboarding.html"
     model = CustomUser
+    form_class = UserNameForm
     page_title = "Onboarding"
-
-    def get_form_class(self):
-        if self.request.user.first_name == "":
-            return UserNameForm
-
-        return UserOnboardingForm
 
     def get_object(self, queryset=None):
         return self.request.user
@@ -31,9 +26,6 @@ class UserOnboarding(PageTitleMixin, UpdateView):
         user = self.request.user
 
         if user.first_name == "" or user.last_name == "":
-            return reverse("users:onboarding")
-
-        if not user.company_industry or not user.company_role or not user.company_size:
             return reverse("users:onboarding")
 
         analytics.track(self.request.user.id, ONBOARDING_COMPLETED_EVENT)

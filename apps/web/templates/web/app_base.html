@@ -40,25 +40,17 @@
 
       <template x-ref="body">
         <a
-          id="changelogWidgetID"
+          href="https://gyana.github.io/docs"
           class="list__item list__item--interactive w-full"
-          x-modal.tall="{% url "web:changelog" %}"
-        >
-          What's new?
-        </a>
-
-        <a
-          href="https://join.slack.com/t/gyanacommunity/shared_invite/zt-vly76dna-dxv12CkXdanlwqMam5zDPQ"
-          class="list__item list__item--interactive w-full"
-        >
-          Join our Slack
-        </a>
-
-        <a
-          class="list__item list__item--interactive w-full"
-          x-modal.tall="{% url "web:help" %}"
         >
           Getting started
+        </a>
+
+        <a
+          href="https://github.com/gyana/gyana"
+          class="list__item list__item--interactive w-full"
+        >
+          Contribute
         </a>
       </template>
     </button>

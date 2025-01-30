@@ -4,7 +4,6 @@
 {% load humanize %}
 {% load waffle_tags %}
 {% load help_utils %}
-{% load site_tags %}
 
 {% block app %}
   <div class="pad">
@@ -52,11 +51,6 @@
         </a>
       </div>
 
-      <p class="alert my-7">
-        Need help building your report?
-        <a class="link" href="{% external_url 'onboarding' %}">Hire an expert</a>.
-      </p>
-
       {% render_table table %}
 
     {% else %}
@@ -77,8 +71,6 @@
           <strong>Note:</strong> Look out for
           <span class="button button--sm button--circle button--tertiary"/><i class="fas fa-fw fa-question"></i></span>
         buttons, click them to go to relevant help articles.
-
-        Need help building your report? <a class="link" href="{% external_url 'hire_an_expert' %}">Hire an expert</a>.
       </p>
 
       <div class="flex gap-8 mt-7">

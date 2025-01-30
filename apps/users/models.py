@@ -1,10 +1,8 @@
 import hashlib
 
 import pandas as pd
-from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db import models, transaction
-from storages.backends.gcloud import GoogleCloudStorage
 
 from apps.base.clients import SLUG
 from apps.base.models import BaseModel
@@ -20,48 +18,6 @@ class CustomUser(AbstractUser):
     https://docs.djangoproject.com/en/3.2/topics/auth/customizing/#extending-django-s-default-user
     """
 
-    class SourceChannel(models.TextChoices):
-        NONE = "", "Select..."
-        ONLINE_ADS = "onlineads", "Online ad"
-        SEARCH_ENGINE = "searchengine", "Search engine"
-        SOCIAL_MEDIA = "socialmedia", "Social media"
-        WORD_OF_MOUTH = "wordofmouth", "Recommended by someone"
-        BLOG = "blog", "Blog or publication"
-        PRODUCT_HUNT = "producthunt", "Product Hunt "
-        OTHER = "other", "Other"
-
-    class CompanyIndustry(models.TextChoices):
-        NONE = "", "Select..."
-        AGENCY = "agency", "Agency"
-        SOFTWARE = "software", "Software"
-        ECOMMERCE = "ecommerce", "E-commerce"
-        CONSULTING = "consulting", "Consulting"
-        EDUCATION = "education", "Education"
-        FINTECH = "fintech", "Fintech"
-        NONPROFIT = "nonprofit", "Nonprofit"
-        OTHER = "other", "Other"
-
-    class CompanyRole(models.TextChoices):
-        NONE = "", "Select..."
-        LEADERSHIP = "leadership", "Leadership"
-        MARKETING = "marketing", "Marketing"
-        BUSINESS_ANALYST = "business analyst", "Business Analyst"
-        DATA_SCIENTIST = "data scientist", "Data Scientist"
-        PRODUCT_MANAGER = "product manager", "Product Manager"
-        DEVELOPER = "developer", "Developer"
-        STUDENT = "student", "Student"
-        SALES = "sales", "Sales"
-        OTHER = "other", "Other"
-
-    class CompanySize(models.TextChoices):
-        NONE = "", "Select..."
-        ONE = "1", "Just me"
-        TWO_TO_TEN = "2-10", "2-10"
-        ELEVEN_TO_FIFTY = "11-50", "11-50"
-        FIFTY_ONE_TO_TWO_HUNDRED = "51-200", "51-200"
-        TWO_HUNDRED_AND_ONE_TO_ONE_THOUSAND = "201-1000", "201-1000"
-        MORE_THAN_ONE_THOUSAND = "more than 1000", "More than 1000"
-
     avatar = models.FileField(
         storage=get_public_storage(),
         upload_to="profile-pictures/",
@@ -69,19 +25,6 @@ class CustomUser(AbstractUser):
         blank=True,
     )
     onboarded = models.BooleanField(default=False)
-    company_industry = models.CharField(
-        max_length=16, null=True, choices=CompanyIndustry.choices
-    )
-    company_role = models.CharField(
-        max_length=32, null=True, choices=CompanyRole.choices
-    )
-    company_size = models.CharField(
-        max_length=16, null=True, choices=CompanySize.choices
-    )
-    source_channel = models.CharField(
-        max_length=32, null=True, choices=SourceChannel.choices
-    )
-    marketing_allowed = models.BooleanField(null=True)
 
     def __str__(self):
         return self.email
@@ -127,9 +70,9 @@ class ApprovedWaitlistEmail(BaseModel):
 
 class ApprovedWaitlistEmailBatch(BaseModel):
     data = models.FileField(
-        upload_to=f"{SLUG}/approved_waitlist_batch"
-        if SLUG
-        else "approved_waitlist_batch"
+        upload_to=(
+            f"{SLUG}/approved_waitlist_batch" if SLUG else "approved_waitlist_batch"
+        )
     )
     success = models.BooleanField(default=False)
 
