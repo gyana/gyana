@@ -3,18 +3,18 @@ import json
 
 from django import template
 
-INTERCOM_JSON = "apps/base/data/intercom.json"
+DOCS_JSON = "apps/base/data/docs.json"
 LOOM_JSON = "apps/base/data/loom.json"
 
-INTERCOM_ROOT = "https://support.gyana.com/en/articles"
-LOOM_ROOT = "https://www.loom.com/embed"
+DOCS_ROOT = "https://gyana.github.io/docs"
+LOOM_ROOT = "https://www.loom.com"
 
 register = template.Library()
 
 
 @functools.cache
-def get_intercom():
-    return json.load(open(INTERCOM_JSON, "r"))
+def get_docs():
+    return json.load(open(DOCS_JSON, "r"))
 
 
 @functools.cache
@@ -23,19 +23,20 @@ def get_loom():
 
 
 def get_loom_embed_url(loom_id):
-    return f"{LOOM_ROOT}/{loom_id}?hideOwner=true"
+    return f"{LOOM_ROOT}/embed/{loom_id}?hideOwner=true"
 
 
 @register.inclusion_tag("components/link_article.html")
 def link_article(collection: str, name: str):
+    print(get_docs())
     # will error if does not exist (deliberate)
-    return {"article_url": f"{INTERCOM_ROOT}/{get_intercom()[collection][name]}"}
+    return {"article_url": f"{DOCS_ROOT}/{get_docs()[collection][name]}"}
 
 
 @register.inclusion_tag("components/link_video.html")
 def link_video(name: str):
     # will error if does not exist (deliberate)
-    return {"article_url": f"{INTERCOM_ROOT}/{get_intercom()['videos'][name]}"}
+    return {"article_url": f"{LOOM_ROOT}/share/{get_loom()[name]}"}
 
 
 @register.inclusion_tag("components/embed_loom.html")
@@ -46,8 +47,8 @@ def embed_loom(video: str):
 
 @register.simple_tag
 def article_url(collection: str, name: str):
-    if (collection_obj := get_intercom().get(collection)) and (
+    if (collection_obj := get_docs().get(collection)) and (
         article := collection_obj.get(name)
     ):
-        return f"{INTERCOM_ROOT}/{article}"
-    return INTERCOM_ROOT
+        return f"{DOCS_ROOT}/{article}"
+    return DOCS_ROOT

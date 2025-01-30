@@ -7,7 +7,6 @@ from django.utils.safestring import mark_safe
 from apps.base.analytics import TEAM_CREATED_EVENT, identify_user_group
 from apps.base.fields import ColorField, ColorInput
 from apps.base.forms import ModelForm
-from apps.base.templatetags.help_utils import INTERCOM_ROOT, get_intercom
 from apps.teams import roles
 
 from .models import Flag, Membership, Team
@@ -65,9 +64,7 @@ class TeamUpdateForm(ModelForm):
     beta = forms.BooleanField(
         required=False,
         label="Join Beta",
-        help_text=mark_safe(
-            f"""Turn on early access to new features from our beta program. <a href="{INTERCOM_ROOT}/{get_intercom()['overview']['beta']}" target="_blank" class="link">Learn more</a>."""
-        ),
+        help_text=mark_safe(f"""Turn on early access to beta features."""),
     )
 
     def __init__(self, *args, **kwargs):
@@ -96,8 +93,6 @@ class MembershipUpdateForm(ModelForm):
         # Prevent last admin turning to member
         if self.instance.role == roles.ROLE_ADMIN and not self.instance.can_delete:
             self.fields["role"].widget.attrs["disabled"] = True
-            self.fields[
-                "role"
-            ].help_text = (
+            self.fields["role"].help_text = (
                 "You cannot make yourself a member because there is no admin left"
             )
