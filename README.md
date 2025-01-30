@@ -1,47 +1,50 @@
-# Gyana
+![Alt Text](gyana.jpg)
 
-No-Code Data Analytics tool or "Figma meets Domo"
-More information can found on [our slab page](https://gyana.slab.com/topics/tech-mlhaecw3)
+<p align="center"><em>Open source, no-code business intelligence built on Django</em></p>
 
-## Development
+---
 
-For more in-depth instructions refer to [DEVELOPMENT.md](DEVELOPMENT.md)
+**Documentation**: <a href="https://gyana.github.io/docs" target="_blank">https://gyana.github.io/docs</a>
 
-In short:
+**Source Code**: <a href="https://github.com/gyana/gyana" target="_blank">https://github.com/gyana/gyana</a>
+
+---
+
+Gyana is a toolkit for building business intelligence tools, written in Django.
+
+Why Gyana? In our experience, traditional BI tools lack the flexibility most businesses need, but building a modern data stack is often overkill.
+
+Gyana solves this in two ways:
+
+1. A set of no-code abstractions that provide close to the flexibility of code solutions (but without associated headaches)
+2. An extensible, open source codebase where it's easy to add custom business logic (think: formulas, nodes or entire features) in idiomatic Django
+
+Using Gyana, you can deliver a data analytics experience tailored to your needs of your business, stakeholders or clients, without wasting time in repetitive coding tasks.
+
+## Features
+
+- Modern data stack "in a box" - no-code interface for ELT, writing SQL, building dashboards and automating pipelines
+- Fully-featured collaboration system for internal teams or managing clients
+- Opinionated, high quality, low Javascript (think: HTMX + AlpineJS) codebase built on idiomatic Django
+- Fully open source, self-host wherever you want
+
+## Getting started
+
+You can run Gyana locally <5 mins with docker:
 
 ```bash
-# Install pip and npm dependencies
-just update
-
-# Create a local database and run migrations
-createdb gyana
-python manage.py migrate
-
-# Build the client
-npm run build
-
-# Run the app
-just dev
+git clone git@github.com:gyana/gyana.git
+cd gyana
+docker build -f Dockerfile.dev -t gyana:dev .
+docker compose up
 ```
 
-## Development Principles
+Open your browser at http://localhost:8000.
 
-- **Better to spend more time writing less code than vice versa**
+**Note**: For the signup, your activation email will be logged in the terminal 😊
 
-- **Consistency is golden**
+For more detailed instructions on local developmnet, see our [DEVELOPMENT](https://github.com/gyana/gyana/blob/main/DEVELOPMENT.md) guide.
 
-- **Django > Turbo Frame > Turbo Stream > Stimulus > React**
+## License
 
-  - **Use Django templating as much as possible**  
-     To fully use the power of backend-first html building
-  - **Turbo Stream updates > JS dom manipulation**  
-     Retains as much HTML/DOM logic in backend code, and leverages the template system nicely. Reusable code FTW
-  - **For small interactive snippets use stimulus**  
-     Unit level javascript needs are easily solved by generic stimulus controllers
-  - **Don't use React when not needed**  
-     Keeps the codebase simpler and more comprehensible
-  - **Encapsulate React in web components**  
-     Consistent way of mounting React components and allows us to use it in the templating engine
-
-- **IDs are sacred**
-  - DOM IDs are becoming increasingly more important the more we use the Hotwire stack as it uses IDs in the DOM as mounting points
+This project is licensed under the terms of the MIT license.
