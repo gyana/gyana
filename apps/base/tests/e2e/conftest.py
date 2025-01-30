@@ -1,9 +1,14 @@
 import pytest
 from celery.contrib.testing import worker
 from django.db import connection
+from pandas import read_csv
+
+from apps.base.clients import get_engine
 
 BIGQUERY_TIMEOUT = 20000
 SHARED_SHEET = "https://docs.google.com/spreadsheets/d/1mfauospJlft0B304j7em1vcyE1QKKVMhZjyLfIAnvmU/edit"
+
+fixtures = "apps/base/tests/e2e/fixtures"
 
 
 @pytest.fixture(autouse=True)
@@ -55,3 +60,14 @@ BEGIN
     END LOOP;
 END $$;"""
         )
+
+
+@pytest.fixture(autouse=True)
+def seed_engine():
+    with connection.cursor() as cursor:
+        cursor.execute("""CREATE SCHEMA IF NOT EXISTS cypress_team_000001_tables""")
+
+        engine = get_engine()
+        df = read_csv(f"{fixtures}/store_info.csv")
+        engine._df_to_sql(df, "upload_000000001", "cypress_team_000001_tables")
+        engine._df_to_sql(df, "output_node_000000002", "cypress_team_000001_tables")

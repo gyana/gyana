@@ -1,5 +1,5 @@
-from abc import ABC
 import os
+from abc import ABC
 from typing import TYPE_CHECKING
 
 import ibis
@@ -35,7 +35,7 @@ class BaseClient(ABC):
         )
 
     def create_team_dataset(self, team: "Team"):
-        self.client.raw_sql(f"CREATE SCHEMA {team.tables_dataset_id}")
+        self.client.raw_sql(f"CREATE SCHEMA IF NOT EXISTS {team.tables_dataset_id}")
         # TODO: Use this once upgraded to Ibis 7.0
         # self.client.create_schema(team.tables_dataset_id, force=True)
 
