@@ -21,14 +21,7 @@ def test_signup(page, live_server):
     # onboarding
     page.fill('input[name="first_name"]', "Waitlist")
     page.fill('input[name="last_name"]', "User")
-    page.click('input[name="marketing_allowed"][value="True"]')
     page.click('text="Next"')
-
-    page.select_option('select[name="company_industry"]', "Agency")
-    page.select_option('select[name="company_role"]', "Marketing")
-    page.select_option('select[name="company_size"]', "2-10")
-    page.select_option('select[name="source_channel"]', "onlineads")
-    page.click('button[type="submit"]')
 
     # new team
     assert f"/teams" in page.url
