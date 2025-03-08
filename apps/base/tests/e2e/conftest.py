@@ -63,7 +63,19 @@ END $$;"""
 
 
 @pytest.fixture(autouse=True)
-def seed_engine():
+def seed_engine(settings):
+
+    settings_dict = connection.settings_dict
+
+    user = settings_dict["USER"]
+    password = settings_dict["PASSWORD"]
+    host = settings_dict["HOST"]
+    port = settings_dict["PORT"]
+    database = settings_dict["NAME"]
+
+    # force engine to use same test database for simplicity
+    settings.ENGINE_URL = f"postgresql://{user}:{password}@{host}:{port}/{database}"
+
     with connection.cursor() as cursor:
         cursor.execute("""CREATE SCHEMA IF NOT EXISTS cypress_team_000001_tables""")
 
