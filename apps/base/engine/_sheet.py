@@ -27,6 +27,8 @@ def create_dataframe_from_sheet(sheet: "Sheet"):
 
     if sheet.cell_range:
         data = worksheet.get(sheet.cell_range)
+        if len(data) == 0:
+            raise ValueError("No columns found in the schema.")
         return pd.DataFrame(data[1:], columns=data[0])
 
     return pd.DataFrame(worksheet.get_all_records())

@@ -48,9 +48,9 @@ def test_workflow_editor(
     )
 
     page.locator('[data-id="2"]').dblclick()
-    page.get_by_text("Location").click()
-    page.get_by_text("Employees").click()
-    page.get_by_text("Owner").click()
+    page.locator("#node-update-form").get_by_text("Location").click()
+    page.locator("#node-update-form").get_by_text("Employees").click()
+    page.locator("#node-update-form").get_by_text("Owner").click()
 
     expect(page.get_by_text("Save & Close")).not_to_be_disabled()
     page.get_by_text("Save & Close").click()

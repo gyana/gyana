@@ -65,10 +65,12 @@ def test_automate(
     expect(page.locator('[data-cy-status="running"]')).to_have_count(1)
     expect(page.locator('[data-cy-status="pending"]')).to_have_count(2)
 
-    for idx in range(4):
-        expect(page.locator('[data-cy-status="success"]')).to_have_count(
-            idx, timeout=BIGQUERY_TIMEOUT + 5
-        )
+    expect(page.locator('[data-cy-status="success"]')).to_have_count(
+        0, timeout=BIGQUERY_TIMEOUT + 5
+    )
+    expect(page.locator('[data-cy-status="success"]')).to_have_count(
+        3, timeout=BIGQUERY_TIMEOUT + 5
+    )
 
     page.locator('button[data-cy="settings"]').click()
     expect(page.locator("table tbody tr")).to_have_count(1)

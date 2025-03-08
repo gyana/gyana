@@ -27,12 +27,12 @@ REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"] = ("rest_framework.renderers.JSONRend
 
 MOCK_REMOTE_OBJECT_DELETION = True
 
-SILKY_PYTHON_PROFILER = True
-SILKY_PYTHON_PROFILER_BINARY = True  # for flamegraphs
-SILKY_ANALYZE_QUERIES = True
-
-INSTALLED_APPS = INSTALLED_APPS + ["silk"]
-MIDDLEWARE = ["silk.middleware.SilkyMiddleware"] + MIDDLEWARE
+## uncomment profile performance with silk
+# SILKY_PYTHON_PROFILER = True
+# SILKY_PYTHON_PROFILER_BINARY = True  # for flamegraphs
+# SILKY_ANALYZE_QUERIES = True
+# INSTALLED_APPS = INSTALLED_APPS + ["silk"]
+# MIDDLEWARE = ["silk.middleware.SilkyMiddleware"] + MIDDLEWARE
 
 # for code coverage
 TEMPLATES[0]["OPTIONS"]["debug"] = True
