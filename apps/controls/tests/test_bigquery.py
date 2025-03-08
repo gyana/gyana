@@ -204,13 +204,15 @@ TODAY_LAST_QUARTER = TODAY - relativedelta(months=3)
         pytest.param(
             DateRange.THIS_QUARTER_UP_TO_DATE,
             dt.date(
-                TODAY_LAST_QUARTER.year,
-                (get_quarter(TODAY_LAST_QUARTER)) * 3 + 1,
+                TODAY_LAST_QUARTER.year
+                + ((get_quarter(TODAY_LAST_QUARTER)) * 3 + 1) // 12,
+                ((get_quarter(TODAY_LAST_QUARTER)) * 3 + 1) % 12,
                 1,
             ),
             dt.date(
-                TODAY_LAST_QUARTER.year,
-                (get_quarter(TODAY_LAST_QUARTER) - 1) * 3 + 1,
+                TODAY_LAST_QUARTER.year
+                + ((get_quarter(TODAY_LAST_QUARTER) - 1) * 3 + 1) // 12,
+                ((get_quarter(TODAY_LAST_QUARTER) - 1) * 3 + 1) % 12,
                 1,
             ),
             TODAY_LAST_QUARTER,
