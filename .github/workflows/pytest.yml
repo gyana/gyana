@@ -68,9 +68,8 @@ jobs:
       - run: just test-e2e
         env:
           GCP_BQ_SVC_ACCOUNT: ${{ secrets.GCP_BQ_SVC_ACCOUNT }}
-      - name: Upload test artifacts
+      - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v4
         with:
           name: playwright-traces
           path: test-results/
